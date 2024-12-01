@@ -364,7 +364,7 @@ async fn run(args: Vec<String>) -> Result<(), Error> {
             let mut result = std::collections::HashMap::new();
 
             for uid in index.get_all_chunk_uids()? {
-                for term in index.get_tfidf_by_chunk_uid(uid)?.tokens.keys() {
+                for term in index.get_tfidf_by_chunk_uid(uid)?.term_frequency.keys() {
                     match result.get_mut(term) {
                         Some(n) => { *n += 1; },
                         None => { result.insert(term.to_string(), 1); },
