@@ -359,6 +359,26 @@ async fn run(args: Vec<String>) -> Result<(), Error> {
                 Err(e) => { return Err(e); },
             }
         },
+        Some("kv") => {
+            let index = Index::load(root_dir?, LoadMode::QuickCheck)?;
+            let mut result = std::collections::HashMap::new();
+
+            for uid in index.get_all_chunk_uids()? {
+                for term in index.get_tfidf_by_chunk_uid(uid)?.tokens.keys() {
+                    match result.get_mut(term) {
+                        Some(n) => { *n += 1; },
+                        None => { result.insert(term.to_string(), 1); },
+                    }
+                }
+            }
+
+            let mut result = result.into_iter().collect::<Vec<_>>();
+            result.sort_by_key(|(_, count)| usize::MAX - *count);
+
+            for (term, count) in result.iter() {
+                println!("{term}: {count} ({:.3}%)", *count as f64 / 2187.0 * 100.0);
+            }
+        },
         Some("ls-chunks") => {
             let parsed_args = ArgParser::new().optional_flag(&["--uid-only", "--stat-only"]).args(ArgType::Query, ArgCount::Leq(1)).parse(&args[2..])?;
 
