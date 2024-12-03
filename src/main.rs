@@ -362,9 +362,10 @@ async fn run(args: Vec<String>) -> Result<(), Error> {
         Some("kv") => {
             let index = Index::load(root_dir?, LoadMode::QuickCheck)?;
             let mut result = std::collections::HashMap::new();
+            let chunk_uids = index.get_all_chunk_uids()?;
 
-            for uid in index.get_all_chunk_uids()? {
-                for term in index.get_tfidf_by_chunk_uid(uid)?.term_frequency.keys() {
+            for uid in chunk_uids.iter() {
+                for term in index.get_tfidf_by_chunk_uid(*uid)?.term_frequency.keys() {
                     match result.get_mut(term) {
                         Some(n) => { *n += 1; },
                         None => { result.insert(term.to_string(), 1); },
@@ -376,7 +377,7 @@ async fn run(args: Vec<String>) -> Result<(), Error> {
             result.sort_by_key(|(_, count)| usize::MAX - *count);
 
             for (term, count) in result.iter() {
-                println!("{term}: {count} ({:.3}%)", *count as f64 / 2187.0 * 100.0);
+                println!("{term}: {count} ({:.3}%)", *count as f64 / chunk_uids.len() as f64 * 100.0);
             }
         },
         Some("ls-chunks") => {
