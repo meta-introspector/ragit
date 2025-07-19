@@ -1,0 +1,28 @@
+# groq_rate_limits.toml - Groq Free Tier Rate Limits
+# Source: Groq API Documentation - Free Tier Plan
+# Last Updated: 2025-07-19
+
+[rate_limits]
+description = "Groq Free Tier Rate Limits"
+last_updated = "2025-07-19"
+
+[[models]]
+id = "allam-2-7b"
+requests_per_minute = 30
+requests_per_day = 7000
+tokens_per_minute = 6000
+tokens_per_day = 500000
+
+[[models]]
+id = "compound-beta"
+requests_per_minute = 15
+requests_per_day = 200
+tokens_per_minute = 70000
+tokens_per_day = -1  # No limit
+
+[[models]]
+id = "llama-3.3-70b-versatile"
+requests_per_minute = 30
+requests_per_day = 1000
+tokens_per_minute = 12000
+tokens_per_day = 100000
