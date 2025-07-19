@@ -41,6 +41,7 @@ pub enum Error {
         extension: Option<String>,
     },
     TestModel,
+    InsufficientModels,
 }
 
 impl From<std::io::Error> for Error {

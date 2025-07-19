@@ -7,6 +7,8 @@ mod message;
 mod model;
 mod request;
 mod response;
+mod rate_limit;
+pub mod qa_system;
 
 #[cfg(test)]
 mod tests;
@@ -15,9 +17,10 @@ pub use crate::api_provider::ApiProvider;
 pub use crate::audit::AuditRecord;
 pub use crate::error::Error;
 pub use crate::message::message_contents_to_json_array;
-pub use crate::model::{Model, ModelRaw, get_model_by_name};
+pub use crate::model::{Model, ModelRaw, get_model_by_name, QualityExpectations, TestModel};
 pub use crate::request::Request;
 pub use crate::response::Response;
+pub use crate::qa_system::{ModelQAResult, ModelQASystem, QualityScores};
 
 pub use ragit_pdl::{
     JsonType,

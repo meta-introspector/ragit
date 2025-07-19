@@ -18,6 +18,7 @@ use ragit_fs::{
     write_string,
 };
 use ragit_pdl::{Message, Role, Schema};
+use crate::rate_limit::RateLimiter;
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 use std::time::{Duration, Instant};
@@ -219,6 +220,8 @@ impl Request {
         let client = reqwest::Client::new();
         let mut curr_error = Error::NoTry;
 
+        let mut rate_limiter = RateLimiter::new(&self.model, 0.9);
+
         let post_url = self.model.get_api_url()?;
         let body = self.build_json_body();
 
@@ -277,6 +280,9 @@ impl Request {
         );
 
         for _ in 0..(self.max_retry + 1) {
+            let delay = rate_limiter.check_and_throttle().unwrap();
+            task::sleep(delay).await;
+
             let mut request = client.post(&post_url)
                 .header(reqwest::header::CONTENT_TYPE, "application/json")
                 .body(body.clone());
@@ -331,6 +337,7 @@ impl Request {
 
                             match Response::from_str(&text, &self.model.api_provider) {
                                 Ok(result) => {
+                                    rate_limiter.record_usage(1, result.get_output_token_count() as u32);
                                     if let Some(key) = &self.dump_api_usage_at {
                                         if let Err(e) = dump_api_usage(
                                             key,

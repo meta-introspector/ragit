@@ -9,7 +9,7 @@ use crate::response::{
 };
 use std::fmt;
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum ApiProvider {
     OpenAi { url: String },
     Cohere,
