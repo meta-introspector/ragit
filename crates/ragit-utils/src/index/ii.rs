@@ -138,7 +138,7 @@ impl Index {
             }
 
             if buffer.len() > AUTO_FLUSH {
-                self.ii_status = IIStatus::Ongoing(to_uir(*uid_check_point.unwrap()));
+                self.ii_status = IIStatus::Ongoing(*uid_check_point.unwrap());
                 uid_check_point = None;
                 self.save_to_file(self.root_dir.join(INDEX_FILE_NAME.to_string()))?;
 

@@ -62,7 +62,7 @@ impl Index {
             sleep_between_retries: self.api_config.sleep_between_retries,
             timeout: self.api_config.timeout,
             temperature: None,
-            dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "describe_image").map(|p| p.to_string()),
+            dump_api_usage_at: self.api_config.dump_api_usage_at(pathbuf_to_str(&self.root_dir), "describe_image"),
             dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "describe_image").map(|p| p.to_str().unwrap().to_string()),
             dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
             schema,
@@ -74,7 +74,7 @@ impl Index {
             description_path.to_str().unwrap(),
             &serde_json::to_vec_pretty(&result)?,
             WriteMode::CreateOrTruncate,
-        )?;;
+        )?;
 
         Ok(())
     }

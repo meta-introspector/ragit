@@ -3,11 +3,17 @@ pub use ragit_api::Error as ApiError;
 pub use ragit_pdl::JsonType;
 pub use ragit_fs::FileError;
 use std::string::FromUtf8Error;
+use std::num::{ParseIntError, ParseFloatError};
+use std::str::ParseBoolError;
 use std::path::PathBuf;
 
 #[derive(Debug)]
 pub enum Error {
     Internal(String),
+    JsonTypeError {
+        expected: JsonType,
+        got: JsonType,
+    },
     ReqwestError(reqwest::Error),
     JsonSerdeError(serde_json::Error),
     ImageError(image::ImageError),
@@ -73,6 +79,24 @@ impl From<url::ParseError> for Error {
 impl From<tokio::task::JoinError> for Error {
     fn from(e: tokio::task::JoinError) -> Error {
         Error::JoinError(e)
+    }
+}
+
+impl From<ParseIntError> for Error {
+    fn from(e: ParseIntError) -> Self {
+        Error::Internal(format!("ParseIntError: {}", e))
+    }
+}
+
+impl From<ParseBoolError> for Error {
+    fn from(e: ParseBoolError) -> Self {
+        Error::Internal(format!("ParseBoolError: {}", e))
+    }
+}
+
+impl From<ParseFloatError> for Error {
+    fn from(e: ParseFloatError) -> Self {
+        Error::Internal(format!("ParseFloatError: {}", e))
     }
 }
 

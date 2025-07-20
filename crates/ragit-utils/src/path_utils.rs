@@ -1,4 +1,6 @@
 use std::path::{Path, PathBuf};
+use crate::error::Error;
+use ragit_fs::{join, join3, normalize, into_abs_path};
 
 /// Converts a `PathBuf` to an `&str`. Panics if the path is not valid UTF-8.
 pub fn pathbuf_to_str(path: &PathBuf) -> &str {
@@ -18,4 +20,20 @@ pub fn path_to_display<'a>(path: &'a Path) -> impl std::fmt::Display + 'a {
 /// Converts an `&str` to an `&Path`.
 pub fn str_to_path_ref(s: &str) -> &Path {
     Path::new(s)
+}
+
+pub fn join_paths(path: &Path, child: &Path) -> Result<PathBuf, Error> {
+    let joined = join(pathbuf_to_str(&path.to_path_buf()), pathbuf_to_str(&child.to_path_buf()))?;
+    Ok(PathBuf::from(joined))
+}
+
+pub fn join3_paths(path1: &Path, path2: &Path, path3: &Path) -> Result<PathBuf, Error> {
+    let joined = join3(pathbuf_to_str(&path1.to_path_buf()), pathbuf_to_str(&path2.to_path_buf()), pathbuf_to_str(&path3.to_path_buf()))?;
+    Ok(PathBuf::from(joined))
+}
+
+pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, Error> {
+    let abs_root_dir = normalize(&into_abs_path(pathbuf_to_str(root_dir))?)?;
+    let joined_path = join_paths(abs_root_dir.as_path(), rel_path.as_path())?;
+    Ok(normalize(pathbuf_to_str(&joined_path))?)
 }
