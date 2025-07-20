@@ -198,7 +198,7 @@ impl Action {
                 }
 
                 else {
-                    let query = crate::uid::query_helpers::uid_query(&index, &[argument.to_string()], crate::uid::query_helpers::UidQueryConfig::new().chunk_only())?;
+                    let query = uid_query(&index, &[argument.to_string()], crate::uid::query_helpers::UidQueryConfig::new().chunk_only())?;
                     let chunk_uids = query.get_chunk_uids();
 
                     match chunk_uids.len() {

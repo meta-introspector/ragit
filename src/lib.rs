@@ -19,6 +19,7 @@ pub mod prompts;
 pub mod query;
 pub mod schema;
 pub mod tree;
+pub mod uid;
 
 
 

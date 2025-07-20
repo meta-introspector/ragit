@@ -80,7 +80,7 @@ impl Index {
         )?;
 
         if exists(&file_index_path) {
-            return Ok(uid::load_from_file(file_index_path.to_str().unwrap())?);
+            return Ok(crate::uid::uid_io::load_from_file(file_index_path.to_str().unwrap())?);
         }
 
         Err(Error::NoSuchFile { path: None, uid: Some(file_uid) })

@@ -1,6 +1,6 @@
 use crate::constant::IMAGE_DIR_NAME;
 use crate::error::Error;
-use crate::ImageDescription;
+use crate::index::file::ImageDescription;
 use crate::prelude::*;
 use ragit_fs::{read_bytes, read_string};
 

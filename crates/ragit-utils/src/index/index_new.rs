@@ -1,16 +1,11 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
-use crate::constant::{API_CONFIG_FILE_NAME, BUILD_CONFIG_FILE_NAME, CHUNK_DIR_NAME, CONFIG_DIR_NAME, FILE_INDEX_DIR_NAME, II_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME, LOG_DIR_NAME, MODEL_FILE_NAME, PROMPT_DIR_NAME, QUERY_CONFIG_FILE_NAME};
-use crate::error::Error;
-use ragit_fs::{create_dir_all, exists, into_abs_path, join, join3, normalize, write_bytes, write_string, WriteMode};
+use crate::prelude::*;
+use ragit_fs::{create_dir_all, exists, into_abs_path, join, normalize, write_bytes, write_string, WriteMode};
 use serde_json::json;
 
 use super::BuildConfig;
-use crate::Path;
-use crate::api_config::ApiConfig;
 use crate::index::index_struct::Index;
-use crate::prompts::PROMPTS;
-use crate::QueryConfig;
 
 impl Index {
     /// It works like git. `root_dir` is the root of the repo. And it creates dir `.ragit/`, like `.git/`.

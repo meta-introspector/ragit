@@ -1,6 +1,5 @@
+use crate::prelude::*;
 use std::path::PathBuf;
-use crate::constant::INDEX_FILE_NAME;
-use crate::error::Error;
 use ragit_fs::{write_bytes, WriteMode};
 
 use crate::index::index_struct::Index;

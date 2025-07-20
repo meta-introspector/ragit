@@ -4,9 +4,21 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ragit-api = { path = "../api" }
+ragit-pdl = { path = "../pdl" }
 lazy_static = "1.5.0"
 regex = "1.11.1"
 serde = { version = "1.0.218", features = ["derive"] }
 sha3 = "0.10.8"
 chrono = "0.4.40"
 ragit-fs = { path = "../fs", version = "0.4.2" }
+serde_json = "1.0.141"
+tera = "1.20.0"
+flate2 = "1.1.2"
+rust-stemmers = "1.2.0"
+tokio = { version = "1.46.1", features = ["full"] }
+reqwest = { version = "0.12.22", features = ["json"] }
+anyhow = "1.0.98"
+strum = { version = "0.27.2", features = ["derive"] }
+url = "2.5.4"
+image = "0.25.6"

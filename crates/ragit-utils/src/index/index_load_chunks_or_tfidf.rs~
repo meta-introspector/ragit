@@ -1,7 +1,14 @@
+use crate::prelude::*;
 use crate::chunk::Chunk;
-use crate::error::Error;
+use std::path::PathBuf;
 
 use super::index_struct::Index;
+
+impl Index {
+    pub(crate) async fn extract_keywords(&self, query: &str) -> Result<Keywords> {
+        Err(anyhow!("Not implemented"))
+    }
+
 
 impl Index {
     pub(crate) async fn load_chunks_or_tfidf(

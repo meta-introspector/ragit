@@ -1,6 +1,5 @@
 use std::path::PathBuf;
-use crate::constant::INDEX_DIR_NAME;
-use crate::error::Error;
+use crate::prelude::*;
 use ragit_fs::{exists, join};
 
 use crate::index::{index_struct::Index, load_mode::LoadMode};

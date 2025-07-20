@@ -1,0 +1,1 @@
+pub fn erase_lines(n: usize) {}

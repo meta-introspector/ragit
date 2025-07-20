@@ -321,7 +321,7 @@ pub fn dump_pdl(
     markdown.push(format!("{}# {metadata} #{}", '{', '}'));  // tera format
 
     if let Ok(parent_path_buf) = parent(Path::new(path)) {
-        if !exists(parent_path_buf.to_str().unwrap()) {
+        if !exists(&parent_path_buf) {
             create_dir_all(parent_path_buf.to_str().unwrap())?;
         }
     }

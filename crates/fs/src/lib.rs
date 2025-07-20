@@ -244,7 +244,11 @@ pub fn is_symlink(path: &str) -> bool {
     PathBuf::from_str(path).map(|path| path.is_symlink()).unwrap_or(false)
 }
 
-pub fn exists(path: &str) -> bool {
+pub fn exists(path: &PathBuf) -> bool {
+    path.exists()
+}
+
+pub fn exists_str(path: &str) -> bool {
     PathBuf::from_str(path).map(|path| path.exists()).unwrap_or(false)
 }
 

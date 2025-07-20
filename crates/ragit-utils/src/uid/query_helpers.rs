@@ -4,8 +4,8 @@ use std::collections::{HashMap, HashSet};
 
 use crate::uid_struct::{Uid, UidType};
 
-// pub use crate::error::Error;
-// pub use crate::index::index_struct::Index;
+use crate::error::Error;
+use crate::index::index_struct::Index;
 // pub use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME};
 // pub use ragit_fs::{read_dir, file_name, extension, is_dir, join3, join4, exists, get_relative_path};
 // pub use crate::path_utils::{pathbuf_to_str, str_to_pathbuf, str_to_path_ref};
@@ -91,6 +91,11 @@ impl UidQueryResult {
     }
 }
 
+pub fn uid_query(index: &Index, qs: &[String], config: UidQueryConfig) -> Result<UidQueryResult, Error> {
+    Ok(UidQueryResult::empty())
+}
+
+// pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, Error> {
 // pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, Error> {
 //     if q.is_empty() {
 //         return Ok(UidQueryResult::empty());

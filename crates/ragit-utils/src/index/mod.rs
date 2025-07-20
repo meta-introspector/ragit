@@ -1,4 +1,3 @@
-
 pub mod commands;
 mod config;
 pub mod file;
@@ -47,6 +46,3 @@ pub use config::BuildConfig;
 pub use file::{FileReader, ImageDescription};
 pub use ii::IIStatus;
 pub use tfidf::{ProcessedDoc, TfidfResult, TfidfState, consume_processed_doc};
-
-
-

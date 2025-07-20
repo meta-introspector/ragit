@@ -22,7 +22,7 @@ use crate::rate_limit::RateLimiter;
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 use std::time::{Duration, Instant};
-
+use ragit_fs::exists_str;
 #[derive(Clone, Debug)]
 pub struct Request {
     pub messages: Vec<Message>,
@@ -446,7 +446,7 @@ impl Request {
 
     fn dump_json(&self, j: &Value, header: &str) -> Result<(), Error> {
         if let Some(dir) = &self.dump_json_at {
-            if !exists(dir) {
+            if !exists_str(dir) {
                 create_dir_all(dir)?;
             }
 

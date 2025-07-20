@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
 use super::{BuildConfig, IIStatus};
-use crate::{ApiConfig, QueryConfig};
+use crate::{api_config::ApiConfig, query::config::QueryConfig};
 use crate::index::index_struct::Index;
 
 impl Index {

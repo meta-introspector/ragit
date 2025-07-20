@@ -1,0 +1,1 @@
+pub enum AddMode { Auto, Manual, } pub struct AddResult;

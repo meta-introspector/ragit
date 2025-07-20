@@ -8,7 +8,7 @@ use crate::{
 };
 use chrono::Local;
 use std::sync::OnceLock;
-
+use crate::exists_str;
 static LOG_FILE_PATH: OnceLock<Option<String>> = OnceLock::new();
 static DUMP_TO_STDOUT: OnceLock<bool> = OnceLock::new();
 static DUMP_TO_STDERR: OnceLock<bool> = OnceLock::new();
@@ -20,7 +20,7 @@ pub fn initialize_log(
     keep_previous_file: bool,
 ) -> Result<(), FileError> {
     if let Some(path) = &dump_to_file {
-        if !keep_previous_file || !exists(path) {
+        if !keep_previous_file || !exists_str(path) {
             write_string(path, "", WriteMode::Atomic)?;
         }
     }
