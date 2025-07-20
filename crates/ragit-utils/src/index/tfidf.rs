@@ -1,6 +1,7 @@
 use crate::chunk::Chunk;
 use crate::error::Error;
 use crate::{constant::IMAGE_DIR_NAME, index::index_struct::Index};
+use crate::path_utils::{get_uid_path, str_to_pathbuf};
 use crate::query::Keywords;
 use crate::prelude::*;
 use flate2::Compression;
@@ -327,8 +328,8 @@ impl Chunk {
         let mut data = self.data.clone();
 
         for image in &self.images {
-            let description_at = Index::get_uid_path(
-                root_dir,
+            let description_at = crate::path_utils::get_uid_path(
+                str_to_pathbuf(root_dir),
                 IMAGE_DIR_NAME,
                 *image,
                 Some("json"),

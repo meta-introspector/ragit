@@ -8,17 +8,18 @@ use crate::index::file::ImageDescription;
 use crate::index::index_struct::Index;
 use ragit_api::Request;
 use ragit_fs::parent;
+use crate::path_utils::get_uid_path;
 
 impl Index {
     pub async fn add_image_description(&self, uid: Uid) -> Result<(), Error> {
-        let description_path = Index::get_uid_path(
-            pathbuf_to_str(&self.root_dir),
+        let description_path = get_uid_path(
+            &self.root_dir,
             CHUNK_DIR_NAME,
             uid,
             Some("json"),
         )?;
-        let image_path = Index::get_uid_path(
-            pathbuf_to_str(&self.root_dir),
+        let image_path = get_uid_path(
+            &self.root_dir,
             IMAGE_DIR_NAME,
             uid,
             Some("png"),

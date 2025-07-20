@@ -4,7 +4,7 @@ pub mod file;
 mod ii;
 pub mod tfidf;
 mod path_management;
-pub mod path_helpers;
+
 pub mod index_struct;
 pub mod load_mode;
 pub mod index_dummy;

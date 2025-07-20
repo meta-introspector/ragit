@@ -10,12 +10,12 @@ use crate::index::commands::archive::erase_lines;
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
 use crate::error::Error;
 use crate::uid::{self, Uid, UidWriteMode};
+use crate::path_utils::{join3_paths, str_to_pathbuf, pathbuf_to_str};
 use ragit_fs::{
     exists,
     file_name,
     is_dir,
     join,
-    join3,
     parent,
     read_dir,
     remove_dir_all,
@@ -94,7 +94,7 @@ impl Index {
     }
 
     pub fn search_ii_by_term(&self, term: &Term) -> Result<Vec<Uid>, Error> {
-        let ii_path = Index::get_ii_path(&self.root_dir, hash(term));
+        let ii_path = crate::path_utils::get_ii_path(&self.root_dir, hash(term));
 
         if exists(&ii_path) {
             Ok(crate::uid::uid_io::load_from_file(&ii_path)?)
@@ -163,13 +163,13 @@ impl Index {
     }
 
     pub fn reset_ii(&mut self) -> Result<(), Error> {
-        let ii_path = join3(
-            &self.root_dir.to_str(),
-            INDEX_DIR_NAME,
-            II_DIR_NAME,
+        let ii_path = join3_paths(
+            &self.root_dir,
+            &str_to_pathbuf(INDEX_DIR_NAME),
+            &str_to_pathbuf(II_DIR_NAME),
         )?;
 
-        for dir in read_dir(&ii_path, false)? {
+        for dir in read_dir(pathbuf_to_str(&ii_path), false)? {
             if is_dir(&dir) {
                 remove_dir_all(&dir)?;
             }
@@ -206,11 +206,11 @@ impl Index {
     pub(crate) fn flush_ii_buffer(&self, buffer: HashMap<Term, Vec<Uid>>) -> Result<(), Error> {
         for (term, uids) in buffer.into_iter() {
             let term_hash = hash(&term);
-            let ii_path = Index::get_ii_path(&self.root_dir, term_hash);
+            let ii_path = crate::path_utils::get_ii_path(&self.root_dir, term_hash);
             let parent_path = parent(&ii_path)?;
 
             if !exists(&parent_path) {
-                try_create_dir(&parent_path.to_str())?;
+                try_create_dir(pathbuf_to_str(&parent_path))?;
             }
 
             let uids = if exists(&ii_path) {
