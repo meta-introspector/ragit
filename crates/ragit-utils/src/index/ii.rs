@@ -10,7 +10,7 @@ use crate::index::commands::archive::erase_lines;
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
 use crate::error::Error;
 use crate::uid::{self, Uid, UidWriteMode};
-use crate::path_utils::{join3_paths, str_to_pathbuf, pathbuf_to_str};
+use crate::path_utils::{get_ii_path, join3_paths, pathbuf_to_str, str_to_pathbuf};
 use ragit_fs::{
     exists,
     file_name,
@@ -94,7 +94,7 @@ impl Index {
     }
 
     pub fn search_ii_by_term(&self, term: &Term) -> Result<Vec<Uid>, Error> {
-        let ii_path = crate::path_utils::get_ii_path(&self.root_dir, hash(term));
+        let ii_path = get_ii_path(&self.root_dir, hash(term));
 
         if exists(&ii_path) {
             Ok(crate::uid::uid_io::load_from_file(&ii_path)?)
@@ -140,7 +140,7 @@ impl Index {
             if buffer.len() > AUTO_FLUSH {
                 self.ii_status = IIStatus::Ongoing(*uid_check_point.unwrap());
                 uid_check_point = None;
-                self.save_to_file(self.root_dir.join(INDEX_FILE_NAME.to_string()))?;
+		self.save_to_file(self.root_dir.join(INDEX_FILE_NAME))?;
 
                 self.flush_ii_buffer(buffer)?;
                 buffer = HashMap::with_capacity(AUTO_FLUSH);
@@ -158,7 +158,7 @@ impl Index {
         }
 
         self.ii_status = IIStatus::Complete;
-        self.save_to_file(self.root_dir.join(INDEX_FILE_NAME.to_string()))?;
+        self.save_to_file(self.root_dir.join(INDEX_FILE_NAME))?;
         Ok(())
     }
 
@@ -206,7 +206,7 @@ impl Index {
     pub(crate) fn flush_ii_buffer(&self, buffer: HashMap<Term, Vec<Uid>>) -> Result<(), Error> {
         for (term, uids) in buffer.into_iter() {
             let term_hash = hash(&term);
-            let ii_path = crate::path_utils::get_ii_path(&self.root_dir, term_hash);
+            let ii_path = get_ii_path(&self.root_dir, term_hash);
             let parent_path = parent(&ii_path)?;
 
             if !exists(&parent_path) {

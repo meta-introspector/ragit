@@ -1,7 +1,7 @@
 use crate::chunk::{self, Chunk, RenderedChunk, merge_and_convert_chunks};
 use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME};
 use crate::error::Error;
-use crate::uid::{self, Uid};
+use crate::path_utils::get_uid_path;
 use ragit_fs::exists;
 use std::collections::HashSet;
 
@@ -9,7 +9,7 @@ use crate::index::{index_struct::Index, tfidf};
 
 impl Index {
     pub fn get_chunk_by_uid(&self, uid: Uid) -> Result<Chunk, Error> {
-        let chunk_at = Index::get_uid_path(
+        let chunk_at = get_uid_path(
             &self.root_dir,
             CHUNK_DIR_NAME,
             uid,
@@ -24,7 +24,7 @@ impl Index {
     }
 
     pub fn check_chunk_by_uid(&self, uid: Uid) -> bool {
-        if let Ok(chunk_at) = Index::get_uid_path(
+        if let Ok(chunk_at) = get_uid_path(
             &self.root_dir,
             CHUNK_DIR_NAME,
             uid,
@@ -42,7 +42,7 @@ impl Index {
         &self,
         uid: Uid,
     ) -> Result<tfidf::ProcessedDoc, Error> {
-        let tfidf_at = Index::get_uid_path(
+        let tfidf_at = get_uid_path(
             &self.root_dir,
             CHUNK_DIR_NAME,
             uid,
@@ -72,7 +72,7 @@ impl Index {
     }
 
     pub fn get_chunks_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
-        let file_index_path = Index::get_uid_path(
+        let file_index_path = get_uid_path(
             &self.root_dir,
             FILE_INDEX_DIR_NAME,
             file_uid,

@@ -1,6 +1,6 @@
 use crate::constant::FILE_INDEX_DIR_NAME;
 use crate::error::Error;
-use crate::prelude::*;
+use crate::path_utils::get_uid_path;
 use ragit_fs::{exists, remove_file};
 
 use crate::index::index_struct::Index;
@@ -9,7 +9,7 @@ use crate::index::index_struct::Index;
 
 impl Index {
     pub fn remove_file_index(&mut self, file_uid: Uid) -> Result<(), Error> {
-        let file_index_path = Index::get_uid_path(
+        let file_index_path = get_uid_path(
             &self.root_dir,
             FILE_INDEX_DIR_NAME,
             file_uid,

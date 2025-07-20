@@ -63,3 +63,37 @@ pub(crate) fn get_uid_path(root_dir: &PathBuf, dir: &str, uid: Uid, ext: Option<
         Ok(final_path)
     }
 }
+
+// root_dir/.ragit/ii/term_hash_prefix/term_hash_suffix
+pub(crate) fn get_ii_path(root_dir: &PathBuf, term_hash: String) -> PathBuf {
+    let ii_at = join3_paths(
+        root_dir,
+        &str_to_pathbuf(INDEX_DIR_NAME),
+        &str_to_pathbuf(II_DIR_NAME),
+    ).unwrap();
+    let term_hash_prefix = term_hash.get(0..2).unwrap().to_string();
+    let term_hash_suffix = term_hash.get(2..).unwrap().to_string();
+
+    join3_paths(
+        &ii_at,
+        &str_to_pathbuf(&term_hash_prefix),
+        &str_to_pathbuf(&term_hash_suffix),
+    ).unwrap()
+}
+
+pub(crate) fn get_ii_path_str(root_dir: &str, term_hash: String) -> PathBuf {
+    let ii_at = join3(
+        root_dir,
+        INDEX_DIR_NAME,
+        II_DIR_NAME,
+    ).unwrap();
+    let term_hash_prefix = term_hash.get(0..2).unwrap().to_string();
+    let term_hash_suffix = term_hash.get(2..).unwrap().to_string();
+
+    join3(
+        &ii_at,
+        &term_hash_prefix,
+        &term_hash_suffix,
+    ).unwrap().into()
+}
+

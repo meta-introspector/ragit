@@ -1,6 +1,6 @@
 use crate::constant::FILE_INDEX_DIR_NAME;
 use crate::error::Error;
-use crate::uid::{self, Uid, UidWriteMode};
+use crate::path_utils::get_uid_path;
 use ragit_fs::{exists, parent, try_create_dir};
 
 use crate::index::index_struct::Index;

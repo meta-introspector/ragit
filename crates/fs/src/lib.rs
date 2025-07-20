@@ -458,7 +458,7 @@ pub fn normalize(path: &str) -> Result<String, FileError> {
     Ok(result.join("/"))
 }
 
-#[derive(Clone,  PartialEq)]
+#[derive(Clone, PartialEq, thiserror::Error)]
 pub struct FileError {
     pub kind: FileErrorKind,
     pub given_path: Option<String>,
@@ -500,50 +500,33 @@ impl FileError {
         }
     }
 
-    pub fn render_error(&self) -> String {
-        let path = self.given_path.as_ref().map(|p| p.to_string()).unwrap_or(String::new());
-
-        match &self.kind {
-            FileErrorKind::FileNotFound => format!(
-                "file not found: `{path}`"
-            ),
-            FileErrorKind::PermissionDenied => format!(
-                "permission denied: `{path}`"
-            ),
-            FileErrorKind::AlreadyExists => format!(
-                "file already exists: `{path}`"
-            ),
-            FileErrorKind::CannotDiffPath(path, base) => format!(
-                "cannot calc diff: `{path}` and `{base}`"
-            ),
-            FileErrorKind::Unknown(msg) => format!(
-                "unknown file error: `{msg}`"
-            ),
-            FileErrorKind::OsStrErr(os_str) => format!(
-                "error converting os_str: `{os_str:?}`"
-            ),
-        }
-    }
+    
 }
 
 impl fmt::Debug for FileError {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        write!(fmt, "{}", self.render_error())
+        write!(fmt, "{}", self.kind)
     }
 }
 
 impl fmt::Display for FileError {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        write!(fmt, "{}", self.render_error())
+        write!(fmt, "{}", self.kind)
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, thiserror::Error)]
 pub enum FileErrorKind {
+    #[error("file not found")]
     FileNotFound,
+    #[error("permission denied")]
     PermissionDenied,
+    #[error("file already exists")]
     AlreadyExists,
+    #[error("cannot calc diff: `{0}` and `{1}`")]
     CannotDiffPath(String, String),
+    #[error("unknown file error: `{0}`")]
     Unknown(String),
+    #[error("error converting os_str: `{0:?}`")]
     OsStrErr(OsString),
 }
