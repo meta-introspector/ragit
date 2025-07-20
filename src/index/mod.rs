@@ -1,0 +1,52 @@
+
+pub mod commands;
+mod config;
+pub mod file;
+mod ii;
+pub mod tfidf;
+mod path_management;
+pub mod path_helpers;
+pub mod index_struct;
+pub mod load_mode;
+pub mod index_dummy;
+pub mod index_new;
+pub mod index_load;
+pub mod index_load_or_init;
+pub mod index_save_to_file;
+pub mod index_load_chunks_or_tfidf;
+pub mod index_get_all_files;
+pub mod index_add_image_description;
+pub mod index_run_tfidf;
+pub mod index_chunk_access;
+pub mod index_find_lowest_cost_model;
+pub mod index_config_loading;
+pub mod prompt_management;
+pub mod model_management;
+pub mod get_model_by_name;
+pub mod get_prompt;
+pub mod index_add_file_index;
+pub mod index_remove_file_index;
+pub mod muse_logic;
+pub mod config_access;
+pub mod image_access;
+pub mod index_dummy_with_version;
+pub mod check_constants;
+
+
+pub use commands::add::{AddMode, AddResult};
+pub use commands::audit::Audit;
+pub use commands::build::BuildResult;
+pub use commands::merge::{MergeMode, MergeResult};
+pub use commands::pull::PullResult;
+pub use commands::push::PushResult;
+pub use commands::recover::RecoverResult;
+pub use commands::remove::RemoveResult;
+pub use commands::summary::{Summary, SummaryMode};
+pub use commands::version::{VersionInfo, get_compatibility_warning};
+pub use config::BuildConfig;
+pub use file::{FileReader, ImageDescription};
+pub use ii::IIStatus;
+pub use tfidf::{ProcessedDoc, TfidfResult, TfidfState, consume_processed_doc};
+
+
+

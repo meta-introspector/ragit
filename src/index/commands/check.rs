@@ -1,20 +1,14 @@
-use super::Index;
-use crate::{ApiConfig, IIStatus, QueryConfig};
-use crate::chunk::{self, ChunkSource};
+use crate::index::index_struct::Index;
 use crate::error::Error;
-use crate::index::{BuildConfig, ImageDescription, tfidf};
-use crate::uid::{self, Uid};
-use ragit_fs::{
-    basename,
-    file_name,
-    parent,
-    read_bytes,
-    read_string,
-    set_extension,
-};
-use ragit_pdl::JsonType;
-use serde_json::Value;
+use crate::prelude::*;
 use std::collections::{HashMap, HashSet};
+
+use super::check_chunk_files;
+use super::check_file_indexes;
+use super::check_images;
+use super::check_configs;
+use super::check_initialization;
+use super::check_final_validation;
 
 impl Index {
     /// - Check A: For each chunk file,
@@ -31,184 +25,52 @@ impl Index {
     /// - Check F: Images in `.ragit/images` are not corrupted, and has a proper description file.
     /// - Check G: Config files are not broken.
     pub fn check(&self) -> Result<(), Error> {
-        let mut images = HashMap::new();
+        let mut images = HashMap::<Uid, bool>::new();
         let mut chunks_to_files = HashMap::with_capacity(self.chunk_count);
         let mut processed_files = HashSet::with_capacity(self.processed_files.len());
         let mut all_chunk_uids = HashSet::with_capacity(self.chunk_count);
-        let uids_to_files = self.processed_files.iter().map(|(file, uid)| (uid.to_string(), file.to_string())).collect::<HashMap<_, _>>();
-        let mut file_uid_checks = uids_to_files.keys().map(|uid| (uid.to_string(), false /* exists */)).collect::<HashMap<_, _>>();
+        let mut uids_to_files = HashMap::new();
+        let mut file_uid_checks = HashMap::new();
         let mut chunk_count = 0;
 
-        for chunk_file in self.get_all_chunk_files()? {
-            let chunk_prefix = basename(&parent(&chunk_file)?)?;
-            let chunk_suffix = file_name(&chunk_file)?;
-            let chunk_uid = Uid::from_prefix_and_suffix(&chunk_prefix, &chunk_suffix)?;
-            let chunk = chunk::load_from_file(&chunk_file)?;
-            chunk_count += 1;
-            all_chunk_uids.insert(chunk_uid);
+        check_initialization::initialize_check_data(
+            self,
+            &mut images,
+            &mut chunks_to_files,
+            &mut processed_files,
+            &mut all_chunk_uids,
+            &mut uids_to_files,
+            &mut file_uid_checks,
+        );
 
-            // TODO: This condition has to be checked, but it's too tough for old versions of `migration` to pass this condition.
-            //       When time passes and almost no user uses old versions, I have to revive this condition.
-            // if chunk.uid != Uid::new_chunk(&chunk) {  // Check A-0
-            //     return Err(Error::BrokenIndex(format!("Corrupted chunk: `{chunk_file}`'s uid is supposed to be `{}`, but is `{}`.", Uid::new_chunk(&chunk), chunk.uid)));
-            // }
-
-            if chunk_uid != chunk.uid {  // Check A-0
-                return Err(Error::BrokenIndex(format!("Corrupted chunk: `{chunk_file}`'s uid is supposed to be `{chunk_uid}`, but is `{}`.", chunk.uid)));
-            }
-
-            match &chunk.source {
-                ChunkSource::File { path, index, page: _ } => {
-                    chunks_to_files.insert(chunk_uid, (path.to_string(), *index));
-                    processed_files.insert(path.to_string());
-                },
-            }
-
-            for image in chunk.images.iter() {
-                images.insert(*image, false /* exists */);
-            }
-
-            let tfidf_file = set_extension(&chunk_file, "tfidf")?;
-            tfidf::load_from_file(&tfidf_file)?;
-        }
-
-        for processed_file in processed_files.iter() {
-            if !self.processed_files.contains_key(processed_file) {  // Check A-1
-                return Err(Error::BrokenIndex(format!("There's a chunk of `{processed_file}`, but self.processed_files does not have its entry.")));
-            }
-        }
-
-        for file_index in self.get_all_file_indexes()? {
-            let uid_prefix = basename(&parent(&file_index)?)?;
-            let uid_suffix = file_name(&file_index)?;
-            let file_uid = format!("{uid_prefix}{uid_suffix}");
-            let file_name = match uids_to_files.get(&file_uid) {
-                Some(file_name) => file_name.to_string(),
-                None => {  // Check B-1
-                    return Err(Error::BrokenIndex(format!("There's a file_index for `{file_uid}`, but self.processed_files does not have an entry with such hash value.")));
-                },
-            };
-
-            match file_uid_checks.get_mut(&file_uid) {
-                Some(exists) => { *exists = true; },
-                None => unreachable!(),  // Check B-1, already checked
-            }
-
-            for (index1, uid) in uid::load_from_file(&file_index)?.iter().enumerate() {
-                match chunks_to_files.get(uid) {
-                    Some((file_name_from_chunk, index2)) => {
-                        if &file_name != file_name_from_chunk {  // Check B-0
-                            return Err(Error::BrokenIndex(format!("`{file_index}`'s file name is `{file_name}` and it has a chunk `{uid}`. But the chunk points to `{file_name_from_chunk}`.")));
-                        }
-
-                        // Extra check: chunk uids in a file_index must be in a correct order
-                        if index1 != *index2 {
-                            return Err(Error::BrokenIndex(format!("`{file_index}`'s {index1}th chunk uid is `{uid}`, but the chunk's index is {index2}.")));
-                        }
-                    },
-                    None => {  // Check B-0
-                        return Err(Error::BrokenIndex(format!("`{file_index}` has a chunk `{uid}`, but there's no such chunk in `.ragit/chunks`.")));
-                    },
-                }
-            }
-        }
-
-        for (file_uid, exists) in file_uid_checks.iter() {
-            if !*exists {  // Check B-2
-                let file_name = uids_to_files.get(file_uid).unwrap();
-                return Err(Error::BrokenIndex(format!("`{file_name}` doesn't have an index.")));
-            }
-        }
-
-        if chunk_count != self.chunk_count {  // Check D
-            return Err(Error::BrokenIndex(format!("self.chunk_count is {}, but the actual number is {chunk_count}", self.chunk_count)));
-        }
-
-        for image_file in self.get_all_image_files()? {
-            let image_uid = Uid::from_prefix_and_suffix(
-                &file_name(&parent(&image_file)?)?,
-                &file_name(&image_file)?,
-            )?;
-            let image_description_path = set_extension(&image_file, "json")?;
-
-            match images.get_mut(&image_uid) {
-                Some(exists) => { *exists = true; },
-                None => {
-                    // NOTE: it's not an error. see the comments above.
-                },
-            }
-
-            let image_bytes = read_bytes(&image_file)?;
-            image::load_from_memory_with_format(  // Check F
-                &image_bytes,
-                image::ImageFormat::Png,
-            )?;
-            let image_description = read_string(&image_description_path)?;
-
-            // Check F
-            if serde_json::from_str::<ImageDescription>(&image_description).is_err() {
-                return Err(Error::BrokenIndex(format!("`{image_file}` exists, but `{image_description_path}` does not exist.")));
-            }
-        }
-
-        for (image_file_hash, exists) in images.iter() {
-            if !*exists {  // Check E
-                return Err(Error::BrokenIndex(format!("`{image_file_hash}.png` not found.")));
-            }
-        }
-
-        // Check G
-        serde_json::from_str::<BuildConfig>(
-            &read_string(&self.get_build_config_path()?)?,
-        )?;
-        serde_json::from_str::<QueryConfig>(
-            &read_string(&self.get_query_config_path()?)?,
-        )?;
-        serde_json::from_str::<ApiConfig>(
-            &read_string(&self.get_api_config_path()?)?,
+        check_chunk_files::check_chunk_files(
+            self,
+            &mut chunks_to_files,
+            &mut processed_files,
+            &mut all_chunk_uids,
+            &mut chunk_count,
         )?;
 
-        // Extra check: It checks whether the keys in the config files are unique.
-        let mut keys = HashSet::new();
+        check_file_indexes::check_file_indexes(
+            self,
+            &chunks_to_files,
+            &uids_to_files,
+            &mut file_uid_checks,
+        );
 
-        for path in [
-            self.get_build_config_path()?,
-            self.get_api_config_path()?,
-            self.get_query_config_path()?,
-        ] {
-            let j = read_string(&path)?;
-            let j = serde_json::from_str::<Value>(&j)?;
+        check_images::check_images(
+            self,
+            &mut images,
+        )?;
 
-            match j {
-                Value::Object(obj) => {
-                    for (key, _) in obj.iter() {
-                        if keys.contains(key) {
-                            return Err(Error::BrokenIndex(format!("Key conflict in config file {path:?}: {key:?}")));
-                        }
+        check_configs::check_configs(
+            self,
+        )?;
 
-                        keys.insert(key.to_string());
-                    }
-                },
-                _ => {
-                    return Err(Error::JsonTypeError {
-                        expected: JsonType::Object,
-                        got: (&j).into(),
-                    });
-                },
-            }
-        }
-
-        if self.ii_status == IIStatus::Complete {
-            self.check_ii()?;
-        }
-
-        if let Some(uid) = self.uid {
-            let c_uid = self.calculate_uid(true  /* --force */)?;
-
-            if uid != c_uid {
-                return Err(Error::BrokenIndex(format!("self.uid is {uid}, but the calculated uid is {c_uid}")));
-            }
-        }
+        check_final_validation::check_final_validation(
+            self,
+            chunk_count,
+        )?;
 
         Ok(())
     }

@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
 
 use super::QualityExpectations;
 
@@ -9,7 +11,7 @@ use super::QualityExpectations;
 /// Long time ago, there was only `Model` type. But then I implemented `models.json` interface.
 /// I wanted people to directly edit the json file and found that `Model` isn't intuitive to
 /// edit directly. So I added this struct.
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ModelRaw {
     /// Model name shown to user.
     /// `rag config --set model` also
@@ -79,6 +81,68 @@ pub struct ModelRaw {
     pub expected_response_time_ms: Option<u64>,
     #[serde(default)]
     pub initial_score: Option<String>, // e.g., "unknown", "presupposed_moderate", "presupposed_high"
+
+    // New fields for multiple API keys
+    #[serde(default)]
+    pub api_keys: Option<Vec<String>>,
+    #[serde(default)]
+    pub api_env_vars: Option<Vec<String>>,
+    #[serde(skip)]
+    pub current_key_index: AtomicUsize,
+}
+
+impl Clone for ModelRaw {
+    fn clone(&self) -> Self {
+        ModelRaw {
+            name: self.name.clone(),
+            api_name: self.api_name.clone(),
+            can_read_images: self.can_read_images,
+            api_provider: self.api_provider.clone(),
+            api_url: self.api_url.clone(),
+            input_price: self.input_price,
+            output_price: self.output_price,
+            api_timeout: self.api_timeout,
+            explanation: self.explanation.clone(),
+            api_key: self.api_key.clone(),
+            api_env_var: self.api_env_var.clone(),
+            requests_per_minute: self.requests_per_minute,
+            requests_per_day: self.requests_per_day,
+            tokens_per_minute: self.tokens_per_minute,
+            tokens_per_day: self.tokens_per_day,
+            quality_expectations: self.quality_expectations.clone(),
+            expected_response_time_ms: self.expected_response_time_ms,
+            initial_score: self.initial_score.clone(),
+            api_keys: self.api_keys.clone(),
+            api_env_vars: self.api_env_vars.clone(),
+            current_key_index: AtomicUsize::new(self.current_key_index.load(Ordering::SeqCst)),
+        }
+    }
+}
+
+impl PartialEq for ModelRaw {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name &&
+        self.api_name == other.api_name &&
+        self.can_read_images == other.can_read_images &&
+        self.api_provider == other.api_provider &&
+        self.api_url == other.api_url &&
+        self.input_price == other.input_price &&
+        self.output_price == other.output_price &&
+        self.api_timeout == other.api_timeout &&
+        self.explanation == other.explanation &&
+        self.api_key == other.api_key &&
+        self.api_env_var == other.api_env_var &&
+        self.requests_per_minute == other.requests_per_minute &&
+        self.requests_per_day == other.requests_per_day &&
+        self.tokens_per_minute == other.tokens_per_minute &&
+        self.tokens_per_day == other.tokens_per_day &&
+        self.quality_expectations == other.quality_expectations &&
+        self.expected_response_time_ms == other.expected_response_time_ms &&
+        self.initial_score == other.initial_score &&
+        self.api_keys == other.api_keys &&
+        self.api_env_vars == other.api_env_vars &&
+        self.current_key_index.load(Ordering::SeqCst) == other.current_key_index.load(Ordering::SeqCst)
+    }
 }
 
 lazy_static! {

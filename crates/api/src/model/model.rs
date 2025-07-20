@@ -3,8 +3,10 @@ use crate::error::Error;
 use ragit_fs::join4;
 
 use super::{QualityExpectations, TestModel, ModelRaw};
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Debug)]
 pub struct Model {
     pub name: String,
     pub api_name: String,
@@ -23,6 +25,61 @@ pub struct Model {
     pub quality_expectations: Option<QualityExpectations>,
     pub expected_response_time_ms: Option<u64>,
     pub initial_score: Option<String>,
+    pub api_keys: Option<Vec<String>>,
+    pub api_env_vars: Option<Vec<String>>,
+    pub current_key_index: AtomicUsize,
+}
+
+impl Clone for Model {
+    fn clone(&self) -> Self {
+        Model {
+            name: self.name.clone(),
+            api_name: self.api_name.clone(),
+            can_read_images: self.can_read_images,
+            api_provider: self.api_provider.clone(),
+            dollars_per_1b_input_tokens: self.dollars_per_1b_input_tokens,
+            dollars_per_1b_output_tokens: self.dollars_per_1b_output_tokens,
+            api_timeout: self.api_timeout,
+            explanation: self.explanation.clone(),
+            api_key: self.api_key.clone(),
+            api_env_var: self.api_env_var.clone(),
+            requests_per_minute: self.requests_per_minute,
+            requests_per_day: self.requests_per_day,
+            tokens_per_minute: self.tokens_per_minute,
+            tokens_per_day: self.tokens_per_day,
+            quality_expectations: self.quality_expectations.clone(),
+            expected_response_time_ms: self.expected_response_time_ms,
+            initial_score: self.initial_score.clone(),
+            api_keys: self.api_keys.clone(),
+            api_env_vars: self.api_env_vars.clone(),
+            current_key_index: AtomicUsize::new(self.current_key_index.load(Ordering::SeqCst)),
+        }
+    }
+}
+
+impl PartialEq for Model {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name &&
+        self.api_name == other.api_name &&
+        self.can_read_images == other.can_read_images &&
+        self.api_provider == other.api_provider &&
+        self.dollars_per_1b_input_tokens == other.dollars_per_1b_input_tokens &&
+        self.dollars_per_1b_output_tokens == other.dollars_per_1b_output_tokens &&
+        self.api_timeout == other.api_timeout &&
+        self.explanation == other.explanation &&
+        self.api_key == other.api_key &&
+        self.api_env_var == other.api_env_var &&
+        self.requests_per_minute == other.requests_per_minute &&
+        self.requests_per_day == other.requests_per_day &&
+        self.tokens_per_minute == other.tokens_per_minute &&
+        self.tokens_per_day == other.tokens_per_day &&
+        self.quality_expectations == other.quality_expectations &&
+        self.expected_response_time_ms == other.expected_response_time_ms &&
+        self.initial_score == other.initial_score &&
+        self.api_keys == other.api_keys &&
+        self.api_env_vars == other.api_env_vars &&
+        self.current_key_index.load(Ordering::SeqCst) == other.current_key_index.load(Ordering::SeqCst)
+    }
 }
 
 impl Model {
@@ -46,6 +103,9 @@ impl Model {
             quality_expectations: None,
             expected_response_time_ms: None,
             initial_score: None,
+            api_keys: None,
+            api_env_vars: None,
+            current_key_index: AtomicUsize::new(0),
         }
     }
 
@@ -69,6 +129,9 @@ impl Model {
             quality_expectations: None,
             expected_response_time_ms: None,
             initial_score: None,
+            api_keys: None,
+            api_env_vars: None,
+            current_key_index: AtomicUsize::new(0),
         }
     }
 
@@ -92,6 +155,9 @@ impl Model {
             quality_expectations: None,
             expected_response_time_ms: None,
             initial_score: None,
+            api_keys: None,
+            api_env_vars: None,
+            current_key_index: AtomicUsize::new(0),
         }
     }
 
@@ -112,34 +178,51 @@ impl Model {
     }
 
     pub fn get_api_key(&self) -> Result<String, Error> {
-        // First, check if the API key is directly set in the model
+        // Collect all available API keys
+        let mut available_keys = Vec::new();
+
+        // 1. Direct api_key (backward compatibility)
         if let Some(key) = &self.api_key {
-            return Ok(key.to_string());
+            available_keys.push(key.clone());
         }
 
-        // Next, check if an environment variable is specified and try to get the API key from it
+        // 2. Multiple api_keys
+        if let Some(keys) = &self.api_keys {
+            available_keys.extend(keys.clone());
+        }
+
+        // 3. Environment variable (backward compatibility)
         if let Some(var) = &self.api_env_var {
             if let Ok(key) = std::env::var(var) {
-                return Ok(key.to_string());
+                available_keys.push(key);
             }
-
-            // Don't return an error yet, try the other methods first
         }
 
-        // If we get here, try to find the API key in external model files
+        // 4. Multiple environment variables
+        if let Some(vars) = &self.api_env_vars {
+            for var in vars {
+                if let Ok(key) = std::env::var(var) {
+                    available_keys.push(key);
+                }
+            }
+        }
+
+        // 5. External model files (existing logic)
         if let Some(key) = self.find_api_key_in_external_files()? {
-            return Ok(key);
+            available_keys.push(key);
         }
 
-        // If we have an api_env_var but couldn't find the key anywhere, return an error
-        if let Some(var) = &self.api_env_var {
-            return Err(Error::ApiKeyNotFound { env_var: Some(var.to_string()) });
+        if available_keys.is_empty() {
+            return if self.api_key.is_some() || self.api_env_var.is_some() || self.api_keys.is_some() || self.api_env_vars.is_some() {
+                Err(Error::ApiKeyNotFound { env_var: self.api_env_var.clone() })
+            } else {
+                Ok(String::new()) // No key required
+            };
         }
 
-        // If both `api_key` and `api_env_var` are not set,
-        // it assumes that the model does not require an
-        // api key.
-        Ok(String::new())
+        // Round-robin selection
+        let index = self.current_key_index.fetch_add(1, Ordering::SeqCst) % available_keys.len();
+        Ok(available_keys[index].clone())
     }
 
     fn find_api_key_in_external_files(&self) -> Result<Option<String>, Error> {
@@ -245,6 +328,9 @@ impl TryFrom<&ModelRaw> for Model {
             quality_expectations: m.quality_expectations.clone(),
             expected_response_time_ms: m.expected_response_time_ms,
             initial_score: m.initial_score.clone(),
+            api_keys: m.api_keys.clone(),
+            api_env_vars: m.api_env_vars.clone(),
+            current_key_index: AtomicUsize::new(0),
         })
     }
 }
@@ -276,6 +362,9 @@ impl From<&Model> for ModelRaw {
             quality_expectations: m.quality_expectations.clone(),
             expected_response_time_ms: m.expected_response_time_ms,
             initial_score: m.initial_score.clone(),
+            api_keys: m.api_keys.clone(),
+            api_env_vars: m.api_env_vars.clone(),
+            current_key_index: AtomicUsize::new(0),
         }
     }
 }

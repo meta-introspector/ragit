@@ -1,30 +1,4 @@
-use chrono::Local;
-use crate::error::Error;
-use crate::index::{Index, tfidf};
-use crate::index::file::{AtomicToken, Image};
-use crate::uid::Uid;
-use flate2::Compression;
-use flate2::read::{GzDecoder, GzEncoder};
-use ragit_api::Request;
-use ragit_fs::{
-    WriteMode,
-    exists,
-    normalize,
-    parent,
-    read_bytes,
-    set_extension,
-    try_create_dir,
-    write_bytes,
-};
-use ragit_pdl::{
-    Pdl,
-    encode_base64,
-    escape_pdl_tokens,
-    parse_pdl,
-};
-use serde::{Deserialize, Serialize};
-use std::collections::{HashMap, HashSet};
-use std::io::Read;
+use crate::prelude::*;
 
 mod build_info;
 mod multi_modal;
@@ -39,7 +13,7 @@ pub use multi_modal::{MultiModalContent, into_multi_modal_contents};
 pub use render::RenderedChunk;
 pub use source::ChunkSource;
 
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Chunk {
     pub data: String,
     pub images: Vec<Uid>,
@@ -51,6 +25,7 @@ pub struct Chunk {
 
     pub title: String,
     pub summary: String,
+    pub muse_summaries: HashMap<String, String>,
 
     pub source: ChunkSource,
     pub uid: Uid,
@@ -66,8 +41,8 @@ pub struct Chunk {
 const COMPRESS_PREFIX: u8 = b'c';
 const UNCOMPRESS_PREFIX: u8 = b'\n';  // I want it to be compatible with json syntax highlighters
 
-pub fn load_from_file(path: &str) -> Result<Chunk, Error> {
-    let content = read_bytes(path)?;
+pub fn load_from_file(path: &PathBuf) -> Result<Chunk, Error> {
+    let content = read_bytes(path_utils::pathbuf_to_str(path))?;
 
     match content.get(0) {
         Some(b) if *b == COMPRESS_PREFIX => {
@@ -78,7 +53,7 @@ pub fn load_from_file(path: &str) -> Result<Chunk, Error> {
             Ok(serde_json::from_slice::<Chunk>(&decompressed)?)
         },
         Some(b) if *b == UNCOMPRESS_PREFIX => Ok(serde_json::from_slice::<Chunk>(&content[1..])?),
-        Some(b) => Err(Error::CorruptedFile { path: path.to_string(), message: Some(format!("unexpected chunk prefix: `{b}`")) }),
+        Some(b) => Err(Error::CorruptedFile { path: path_utils::path_to_display(path).to_string(), message: Some(format!("unexpected chunk prefix: `{b}`")) }),
         None => {
             // simple hack: it throws the exact error that I want
             serde_json::from_slice::<Chunk>(&[])?;
@@ -88,36 +63,36 @@ pub fn load_from_file(path: &str) -> Result<Chunk, Error> {
 }
 
 pub fn save_to_file(
-    path: &str,
+    path: &PathBuf,
     chunk: &Chunk,
 
     // if the result json is bigger than threshold (in bytes), the file is compressed
     compression_threshold: u64,
     compression_level: u32,
-    root_dir: &str,
+    root_dir: &PathBuf,
     create_tfidf: bool,
 ) -> Result<(), Error> {
-    let mut result = serde_json::to_vec_pretty(chunk)?;
-    let tfidf_path = set_extension(path, "tfidf")?;
+    let mut serialized_chunk = serde_json::to_vec_pretty(chunk)?;
+    let tfidf_path = path_utils::str_to_pathbuf(&set_extension(path_utils::pathbuf_to_str(path), "tfidf")?);
     let parent_path = parent(path)?;
 
-    if !exists(&parent_path) {
-        try_create_dir(&parent_path)?;
+    if !exists(path_utils::pathbuf_to_str(&parent_path)) {
+        try_create_dir(path_utils::pathbuf_to_str(&parent_path))?;
     }
 
     if create_tfidf {
         tfidf::save_to_file(
             &tfidf_path,
             chunk,
-            root_dir,
+            path_utils::pathbuf_to_str(root_dir),
         )?;
     }
 
-    let mut bytes = if result.len() as u64 > compression_threshold {
+    let mut bytes = if serialized_chunk.len() as u64 > compression_threshold {
         let mut compressed = vec![];
-        let mut gz = GzEncoder::new(&result[..], Compression::new(compression_level));
+        let mut gz = GzEncoder::new(&serialized_chunk[..], Compression::new(compression_level));
         gz.read_to_end(&mut compressed)?;
-        result = compressed;
+        serialized_chunk = compressed;
 
         vec![COMPRESS_PREFIX]
     }
@@ -126,9 +101,9 @@ pub fn save_to_file(
         vec![UNCOMPRESS_PREFIX]
     };
 
-    bytes.append(&mut result);
+    bytes.append(&mut serialized_chunk);
     Ok(write_bytes(
-        path,
+        path_utils::pathbuf_to_str(path),
         &bytes,
         WriteMode::Atomic,
     )?)
@@ -142,6 +117,7 @@ impl Chunk {
             image_count: 0,
             title: String::new(),
             summary: String::new(),
+            muse_summaries: HashMap::new(),
             uid: Uid::dummy(),
             timestamp: Local::now().timestamp(),
             searchable: true,
@@ -157,7 +133,7 @@ impl Chunk {
     pub(crate) async fn create_chunk_from(
         index: &Index,
         tokens: &[AtomicToken],
-        file: String,
+        file: PathBuf,
         file_index: usize,
         build_info: ChunkBuildInfo,
         previous_turn: Option<(Chunk, ChunkSchema)>,
@@ -252,8 +228,8 @@ impl Chunk {
             sleep_between_retries: index.api_config.sleep_between_retries,
             timeout: index.api_config.timeout,
             dump_api_usage_at: index.api_config.dump_api_usage_at(&index.root_dir, "create_chunk_from"),
-            dump_pdl_at: index.api_config.create_pdl_path(&index.root_dir, "create_chunk_from"),
-            dump_json_at: index.api_config.dump_log_at(&index.root_dir),
+            dump_pdl_at: index.api_config.create_pdl_path(&index.root_dir, "create_chunk_from").map(|p| p.to_str().unwrap().to_string()),
+            dump_json_at: index.api_config.dump_log_at(&index.root_dir).map(|p| p.to_str().unwrap().to_string()),
             schema,
             schema_max_try: 3,
             ..Request::default()
@@ -273,8 +249,9 @@ impl Chunk {
             image_count,
             title: response.title,
             summary: response.summary,
+            muse_summaries: HashMap::new(),
             source: ChunkSource::File {
-                path: normalize(&file)?,
+                path: file.display().to_string(),
                 index: file_index,
                 page: extra_info.map(|i| i.page_no).unwrap_or(None),
             },
@@ -410,6 +387,7 @@ fn merge_chunks(pre: Chunk, post: Chunk) -> Chunk {
         data: new_data,
         images: new_images,
         image_count: 0,  // TODO: count images
+        muse_summaries: HashMap::new(),
         timestamp: Local::now().timestamp(),
 
         // When 1st and 2nd chunks are merged, the result is 1st, not 2nd.

@@ -1,0 +1,6 @@
+---
+name: muse_urania
+description: "Muse of Astronomy and Universal Poetry. This prompt encourages summaries that take a cosmic perspective, focusing on universal laws and patterns."
+---
+Summarize the following text from a universal perspective. Connect the content to broader themes, universal laws, or cosmic patterns.
+"{{text}}"

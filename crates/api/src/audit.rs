@@ -1,4 +1,5 @@
 use chrono::{Datelike, DateTime, Local, Utc};
+use std::path::Path;
 use crate::Error;
 use ragit_fs::{
     WriteMode,
@@ -319,9 +320,9 @@ pub fn dump_pdl(
     ));
     markdown.push(format!("{}# {metadata} #{}", '{', '}'));  // tera format
 
-    if let Ok(parent) = parent(path) {
-        if !exists(&parent) {
-            create_dir_all(&parent)?;
+    if let Ok(parent_path_buf) = parent(Path::new(path)) {
+        if !exists(parent_path_buf.to_str().unwrap()) {
+            create_dir_all(parent_path_buf.to_str().unwrap())?;
         }
     }
 

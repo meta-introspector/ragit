@@ -1,0 +1,13 @@
+pub const CORRUPTED_CHUNK_UID_MISMATCH: &str = "Corrupted chunk: '{}'s uid is supposed to be '{}', but is '{}'.";
+pub const CHUNK_FILE_NOT_IN_PROCESSED_FILES: &str = "There's a chunk of '{}', but self.processed_files does not have its entry.";
+pub const FILE_INDEX_NOT_IN_PROCESSED_FILES: &str = "There's a file_index for '{}', but self.processed_files does not have an entry with such hash value.";
+pub const CHUNK_POINTS_TO_WRONG_FILE: &str = "'{}'s file name is '{}' and it has a chunk '{}'. But the chunk points to '{}'.";
+pub const CHUNK_INDEX_MISMATCH: &str = "'{}'s {}th chunk uid is '{}', but the chunk's index is {}.";
+pub const CHUNK_NOT_FOUND: &str = "{} has a chunk {}, but there's no such chunk in {}/{}.";
+pub const FILE_HAS_NO_INDEX: &str = "'{}' doesn't have an index.";
+pub const CHUNK_COUNT_MISMATCH: &str = "self.chunk_count is {}, but the actual number is {}.";
+pub const IMAGE_NOT_FOUND: &str = "{}.png not found.";
+pub const INVALID_IMAGE_UID: &str = "Invalid image UID: {}.";
+pub const IMAGE_DESCRIPTION_MISSING: &str = "{} exists, but {} does not exist.";
+pub const CONFIG_KEY_CONFLICT: &str = "Key conflict in config file '{}': '{}'.";
+pub const UID_MISMATCH: &str = "self.uid is {}, but the calculated uid is {}.";

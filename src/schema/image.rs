@@ -1,8 +1,8 @@
 use super::{Prettify, prettify_uid};
 use crate::constant::IMAGE_DIR_NAME;
 use crate::error::Error;
-use crate::index::Index;
-use crate::uid::Uid;
+use crate::index::index_struct::Index;
+use crate::prelude::*;
 use ragit_fs::{
     file_size,
     read_bytes,
@@ -51,7 +51,7 @@ impl Index {
                     size: file_size(&image_path)?,
                     bytes,
                 }),
-                _ => Err(Error::BrokenIndex(format!("`{description_path}` has a wrong schema."))),
+                _ => Err(Error::BrokenIndex(format!("`{}` has a wrong schema.", description_path.display()))),
             },
             _ => Err(Error::JsonTypeError {
                 expected: JsonType::Object,

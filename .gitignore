@@ -1,6 +1,8 @@
 /sample
 Cargo.lock
 **/.ragit
+**/*.rs.bak
+
 __pycache__
 target
 ragit-server-logs*
@@ -8,3 +10,4 @@ tests/result.json
 crates/server/*.json
 *.diff
 crates/server/**/blobs/
+/.env

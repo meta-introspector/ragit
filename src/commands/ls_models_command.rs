@@ -1,0 +1,123 @@
+use crate::{Error, Index, LoadMode};
+use ragit_api::{get_model_by_name, Model};
+use ragit_cli::{ArgCount, ArgParser, ArgType};
+use serde_json::{Map, Value};
+
+pub fn ls_models_command(args: &[String]) -> Result<(), Error> {
+    let parsed_args = ArgParser::new()
+        .optional_flag(&["--name-only", "--stat-only"])
+        .optional_flag(&["--selected"])
+        .optional_flag(&["--json"])
+        .short_flag(&["--json"])
+        .args(ArgType::String, ArgCount::Leq(1))
+        .parse(args, 2)?;
+
+    if parsed_args.show_help() {
+        println!("{}", include_str!("../../docs/commands/ls-models.txt"));
+        return Ok(());
+    }
+
+    let name_only = parsed_args.get_flag(0).unwrap_or_default() == "--name-only";
+    let stat_only = parsed_args.get_flag(0).unwrap_or_default() == "--stat-only";
+    let selected_only = parsed_args.get_flag(1).is_some();
+    let json_mode = parsed_args.get_flag(2).is_some();
+    let args = parsed_args.get_args();
+    let index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
+    let mut models = Index::list_models(
+        &index.get_path().join("models.json"),
+        &|_| true,  // no filter
+        &|model| model,  // no map
+        &|model| model.name.to_string(),
+    )?;
+
+    if selected_only {
+        if !args.is_empty() {
+            return Err(Error::CliError {
+                message: String::from("You cannot use `--selected` option with a model name."),
+                span: (String::new(), 0, 0),  // TODO
+            });
+        }
+
+        models = match get_model_by_name(&models, &index.api_config.model) {
+            Ok(model) => vec![model.clone()],
+            Err(_) => match index.find_lowest_cost_model() {
+                Some(model) => vec![model.clone()],
+                None => vec![],
+            },
+        };
+    } else if let Some(model) = args.get(0) {
+        models = match get_model_by_name(&models, model) {
+            Ok(model) => vec![model.clone()],
+            Err(ragit_api::Error::InvalidModelName { candidates, .. }) => {
+                models.into_iter().filter(|model| candidates.contains(&model.name)).collect()
+            }
+            Err(_) => vec![],
+        };
+    }
+
+    if !json_mode && !name_only {
+        println!("{} models", models.len());
+    }
+
+    if stat_only {
+        if json_mode {
+            println!("{{\"models\":{}}}", models.len());
+        }
+
+        return Ok(());
+    }
+
+    if json_mode {
+        if name_only {
+            println!("{}", serde_json::to_string_pretty(&models.iter().map(|model| &model.name).collect::<Vec<_>>())?);
+        } else {
+            println!(
+                "{}",
+                serde_json::to_string_pretty(
+                    &models
+                        .iter()
+                        .map(|model| {
+                            vec![
+                                (String::from("name"), model.name.clone().into()),
+                                (String::from("api_provider"), model.api_provider.to_string().into()),
+                                (String::from("api_key_env_var"), model.api_env_var.clone().into()),
+                                (String::from("can_read_images"), model.can_read_images.into()),
+                                (
+                                    String::from("dollars_per_1b_input_tokens"),
+                                    model.dollars_per_1b_input_tokens.into(),
+                                ),
+                                (
+                                    String::from("dollars_per_1b_output_tokens"),
+                                    model.dollars_per_1b_output_tokens.into(),
+                                ),
+                            ]
+                            .into_iter()
+                            .collect::<Map<String, Value>>()
+                        })
+                        .collect::<Vec<_>>(),
+                )?,
+            );
+        }
+    } else {
+        for model in models.iter() {
+            if name_only {
+                println!("{}", model.name);
+                continue;
+            }
+
+            println!("----------");
+            println!("name: {}", model.name);
+            println!("api_provider: {}", model.api_provider);
+
+            if let Some(api_env_var) = &model.api_env_var {
+                println!("api_key_env_var: {api_env_var}");
+            }
+
+            println!("can_read_images: {}", model.can_read_images);
+            println!("dollars_per_1b_input_tokens: {}", model.dollars_per_1b_input_tokens);
+            println!("dollars_per_1b_output_tokens: {}", model.dollars_per_1b_output_tokens);
+        }
+    }
+
+    Ok(())
+}

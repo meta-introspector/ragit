@@ -3,6 +3,7 @@ use ragit_fs::{extension, join, parent, read_bytes, read_string};
 use regex::bytes::Regex;
 use serde::Serialize;
 use serde_json::Value;
+use std::path::{Path, PathBuf};
 
 mod error;
 mod image;
@@ -108,7 +109,7 @@ pub fn parse_pdl_from_file(
     parse_pdl(
         &read_string(path)?,
         context,
-        &parent(path)?,
+        parent(Path::new(path))?.to_str().unwrap(),
         strict_mode,
     )
 }

@@ -9,6 +9,7 @@ mod request;
 mod response;
 mod rate_limit;
 pub mod qa_system;
+pub mod muse;
 
 #[cfg(test)]
 mod tests;
@@ -20,7 +21,11 @@ pub use crate::message::message_contents_to_json_array;
 pub use crate::model::{Model, ModelRaw, get_model_by_name, QualityExpectations, TestModel};
 pub use crate::request::Request;
 pub use crate::response::Response;
-pub use crate::qa_system::{ModelQAResult, ModelQASystem, QualityScores};
+pub use crate::qa_system::model_qa_result::ModelQAResult;
+pub use crate::qa_system::model_qa_system_struct::ModelQASystem;
+pub use crate::qa_system::quality_scores::QualityScores;
+pub use crate::muse::muse_enum::MuseName;
+pub use crate::muse::muse_struct::Muse;
 
 pub use ragit_pdl::{
     JsonType,

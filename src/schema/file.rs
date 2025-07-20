@@ -1,7 +1,7 @@
 use super::{Prettify, prettify_timestamp, prettify_uid};
 use crate::error::Error;
-use crate::index::Index;
-use crate::uid::Uid;
+use crate::index::index_struct::Index;
+use crate::prelude::*;
 use serde::Serialize;
 use serde_json::Value;
 
@@ -52,7 +52,7 @@ impl Index {
                 return Ok(self.get_file_schema_worker(path.to_string(), *uid)?);
             }
 
-            if self.staged_files.contains(path) {
+            if self.staged_files.contains(&path) {
                 return Ok(FileSchema {
                     path: path.to_string(),
                     is_processed: false,

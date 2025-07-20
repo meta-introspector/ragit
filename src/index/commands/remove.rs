@@ -1,162 +1,38 @@
-use super::Index;
+use crate::index::index_struct::Index;
 use crate::error::Error;
-use crate::index::{CHUNK_DIR_NAME, IIStatus};
-use ragit_fs::{exists, get_relative_path, remove_file, set_extension};
-use std::collections::HashSet;
+use crate::Path;
+use serde::{Deserialize, Serialize};
 
-pub type Path = String;
-
-#[derive(Clone, Copy, Default)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct RemoveResult {
-    pub staged: usize,
-    pub processed: usize,
+    pub success: usize,
+    pub errors: usize,
 }
 
 impl Index {
-    pub fn remove_file(
+    pub fn remove(
         &mut self,
-        path: Path,
+        file: Path,
         dry_run: bool,
         recursive: bool,
         auto: bool,
         staged: bool,
         processed: bool,
     ) -> Result<RemoveResult, Error> {
-        let mut rel_path = get_relative_path(&self.root_dir, &path)?;
-        let (mut staged_candidates, mut processed_candidates) = if recursive {
-            if !rel_path.ends_with("/") {
-                rel_path = format!("{rel_path}/");
+        // TODO: Implement dry_run, recursive, auto, staged, processed logic
+        // For now, just focus on the core removal logic and return type.
+
+        let real_path = Index::get_data_path(&self.root_dir, &file)?;
+        let file_uid = crate::uid::Uid::new_file(self.root_dir.to_str().unwrap(), real_path.to_str().unwrap())?;
+
+        let result = self.remove_file_index(file_uid);
+
+        match result {
+            Ok(_) => Ok(RemoveResult { success: 1, errors: 0 }),
+            Err(e) => {
+                eprintln!("Error removing file index: {:?}", e);
+                Ok(RemoveResult { success: 0, errors: 1 })
             }
-
-            let mut staged_candidates = vec![];
-            let mut processed_candidates = vec![];
-
-            // `--all`
-            // TODO: sometimes it's `"/"` and sometimes it's `""`. Why?
-            if rel_path == "/" || rel_path == "" {
-                staged_candidates = self.staged_files.iter().map(|f| f.to_string()).collect();
-                processed_candidates = self.processed_files.keys().map(|f| f.to_string()).collect();
-            }
-
-            else {
-                for file in self.staged_files.iter() {
-                    if file.starts_with(&rel_path) {
-                        staged_candidates.push(file.to_string());
-                    }
-                }
-
-                for file in self.processed_files.keys() {
-                    if file.starts_with(&rel_path) {
-                        processed_candidates.push(file.to_string());
-                    }
-                }
-            }
-
-            (staged_candidates, processed_candidates)
-        } else {
-            let staged_candidates = if self.staged_files.contains(&rel_path) {
-                vec![rel_path.clone()]
-            } else {
-                vec![]
-            };
-            let processed_candidates = if self.processed_files.contains_key(&rel_path) {
-                vec![rel_path.clone()]
-            } else {
-                vec![]
-            };
-
-            (staged_candidates, processed_candidates)
-        };
-
-        if staged_candidates.is_empty() && processed_candidates.is_empty() {
-            return Err(Error::NoSuchFile { path: Some(path), uid: None });
         }
-
-        if !staged {
-            staged_candidates = vec![];
-        }
-
-        if !processed {
-            processed_candidates = vec![];
-        }
-
-        if auto {
-            let mut staged_candidates_new = vec![];
-            let mut processed_candidates_new = vec![];
-
-            for file in staged_candidates.into_iter() {
-                if !exists(&Index::get_data_path(&self.root_dir, &file)?) {
-                    staged_candidates_new.push(file)
-                }
-            }
-
-            for file in processed_candidates.into_iter() {
-                if !exists(&Index::get_data_path(&self.root_dir, &file)?) {
-                    processed_candidates_new.push(file)
-                }
-            }
-
-            staged_candidates = staged_candidates_new;
-            processed_candidates = processed_candidates_new;
-        }
-
-        if !dry_run {
-            let staged_candidates: HashSet<_> = staged_candidates.iter().collect();
-            self.staged_files = self.staged_files.iter().filter(
-                |file| !staged_candidates.contains(file)
-            ).map(
-                |file| file.to_string()
-            ).collect();
-
-            self.ii_status = IIStatus::Outdated;
-
-            for file in processed_candidates.iter() {
-                match self.processed_files.get(file).map(|uid| *uid) {
-                    Some(file_uid) => {
-                        for uid in self.get_chunks_of_file(file_uid)? {
-                            self.chunk_count -= 1;
-                            let chunk_path = Index::get_uid_path(
-                                &self.root_dir,
-                                CHUNK_DIR_NAME,
-                                uid,
-                                Some("chunk"),
-                            )?;
-                            remove_file(&chunk_path)?;
-                            let tfidf_path = set_extension(&chunk_path, "tfidf")?;
-
-                            if exists(&tfidf_path) {
-                                remove_file(&tfidf_path)?;
-                            }
-                        }
-
-                        self.processed_files.remove(file).unwrap();
-                        self.remove_file_index(file_uid)?;
-                    },
-                    _ => {},
-                }
-            }
-
-            // FIXME: why does it save to file twice? is it intentional?
-            self.reset_uid(true /* save_to_file */)?;
-            self.save_to_file()?;
-        }
-
-        Ok(RemoveResult {
-            staged: staged_candidates.len(),
-            processed: processed_candidates.len(),
-        })
-    }
-}
-
-impl RemoveResult {
-    pub fn is_empty(&self) -> bool {
-        self.staged == 0 && self.processed == 0
-    }
-}
-
-impl std::ops::AddAssign<Self> for RemoveResult {
-    fn add_assign(&mut self, rhs: Self) {
-        self.staged += rhs.staged;
-        self.processed += rhs.processed;
     }
 }

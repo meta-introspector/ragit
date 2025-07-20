@@ -1,7 +1,7 @@
 use super::{AtomicToken, FileReaderImpl};
 use crate::error::Error;
 use crate::index::BuildConfig;
-use crate::uid::Uid;
+use crate::prelude::*;
 use ragit_fs::{extension, read_bytes};
 use ragit_pdl::ImageType;
 use serde::{Deserialize, Serialize};

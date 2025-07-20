@@ -1,7 +1,7 @@
 use chrono::Local;
 use crate::chunk::Chunk;
 use crate::error::Error;
-use crate::index::Index;
+use crate::index::index_struct::Index;
 use ragit_api::Request;
 use ragit_fs::{
     WriteMode,
@@ -295,8 +295,8 @@ impl Index {
             sleep_between_retries: self.api_config.sleep_between_retries,
             timeout: self.api_config.timeout,
             dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "agent"),
-            dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "agent"),
-            dump_json_at: self.api_config.dump_log_at(&self.root_dir),
+            dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "agent").map(|p| p.to_str().unwrap().to_string()),
+            dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
             schema: schema.clone(),
             schema_max_try: 3,
             ..Request::default()
@@ -311,10 +311,11 @@ impl Index {
         state.update(response, self, action_traces).await?;
 
         if let Some(log_at) = self.api_config.dump_log_at(&self.root_dir) {
+            let log_at = log_at.clone();
             let now = Local::now();
             write_string(
                 &join(
-                    &log_at,
+                    &log_at.to_str().unwrap(),
                     &format!("agent-state-{}.json", now.to_rfc3339()),
                 )?,
                 &serde_json::to_string_pretty(&state)?,

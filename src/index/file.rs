@@ -1,8 +1,8 @@
 use super::BuildConfig;
 use crate::chunk::{Chunk, ChunkBuildInfo, ChunkExtraInfo, ChunkSchema};
 use crate::error::Error;
-use crate::index::Index;
-use crate::uid::Uid;
+use crate::index::index_struct::Index;
+use crate::prelude::*;
 use ragit_fs::extension;
 use ragit_pdl::{MessageContent, ImageType};
 use std::collections::{HashMap, VecDeque};
@@ -209,7 +209,7 @@ impl FileReader {
         let chunk = Chunk::create_chunk_from(
             index,
             &tokens,
-            self.rel_path.clone(),
+            self.rel_path.clone().into(),
             index_in_file,
             build_info,
             previous_turn,

@@ -38,6 +38,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Pipeline](./pipeline.md)
 - [Prompt Engineering](./prompt_engineering.md)
 - [Quick Guide](./quick_guide.md)
+- [Architecture](./architecture.md)
 
 ## Interactive documents
 

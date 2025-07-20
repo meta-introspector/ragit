@@ -249,17 +249,13 @@ pub fn exists(path: &str) -> bool {
 }
 
 /// `a/b/c.d` -> `a/b/`
-pub fn parent(path: &str) -> Result<String, FileError> {
-    let std_path = Path::new(path);
-
-    std_path.parent().map(
-        |p| p.to_string_lossy().to_string()
-    ).ok_or_else(
-        || FileError::unknown(
+pub fn parent(path: &Path) -> Result<PathBuf, FileError> {
+    path.parent().map(|p| p.to_path_buf()).ok_or_else(|| {
+        FileError::unknown(
             String::from("function `parent` died"),
-            Some(path.to_string()),
+            Some(path.display().to_string()),
         )
-    )
+    })
 }
 
 /// It's like `create_dir` but does not raise an error if `path` already exists

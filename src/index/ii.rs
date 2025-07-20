@@ -5,9 +5,9 @@
 // 2. You can only remove the entire ii. There's no removing a single file or a chunk.
 // 3. If something goes wrong while an ii is building, you have to build it from scratch.
 
-use super::Index;
-use crate::index::commands::erase_lines;
-use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME};
+use super::index_struct::Index;
+use crate::index::commands::archive::erase_lines;
+use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
 use crate::error::Error;
 use crate::uid::{self, Uid, UidWriteMode};
 use ragit_fs::{
@@ -120,12 +120,12 @@ impl Index {
         let mut uid_check_point = None;
         let mut has_to_erase_lines = false;
 
-        for (index, uid) in self.get_all_chunk_uids()?.into_iter().enumerate() {
+        for (index, uid) in self.get_all_chunk_uids()?.iter().enumerate() {
             if uid_check_point.is_none() {
                 uid_check_point = Some(uid);
             }
 
-            self.update_ii_buffer(&mut buffer, uid)?;
+            self.update_ii_buffer(&mut buffer, *uid)?;
             state.total_uid += 1;
             state.buffer_uid += 1;
             state.buffer_term = buffer.len();
@@ -136,9 +136,9 @@ impl Index {
             }
 
             if buffer.len() > AUTO_FLUSH {
-                self.ii_status = IIStatus::Ongoing(uid_check_point.unwrap());
+                self.ii_status = IIStatus::Ongoing(*uid_check_point.unwrap());
                 uid_check_point = None;
-                self.save_to_file()?;
+                self.save_to_file(self.root_dir.join(INDEX_FILE_NAME.to_string()))?;
 
                 self.flush_ii_buffer(buffer)?;
                 buffer = HashMap::with_capacity(AUTO_FLUSH);
@@ -203,8 +203,8 @@ impl Index {
             }
         }
 
-        for (uid_index, uid) in self.get_all_chunk_uids()?.into_iter().enumerate() {
-            let tfidf = self.get_tfidf_by_chunk_uid(uid)?;
+        for (uid_index, uid) in self.get_all_chunk_uids()?.iter().enumerate() {
+            let tfidf = self.get_tfidf_by_chunk_uid(*uid)?;
 
             for term in tfidf.term_frequency.keys() {
                 let term_hash = hash(term);
@@ -213,8 +213,8 @@ impl Index {
                     term_hash_map.insert(term_hash.to_string(), term.to_string());
 
                     match from_tfidf.get_mut(&term_hash) {
-                        Some(uids) => { uids.push(uid) },
-                        None => { from_tfidf.insert(term_hash.clone(), vec![uid]); },
+                        Some(uids) => { uids.push(*uid) },
+                        None => { from_tfidf.insert(term_hash.clone(), vec![*uid]); },
                     }
                 }
 
@@ -296,7 +296,7 @@ impl Index {
         let tfidf = self.get_tfidf_by_chunk_uid(uid)?;
 
         for term in tfidf.term_frequency.keys() {
-            match buffer.get_mut(term) {
+            match buffer.get_mut::<str>(term) {
                 Some(uids) => {
                     uids.push(uid);
                 },
@@ -329,7 +329,7 @@ impl Index {
                 uids
             };
 
-            uid::save_to_file(&ii_path, &uids, UidWriteMode::Compact)?;
+            uid::save_to_file(ii_path.to_str().unwrap(), &uids, UidWriteMode::Compact)?;
         }
 
         Ok(())

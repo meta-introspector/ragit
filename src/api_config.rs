@@ -11,9 +11,11 @@ use ragit_fs::{
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::path::PathBuf;
+use crate::prelude::*;
 
 // This struct is used for loading partial configurations from ~/.config/ragit/api.json
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PartialApiConfig {
     pub api_key: Option<String>,
     pub model: Option<String>,
@@ -23,6 +25,23 @@ pub struct PartialApiConfig {
     pub sleep_after_llm_call: Option<u64>,
     pub dump_log: Option<bool>,
     pub dump_api_usage: Option<bool>,
+    pub enable_muse_mode: Option<bool>,
+    pub throttling_safety_margin: Option<f64>,
+}
+
+impl PartialEq for PartialApiConfig {
+    fn eq(&self, other: &Self) -> bool {
+        self.api_key == other.api_key &&
+        self.model == other.model &&
+        self.timeout == other.timeout &&
+        self.sleep_between_retries == other.sleep_between_retries &&
+        self.max_retry == other.max_retry &&
+        self.sleep_after_llm_call == other.sleep_after_llm_call &&
+        self.dump_log == other.dump_log &&
+        self.dump_api_usage == other.dump_api_usage &&
+        self.enable_muse_mode == other.enable_muse_mode &&
+        self.throttling_safety_margin == other.throttling_safety_margin
+    }
 }
 
 impl PartialApiConfig {
@@ -52,10 +71,16 @@ impl PartialApiConfig {
         if let Some(dump_api_usage) = self.dump_api_usage {
             config.dump_api_usage = dump_api_usage.clone();
         }
+        if let Some(enable_muse_mode) = self.enable_muse_mode {
+            config.enable_muse_mode = enable_muse_mode.clone();
+        }
+        if let Some(throttling_safety_margin) = self.throttling_safety_margin {
+            config.throttling_safety_margin = throttling_safety_margin;
+        }
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApiConfig {
     /// This value is NOT used anymore. It's here for backward-compatibility.
     /// You have to use env var or `models.json`.
@@ -78,6 +103,25 @@ pub struct ApiConfig {
 
     /// It records how many tokens are used.
     pub dump_api_usage: bool,
+
+    /// It uses multiple prompts to get diverse results.
+    pub enable_muse_mode: bool,
+    pub throttling_safety_margin: f64,
+}
+
+impl PartialEq for ApiConfig {
+    fn eq(&self, other: &Self) -> bool {
+        self.api_key == other.api_key &&
+        self.model == other.model &&
+        self.timeout == other.timeout &&
+        self.sleep_between_retries == other.sleep_between_retries &&
+        self.max_retry == other.max_retry &&
+        self.sleep_after_llm_call == other.sleep_after_llm_call &&
+        self.dump_log == other.dump_log &&
+        self.dump_api_usage == other.dump_api_usage &&
+        self.enable_muse_mode == other.enable_muse_mode &&
+        self.throttling_safety_margin == other.throttling_safety_margin
+    }
 }
 
 impl Default for ApiConfig {
@@ -86,33 +130,34 @@ impl Default for ApiConfig {
             api_key: None,
             dump_log: false,
             dump_api_usage: true,
+            enable_muse_mode: false,
             max_retry: 5,
             sleep_between_retries: 15_000,
             timeout: Some(120_000),
             sleep_after_llm_call: None,
             model: String::from("llama3.3-70b-groq"),
+            throttling_safety_margin: 0.9,
         }
     }
 }
 
 impl ApiConfig {
-    pub fn create_pdl_path(&self, root_dir: &str, job: &str) -> Option<String> {
+    pub fn create_pdl_path(&self, root_dir: &PathBuf, job: &str) -> Option<PathBuf> {
         let now = Local::now();
 
         self.dump_log_at(root_dir).as_ref().map(
-            |path| join(
-                path,
+            |path| path_utils::str_to_pathbuf(&join(
+                path_utils::pathbuf_to_str(path),
                 &format!(
-                    "{job}-{}.pdl",
-                    now.to_rfc3339(),
+                    "{job}.pdl",
                 ),
-            ).unwrap()
+            ).unwrap())
         )
     }
 
-    pub fn dump_log_at(&self, root_dir: &str) -> Option<String> {
+    pub fn dump_log_at(&self, root_dir: &PathBuf) -> Option<PathBuf> {
         if self.dump_log {
-            join3(root_dir, INDEX_DIR_NAME, LOG_DIR_NAME).ok()
+            join3(path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, LOG_DIR_NAME).ok().map(|s| path_utils::str_to_pathbuf(&s))
         }
 
         else {
@@ -120,13 +165,14 @@ impl ApiConfig {
         }
     }
 
-    pub fn dump_api_usage_at(&self, root_dir: &str, id: &str) -> Option<AuditRecordAt> {
+    pub fn dump_api_usage_at(&self, root_dir: &PathBuf, id: &str) -> Option<AuditRecordAt> {
         if self.dump_api_usage {
-            match join3(root_dir, INDEX_DIR_NAME, "usages.json") {
-                Ok(path) => {
-                    if !exists(&path) {
+            match join3(path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, "usages.json") {
+                Ok(path_str) => {
+                    let path = path_utils::str_to_pathbuf(&path_str);
+                    if !exists(path_utils::pathbuf_to_str(&path)) {
                         let _ = write_string(
-                            &path,
+                            path_utils::pathbuf_to_str(&path),
                             "{}",
                             WriteMode::AlwaysCreate,
                         );
@@ -143,10 +189,10 @@ impl ApiConfig {
         }
     }
 
-    pub fn get_api_usage(&self, root_dir: &str, id: &str) -> Result<HashMap<String, AuditRecord>, Error> {
+    pub fn get_api_usage(&self, root_dir: &PathBuf, id: &str) -> Result<HashMap<String, AuditRecord>, Error> {
         match &self.dump_api_usage_at(root_dir, id) {
             Some(AuditRecordAt { path, id }) => {
-                let tracker = Tracker::load_from_file(path)?;
+                let tracker = Tracker::load_from_file(path_utils::pathbuf_to_str(path))?;
 
                 match tracker.0.get(id) {
                     Some(record) => Ok(record.clone()),

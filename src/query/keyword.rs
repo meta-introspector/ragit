@@ -1,4 +1,4 @@
-use crate::Index;
+use crate::index::index_struct::Index;
 use crate::error::Error;
 use crate::index::tfidf::tokenize;
 use ragit_api::Request;
@@ -87,8 +87,8 @@ impl Index {
             timeout: self.api_config.timeout,
             temperature: None,
             dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "extract_keywords"),
-            dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "extract_keywords"),
-            dump_json_at: self.api_config.dump_log_at(&self.root_dir),
+            dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "extract_keywords").map(|p| p.to_str().unwrap().to_string()),
+            dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_string_lossy().into_owned()),
             schema,
             schema_max_try: 3,
         };

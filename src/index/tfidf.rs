@@ -1,8 +1,8 @@
 use crate::chunk::Chunk;
 use crate::error::Error;
-use crate::index::{IMAGE_DIR_NAME, Index};
+use crate::{constant::IMAGE_DIR_NAME, index::index_struct::Index};
 use crate::query::Keywords;
-use crate::uid::Uid;
+use crate::prelude::*;
 use flate2::Compression;
 use flate2::read::{GzDecoder, GzEncoder};
 use ragit_fs::{
@@ -326,14 +326,14 @@ impl Chunk {
     pub fn into_tfidf_haystack(&self, root_dir: &str) -> Result<String, Error> {
         let mut data = self.data.clone();
 
-        for image in self.images.iter() {
+        for image in &self.images {
             let description_at = Index::get_uid_path(
                 root_dir,
                 IMAGE_DIR_NAME,
                 *image,
                 Some("json"),
             )?;
-            let j = read_string(&description_at)?;
+            let j = read_string(description_at.to_str().unwrap())?;
 
             let rep_text = match serde_json::from_str::<Value>(&j)? {
                 Value::Object(obj) => match (obj.get("extracted_text"), obj.get("explanation")) {

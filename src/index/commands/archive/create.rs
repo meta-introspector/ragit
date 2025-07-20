@@ -1,31 +1,4 @@
-use super::{BlockType, compress, erase_lines};
-use crate::constant::{INDEX_DIR_NAME, INDEX_FILE_NAME};
-use crate::error::Error;
-use crate::index::{ii::IIStatus, Index, LoadMode};
-use crate::uid::{self, Uid};
-use ragit_fs::{
-    FileError,
-    FileErrorKind,
-    WriteMode,
-    exists,
-    file_name,
-    file_size,
-    join3,
-    parent,
-    read_bytes,
-    read_dir,
-    read_string,
-    remove_file,
-    set_extension,
-    write_bytes,
-};
-use ragit_pdl::encode_base64;
-use regex::Regex;
-use serde_json::Map;
-use std::thread;
-use std::collections::HashMap;
-use std::sync::mpsc;
-use std::time::{Duration, Instant};
+use crate::prelude::*;
 
 // A block is at most 1 MiB before compressed. Does this number has to be configurable?
 const BLOCK_SIZE: usize = 1 << 20;
@@ -181,8 +154,8 @@ impl Index {
             round_robin += 1;
         }
 
-        for file_index in self.get_all_file_indexes()? {
-            for chunk_uid in uid::load_from_file(&file_index)? {
+        for file_index in self.get_all_file_indexes()?.iter() {
+            for chunk_uid in load_from_file(file_index)? {
                 let chunk = self.get_chunk_by_uid(chunk_uid)?;
                 let curr_chunk_size = chunk.get_approx_size();
 
@@ -200,6 +173,44 @@ impl Index {
             }
         }
 
+        let mut curr_image_block = vec![];
+        let mut curr_image_desc_block = vec![];
+        let mut curr_image_block_size = 0;
+        let mut curr_image_desc_block_size = 0;
+
+        for image_file in self.get_all_image_files()?.iter() {
+            let image_uid = Uid::from_prefix_and_suffix(
+                &file_name(path_utils::str_to_path_ref(&parent(path_utils::pathbuf_to_str(image_file))?)?),
+                &file_name(path_utils::str_to_path_ref(path_utils::pathbuf_to_str(image_file)))?,
+            )?;
+            let image_bytes_len = file_size(path_utils::str_to_path_ref(path_utils::pathbuf_to_str(image_file)))?;
+            let image_desc_len = file_size(path_utils::str_to_path_ref(&set_extension(path_utils::pathbuf_to_str(image_file), "json")?))?;
+
+            if image_bytes_len + curr_image_block_size > BLOCK_SIZE as u64 {
+                workers[round_robin % workers.len()].send(Request::Compress(BlockType::ImageBytes, curr_image_block)).map_err(|_| Error::MPSCError(String::from("Create-archive worker hung up.")))?;
+                curr_image_block = vec![image_uid];
+                curr_image_block_size = image_bytes_len;
+                round_robin += 1;
+            }
+
+            else {
+                curr_image_block_size += image_bytes_len;
+                curr_image_block.push(image_uid);
+            }
+
+            if image_desc_len + curr_image_desc_block_size > BLOCK_SIZE as u64 {
+                workers[round_robin % workers.len()].send(Request::Compress(BlockType::ImageDesc, curr_image_desc_block)).map_err(|_| Error::MPSCError(String::from("Create-archive worker hung up.")))?;
+                curr_image_desc_block = vec![image_uid];
+                curr_image_desc_block_size = image_desc_len;
+                round_robin += 1;
+            }
+
+            else {
+                curr_image_desc_block_size += image_desc_len;
+                curr_image_desc_block.push(image_uid);
+            }
+        }
+
         if !curr_block.is_empty() {
             workers[round_robin % workers.len()].send(Request::Compress(BlockType::Chunk, curr_block)).map_err(|_| Error::MPSCError(String::from("Create-archive worker hung up.")))?;
             round_robin += 1;
@@ -210,13 +221,13 @@ impl Index {
         let mut curr_image_block_size = 0;
         let mut curr_image_desc_block_size = 0;
 
-        for image_file in self.get_all_image_files()? {
+        for image_file in self.get_all_image_files()?.iter() {
             let image_uid = Uid::from_prefix_and_suffix(
-                &file_name(&parent(&image_file)?)?,
-                &file_name(&image_file)?,
+                &file_name(path_utils::str_to_path_ref(&parent(path_utils::pathbuf_to_str(image_file))?)?),
+                &file_name(path_utils::str_to_path_ref(path_utils::pathbuf_to_str(image_file)))?,
             )?;
-            let image_bytes_len = file_size(&image_file)?;
-            let image_desc_len = file_size(&set_extension(&image_file, "json")?)?;
+            let image_bytes_len = file_size(path_utils::str_to_path_ref(path_utils::pathbuf_to_str(image_file)))?;
+            let image_desc_len = file_size(path_utils::str_to_path_ref(&set_extension(path_utils::pathbuf_to_str(image_file), "json")?))?;
 
             if image_bytes_len + curr_image_block_size > BLOCK_SIZE as u64 {
                 workers[round_robin % workers.len()].send(Request::Compress(BlockType::ImageBytes, curr_image_block)).map_err(|_| Error::MPSCError(String::from("Create-archive worker hung up.")))?;
@@ -449,7 +460,6 @@ fn event_loop(
     compression_level: u32,
 ) -> Result<(), Error> {
     let index = Index::load(root_dir, LoadMode::OnlyJson)?;
-    let mut seq = 0;
 
     for msg in rx_from_main {
         match msg {
@@ -457,7 +467,7 @@ fn event_loop(
                 let block_data = match block_type {
                     BlockType::Index => {
                         let index_json = read_string(&join3(
-                            &index.root_dir,
+                            index.root_dir.to_str().unwrap(),
                             INDEX_DIR_NAME,
                             INDEX_FILE_NAME,
                         )?)?;
@@ -470,7 +480,7 @@ fn event_loop(
                         index.uid = Some(index.calculate_uid(false  /* force */)?);
 
                         let index_json = serde_json::to_vec(&index)?;
-                        compress(&index_json, compression_level)?
+                        decompress(&index_json)?
                     },
                     BlockType::Chunk => {
                         let mut chunks = Vec::with_capacity(uids.len());
@@ -480,7 +490,7 @@ fn event_loop(
                         }
 
                         let bytes = serde_json::to_vec(&chunks)?;
-                        compress(&bytes, compression_level)?
+                        decompress(&bytes)?
                     },
                     BlockType::ImageBytes => {
                         let mut images = HashMap::with_capacity(uids.len());
@@ -494,7 +504,7 @@ fn event_loop(
                         }
 
                         let bytes = serde_json::to_vec(&images)?;
-                        compress(&bytes, compression_level)?
+                        decompress(&bytes)?
                     },
                     BlockType::ImageDesc => {
                         let mut descs = HashMap::with_capacity(uids.len());
@@ -504,7 +514,7 @@ fn event_loop(
                         }
 
                         let bytes = serde_json::to_vec(&descs)?;
-                        compress(&bytes, compression_level)?
+                        decompress(&bytes)?
                     },
                     BlockType::Meta => {
                         let meta = index.get_all_meta()?;
@@ -515,12 +525,12 @@ fn event_loop(
 
                         else {
                             let bytes = serde_json::to_vec(&meta)?;
-                            compress(&bytes, compression_level)?
+                            decompress(&bytes)?
                         }
                     },
                     BlockType::Prompt => {
                         let bytes = serde_json::to_vec(&index.prompts)?;
-                        compress(&bytes, compression_level)?
+                        decompress(&bytes)?
                     },
                     BlockType::Config => {
                         let mut obj = Map::new();
@@ -528,9 +538,11 @@ fn event_loop(
                         obj.insert(String::from("build"), serde_json::to_value(&index.build_config)?);
                         obj.insert(String::from("query"), serde_json::to_value(&index.query_config)?);
                         let bytes = serde_json::to_vec(&obj)?;
-                        compress(&bytes, compression_level)?
+                        decompress(&bytes)?
                     },
                     BlockType::Splitted { .. } => unreachable!(),
+                    BlockType::Tfidf => todo!(),
+                    BlockType::Metadata => todo!(),
                 };
 
                 if !block_data.is_empty() {
@@ -572,11 +584,11 @@ impl Channel {
     }
 }
 
-fn init_workers(n: usize, root_dir: &str, compression_level: u32) -> Vec<Channel> {
-    (0..n).map(|i| init_worker(i, root_dir.to_string(), compression_level)).collect()
+fn init_workers(n: usize, root_dir: &PathBuf, compression_level: u32) -> Vec<Channel> {
+    (0..n).map(|i| init_worker(i, root_dir.clone(), compression_level)).collect()
 }
 
-fn init_worker(worker_id: usize, root_dir: String, compression_level: u32) -> Channel {
+fn init_worker(worker_id: usize, root_dir: PathBuf, compression_level: u32) -> Channel {
     let (tx_to_main, rx_to_main) = mpsc::channel();
     let (tx_from_main, rx_from_main) = mpsc::channel();
 
