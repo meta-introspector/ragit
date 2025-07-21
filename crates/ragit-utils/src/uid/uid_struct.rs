@@ -83,7 +83,7 @@ impl Uid {
         }
     }
 
-    pub(crate) fn dummy() -> Self {
+    pub fn dummy() -> Self {
         Uid {
             high: 0,
             low: 0,
@@ -223,7 +223,7 @@ impl Uid {
         }
     }
 
-    pub(crate) fn get_data_size(&self) -> usize {
+    pub fn get_data_size(&self) -> usize {
         (self.low & 0xffff_ffff) as usize
     }
 

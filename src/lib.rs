@@ -17,56 +17,22 @@ pub mod main;
 
 pub mod prompts;
 pub mod query;
-pub mod schema;
+
 pub mod tree;
 pub mod uid;
 
 
 
-pub use agent::Action as AgentAction;
-pub use api_config::ApiConfig;
-pub use chunk::{
-    Chunk,
-    ChunkBuildInfo,
-    ChunkSource,
-    MultiModalContent,
-    into_multi_modal_contents,
-    merge_and_convert_chunks,
-};
+pub use ragit_utils::agent::action::{Action as AgentAction, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};
+pub use ragit_utils::agent::file_tree::FileTree;
+pub use ragit_config::ApiConfig;
+pub use ragit_utils::chunk::{Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, into_multi_modal_contents, merge_and_convert_chunks, RenderedChunk};
 pub use constant::*;
-pub use error::Error;
-pub use ragit_utils::index::{
-    AddMode,
-    AddResult,
-    Audit,
-    BuildConfig,
-    BuildResult,
-    IIStatus,
-    ImageDescription,
-    index_struct::Index as Index,
-    load_mode::LoadMode as LoadMode,
-    MergeMode,
-    MergeResult,
-    ProcessedDoc,
-    PullResult,
-    PushResult,
-    RecoverResult,
-    RemoveResult,
-    Summary,
-    SummaryMode,
-    TfidfResult,
-    VersionInfo,
-    get_compatibility_warning,
-};
-pub use ragit_utils::query::{
-    Keywords,
-    MultiTurnSchema,
-    QueryConfig,
-    QueryResponse,
-    QueryTurn,
-};
-pub use uid::{Uid, UidQueryConfig, UidQueryResult};
-pub type Path = PathBuf;
+pub use ragit_utils::error::Error;
+pub use ragit_utils::index::{AddMode, AddResult, Audit, BuildConfig, BuildResult, IIStatus, ImageDescription, Index, LoadMode, MergeMode, MergeResult, ProcessedDoc, PullResult, PushResult, RecoverResult, RemoveResult, Summary, SummaryMode, TfidfResult, VersionInfo, get_compatibility_warning,};
+pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn,};
+pub use ragit_utils::uid::{Uid, UidQueryConfig, UidQueryResult};
+pub use ragit_schema::{FileSchema, ImageSchema, Prettify};
 
 // My rules for version numbers
 // Let's say I'm working on 0.1.2

@@ -1,12 +1,11 @@
 use std::collections::HashMap;
 
-mod dist;
 mod error;
 mod span;
 
-pub use dist::{get_closest_string, substr_edit_distance};
 pub use error::{Error, ErrorKind};
 pub use span::{Span, underline_span};
+use ragit_utils::string_utils::{get_closest_string, substr_edit_distance};
 
 pub struct ArgParser {
     arg_count: ArgCount,

@@ -10,7 +10,17 @@ use crate::prelude::*;
 use crate::Uid;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub struct ChunkBuildInfo;
+pub struct ChunkBuildInfo {
+    pub model: String,
+}
+
+impl Default for ChunkBuildInfo {
+    fn default() -> Self {
+        ChunkBuildInfo {
+            model: String::new(),
+        }
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum MultiModalContent {
@@ -59,7 +69,7 @@ impl Chunk {
             uid: Uid::dummy(),
             timestamp: 0,
             searchable: true,
-            build_info: ChunkBuildInfo,
+            build_info: ChunkBuildInfo::default(),
             data,
             source,
         }

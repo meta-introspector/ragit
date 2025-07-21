@@ -41,7 +41,7 @@ pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, E
     Ok(str_to_pathbuf(normalize(&pathbuf_to_str(&joined_path))?.as_str()))
 }
 
-pub(crate) fn get_uid_path(root_dir: &PathBuf, dir: &str, uid: Uid, ext: Option<&str>) -> Result<PathBuf, Error> {
+pub fn get_uid_path(root_dir: &PathBuf, dir: &str, uid: Uid, ext: Option<&str>) -> Result<PathBuf, Error> {
     let uid_str = uid.to_string();
     let uid_prefix = &uid_str[0..2];
     let uid_suffix = &uid_str[2..];
