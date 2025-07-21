@@ -6,67 +6,45 @@ mod json_type;
 
 pub use json_type::JsonType;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
+    #[error("role missing")]
     RoleMissing,
+    #[error("invalid pdl: {0}")]
     InvalidPdl(String),
+    #[error("invalid turn separator: {0}")]
     InvalidTurnSeparator(String),
+    #[error("invalid inline block")]
     InvalidInlineBlock,
+    #[error("invalid image type: {0}")]
     InvalidImageType(String),
+    #[error("invalid role: {0}")]
     InvalidRole(String),
-    FileError(FileError),
+    #[error(transparent)]
+    FileError(#[from] FileError),
+    #[error("utf8 error")]
     Utf8Error(FromUtf8Error),
-    SchemaParseError(SchemaParseError),
+    #[error(transparent)]
+    SchemaParseError(#[from] SchemaParseError),
+    #[error("json type error: expected {expected}, got {got}")]
     JsonTypeError {
         expected: JsonType,
         got: JsonType,
     },
 
     /// see <https://docs.rs/serde_json/latest/serde_json/struct.Error.html>
-    JsonSerdeError(serde_json::Error),
+    #[error(transparent)]
+    JsonSerdeError(#[from] serde_json::Error),
 
     /// see <https://docs.rs/base64/latest/base64/enum.DecodeError.html>
-    Base64DecodeError(base64::DecodeError),
+    #[error(transparent)]
+    Base64DecodeError(#[from] base64::DecodeError),
 
     /// see <https://docs.rs/tera/latest/tera/struct.Error.html>
-    TeraError(tera::Error),
+    #[error(transparent)]
+    TeraError(#[from] tera::Error),
+    #[error(transparent)]
+    FromUtf8Error(#[from] std::string::FromUtf8Error),
 }
 
-impl From<SchemaParseError> for Error {
-    fn from(e: SchemaParseError) -> Error {
-        match e {
-            SchemaParseError::Utf8Error(e) => Error::Utf8Error(e),
-            e => Error::SchemaParseError(e),
-        }
-    }
-}
 
-impl From<serde_json::Error> for Error {
-    fn from(e: serde_json::Error) -> Error {
-        Error::JsonSerdeError(e)
-    }
-}
-
-impl From<FromUtf8Error> for Error {
-    fn from(e: FromUtf8Error) -> Error {
-        Error::Utf8Error(e)
-    }
-}
-
-impl From<FileError> for Error {
-    fn from(e: FileError) -> Error {
-        Error::FileError(e)
-    }
-}
-
-impl From<tera::Error> for Error {
-    fn from(e: tera::Error) -> Error {
-        Error::TeraError(e)
-    }
-}
-
-impl From<base64::DecodeError> for Error {
-    fn from(e: base64::DecodeError) -> Error {
-        Error::Base64DecodeError(e)
-    }
-}

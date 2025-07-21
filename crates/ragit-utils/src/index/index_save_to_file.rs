@@ -9,9 +9,9 @@ impl Index {
         self.save_prompts()?;
 
         Ok(write_bytes(
-            &path,
+            path.to_str().unwrap(),
             &serde_json::to_vec_pretty(self)?,
             WriteMode::Atomic,
-        ))
+        )?)
     }
 }

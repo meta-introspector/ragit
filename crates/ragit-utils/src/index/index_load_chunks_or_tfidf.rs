@@ -2,7 +2,8 @@ use crate::prelude::*;
 use crate::chunk::Chunk;
 use std::path::PathBuf;
 
-use super::index_struct::Index;
+use crate::index::index_struct::Index;
+
 
 impl Index {
     pub(crate) async fn extract_keywords(&self, query: &str) -> Result<Keywords> {

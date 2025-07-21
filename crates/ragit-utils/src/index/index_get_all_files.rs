@@ -1,85 +1,54 @@
-use crate::prelude::*;
-use ragit_fs::{extension, is_dir, join3, read_dir};
-
-use std::path::PathBuf;
 use crate::index::index_struct::Index;
+use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
+use crate::error::Error;
+use crate::path_utils::{join3_paths, pathbuf_to_str, str_to_pathbuf};
+use ragit_fs::{extension, is_dir, read_dir};
+use std::path::PathBuf;
 
 impl Index {
-    pub fn get_all_chunk_files(&self) -> Result<Vec<PathBuf>> {
+    fn get_files_from_index_subdir(&self, subdir_name: &str, extension_filter: Option<&str>) -> Result<Vec<PathBuf>, Error> {
         let mut result = vec![];
+        let base_path = join3_paths(
+            &self.root_dir,
+            &str_to_pathbuf(INDEX_DIR_NAME),
+            &str_to_pathbuf(subdir_name),
+        )?;
 
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME.to_string(), &CHUNK_DIR_NAME.to_string())?, false)? {
+        for internal in read_dir(&pathbuf_to_str(&base_path), false)? {
             if !is_dir(&internal) {
                 continue;
             }
 
-            for chunk_file in read_dir(&internal, false)? {
-                if extension(&chunk_file).unwrap_or(None).unwrap_or(String::new()) == "chunk" {
-                    result.push(chunk_file.into());
+            for file_path in read_dir(&internal, false)? {
+                if let Some(ext_filter) = extension_filter {
+                    if let Ok(Some(ext)) = extension(&file_path) {
+                        if ext == ext_filter {
+                            result.push(file_path.into());
+                        }
+                    }
+                } else {
+                    result.push(file_path.into());
                 }
             }
         }
 
-        // the result has to be deterministic
         result.sort();
         Ok(result)
     }
 
-    pub fn get_all_tfidf_files(&self) -> Result<Vec<PathBuf>> {
-        let mut result = vec![];
-
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME.to_string(), &CHUNK_DIR_NAME.to_string())?, false)? {
-            if !is_dir(&internal) {
-                continue;
-            }
-
-            for tfidf_file in read_dir(&internal, false)? {
-                if extension(&tfidf_file).unwrap_or(None).unwrap_or(String::new()) == "tfidf" {
-                    result.push(tfidf_file.into());
-                }
-            }
-        }
-
-        // the result has to be deterministic
-        result.sort();
-        Ok(result)
+    pub fn get_all_chunk_files(&self) -> Result<Vec<PathBuf>, Error> {
+        self.get_files_from_index_subdir(CHUNK_DIR_NAME, Some("chunk"))
     }
 
-    pub fn get_all_image_files(&self) -> Result<Vec<PathBuf>> {
-        let mut result = vec![];
-
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME.to_string(), &IMAGE_DIR_NAME.to_string())?, false)? {
-            if !is_dir(&internal) {
-                continue;
-            }
-
-            for image_file in read_dir(&internal, false)? {
-                if extension(&image_file).unwrap_or(None).unwrap_or(String::new()) == "png" {
-                    result.push(image_file.into());
-                }
-            }
-        }
-
-        // the result has to be deterministic
-        result.sort();
-        Ok(result)
+    pub fn get_all_tfidf_files(&self) -> Result<Vec<PathBuf>, Error> {
+        self.get_files_from_index_subdir(CHUNK_DIR_NAME, Some("tfidf"))
     }
 
-    pub(crate) fn get_all_file_indexes(&self) -> Result<Vec<PathBuf>> {
-        let mut result = vec![];
+    pub fn get_all_image_files(&self) -> Result<Vec<PathBuf>, Error> {
+        self.get_files_from_index_subdir(IMAGE_DIR_NAME, Some("png"))
+    }
 
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME.to_string(), &FILE_INDEX_DIR_NAME.to_string())?, false)? {
-            if !is_dir(&internal) {
-                continue;
-            }
-
-            for file_index in read_dir(&internal, false)? {
-                result.push(file_index.into());
-            }
-        }
-
-        // the result has to be deterministic
-        result.sort();
-        Ok(result)
+    pub(crate) fn get_all_file_indexes(&self) -> Result<Vec<PathBuf>, Error> {
+        self.get_files_from_index_subdir(FILE_INDEX_DIR_NAME, None)
     }
 }

@@ -3,117 +3,60 @@ pub use ragit_api::Error as ApiError;
 pub use ragit_pdl::JsonType;
 pub use ragit_fs::FileError;
 use std::string::FromUtf8Error;
-use std::num::{ParseIntError, ParseFloatError};
-use std::str::ParseBoolError;
+    
 use std::path::PathBuf;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
+    #[error("internal error: {0}")]
     Internal(String),
+    #[error("json type error: expected {expected}, got {got}")]
     JsonTypeError {
         expected: JsonType,
         got: JsonType,
     },
-    ReqwestError(reqwest::Error),
-    JsonSerdeError(serde_json::Error),
-    ImageError(image::ImageError),
-    UrlParseError(url::ParseError),
-    JoinError(tokio::task::JoinError),
-    FileError(FileError),
-    StdIoError(std::io::Error),
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
+    #[error(transparent)]
+    JsonSerdeError(#[from] serde_json::Error),
+    #[error(transparent)]
+    ImageError(#[from] image::ImageError),
+    #[error(transparent)]
+    UrlParseError(#[from] url::ParseError),
+    #[error(transparent)]
+    JoinError(#[from] tokio::task::JoinError),
+    #[error(transparent)]
+    FileError(#[from] FileError),
+    #[error(transparent)]
+    StdIoError(#[from] std::io::Error),
+    #[error("from utf8 error")]
     FromUtf8Error,
-    ApiError(ApiError),
-    PdlError(ragit_pdl::Error),
+    #[error(transparent)]
+    ApiError(#[from] ApiError),
+    #[error(transparent)]
+    PdlError(#[from] ragit_pdl::Error),
+    #[error("broken inverted index: {0}")]
     BrokenII(String),
+    #[error("no such chunk: {0}")]
     NoSuchChunk(Uid),
+    #[error("no such file: {path:?}, {uid:?}")]
     NoSuchFile { path: Option<PathBuf>, uid: Option<Uid> },
+    #[error("broken index: {0}")]
     BrokenIndex(String),
+    #[error("invalid config key: {0}")]
     InvalidConfigKey(String),
+    #[error("prompt missing: {0}")]
     PromptMissing(String),
+    #[error("index already exists: {0}")]
     IndexAlreadyExists(PathBuf),
-    AnyhowError(anyhow::Error), // Add this variant
+    #[error(transparent)]
+    AnyhowError(#[from] anyhow::Error),
+    #[error(transparent)]
+    ParseIntError(#[from] std::num::ParseIntError),
+    #[error(transparent)]
+    ParseBoolError(#[from] std::str::ParseBoolError),
+    #[error(transparent)]
+    ParseFloatError(#[from] std::num::ParseFloatError),
 }
 
-impl From<reqwest::Error> for Error {
-    fn from(e: reqwest::Error) -> Error {
-        Error::ReqwestError(e)
-    }
-}
 
-impl From<serde_json::Error> for Error {
-    fn from(e: serde_json::Error) -> Error {
-        Error::JsonSerdeError(e)
-    }
-}
-
-impl From<image::ImageError> for Error {
-    fn from(e: image::ImageError) -> Error {
-        Error::ImageError(e)
-    }
-}
-
-impl From<FileError> for Error {
-    fn from(e: FileError) -> Error {
-        Error::FileError(e)
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(e: std::io::Error) -> Error {
-        Error::StdIoError(e)
-    }
-}
-
-impl From<FromUtf8Error> for Error {
-    fn from(_: FromUtf8Error) -> Error {
-        Error::FromUtf8Error
-    }
-}
-
-impl From<url::ParseError> for Error {
-    fn from(e: url::ParseError) -> Error {
-        Error::UrlParseError(e)
-    }
-}
-
-impl From<tokio::task::JoinError> for Error {
-    fn from(e: tokio::task::JoinError) -> Error {
-        Error::JoinError(e)
-    }
-}
-
-impl From<ParseIntError> for Error {
-    fn from(e: ParseIntError) -> Self {
-        Error::Internal(format!("ParseIntError: {}", e))
-    }
-}
-
-impl From<ParseBoolError> for Error {
-    fn from(e: ParseBoolError) -> Self {
-        Error::Internal(format!("ParseBoolError: {}", e))
-    }
-}
-
-impl From<ParseFloatError> for Error {
-    fn from(e: ParseFloatError) -> Self {
-        Error::Internal(format!("ParseFloatError: {}", e))
-    }
-}
-
-impl From<ApiError> for Error {
-    fn from(e: ApiError) -> Self {
-        Error::ApiError(e)
-    }
-}
-
-impl From<ragit_pdl::Error> for Error {
-    fn from(e: ragit_pdl::Error) -> Self {
-        Error::PdlError(e)
-    }
-}
-
-impl From<anyhow::Error> for Error {
-    fn from(e: anyhow::Error) -> Self {
-        Error::AnyhowError(e)
-    }
-}

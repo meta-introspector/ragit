@@ -26,20 +26,20 @@ impl Index {
         )?;
         let parent_path = parent(image_path.as_path())?;
 
-        if !exists(&parent_path) {
-            try_create_dir(pathbuf_to_str(&parent_path))?;
+        if !parent_path.exists() {
+            try_create_dir(&pathbuf_to_str(&parent_path))?;
         }
 
-        let image_bytes = read_bytes(pathbuf_to_str(&image_path))?;
+        let image_bytes = read_bytes(&pathbuf_to_str(&image_path))?;
         let image_bytes = encode_base64(&image_bytes);
 
-        if let Ok(j) = read_string(pathbuf_to_str(&description_path)) {
+        if let Ok(j) = read_string(&pathbuf_to_str(&description_path)) {
             if serde_json::from_str::<Value>(&j).is_ok() {
                 return Ok(());
             }
 
             else {
-                remove_file(pathbuf_to_str(&description_path))?;
+                remove_file(&pathbuf_to_str(&description_path))?;
             }
         }
 
@@ -63,7 +63,7 @@ impl Index {
             sleep_between_retries: self.api_config.sleep_between_retries,
             timeout: self.api_config.timeout,
             temperature: None,
-            dump_api_usage_at: self.api_config.dump_api_usage_at(pathbuf_to_str(&self.root_dir), "describe_image"),
+            dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "describe_image"),
             dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "describe_image").map(|p| p.to_str().unwrap().to_string()),
             dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
             schema,

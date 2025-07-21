@@ -169,7 +169,7 @@ impl Index {
             &str_to_pathbuf(II_DIR_NAME),
         )?;
 
-        for dir in read_dir(pathbuf_to_str(&ii_path), false)? {
+        for dir in read_dir(&pathbuf_to_str(&ii_path), false)? {
             if is_dir(&dir) {
                 remove_dir_all(&dir)?;
             }
@@ -209,11 +209,11 @@ impl Index {
             let ii_path = get_ii_path(&self.root_dir, term_hash);
             let parent_path = parent(&ii_path)?;
 
-            if !exists(&parent_path) {
-                try_create_dir(pathbuf_to_str(&parent_path))?;
+            if !parent_path.exists() {
+                try_create_dir(&pathbuf_to_str(&parent_path))?;
             }
 
-            let uids = if exists(&ii_path) {
+            let uids = if ii_path.exists() {
                 let mut prev_uids = crate::uid::uid_io::load_from_file(&ii_path)?;
                 prev_uids.extend(uids);
                 prev_uids

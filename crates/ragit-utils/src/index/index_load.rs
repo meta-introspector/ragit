@@ -1,9 +1,13 @@
+use crate::constant::INDEX_FILE_NAME;
+use crate::error::Error;
+use crate::path_utils::{get_rag_path, str_to_pathbuf, get_normalized_abs_pathbuf};
+use ragit_fs::{into_abs_path, read_string, write_bytes, WriteMode, normalize};
 use std::path::PathBuf;
-use crate::prelude::*;
-use ragit_fs::{read_string, write_bytes, WriteMode, normalize, into_abs_path};
 
 use super::BuildConfig;
 use crate::index::{index_struct::Index, load_mode::LoadMode};
+use crate::query::QueryConfig;
+use crate::api_config::ApiConfig;
 
 impl Index {
     pub fn load(
@@ -17,13 +21,13 @@ impl Index {
         }
 
         result.build_config = serde_json::from_str::<BuildConfig>(
-            &read_string(&result.get_build_config_path()?)?,
+            &read_string(result.get_build_config_path()?.to_str().unwrap())?,
         )?;
         result.query_config = serde_json::from_str::<QueryConfig>(
-            &read_string(&result.get_query_config_path()?)?,
+            &read_string(result.get_query_config_path()?.to_str().unwrap())?,
         )?;
         result.api_config = serde_json::from_str::<ApiConfig>(
-            &read_string(&result.get_api_config_path()?)?,
+            &read_string(result.get_api_config_path()?.to_str().unwrap())?,
         )?;
         
         // Load models before initializing API config to ensure we can validate the model
@@ -47,7 +51,7 @@ impl Index {
 
                 // Save the updated config
                 write_bytes(
-                    &result.get_api_config_path()?,
+                    result.get_api_config_path()?.to_str().unwrap(),
                     &serde_json::to_vec_pretty(&result.api_config)?,
                     WriteMode::Atomic,
                 )?;
@@ -59,7 +63,7 @@ impl Index {
                 result.recover()?;
                 Ok(result)
             },
-            LoadMode::Check if result.curr_processing_file.is_some() || result.check().is_err() => {
+            LoadMode::Check if result.curr_processing_file.is_some() || result.check_ii().is_err() => {
                 result.recover()?;
                 Ok(result)
             },
@@ -70,11 +74,11 @@ impl Index {
     /// It only loads `index.json`. No config files, no prompt files, and it doesn't care whether chunk files are broken or not.
     /// It's for `rag check --recover`: it only loads minimum data and the recover function will load or fix the others.
     pub fn load_minimum(root_dir: PathBuf) -> Result<Self, Error> {
-        let root_dir = normalize(&into_abs_path(&root_dir)?)?;
-        let index_json = read_string(&Index::get_rag_path(
+        let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
+        let index_json = read_string(get_rag_path(
             &root_dir,
-            &INDEX_FILE_NAME.to_string(),
-        )?)?;
+            &str_to_pathbuf(INDEX_FILE_NAME),
+        )?.to_str().unwrap())?;
 
         let mut result = serde_json::from_str::<Index>(&index_json)?;
         result.root_dir = root_dir.into();

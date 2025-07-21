@@ -1,6 +1,8 @@
 use crate::api_config::{ApiConfig, PartialApiConfig};
 use crate::error::Error;
-use ragit_fs::{exists, join4, read_string};
+use crate::path_utils::{join_paths, pathbuf_to_str, str_to_pathbuf};
+use ragit_fs::{exists, read_string};
+use std::path::PathBuf;
 
 use crate::index::index_struct::Index;
 
@@ -16,11 +18,20 @@ impl Index {
             }
         };
 
-        let config_path = join4(&home_dir, ".config", "ragit", filename)?;
+        let config_path = join_paths(
+            &str_to_pathbuf(&home_dir),
+            &join_paths(
+                &str_to_pathbuf(".config"),
+                &join_paths(
+                    &str_to_pathbuf("ragit"),
+                    &str_to_pathbuf(filename),
+                )?,
+            )?,
+        )?;
 
-        if exists(&config_path) {
+        if exists(&config_path.clone().into()) {
             // Load from ~/.config/ragit/filename
-            let config_content = read_string(&config_path)?;
+            let config_content = read_string(config_path.to_str().unwrap())?;
             match serde_json::from_str::<T>(&config_content) {
                 Ok(config) => {
                     eprintln!("Info: Using configuration from ~/.config/ragit/{}", filename);

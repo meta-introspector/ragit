@@ -77,3 +77,9 @@ impl From<&Value> for JsonType {
         }
     }
 }
+
+impl std::fmt::Display for JsonType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}

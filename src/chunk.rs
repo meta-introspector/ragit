@@ -235,6 +235,13 @@ impl Chunk {
             ..Request::default()
         };
 
+        if request.messages.iter().any(|m| m.content.is_empty()) {
+            return Err(Error::CorruptedFile {
+                path: file.display().to_string(),
+                message: Some(String::from("a message with an empty content")),
+            });
+        }
+
         // some apis reject empty requests
         let response = if data.is_empty() {
             ChunkSchema::empty()

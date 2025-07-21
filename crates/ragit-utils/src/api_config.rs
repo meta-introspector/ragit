@@ -33,10 +33,10 @@ impl Default for ApiConfig {
 }
 
 impl ApiConfig {
-    pub fn dump_api_usage_at(&self, root_dir: &str, name: &str) -> Option<AuditRecordAt> {
+    pub fn dump_api_usage_at(&self, root_dir: &PathBuf, name: &str) -> Option<AuditRecordAt> {
         if self.dump_api_usage {
             Some(AuditRecordAt {
-                path: self.get_audit_path(root_dir),
+                path: self.get_audit_path(root_dir.to_str().unwrap()),
                 id: name.to_string(),
             })
         } else {

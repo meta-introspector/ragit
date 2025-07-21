@@ -1,12 +1,12 @@
 use std::path::{Path, PathBuf};
 use crate::error::Error;
-use ragit_fs::{join, join3, normalize, into_abs_path};
+use ragit_fs::{into_abs_path, join, join3, normalize};
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME};
 use crate::uid::Uid;
 
 /// Converts a `PathBuf` to an `&str`. Panics if the path is not valid UTF-8.
-pub fn pathbuf_to_str(path: &PathBuf) -> &str {
-    path.to_str().expect("Path is not valid UTF-8")
+pub fn pathbuf_to_str(path: &PathBuf) -> String {
+    path.to_str().expect("Path is not valid UTF-8").to_string()
 }
 
 /// Converts an `&str` to a `PathBuf`.
@@ -25,20 +25,20 @@ pub fn str_to_path_ref(s: &str) -> &Path {
 }
 
 pub fn join_paths(path: &Path, child: &Path) -> Result<PathBuf, Error> {
-    let joined = join(pathbuf_to_str(&path.to_path_buf()), pathbuf_to_str(&child.to_path_buf()))?;
+    let joined = join(&pathbuf_to_str(&path.to_path_buf()), &pathbuf_to_str(&child.to_path_buf()))?;
     Ok(PathBuf::from(joined))
 }
 
 pub fn join3_paths(path1: &Path, path2: &Path, path3: &Path) -> Result<PathBuf, Error> {
-    let joined = join3(pathbuf_to_str(&path1.to_path_buf()), pathbuf_to_str(&path2.to_path_buf()), pathbuf_to_str(&path3.to_path_buf()))?;
+    let joined = join3(&pathbuf_to_str(&path1.to_path_buf()), &pathbuf_to_str(&path2.to_path_buf()), &pathbuf_to_str(&path3.to_path_buf()))?;
     Ok(PathBuf::from(joined))
 }
 
 pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, Error> {
-    let abs_root_dir_str = into_abs_path(pathbuf_to_str(root_dir))?;
+    let abs_root_dir_str = into_abs_path(&pathbuf_to_str(root_dir))?;
     let abs_root_dir = str_to_pathbuf(normalize(&abs_root_dir_str)?.as_str());
     let joined_path = join_paths(abs_root_dir.as_path(), rel_path.as_path())?;
-    Ok(str_to_pathbuf(normalize(pathbuf_to_str(&joined_path))?.as_str()))
+    Ok(str_to_pathbuf(normalize(&pathbuf_to_str(&joined_path))?.as_str()))
 }
 
 pub(crate) fn get_uid_path(root_dir: &PathBuf, dir: &str, uid: Uid, ext: Option<&str>) -> Result<PathBuf, Error> {
@@ -95,5 +95,9 @@ pub(crate) fn get_ii_path_str(root_dir: &str, term_hash: String) -> PathBuf {
         &term_hash_prefix,
         &term_hash_suffix,
     ).unwrap().into()
+}
+
+pub fn get_normalized_abs_pathbuf(path: &PathBuf) -> Result<PathBuf, Error> {
+    Ok(PathBuf::from(normalize(&into_abs_path(path.to_str().unwrap())?)?))
 }
 

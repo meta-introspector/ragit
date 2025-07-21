@@ -1,7 +1,8 @@
 use crate::constant::PROMPT_DIR_NAME;
 use crate::error::Error;
 use crate::prompts::PROMPTS;
-use ragit_fs::{create_dir_all, exists, join, read_string, set_extension, write_string, WriteMode};
+use crate::path_utils::{get_rag_path, join_paths, pathbuf_to_str, str_to_pathbuf};
+use ragit_fs::{create_dir_all, exists, read_string, set_extension, write_string, WriteMode};
 
 
 
@@ -13,18 +14,18 @@ impl Index {
         let mut has_inited_prompt = false;
 
         for prompt_name in PROMPTS.keys() {
-            let prompt_path = crate::index::index_struct::Index::get_rag_path(
+            let prompt_path = get_rag_path(
                 &self.root_dir,
-                &join(
-                    PROMPT_DIR_NAME,
-                    &set_extension(
+                &join_paths(
+                    &str_to_pathbuf(PROMPT_DIR_NAME),
+                    &str_to_pathbuf(&set_extension(
                         prompt_name,
                         "pdl",
-                    )?,
+                    )?),
                 )?,
             )?;
 
-            match read_string(&prompt_path) {
+            match read_string(prompt_path.to_str().unwrap()) {
                 Ok(p) => {
                     self.prompts.insert(prompt_name.to_string(), p);
                 },
@@ -44,26 +45,26 @@ impl Index {
     }
 
     pub fn save_prompts(&self) -> Result<(), Error> {
-        let prompt_real_dir = crate::index::index_struct::Index::get_rag_path(
+        let prompt_real_dir = get_rag_path(
             &self.root_dir,
-            &PROMPT_DIR_NAME.to_string(),
+            &str_to_pathbuf(PROMPT_DIR_NAME),
         )?;
 
-        if !exists(&prompt_real_dir) {
-            create_dir_all(&prompt_real_dir)?;
+        if !prompt_real_dir.exists() {
+            create_dir_all(&pathbuf_to_str(&prompt_real_dir))?;
         }
 
         for (prompt_name, prompt) in self.prompts.iter() {
-            let prompt_path = join(
-                prompt_real_dir.to_str().unwrap(),
-                &set_extension(
+            let prompt_path = join_paths(
+                &prompt_real_dir,
+                &str_to_pathbuf(&set_extension(
                     prompt_name,
                     "pdl",
-                )?,
+                )?),
             )?;
 
             write_string(
-                &prompt_path,
+                prompt_path.to_str().unwrap(),
                 prompt,
                 WriteMode::Atomic,
             )?;

@@ -1,7 +1,8 @@
 use crate::constant::{MODEL_FILE_NAME};
 use crate::error::Error;
 use ragit_api::{Model, ModelRaw};
-use ragit_fs::{exists, join4, read_string, write_string, WriteMode};
+use crate::path_utils::{get_rag_path, join_paths, pathbuf_to_str, str_to_pathbuf};
+use ragit_fs::{exists, read_string, write_string, WriteMode};
 
 
 
@@ -9,9 +10,9 @@ use crate::index::index_struct::Index;
 
 impl Index {
     pub fn load_or_init_models(&mut self) -> Result<(), Error> {
-        let models_at = crate::index::index_struct::Index::get_rag_path(
+        let models_at = get_rag_path(
             &self.root_dir,
-            &MODEL_FILE_NAME.to_string(),
+            &str_to_pathbuf(MODEL_FILE_NAME),
         )?;
 
         if !exists(&models_at) {
@@ -23,7 +24,7 @@ impl Index {
             
             // Write the models to the local file
             write_string(
-                &models_at,
+                models_at.to_str().unwrap(),
                 &serde_json::to_string_pretty(&models_without_api_keys)?,
                 WriteMode::Atomic,
             )?;
@@ -45,17 +46,18 @@ impl Index {
     // Get initial models from environment variable, config file, or defaults
     pub fn get_initial_models() -> Result<Vec<ModelRaw>, Error> {
         // Check for environment variable RAGIT_MODEL_CONFIG
-        if let Ok(env_path) = std::env::var("RAGIT_MODEL_CONFIG") {
+        if let Ok(env_path_str) = std::env::var("RAGIT_MODEL_CONFIG") {
+            let env_path = str_to_pathbuf(&env_path_str);
             if exists(&env_path) {
                 // Load from the environment variable path
-                let env_content = read_string(&env_path)?;
+                let env_content = read_string(env_path.to_str().unwrap())?;
                 if let Ok(models) = serde_json::from_str::<Vec<ModelRaw>>(&env_content) {
                     return Ok(models);
                 } else {
                     eprintln!("Warning: Could not parse models from RAGIT_MODEL_CONFIG, falling back to defaults");
                 }
             } else {
-                eprintln!("Warning: RAGIT_MODEL_CONFIG points to non-existent file: {}", env_path);
+                eprintln!("Warning: RAGIT_MODEL_CONFIG points to non-existent file: {}", env_path.display());
             }
         }
         
@@ -69,10 +71,19 @@ impl Index {
         };
         
         if !home_dir.is_empty() {
-            let config_path = join4(&home_dir, ".config", "ragit", MODEL_FILE_NAME)?;
+            let config_path = join_paths(
+                &str_to_pathbuf(&home_dir),
+                &join_paths(
+                    &str_to_pathbuf(".config"),
+                    &join_paths(
+                        &str_to_pathbuf("ragit"),
+                        &str_to_pathbuf(MODEL_FILE_NAME),
+                    )?,
+                )?,
+            )?;
             if exists(&config_path) {
                 // Load from ~/.config/ragit/models.json
-                let config_content = read_string(&config_path)?;
+                let config_content = read_string(config_path.to_str().unwrap())?;
                 if let Ok(models) = serde_json::from_str::<Vec<ModelRaw>>(&config_content) {
                     return Ok(models);
                 } else {

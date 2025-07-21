@@ -1,11 +1,14 @@
+use crate::constant::{CHUNK_DIR_NAME, CONFIG_DIR_NAME, FILE_INDEX_DIR_NAME, II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME, IMAGE_DIR_NAME};
+use crate::error::Error;
+use crate::path_utils::{get_rag_path, join_paths, str_to_pathbuf, get_normalized_abs_pathbuf};
+use crate::prompts::PROMPTS;
+use ragit_fs::{create_dir_all, exists, into_abs_path, normalize, write_bytes, WriteMode};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use crate::prelude::*;
-use ragit_fs::{create_dir_all, exists, into_abs_path, join, normalize, write_bytes, write_string, WriteMode};
-use serde_json::json;
-
 use super::BuildConfig;
 use crate::index::index_struct::Index;
+use crate::query::QueryConfig;
+use crate::api_config::ApiConfig;
 
 impl Index {
     /// It works like git. `root_dir` is the root of the repo. And it creates dir `.ragit/`, like `.git/`.
@@ -13,14 +16,14 @@ impl Index {
     pub fn new(
     root_dir: PathBuf,
 ) -> Result<Self, Error> {
-        let index_dir = join(&root_dir, INDEX_DIR_NAME)?;
-        let root_dir = normalize(&into_abs_path(&root_dir)?)?;
+        let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
+        let index_dir = join_paths(&root_dir, &str_to_pathbuf(INDEX_DIR_NAME))?;
 
         if exists(&index_dir) {
             return Err(Error::IndexAlreadyExists(index_dir));
         }
 
-        create_dir_all(&index_dir)?;
+        create_dir_all(index_dir.to_str().unwrap())?;
 
         for dir in [
             CONFIG_DIR_NAME,
@@ -29,10 +32,10 @@ impl Index {
             FILE_INDEX_DIR_NAME,
             II_DIR_NAME,
         ] {
-            create_dir_all(&Index::get_rag_path(
-                &root_dir,
-                &dir.to_string(),
-            )?)?;
+            create_dir_all(get_rag_path(
+                &root_dir.to_path_buf(),
+                &str_to_pathbuf(dir),
+            )?.to_str().unwrap())?;
         }
 
         // Start with default configs
@@ -50,7 +53,7 @@ impl Index {
             build_config: build_config.clone(),
             query_config: query_config.clone(),
             api_config: ApiConfig::default(),
-            root_dir: root_dir.clone(),
+            root_dir: root_dir.to_path_buf(),
             repo_url: None,
             ii_status: super::IIStatus::None,
             uid: None,
@@ -80,7 +83,7 @@ impl Index {
             build_config,
             query_config,
             api_config,
-            root_dir,
+            root_dir: root_dir.to_path_buf(),
             repo_url: None,
             ii_status: super::IIStatus::None,
             uid: None,
@@ -95,17 +98,17 @@ impl Index {
         // Now update api_config with a valid model
         result.api_config = result.get_default_api_config()?;
         write_bytes(
-            &result.get_build_config_path()?,
+            result.get_build_config_path()?.to_str().unwrap(),
             &serde_json::to_vec_pretty(&result.build_config)?,
             WriteMode::AlwaysCreate,
         )?;
         write_bytes(
-            &result.get_query_config_path()?,
+            result.get_query_config_path()?.to_str().unwrap(),
             &serde_json::to_vec_pretty(&result.query_config)?,
             WriteMode::AlwaysCreate,
         )?;
         write_bytes(
-            &result.get_api_config_path()?,
+            result.get_api_config_path()?.to_str().unwrap(),
             &serde_json::to_vec_pretty(&result.api_config)?,
             WriteMode::AlwaysCreate,
         )?;

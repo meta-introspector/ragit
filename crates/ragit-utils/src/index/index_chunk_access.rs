@@ -1,6 +1,7 @@
 use crate::chunk::{self, Chunk, RenderedChunk, merge_and_convert_chunks};
 use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME};
 use crate::error::Error;
+use crate::uid::Uid;
 use crate::path_utils::get_uid_path;
 use ragit_fs::exists;
 use std::collections::HashSet;
@@ -50,7 +51,7 @@ impl Index {
         )?;
 
         if exists(&tfidf_at) {
-            return Ok(tfidf::load_from_file(&tfidf_at)?);
+            return Ok(tfidf::load_from_file(tfidf_at.to_str().unwrap())?);
         }
 
         Err(Error::NoSuchChunk(uid))
@@ -80,7 +81,7 @@ impl Index {
         )?;
 
         if exists(&file_index_path) {
-            return Ok(crate::uid::uid_io::load_from_file(file_index_path.to_str().unwrap())?);
+            return Ok(crate::uid::uid_io::load_from_file(&file_index_path)?);
         }
 
         Err(Error::NoSuchFile { path: None, uid: Some(file_uid) })
