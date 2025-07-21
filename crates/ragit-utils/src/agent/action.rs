@@ -1,15 +1,16 @@
 use std::path::PathBuf;
-use super::FileTree;
-use crate::Keywords;
 use crate::chunk::{Chunk, RenderedChunk};
 use crate::error::Error;
-use ragit_utils::index::index_struct::Index;
-use crate::query::QueryResponse;
-use crate::prelude::*;
-use ragit_cli::substr_edit_distance;
+use crate::index::index_struct::Index;
+use crate::query::{QueryResponse, Keywords};
+use crate::uid::{UidQueryConfig, uid_query};
+use crate::prelude::Uid;
+use crate::string_utils::substr_edit_distance;
 use ragit_pdl::Schema;
 use serde::Serialize;
 use serde_json::Value;
+
+use super::file_tree::FileTree;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize)]
 pub enum Action {
@@ -198,7 +199,7 @@ impl Action {
                 }
 
                 else {
-                    let query = uid_query(&index, &[argument.to_string()], crate::uid::query_helpers::UidQueryConfig::new().chunk_only())?;
+                    let query = uid_query(&index, &[argument.to_string()], UidQueryConfig::new().chunk_only())?;
                     let chunk_uids = query.get_chunk_uids();
 
                     match chunk_uids.len() {
@@ -233,7 +234,7 @@ impl Action {
 
                 let chunks = 'chunks_loop: loop {
                     let candidates = index.run_tfidf(
-                        Keywords::from_raw(vec![argument.to_string()]),
+                        Keywords::from(vec![argument.to_string()]),
                         limit,
                     )?;
                     let mut chunks = Vec::with_capacity(candidates.len());
@@ -514,14 +515,14 @@ impl ActionResult {
             ActionResult::NoSuchMeta { key, similar_keys } => format!(
                 "There's no such key in metadata: `{key}`{}",
                 if !similar_keys.is_empty() {
-                    format!("\nThere are similar keys:\n\n{similar_keys:?}")
+                    format!("\nThere are similar keys:\n\n{:?}", similar_keys)
                 } else {
                     String::new()
                 },
             ),
             ActionResult::GetSummary(summary) => summary.clone(),
             ActionResult::SimpleRag(response) => format!(
-                "{}{}",
+                "{}:{}",
                 response.response.clone(),
                 if response.retrieved_chunks.is_empty() {
                     String::new()
@@ -686,7 +687,7 @@ impl ActionState {
 }
 
 #[derive(Debug, Serialize)]
-struct ArgumentTurn {
+pub struct ArgumentTurn {
     // An argument of an action, that AI generated
     assistant: String,
 
@@ -703,7 +704,7 @@ pub struct ActionTrace {
 }
 
 #[derive(Clone, Debug, Serialize)]
-enum SearchType {
+pub enum SearchType {
     Exact,
     Tfidf,
 }

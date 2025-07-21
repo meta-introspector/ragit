@@ -89,15 +89,21 @@ impl Index {
 
     pub fn get_merged_chunk_of_file(&self, file_uid: Uid) -> Result<RenderedChunk, Error> {
         let chunk_uids = self.get_chunks_of_file(file_uid)?;
-        let mut chunks = Vec::with_capacity(chunk_uids.len());
+        let mut chunks_raw = Vec::with_capacity(chunk_uids.len());
 
         for chunk_uid in chunk_uids.iter() {
-            chunks.push(self.get_chunk_by_uid(*chunk_uid)?);
+            chunks_raw.push(self.get_chunk_by_uid(*chunk_uid)?);
         }
 
         // FIXME: I don't think we have to sort this
-        chunks.sort_by_key(|chunk| chunk.sortable_string());
-        let chunks = merge_and_convert_chunks(self, chunks)?;
+        chunks_raw.sort_by_key(|chunk| chunk.sortable_string());
+
+        let mut chunks_rendered = Vec::with_capacity(chunks_raw.len());
+        for chunk in chunks_raw {
+            chunks_rendered.push(chunk.render(self)?);
+        }
+
+        let chunks = merge_and_convert_chunks(self, chunks_rendered)?;
 
         match chunks.len() {
             0 => todo!(),  // It's an empty file. Does ragit create a chunk for an empty file? I don't remember...

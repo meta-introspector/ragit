@@ -89,6 +89,10 @@ impl UidQueryResult {
             staged_files: vec![],
         }
     }
+
+    pub fn get_chunk_uids(&self) -> Vec<Uid> {
+        self.chunks.clone()
+    }
 }
 
 pub fn uid_query(index: &Index, qs: &[String], config: UidQueryConfig) -> Result<UidQueryResult, Error> {

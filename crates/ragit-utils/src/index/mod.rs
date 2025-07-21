@@ -30,6 +30,13 @@ pub mod config_access;
 pub mod image_access;
 pub mod index_dummy_with_version;
 pub mod check_constants;
+pub mod agent_logic;
+pub mod query_method;
+pub mod rephrase_multi_turn;
+pub mod retrieve_chunks;
+pub mod raw_request;
+pub mod answer_query_with_chunks;
+pub mod summaries_to_chunks;
 
 
 pub use commands::add::{AddMode, AddResult};
@@ -46,3 +53,4 @@ pub use config::BuildConfig;
 pub use file::{FileReader, ImageDescription};
 pub use ii::IIStatus;
 pub use tfidf::{ProcessedDoc, TfidfResult, TfidfState, consume_processed_doc};
+

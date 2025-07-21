@@ -1,7 +1,7 @@
 use chrono::Local;
 use crate::chunk::Chunk;
 use crate::error::Error;
-use ragit_utils::index::index_struct::Index;
+use crate::index::index_struct::Index;
 use ragit_api::Request;
 use ragit_fs::{
     WriteMode,
@@ -18,44 +18,28 @@ use serde::Serialize;
 use serde_json::Value;
 use std::collections::{HashMap, HashSet};
 
-use ragit_utils::agent::{Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType, FileTree};
+use crate::agent::action::{Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};
+use crate::agent::file_tree::FileTree;
 
-// `derive(Serialize) for AgentState` has 2 purposes.
-//
-// 1. Dump log in `.ragit/logs`.
-// 2. Create `tera::Context` for `agent.pdl`. The context is fed to the AI.
-//
-// I'm NOT gonna `derive(Deserialize)`. There are too many edge cases in
-// deserializing the state.
 #[derive(Debug, Serialize)]
-struct AgentState {
+pub struct AgentState {
     question: String,
     context: String,
     needed_information: Option<String>,
     action_states: Vec<ActionState>,
 
-    // Actions that this agent can run.
-    // It's necessary because agents have different sets of capabilities.
-    // For example, the summary agent cannot run `Action::GetSummary` because
-    // there's no summary yet!
     #[serde(skip)]
     actions: Vec<Action>,
 
-    // The final response must be in this schema.
     #[serde(skip)]
     response_schema: Option<Schema>,
 
-    // It's generated from `actions`.
-    // It's fed to the AI's context.
     action_prompt: String,
 
-    // I want to use the term `has_action_to_run`, but serde_json doesn't allow that :(
     is_actions_complete: bool,
     new_information: Option<String>,
     new_context: Option<String>,
 
-    // when it `has_enough_information` it writes the
-    // final result to `response` field and break
     has_enough_information: bool,
     response: Option<String>,
 }
@@ -192,9 +176,6 @@ impl AgentResponse {
                     chunks.insert(chunk.uid, chunk.clone());
                 },
 
-                // `ReadFileLong` and `Search` have chunks, but many of them are
-                // irrelevant. The AI will likely to choose relevant ones from them
-                // and call `Action::ReadChunk`, which will be counted.
                 ActionResult::ReadFileLong(_)
                 | ActionResult::NoSuchFile { .. }
                 | ActionResult::ReadDir(_)
@@ -213,4 +194,104 @@ impl AgentResponse {
     }
 }
 
+impl Index {
+    pub async fn agent(
+        &self,
+        question: &str,
+        initial_context: String,
 
+        mut actions: Vec<Action>,
+
+        schema: Option<Schema>,
+    ) -> Result<AgentResponse, Error> {
+        actions = actions.into_iter().collect::<HashSet<_>>().into_iter().collect();
+
+        if self.get_summary().is_none() {
+            actions = actions.into_iter().filter(
+                |action| *action != Action::GetSummary
+            ).collect();
+        }
+
+        if self.get_all_meta().unwrap_or_else(|_| HashMap::new()).is_empty() {
+            actions = actions.into_iter().filter(
+                |action| *action != Action::GetMeta
+            ).collect();
+        }
+
+        let mut state = AgentState::default();
+        state.question = question.to_string();
+        state.context = initial_context;
+        state.actions = actions.clone();
+        state.action_prompt = Action::write_prompt(&actions);
+        state.response_schema = schema.clone();
+        let mut context_update = 0;
+        let mut action_traces = vec![];
+
+        loop {
+            state = self.step_agent(state, &mut action_traces).await?;
+
+            if state.has_enough_information {
+                return Ok(AgentResponse {
+                    response: state.response.unwrap(),
+                    actions: action_traces,
+                });
+            }
+
+            if let Some(context) = &state.new_context {
+                let context = context.clone();
+                state.update_context(context);
+                context_update += 1;
+
+                if context_update == 2 {
+                    state.has_enough_information = true;
+                }
+            }
+        }
+    }
+
+    pub async fn step_agent(&self, mut state: AgentState, action_traces: &mut Vec<ActionTrace>) -> Result<AgentState, Error> {
+        let schema = state.get_schema();
+        let Pdl { messages, .. } = parse_pdl(
+            &self.get_prompt("agent")?,
+            &into_context(&state)?,
+            "/",
+            true,
+        )?;
+        let request = Request {
+            messages,
+            model: self.get_model_by_name(&self.api_config.model)?,
+            max_retry: self.api_config.max_retry,
+            sleep_between_retries: self.api_config.sleep_between_retries,
+            timeout: self.api_config.timeout,
+            dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "agent"),
+            dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "agent").map(|p| p.to_str().unwrap().to_string()),
+            dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
+            schema: schema.clone(),
+            schema_max_try: 3,
+            ..Request::default()
+        };
+        let response = if schema.is_some() {
+            request.send_and_validate::<Value>(Value::Null).await?
+        } else {
+            let r = request.send().await?;
+            Value::String(r.get_message(0).unwrap().to_string())
+        };
+
+        state.update(response, self, action_traces).await?;
+
+        if let Some(log_at) = self.api_config.dump_log_at(&self.root_dir) {
+            let log_at = log_at.clone();
+            let now = Local::now();
+            write_string(
+                &join(
+                    &log_at.to_str().unwrap(),
+                    &format!("agent-state-{}.json", now.to_rfc3339()),
+                )?,
+                &serde_json::to_string_pretty(&state)?,
+                WriteMode::CreateOrTruncate,
+            )?;
+        }
+
+        Ok(state)
+    }
+}

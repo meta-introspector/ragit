@@ -60,7 +60,7 @@ pub struct Index {
 
 impl Index {
     pub fn get_summary(&self) -> Option<&str> {
-        self.summary.as_ref().map(|s| s.0.as_str())
+        self.summary.as_ref().map(|s| s.as_str())
     }
 
     pub fn get_ragit_version_info(&self) -> VersionInfo {

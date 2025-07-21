@@ -1,3 +1,6 @@
+pub mod render;
+pub mod render_impl;
+
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -10,10 +13,18 @@ use crate::Uid;
 pub struct ChunkBuildInfo;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub struct MultiModalContent;
+pub enum MultiModalContent {
+    Text { content: String },
+    Image { uid: Uid },
+}
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub struct RenderedChunk;
+pub struct RenderedChunk {
+    pub pdl_data: String,
+    pub human_data: String,
+    pub raw_data: Vec<MultiModalContent>,
+    pub source: String,
+}
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum ChunkSource {
@@ -128,7 +139,7 @@ pub fn save_to_file(
     Err(anyhow!("Not implemented"))
 }
 
-pub fn merge_and_convert_chunks(index: &crate::index::index_struct::Index, chunks: Vec<Chunk>) -> Result<Vec<RenderedChunk>> {
+pub fn merge_and_convert_chunks(index: &crate::index::index_struct::Index, chunks: Vec<RenderedChunk>) -> Result<Vec<RenderedChunk>> {
     Err(anyhow!("Not implemented"))
 }
 
@@ -147,4 +158,9 @@ pub fn escape_pdl_tokens(s: &str) -> String {
 
 pub fn merge_overlapping_strings(s1: &[u8], s2: &[u8]) -> String {
     String::new()
+}
+
+pub fn into_multi_modal_contents(data: &str, images: &[Uid]) -> Vec<MultiModalContent> {
+    // Placeholder implementation
+    vec![MultiModalContent::Text { content: data.to_string() }]
 }

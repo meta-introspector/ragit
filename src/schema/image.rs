@@ -1,7 +1,7 @@
 use super::{Prettify, prettify_uid};
 use crate::constant::IMAGE_DIR_NAME;
 use crate::error::Error;
-use crate::index::index_struct::Index;
+use ragit_utils::index::index_struct::Index;
 use crate::prelude::*;
 use ragit_fs::{
     file_size,

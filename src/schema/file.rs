@@ -1,6 +1,6 @@
 use super::{Prettify, prettify_timestamp, prettify_uid};
 use crate::error::Error;
-use crate::index::index_struct::Index;
+use ragit_utils::index::index_struct::Index;
 use crate::prelude::*;
 use serde::Serialize;
 use serde_json::Value;

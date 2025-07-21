@@ -5,7 +5,7 @@ pub use std::str::FromStr;
 pub use crate::error::Error;
 pub use ragit_utils::*;
 pub use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
-pub use crate::index::index_struct::Index;
+pub use ragit_utils::index::index_struct::Index;
 pub use ragit_fs::{
     WriteMode,
     exists,

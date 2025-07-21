@@ -21,40 +21,40 @@ async fn run(args: Vec<String>) -> Result<(), Error> {
     let command = args.get(1).map(|arg| arg.as_str());
 
     match command {
-        Some("add") => crate::index::commands::add_command::add_command(&args).await?,
-        Some("archive-create") | Some("create-archive") | Some("archive") => crate::index::commands::archive_create_command::archive_create_command(&args).await?,
-        Some("archive-extract") | Some("extract-archive") | Some("extract") => crate::index::commands::archive_extract_command::archive_extract_command(&args).await?,
-        Some("audit") => crate::index::commands::audit_command::audit_command(&args).await?,
-        Some("build") => crate::index::commands::build_command::build_command(&args).await?,
-        Some("cat-file") => crate::index::commands::cat_file_command::cat_file_command(&args).await?,
-        Some("check") => crate::index::commands::check_command::check_command(&args).await?,
-        Some("clone") => crate::index::commands::clone_command::clone_command(&args).await?,
-        Some("config") => crate::index::commands::config_command::config_command(&args)?,
-        Some("extract-keywords") => crate::index::commands::extract_keywords_command::extract_keywords_command(&args).await?,
-        Some("gc") => crate::index::commands::gc_command::gc_command(&args)?,
-        Some("help") | Some("--help") => crate::index::commands::help_command::help_command(&args).await?,
-        Some("ii-build") | Some("build-ii") | Some("ii-reset") | Some("reset-ii") | Some("ii-status") => crate::index::commands::ii_command::ii_command(&args)?,
-        Some("init") => crate::index::commands::init_command::init_command(&args)?,
-        Some("ls-chunks") => crate::index::commands::ls_chunks_command::ls_chunks_command(&args)?,
-        Some("ls-files") => crate::index::commands::ls_files_command::ls_files_command(&args)?,
-        Some("ls-images") => crate::index::commands::ls_images_command::ls_images_command(&args)?,
-        Some("ls-models") => crate::index::commands::ls_models_command::ls_models_command(&args)?,
-        Some("ls-terms") => crate::index::commands::ls_terms_command::ls_terms_command(&args)?,
-        Some("merge") => crate::index::commands::merge_command::merge_command(&args)?,
-        Some("meta") => crate::index::commands::meta_command::meta_command(&args)?,
-        Some("migrate") => crate::index::commands::migrate_command::migrate_command(&args)?,
-        Some("model") => crate::index::commands::model_command::model_command(&args).await?,
-        Some("muse-summarize") => crate::index::commands::muse_summarize_command::muse_summarize_command(&args).await?,
-        Some("pdl") => crate::index::commands::pdl_command::pdl_command(&args).await?,
-        Some("pull") => crate::index::commands::pull_command::pull_command(&args).await?,
-        Some("push") => crate::index::commands::push_command::push_command(&args).await?,
-        Some("qa-test") => crate::index::commands::qa_test_command::qa_test_command(&args).await?,
-        Some("qa-tune") => crate::index::commands::qa_tune_command::qa_tune_command(&args).await?,
-        Some("query") => crate::index::commands::query_command::query_command(&args).await?,
-        Some("remove") => crate::index::commands::remove_command::remove_command(&args)?,
-        Some("status") => crate::index::commands::status_command::status_command(&args)?,
-        Some("summary") => crate::index::commands::summary_command::summary_command(&args).await?,
-        Some("version") => crate::index::commands::version_command::version_command(&args)?,
+        use ragit_utils::index::commands::add::add_command;
+use ragit_utils::index::commands::archive::create::archive_create_command;
+use ragit_utils::index::commands::archive::extract::archive_extract_command;
+use ragit_utils::index::commands::audit::audit_command;
+use ragit_utils::index::commands::build::build_command;
+use ragit_utils::index::commands::cat_file::cat_file_command;
+use ragit_utils::index::commands::check::check_command;
+use ragit_utils::index::commands::clone::clone_command;
+use ragit_utils::index::commands::config::config_command;
+use ragit_utils::index::commands::extract_keywords::extract_keywords_command;
+use ragit_utils::index::commands::gc::gc_command;
+use ragit_utils::index::commands::help::help_command;
+use ragit_utils::index::commands::ii_build::ii_command;
+use ragit_utils::index::commands::init::init_command;
+use ragit_utils::index::commands::ls::ls_chunks_command;
+use ragit_utils::index::commands::ls::ls_files_command;
+use ragit_utils::index::commands::ls::ls_images_command;
+use ragit_utils::index::commands::ls::ls_models_command;
+use ragit_utils::index::commands::ls::ls_terms_command;
+use ragit_utils::index::commands::merge::merge_command;
+use ragit_utils::index::commands::meta::meta_command;
+use ragit_utils::index::commands::migrate::migrate_command;
+use ragit_utils::index::commands::model::model_command;
+use ragit_utils::index::commands::muse_summarize::muse_summarize_command;
+use ragit_utils::index::commands::pdl::pdl_command;
+use ragit_utils::index::commands::pull::pull_command;
+use ragit_utils::index::commands::push::push_command;
+use ragit_utils::index::commands::qa_test::qa_test_command;
+use ragit_utils::index::commands::qa_tune::qa_tune_command;
+use ragit_utils::index::commands::query::query_command;
+use ragit_utils::index::commands::remove::remove_command;
+use ragit_utils::index::commands::status::status_command;
+use ragit_utils::index::commands::summary::summary_command;
+use ragit_utils::index::commands::version::version_command;,
         _ => {
             return Err(Error::CliError {
                 message: String::from("Unknown command."),

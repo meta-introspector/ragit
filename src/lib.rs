@@ -11,7 +11,7 @@ pub mod constant;
 pub mod error_reporting;
 pub mod error;
 pub mod imports;
-pub mod index;
+
 pub mod log_qa_results;
 pub mod main;
 
@@ -35,7 +35,7 @@ pub use chunk::{
 };
 pub use constant::*;
 pub use error::Error;
-pub use index::{
+pub use ragit_utils::index::{
     AddMode,
     AddResult,
     Audit,
@@ -58,7 +58,7 @@ pub use index::{
     VersionInfo,
     get_compatibility_warning,
 };
-pub use query::{
+pub use ragit_utils::query::{
     Keywords,
     MultiTurnSchema,
     QueryConfig,

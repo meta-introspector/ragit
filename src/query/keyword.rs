@@ -1,6 +1,6 @@
 use crate::index::index_struct::Index;
 use crate::error::Error;
-use crate::index::tfidf::tokenize;
+use ragit_utils::index::tfidf::tokenize;
 use ragit_api::Request;
 use ragit_pdl::{
     Pdl,
