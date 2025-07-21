@@ -1,7 +1,5 @@
-use chrono::Local;
-use crate::chunk::Chunk;
-use crate::error::Error;
-use ragit_utils::index::index_struct::Index;
+use std::collections::HashMap;
+
 use ragit_api::Request;
 use ragit_fs::{
     WriteMode,
@@ -14,11 +12,19 @@ use ragit_pdl::{
     into_context,
     parse_pdl,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::{HashMap, HashSet};
 
-use ragit_utils::agent::{Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType, FileTree};
+use crate::prelude::*;
+use crate::prompts::Prompt;
+use crate::query::QueryResponse;
+use crate::Uid;
+
+use ragit_utils::agent::action::{Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};
+use ragit_utils::agent::file_tree::FileTree;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::path_utils;
+use ragit_utils::chunk::Chunk;
 
 // `derive(Serialize) for AgentState` has 2 purposes.
 //

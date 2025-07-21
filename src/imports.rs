@@ -24,14 +24,13 @@ use crate::{
     into_multi_modal_contents,
     ApiConfig,
 };
-use crate::schema::{ChunkSchema, Prettify};
+use ragit_schema::{FileSchema, ImageSchema, Prettify};
 use ragit_api::{Model, ModelRaw, get_model_by_name, Request, ModelQASystem, ModelQAResult, QualityScores};
 use ragit_cli::{
     ArgCount,
     ArgParser,
     ArgType,
     Span,
-    get_closest_string,
     parse_pre_args,
 };
 use ragit_fs::{
@@ -48,3 +47,4 @@ use ragit_pdl::{Pdl, encode_base64, parse_schema, render_pdl_schema, Message, Ro
 use serde_json::{Map, Value};
 use std::env;
 use std::io::Write;
+use ragit_utils::string_utils::get_closest_string;

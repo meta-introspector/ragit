@@ -250,3 +250,33 @@ impl From<ragit_pdl::SchemaParseError> for Error {
         ragit_pdl::Error::from(e).into()
     }
 }
+
+impl From<ragit_utils::error::Error> for Error {
+    fn from(e: ragit_utils::error::Error) -> Self {
+        match e {
+            ragit_utils::error::Error::Internal(s) => Error::Internal(s),
+            ragit_utils::error::Error::JsonTypeError { expected, got } => Error::JsonTypeError { expected, got },
+            ragit_utils::error::Error::ReqwestError(e) => Error::ReqwestError(e),
+            ragit_utils::error::Error::JsonSerdeError(e) => Error::JsonSerdeError(e),
+            ragit_utils::error::Error::ImageError(e) => Error::ImageError(e),
+            ragit_utils::error::Error::UrlParseError(e) => Error::UrlParseError(e),
+            ragit_utils::error::Error::JoinError(e) => Error::JoinError(e),
+            ragit_utils::error::Error::FileError(e) => Error::FileError(e),
+            ragit_utils::error::Error::StdIoError(e) => Error::StdIoError(e),
+            ragit_utils::error::Error::FromUtf8Error => Error::FromUtf8Error,
+            ragit_utils::error::Error::ApiError(e) => Error::ApiError(e),
+            ragit_utils::error::Error::PdlError(e) => Error::PdlError(e),
+            ragit_utils::error::Error::BrokenII(s) => Error::BrokenII(s),
+            ragit_utils::error::Error::NoSuchChunk(uid) => Error::NoSuchChunk(uid),
+            ragit_utils::error::Error::NoSuchFile { path, uid } => Error::NoSuchFile { path: path.map(|p| p.to_string_lossy().into_owned()), uid },
+            ragit_utils::error::Error::BrokenIndex(s) => Error::BrokenIndex(s),
+            ragit_utils::error::Error::InvalidConfigKey(s) => Error::InvalidConfigKey(s),
+            ragit_utils::error::Error::PromptMissing(s) => Error::PromptMissing(s),
+            ragit_utils::error::Error::IndexAlreadyExists(path) => Error::IndexAlreadyExists(path.to_string_lossy().into_owned()),
+            ragit_utils::error::Error::AnyhowError(e) => Error::Internal(e.to_string()),
+            ragit_utils::error::Error::ParseIntError(e) => Error::Internal(e.to_string()),
+            ragit_utils::error::Error::ParseBoolError(e) => Error::Internal(e.to_string()),
+            ragit_utils::error::Error::ParseFloatError(e) => Error::Internal(e.to_string()),
+        }
+    }
+}

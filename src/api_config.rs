@@ -1,14 +1,6 @@
-use chrono::Local;
 use crate::constant::{INDEX_DIR_NAME, LOG_DIR_NAME};
 use crate::error::Error;
-use ragit_api::audit::{AuditRecord, AuditRecordAt, Tracker};
-use ragit_fs::{
-    WriteMode,
-    exists,
-    join,
-    join3,
-    write_string,
-};
+use ragit_api::audit::{AuditRecord, AuditRecordAt};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -147,7 +139,7 @@ impl ApiConfig {
 
         self.dump_log_at(root_dir).as_ref().map(
             |path| path_utils::str_to_pathbuf(&join(
-                path_utils::pathbuf_to_str(path),
+                &path_utils::pathbuf_to_str(path),
                 &format!(
                     "{job}.pdl",
                 ),
@@ -157,7 +149,9 @@ impl ApiConfig {
 
     pub fn dump_log_at(&self, root_dir: &PathBuf) -> Option<PathBuf> {
         if self.dump_log {
-            join3(path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, LOG_DIR_NAME).ok().map(|s| path_utils::str_to_pathbuf(&s))
+            ragit_fs::join3(&ragit_utils::path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, LOG_DIR_NAME)
+                .ok()
+                .map(|s| ragit_utils::path_utils::str_to_pathbuf(&s))
         }
 
         else {
@@ -167,14 +161,14 @@ impl ApiConfig {
 
     pub fn dump_api_usage_at(&self, root_dir: &PathBuf, id: &str) -> Option<AuditRecordAt> {
         if self.dump_api_usage {
-            match join3(path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, "usages.json") {
+            match ragit_fs::join3(&ragit_utils::path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, "usages.json") {
                 Ok(path_str) => {
-                    let path = path_utils::str_to_pathbuf(&path_str);
-                    if !exists(path_utils::pathbuf_to_str(&path)) {
-                        let _ = write_string(
-                            path_utils::pathbuf_to_str(&path),
+                    let path = ragit_utils::path_utils::str_to_pathbuf(&path_str);
+                    if !ragit_fs::exists(&path) {
+                        let _ = ragit_fs::write_string(
+                            &ragit_utils::path_utils::pathbuf_to_str(&path),
                             "{}",
-                            WriteMode::AlwaysCreate,
+                            ragit_fs::WriteMode::AlwaysCreate,
                         );
                     }
 
@@ -192,7 +186,7 @@ impl ApiConfig {
     pub fn get_api_usage(&self, root_dir: &PathBuf, id: &str) -> Result<HashMap<String, AuditRecord>, Error> {
         match &self.dump_api_usage_at(root_dir, id) {
             Some(AuditRecordAt { path, id }) => {
-                let tracker = Tracker::load_from_file(path_utils::pathbuf_to_str(path))?;
+                let tracker = ragit_api::audit::Tracker::load_from_file(&ragit_utils::path_utils::pathbuf_to_str(path))?;
 
                 match tracker.0.get(id) {
                     Some(record) => Ok(record.clone()),

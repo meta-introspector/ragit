@@ -25,7 +25,7 @@ pub mod uid;
 
 pub use ragit_utils::agent::action::{Action as AgentAction, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};
 pub use ragit_utils::agent::file_tree::FileTree;
-pub use ragit_config::ApiConfig;
+pub use crate::api_config::ApiConfig;
 pub use ragit_utils::chunk::{Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, into_multi_modal_contents, merge_and_convert_chunks, RenderedChunk};
 pub use constant::*;
 pub use ragit_utils::error::Error;
