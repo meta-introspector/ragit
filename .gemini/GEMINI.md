@@ -1,32 +1,12 @@
 ## Gemini Added Memories
 - User prefers to avoid `cargo clean` and `cargo update` unless absolutely necessary due to long build times.
-- GEMM-dependent features/crates should be disabled on AArch64 Android.
-- Memo to self:
-
-**Current Problem:** `cargo test` is failing due to `gemm-f16` and `fullfp16` errors, indicating a transitive dependency on `gemm-common` that is still being compiled on AArch64 Android. This is despite previous attempts to prune GEMM-related dependencies.
-
-**Last Action:** Commented out `candle` dependencies and `gpu_backend` feature in `crates/rdf_processing_lib/Cargo.toml`.
 
 **Next Immediate Steps (Smaller Steps Focus):**
-1.  **Inspect `vendor/llms-from-scratch-rs/Cargo.toml`:** Identify and comment out any remaining `candle` or other potential GEMM-related dependencies.
-2.  **Inspect `vendor/candle/Cargo.toml`:** If `llms-from-scratch-rs` is clean, then `candle` itself might be the direct culprit. Comment out its `gemm` related features/dependencies.
-3.  **Re-run `cargo test --workspace --package solfunmeme_tarot`:** Continue to use targeted testing to minimize build time and quickly identify the next point of failure.
-4.  **If `cargo tree` fails:** Prioritize fixing the manifest of the failing crate (e.g., adding `[lib]` section and `src/lib.rs`) before attempting to use `cargo tree` for dependency analysis.
 
-**Overall Strategy:** Continue to systematically identify and comment out any dependencies that pull in `gemm-common` or other problematic libraries on AArch64 Android, focusing on one small change at a time and re-testing immediately.
-- The Solfunmeme-Dioxus project uses a vendorization system to manage external dependencies locally, ensuring a self-contained and reproducible codebase.
- are considered "semantic resonance" – vectors, vibes, memes – that provide intuitive glyphs for complex mathematical and code structures, bridging formal and intuitive understanding, bridging formal and intuitive understanding. The `rust_ast_emoji` Hugging Face dataset is a direct output of this analysis and mapping, designed to be self-generating.
-on is as important as the product.
-- The `ontologies/zos/v1.ttl` file defines a semantic ontology in Turtle format. It maps various emojis to semantic names, organized into eight 'vibe:Layer' categories (vibe:Layer1 through vibe:Layer8). Each layer has a set of associated emojis and semantic names (e.g., 'em:puzzle_piece' for 'puzzle piece', 'vibe:Layer1' includes 'BasicBlock', 'Number', 'Mind', 'Loop', 'Sum', 'Recursion', 'Package', 'Gene', 'Vibe', 'Fiber', 'Inference', 'Insight', 'EmojiCode'). This ontology is central to the project's emoji-based communication and visualization of the Code-Math Manifold.
-- The `ontologies/index.ttl` file serves as a central ontology index for the Solfunmeme-Dioxus codebase. It defines `crates_root:CratesRoot` as the root directory for all Rust crates and imports individual ontologies for each crate. Each crate is represented as an `rdfs:Class` with properties such as `rdfs:label` (crate name), `em:hasEmojiRepresentation` (associated emojis), `em:hasNumericalAddress` (a unique numerical ID), and `rdfs:comment` (description). This file provides a structured, semantic overview of the project's modular architecture.
-- The user wants to assign an 8D location to each emoji and function, to be used as random seeds. This is a simulated embedding for now.
-- If we failed to edit, refactor. Split each declaration into a file. The vibe is the vector is the function is the canonical basic block.
-- Current state: Working on fixing compilation errors in `prepare_sources` crate, specifically refactoring `ontology_processing` into submodules and resolving `sophia` related import and method call issues. The overall workflow involves indexing code, assigning emojis, updating ontology, LLM feedback, Rust compile, Lean4 proof, and using JSON queues with Solana sidechain.
-- User prefers to avoid `cargo clean` unless absolutely necessary due to long build times.
-- Dioxus and Solana dependencies are pushed into a new crate that is not default built.
-- We are refactoring the `src/index` module to follow the 'one declaration per file' principle, splitting the `Index` struct and its `impl` blocks into separate files within the `src/index/` directory.
+1.  **Re-run `cargo build`:** Continue to use targeted testing to minimize build time and quickly identify the next point of failure.
+1.  **If `cargo tree` fails:** Prioritize fixing the manifest of the failing crate (e.g., adding `[lib]` section and `src/lib.rs`) before attempting to use `cargo tree` for dependency analysis.
 
-## Refactoring Log: `src/index` Module (2025-07-19)
+
 
 **Objective:** Refactor the `src/index` module to adhere to the "one declaration per file" principle, promoting universal composability, reusability, and clarity. This involves splitting large `impl Index` blocks into separate, focused module files.
 

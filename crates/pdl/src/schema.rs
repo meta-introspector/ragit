@@ -9,12 +9,14 @@ use std::str::FromStr;
 mod code_fence;
 mod parse;
 mod parse_value;
+pub mod prompt;
 mod task_list;
 
 pub use code_fence::try_extract_code_fence;
 pub use parse::{SchemaParseError, parse_schema};
 use parse_value::{JsonMatch, extract_jsonish_literal};
 pub use task_list::{count_task_list_elements, try_extract_task_list};
+pub use prompt::Prompt;
 
 #[cfg(test)]
 mod tests;

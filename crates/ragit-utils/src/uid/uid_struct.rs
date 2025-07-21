@@ -90,6 +90,13 @@ impl Uid {
         }
     }
 
+    pub fn new_from_u128(n: u128) -> Self {
+        Uid {
+            high: 0,
+            low: n,
+        }
+    }
+
     pub fn new_image(bytes: &[u8]) -> Self {
         let mut hasher = Sha3_256::new();
         hasher.update(bytes);
@@ -227,7 +234,7 @@ impl Uid {
         (self.low & 0xffff_ffff) as usize
     }
 
-    fn checked_sub(&self, other: Uid) -> Option<Uid> {
+    pub fn checked_sub(&self, other: Uid) -> Option<Uid> {
         let (carry, low) = match self.low.checked_sub(other.low) {
             Some(n) => (0, n),
             None => (1, u128::MAX - other.low + self.low + 1),

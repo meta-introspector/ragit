@@ -17,7 +17,7 @@ use serde_json::Value;
 
 use crate::prelude::*;
 use crate::prompts::Prompt;
-use crate::query::QueryResponse;
+use ragit_utils::query::QueryResponse;
 use crate::Uid;
 
 use ragit_utils::agent::action::{Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};

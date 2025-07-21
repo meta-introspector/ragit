@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use ragit_utils::index::commands::add::add_command;
-use ragit_utils::index::commands::archive::create::archive_create_command;
-use ragit_utils::index::commands::archive::extract::archive_extract_command;
+use ragit_utils::index::commands::archive::archive_create_command;
+use ragit_utils::index::commands::archive::archive_extract_command;
 use ragit_utils::index::commands::audit::audit_command;
 use ragit_utils::index::commands::build::build_command;
 use ragit_utils::index::commands::cat_file::cat_file_command;

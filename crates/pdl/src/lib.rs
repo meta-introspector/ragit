@@ -9,14 +9,14 @@ mod error;
 mod image;
 mod message;
 mod role;
-mod schema;
+pub mod schema;
 mod util;
 
 pub use error::{Error, JsonType};
 pub use image::ImageType;
 pub use message::{Message, MessageContent};
 pub use role::{PdlRole, Role};
-pub use schema::{Schema, SchemaParseError, parse_schema, render_pdl_schema};
+pub use schema::{Schema, SchemaParseError, parse_schema, render_pdl_schema, Prompt};
 pub use util::{decode_base64, encode_base64};
 
 lazy_static! {
