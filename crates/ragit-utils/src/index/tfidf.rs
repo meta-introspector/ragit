@@ -1,8 +1,7 @@
 use std::path::PathBuf;
 use crate::chunk::Chunk;
 use crate::error::Error;
-use crate::{constant::IMAGE_DIR_NAME, index::index_struct::Index};
-use crate::path_utils::get_uid_path;
+use crate::constant::IMAGE_DIR_NAME;
 use crate::query::Keywords;
 use crate::prelude::*;
 use flate2::Compression;

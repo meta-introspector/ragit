@@ -1,16 +1,10 @@
-use crate::chunk::Chunk;
 use crate::error::Error;
 use crate::index::index_struct::Index;
-use ragit_pdl::{Schema, parse_pdl};
+use ragit_pdl::Schema;
 
 use crate::query::query_response::QueryResponse;
 use crate::query::query_turn::QueryTurn;
-use crate::query::multi_turn_schema::MultiTurnSchema;
 use crate::query::select_turns_for_context::select_turns_for_context;
-use crate::index::rephrase_multi_turn;
-use crate::index::retrieve_chunks;
-use crate::index::raw_request;
-use crate::index::answer_query_with_chunks;
 
 impl Index {
     pub async fn query(

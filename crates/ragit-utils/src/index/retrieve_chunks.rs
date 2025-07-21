@@ -1,18 +1,8 @@
-use crate::chunk::{Chunk, merge_and_convert_chunks};
+use crate::chunk::Chunk;
 use crate::error::Error;
 use crate::index::index_struct::Index;
-use ragit_api::Request;
-use ragit_pdl::{
-    Pdl,
-    Schema,
-    parse_pdl,
-    render_pdl_schema,
-};
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use tokio::task::JoinSet;
 
-use crate::index::summaries_to_chunks;
 
 impl Index {
     /// It retrieves chunks that are related to `query`. If `super_rerank` is set, it calls `summaries_to_chunks` multiple times.

@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use anyhow::Result;
 use ragit_api::audit::AuditRecordAt;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]

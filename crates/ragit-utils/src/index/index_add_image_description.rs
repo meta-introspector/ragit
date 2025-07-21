@@ -1,6 +1,6 @@
 use crate::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME};
 use crate::prelude::*;
-use ragit_fs::{exists, read_bytes, read_string, remove_file, try_create_dir, write_bytes, WriteMode};
+use ragit_fs::{read_bytes, read_string, remove_file, try_create_dir, write_bytes, WriteMode};
 use ragit_pdl::{encode_base64, parse_pdl, Pdl};
 use serde_json::Value;
 

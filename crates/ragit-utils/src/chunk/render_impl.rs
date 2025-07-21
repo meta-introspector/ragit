@@ -2,7 +2,6 @@ use crate::prelude::*;
 use crate::chunk::{MultiModalContent, RenderedChunk};
 use crate::index::index_struct::Index;
 use crate::error::Error;
-use crate::Uid;
 use ragit_pdl::{escape_pdl_tokens, encode_base64};
 
 

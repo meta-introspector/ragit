@@ -2,7 +2,7 @@ use crate::constant::PROMPT_DIR_NAME;
 use crate::error::Error;
 use crate::prompts::PROMPTS;
 use crate::path_utils::{get_rag_path, join_paths, pathbuf_to_str, str_to_pathbuf};
-use ragit_fs::{create_dir_all, exists, read_string, set_extension, write_string, WriteMode};
+use ragit_fs::{create_dir_all, read_string, set_extension, write_string, WriteMode};
 
 
 

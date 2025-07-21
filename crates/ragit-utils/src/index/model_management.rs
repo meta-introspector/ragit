@@ -1,7 +1,7 @@
 use crate::constant::{MODEL_FILE_NAME};
 use crate::error::Error;
 use ragit_api::{Model, ModelRaw};
-use crate::path_utils::{get_rag_path, join_paths, pathbuf_to_str, str_to_pathbuf};
+use crate::path_utils::{get_rag_path, join_paths, str_to_pathbuf};
 use ragit_fs::{exists, read_string, write_string, WriteMode};
 
 

@@ -1,7 +1,7 @@
 use crate::constant::INDEX_FILE_NAME;
 use crate::error::Error;
 use crate::path_utils::{get_rag_path, str_to_pathbuf, get_normalized_abs_pathbuf};
-use ragit_fs::{into_abs_path, read_string, write_bytes, WriteMode, normalize};
+use ragit_fs::{read_string, write_bytes, WriteMode};
 use std::path::PathBuf;
 
 use super::BuildConfig;

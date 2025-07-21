@@ -102,7 +102,7 @@ impl Uid {
 
     pub fn new_group(uids: &[Uid]) -> Self {
         let mut result = Uid::dummy();
-        let mut child_count = 0;
+        let child_count = 0;
 
         for uid in uids.iter() {
             result += *uid;

@@ -4,7 +4,6 @@ use crate::error::Error;
 use crate::uid::Uid;
 use crate::uid::UidWriteMode;
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
-use serde::{Deserialize, Serialize};
 
 pub fn load_from_file(path: &PathBuf) -> Result<Vec<Uid>, Error> {
     let bytes = read_bytes(path.to_str().unwrap())?;

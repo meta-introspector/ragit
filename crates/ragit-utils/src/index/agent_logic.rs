@@ -18,8 +18,7 @@ use serde::Serialize;
 use serde_json::Value;
 use std::collections::{HashMap, HashSet};
 
-use crate::agent::action::{Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};
-use crate::agent::file_tree::FileTree;
+use crate::agent::action::{Action, ActionResult, ActionState, ActionTrace};
 
 #[derive(Debug, Serialize)]
 pub struct AgentState {

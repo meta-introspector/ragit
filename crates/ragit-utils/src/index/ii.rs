@@ -9,13 +9,11 @@ use super::index_struct::Index;
 use crate::index::commands::archive::erase_lines;
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
 use crate::error::Error;
-use crate::uid::{self, Uid, UidWriteMode};
+use crate::uid::{Uid, UidWriteMode};
 use crate::path_utils::{get_ii_path, join3_paths, pathbuf_to_str, str_to_pathbuf};
 use ragit_fs::{
     exists,
-    file_name,
     is_dir,
-    join,
     parent,
     read_dir,
     remove_dir_all,
@@ -24,7 +22,7 @@ use ragit_fs::{
 use serde::{Deserialize, Serialize};
 use sha3::{Digest, Sha3_256};
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 pub type Term = String;
 pub type Weight = f32;

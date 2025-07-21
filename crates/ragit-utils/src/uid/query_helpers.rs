@@ -1,8 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::collections::{HashMap, HashSet};
 
-use crate::uid_struct::{Uid, UidType};
+use crate::uid_struct::Uid;
 
 use crate::error::Error;
 use crate::index::index_struct::Index;

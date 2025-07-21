@@ -2,7 +2,7 @@ use crate::constant::{CHUNK_DIR_NAME, CONFIG_DIR_NAME, FILE_INDEX_DIR_NAME, II_D
 use crate::error::Error;
 use crate::path_utils::{get_rag_path, join_paths, str_to_pathbuf, get_normalized_abs_pathbuf};
 use crate::prompts::PROMPTS;
-use ragit_fs::{create_dir_all, exists, into_abs_path, normalize, write_bytes, WriteMode};
+use ragit_fs::{create_dir_all, exists, write_bytes, WriteMode};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use super::BuildConfig;

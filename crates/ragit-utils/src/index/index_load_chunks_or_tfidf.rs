@@ -1,6 +1,5 @@
 use crate::prelude::*;
 use crate::chunk::Chunk;
-use std::path::PathBuf;
 
 use crate::index::index_struct::Index;
 

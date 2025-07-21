@@ -1,8 +1,7 @@
 use crate::api_config::{ApiConfig, PartialApiConfig};
 use crate::error::Error;
-use crate::path_utils::{join_paths, pathbuf_to_str, str_to_pathbuf};
+use crate::path_utils::{join_paths, str_to_pathbuf};
 use ragit_fs::{exists, read_string};
-use std::path::PathBuf;
 
 use crate::index::index_struct::Index;
 
