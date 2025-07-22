@@ -2,7 +2,6 @@ use crate::error::Error;
 use crate::index::index_struct::Index;
 use crate::index::load_mode::LoadMode;
 use crate::cli_types::ArgParser;
-use crate::index::pull::PullResult;
 use std::path::PathBuf;
 
 pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error> {
@@ -34,4 +33,7 @@ pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), Erro
     Ok(())
 }
 
-pub struct PullResult;
+pub enum PullResult {
+    AlreadyUpToDate,
+    Pulled,
+}

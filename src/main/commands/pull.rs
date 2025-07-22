@@ -1,6 +1,8 @@
 use crate::prelude::*;
-use ragit_utils::index::commands::pull_command;
+use crate::main::find_root;
+use crate::main::commands::pull_command;
 
-pub async fn pull_command_main(args: Vec<String>, pre_args: ragit_cli::ParsedArgs) -> Result<(), Error> {
-    pull_command(args, pre_args).await
+pub async fn pull_command_main(args: Vec<String>, _pre_args: ragit_cli::ParsedArgs) -> Result<(), Error> {
+    let root_dir = find_root()?;
+    pull_command(root_dir, &args).await
 }
