@@ -1,0 +1,16 @@
+use crate::prelude::*;
+use crate::index::index_struct::Index;
+use crate::index::commands::add::{AddMode, AddResult};
+
+impl Index {
+    pub async fn add_files_command(
+        &self,
+        files: &[String],
+        add_mode: Option<AddMode>,
+        dry_run: bool,
+    ) -> Result<AddResult> {
+        // TODO: Implement add_files_command logic
+        println!("add_files_command not yet implemented.");
+        Ok(AddResult {})
+    }
+}
