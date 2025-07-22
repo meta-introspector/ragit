@@ -1,8 +1,9 @@
+use ragit_utils::index::load_mode::LoadMode;
 use crate::prelude::*;
 use crate::main::find_root;
-use ragit_utils::index::commands::push::push_command;
+use crate::commands::push_command::push_command;
 
-pub async fn push_command_main(args: Vec<String>, _pre_args: ragit_cli::ParsedArgs) -> Result<(), Error> {
+pub async fn push_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .optional_arg_flag("--remote", ArgType::String)
         .optional_flag(&["--quiet"])

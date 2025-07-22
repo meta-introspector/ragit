@@ -3,7 +3,7 @@ use chrono::{Days, Local};
 
 use ragit_schema::{FileSchema, ImageSchema, Prettify};
 use ragit_api::{Model, ModelRaw, get_model_by_name, Request, ModelQASystem, ModelQAResult, QualityScores};
-use ragit_args::{ArgCount, ArgParser, ArgType, Span, ParsedArgs};
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, Span, ParsedArgs};
 use ragit_cli::parse_pre_args;
 use ragit_fs::{
     basename,

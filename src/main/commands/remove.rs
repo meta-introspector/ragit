@@ -1,6 +1,6 @@
 use crate::prelude::*;
-use ragit_utils::index::commands::remove::remove_command;
+use crate::commands::remove_command::remove_command;
 
-pub async fn remove_command_main(args: Vec<String>, pre_args: ragit_cli::ParsedArgs) -> Result<(), Error> {
+pub async fn remove_command_main(args: Vec<String>, pre_args: ParsedArgs) -> Result<(), Error> {
     remove_command(args, pre_args).await
 }

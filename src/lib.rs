@@ -14,6 +14,7 @@ pub mod imports;
 
 pub mod log_qa_results;
 pub mod main;
+pub use crate::main::commands;
 
 pub mod prompts;
 pub mod query;

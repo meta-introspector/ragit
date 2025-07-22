@@ -2,11 +2,11 @@ use crate::prelude::*;
 use crate::main::main_find_root::find_root;
 use ragit_utils::index::index_struct::Index;
 use ragit_utils::index::load_mode::LoadMode;
-use ragit_args::{ArgParser, ArgType, ArgCount};
-use ragit_utils::index::commands::archive::create::archive_create_command;
-use ragit_utils::index::commands::archive::extract::archive_extract_command;
+use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
+use crate::main::commands::archive_create_command::archive_create_command;
+use crate::main::commands::archive_extract_command::archive_extract_command;
 
-pub async fn archive_command_main(args: Vec<String>, pre_args: ragit_args::ParsedArgs) -> Result<(), Error> {
+pub async fn archive_command_main(args: Vec<String>, pre_args: ParsedArgs) -> Result<(), Error> {
     let command = args.get(2).map(|arg| arg.as_str());
 
     match command {
@@ -42,10 +42,7 @@ pub async fn archive_command_main(args: Vec<String>, pre_args: ragit_args::Parse
             println!("extract command is not implemented yet");
         }
         _ => {
-            return Err(Error::CliError {
-                message: String::from("Unknown archive command."),
-                span: (String::new(), 0, 0),
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new_message("Unknown archive command.".to_string())));
         }
     }
     Ok(())

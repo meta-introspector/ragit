@@ -1,7 +1,9 @@
 use crate::prelude::*;
 
-use ragit_utils::index::commands::ii_build::ii_command;
+use crate::prelude::*;
 
-pub async fn ii_command_main(args: Vec<String>, pre_args: ragit_args::ParsedArgs) -> Result<(), Error> {
+use crate::commands::ii_command::ii_command;
+
+pub async fn ii_command_main(args: Vec<String>, pre_args: ParsedArgs) -> Result<(), Error> {
     ii_command(args, pre_args).await
 }

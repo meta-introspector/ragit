@@ -34,7 +34,7 @@ use async_recursion::async_recursion;
 
 #[async_recursion(?Send)]
 pub async fn run(args: Vec<String>) -> Result<(), Error> {
-    let (args, pre_args) = ragit_cli::parse_pre_args(&args)?;
+    let (args, pre_args): (Vec<String>, ragit_utils::cli_types::ParsedArgs) = ragit_cli::parse_pre_args(&args)?;
 
     if let Some(path) = pre_args.arg_flags.get("-C") {
         std::env::set_current_dir(path)?;
@@ -73,10 +73,7 @@ pub async fn run(args: Vec<String>) -> Result<(), Error> {
         Some("summary") => summary_command_main(args, pre_args).await?,
         Some("version") => version_command_main(args, pre_args).await?,
         _ => {
-            return Err(Error::CliError {
-                message: String::from("Unknown command."),
-                span: (String::new(), 0, 0),
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new_message("Unknown command.".to_string())));
         }
     }
 

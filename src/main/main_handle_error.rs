@@ -63,11 +63,11 @@ pub fn handle_error(e: Error) {
         Error::DeprecatedConfig { key, message } => {
             eprintln!("Config `{key}` is deprecated!\n{message}");
         }
-        Error::CliError { message, span } => {
+        Error::CliError(cli_error) => {
             eprintln!(
                 "cli error: {}\n\n{}",
-                message,
-                ragit_cli::underline_span(&span.0, span.1, span.2,)
+                cli_error.to_string(),
+                ragit_cli::underline_span(&cli_error.get_span().unwrap_rendered().0, cli_error.get_span().unwrap_rendered().1, cli_error.get_span().unwrap_rendered().2,)
             );
         }
         Error::DirtyKnowledgeBase => {

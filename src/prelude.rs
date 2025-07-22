@@ -44,7 +44,7 @@ pub use sha3::{Digest, Sha3_256};
 pub use tokio::sync::mpsc;
 pub use chrono::{Days, Local};
 pub use ragit_api::{Model, ModelRaw, get_model_by_name, Request, ModelQASystem, ModelQAResult, QualityScores};
-pub use ragit_args::{ArgCount, ArgParser, ArgType, Span, ParsedArgs};
+pub use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, Span, ParsedArgs};
 pub use ragit_cli::parse_pre_args;
 pub use ragit_utils::string_utils::get_closest_string;
 pub use async_recursion::async_recursion;

@@ -24,10 +24,7 @@ fn print_single_category(
     let audit = match result.get(category) {
         Some(r) => *r,
         None => {
-            return Err(Error::CliError {
-                message: format!("`{category}` is an invalid category."),
-                span: (String::new(), 0, 0), // TODO
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new_message(format!("`{category}` is an invalid category."))));
         }
     };
 

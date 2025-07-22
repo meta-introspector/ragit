@@ -3,9 +3,10 @@ use crate::main::main_find_root::find_root;
 use ragit_utils::index::index_struct::Index;
 use ragit_utils::index::load_mode::LoadMode;
 use ragit_utils::index::commands::add::AddMode;
-use ragit_args::{ArgParser, ArgType, ArgCount, Span};
+use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, Span};
+use crate::commands::add_command::add_command;
 
-pub async fn add_command_main(args: Vec<String>, _pre_args: ragit_args::ParsedArgs) -> Result<(), Error> {
+pub async fn add_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--reject", "--force"])
         .optional_flag(&["--all"])
@@ -29,20 +30,14 @@ pub async fn add_command_main(args: Vec<String>, _pre_args: ragit_args::ParsedAr
 
     if all {
         if !files.is_empty() {
-            return Err(Error::CliError {
-                message: String::from("You cannot use `--all` option with paths."),
-                span: (String::new(), 0, 0),  // TODO
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new_message("You cannot use `--all` option with paths.")));
         }
 
         files.push(root_dir.to_string_lossy().into_owned());
     }
 
     else if files.is_empty() {
-        return Err(Error::CliError {
-            message: String::from("Please specify which files to add."),
-            span: Span::End.render(&args, 2).unwrap_rendered(),
-        });
+        return Err(Error::CliError(ragit_utils::error::CliError::new_message_with_span("Please specify which files to add.", Span::End.render(&args, 2))));
     }
 
     let result = index.add_files_command(

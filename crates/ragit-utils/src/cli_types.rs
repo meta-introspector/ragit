@@ -1,5 +1,7 @@
 use std::collections::HashMap;
-use crate::error::{Error, Span, CliError, underline_span};
+pub use crate::error::ErrorKind;
+use crate::error::{Error, underline_span};
+pub use crate::error::{CliError, Span};
 use crate::string_utils::get_closest_string;
 
 pub struct ArgParser {

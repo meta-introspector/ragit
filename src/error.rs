@@ -3,136 +3,144 @@ pub use ragit_api::Error as ApiError;
 pub use ragit_pdl::JsonType;
 use ragit_fs::FileError;
 use std::string::FromUtf8Error;
+use std::path::PathBuf;
 
 pub type Path = String;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
-    CliError {
-        message: String,
-        span: (String, usize, usize),
-    },
+    #[error("internal error: {0}")]
     Internal(String),
-    RagitUtilsError(ragit_utils::error::Error),
-}
-
-impl From<anyhow::Error> for Error {
-    fn from(e: anyhow::Error) -> Self {
-        Error::RagitUtilsError(ragit_utils::error::Error::AnyhowError(e))
-    }
-}
-
-impl From<reqwest::Error> for Error {
-    fn from(e: reqwest::Error) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::ReqwestError(e))
-    }
-}
-
-impl From<serde_json::Error> for Error {
-    fn from(e: serde_json::Error) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::JsonSerdeError(e))
-    }
-}
-
-impl From<image::ImageError> for Error {
-    fn from(e: image::ImageError) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::ImageError(e))
-    }
-}
-
-#[cfg(feature = "csv")]
-impl From<csv::Error> for Error {
-    fn from(e: csv::Error) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::CsvError(e))
-    }
-}
-
-impl From<FileError> for Error {
-    fn from(e: FileError) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::FileError(e))
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(e: std::io::Error) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::StdIoError(e))
-    }
-}
-
-impl From<FromUtf8Error> for Error {
-    fn from(_: FromUtf8Error) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::FromUtf8Error)
-    }
-}
-
-impl From<url::ParseError> for Error {
-    fn from(e: url::ParseError) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::UrlParseError(e))
-    }
-}
-
-impl From<tokio::task::JoinError> for Error {
-    fn from(e: tokio::task::JoinError) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::JoinError(e))
-    }
-}
-
-#[cfg(feature = "pdf")]
-impl From<mupdf::Error> for Error {
-    fn from(e: mupdf::Error) -> Self {
-        Error::RagitUtilsError(ragit_utils::error::Error::MuPdfError(e))
-    }
-}
-
-#[cfg(feature = "svg")]
-impl From<resvg::usvg::Error> for Error {
-    fn from(e: resvg::usvg::Error) -> Self {
-        Error::RagitUtilsError(ragit_utils::error::Error::UsvgError(e))
-    }
-}
-
-#[cfg(feature = "svg")]
-impl From<png::EncodingError> for Error {
-    fn from(e: png::EncodingError) -> Self {
-        Error::RagitUtilsError(ragit_utils::error::Error::PngEncodingError(e))
-    }
-}
-
-impl From<tera::Error> for Error {
-    fn from(e: tera::Error) -> Error {
-        Error::RagitUtilsError(ragit_utils::error::Error::TeraError(e))
-    }
-}
-
-impl From<ApiError> for Error {
-    fn from(e: ApiError) -> Self {
-        Error::RagitUtilsError(ragit_utils::error::Error::ApiError(e))
-    }
-}
-
-impl From<ragit_pdl::Error> for Error {
-    fn from(e: ragit_pdl::Error) -> Self {
-        Error::RagitUtilsError(ragit_utils::error::Error::PdlError(e))
-    }
+    #[error("json type error: {expected}, got {got}")]
+    JsonTypeError {
+        expected: JsonType,
+        got: JsonType,
+    },
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
+    #[error(transparent)]
+    JsonSerdeError(#[from] serde_json::Error),
+    #[error(transparent)]
+    ImageError(#[from] image::ImageError),
+    #[error(transparent)]
+    UrlParseError(#[from] url::ParseError),
+    #[error(transparent)]
+    JoinError(#[from] tokio::task::JoinError),
+    #[error(transparent)]
+    FileError(#[from] FileError),
+    #[error(transparent)]
+    StdIoError(#[from] std::io::Error),
+    #[error("from utf8 error")]
+    FromUtf8Error,
+    #[error(transparent)]
+    ApiError(#[from] ApiError),
+    #[error(transparent)]
+    PdlError(#[from] ragit_pdl::Error),
+    #[error(transparent)]
+    PdlSchemaParseError(#[from] ragit_pdl::SchemaParseError),
+    #[error(transparent)]
+    TeraError(#[from] tera::Error),
+    #[error("broken inverted index: {0}")]
+    BrokenII(String),
+    #[error("no such chunk: {0}")]
+    NoSuchChunk(Uid),
+    #[error("no such file: {path:?}, {uid:?}")]
+    NoSuchFile { path: Option<PathBuf>, uid: Option<Uid> },
+    #[error("broken index: {0}")]
+    BrokenIndex(String),
+    #[error("invalid config key: {0}")]
+    InvalidConfigKey(String),
+    #[error("prompt missing: {0}")]
+    PromptMissing(String),
+    #[error("model not selected")]
+    ModelNotSelected,
+    #[error("index already exists: {0}")]
+    IndexAlreadyExists(PathBuf),
+    #[error(transparent)]
+    AnyhowError(#[from] anyhow::Error),
+    #[error(transparent)]
+    ParseIntError(#[from] std::num::ParseIntError),
+    #[error(transparent)]
+    ParseBoolError(#[from] std::str::ParseBoolError),
+    #[error(transparent)]
+    ParseFloatError(#[from] std::num::ParseFloatError),
+    #[error(transparent)]
+    UidError(#[from] ragit_uid::UidError),
+    #[error(transparent)]
+    CliError(#[from] ragit_utils::error::CliError),
+    #[error("cannot push: {0}")]
+    CannotPush(String),
+    #[error("index not found")]
+    IndexNotFound,
+    #[error("feature not enabled: {action} requires feature {feature}")]
+    FeatureNotEnabled { action: String, feature: String },
+    #[error("invalid model name: {name}, candidates: {candidates:?}")]
+    InvalidModelName { name: String, candidates: Vec<String> },
+    #[error("deprecated config: {key}, {message}")]
+    DeprecatedConfig { key: String, message: String },
+    #[error("dirty knowledge base")]
+    DirtyKnowledgeBase,
+    #[cfg(feature = "csv")]
+    #[error(transparent)]
+    CsvError(#[from] csv::Error),
+    #[cfg(feature = "pdf")]
+    #[error(transparent)]
+    MuPdfError(#[from] mupdf::Error),
+    #[cfg(feature = "svg")]
+    #[error(transparent)]
+    UsvgError(#[from] resvg::usvg::Error),
+    #[cfg(feature = "svg")]
+    #[error(transparent)]
+    PngEncodingError(#[from] png::EncodingError),
 }
 
 impl From<ragit_cli::Error> for Error {
     fn from(e: ragit_cli::Error) -> Self {
-        Error::CliError {
-            message: e.kind.render(),
-            span: e.span.unwrap_rendered(),
-        }
-    }
-}
-
-impl From<ragit_pdl::SchemaParseError> for Error {
-    fn from(e: ragit_pdl::SchemaParseError) -> Self {
-        Error::RagitUtilsError(ragit_utils::error::Error::PdlSchemaParseError(e))
+        Error::CliError(e)
     }
 }
 
 impl From<ragit_utils::error::Error> for Error {
     fn from(e: ragit_utils::error::Error) -> Self {
-        Error::RagitUtilsError(e)
+        match e {
+            ragit_utils::error::Error::Internal(s) => Error::Internal(s),
+            ragit_utils::error::Error::JsonTypeError { expected, got } => Error::JsonTypeError { expected, got },
+            ragit_utils::error::Error::ReqwestError(e) => Error::ReqwestError(e),
+            ragit_utils::error::Error::JsonSerdeError(e) => Error::JsonSerdeError(e),
+            ragit_utils::error::Error::ImageError(e) => Error::ImageError(e),
+            ragit_utils::error::Error::UrlParseError(e) => Error::UrlParseError(e),
+            ragit_utils::error::Error::JoinError(e) => Error::JoinError(e),
+            ragit_utils::error::Error::FileError(e) => Error::FileError(e),
+            ragit_utils::error::Error::StdIoError(e) => Error::StdIoError(e),
+            ragit_utils::error::Error::FromUtf8Error => Error::FromUtf8Error,
+            ragit_utils::error::Error::ApiError(e) => Error::ApiError(e),
+            ragit_utils::error::Error::PdlError(e) => Error::PdlError(e),
+            ragit_utils::error::Error::PdlSchemaParseError(e) => Error::PdlSchemaParseError(e),
+            ragit_utils::error::Error::TeraError(e) => Error::TeraError(e),
+            ragit_utils::error::Error::BrokenII(s) => Error::BrokenII(s),
+            ragit_utils::error::Error::NoSuchChunk(uid) => Error::NoSuchChunk(uid),
+            ragit_utils::error::Error::NoSuchFile { path, uid } => Error::NoSuchFile { path, uid },
+            ragit_utils::error::Error::BrokenIndex(s) => Error::BrokenIndex(s),
+            ragit_utils::error::Error::InvalidConfigKey(s) => Error::InvalidConfigKey(s),
+            ragit_utils::error::Error::PromptMissing(s) => Error::PromptMissing(s),
+            ragit_utils::error::Error::ModelNotSelected => Error::ModelNotSelected,
+            ragit_utils::error::Error::IndexAlreadyExists(path) => Error::IndexAlreadyExists(path),
+            ragit_utils::error::Error::AnyhowError(e) => Error::AnyhowError(e),
+            ragit_utils::error::Error::ParseIntError(e) => Error::ParseIntError(e),
+            ragit_utils::error::Error::ParseBoolError(e) => Error::ParseBoolError(e),
+            ragit_utils::error::Error::ParseFloatError(e) => Error::ParseFloatError(e),
+            ragit_utils::error::Error::UidError(e) => Error::UidError(e),
+            ragit_utils::error::Error::CliError(e) => Error::CliError(e),
+            #[cfg(feature = "csv")]
+            ragit_utils::error::Error::CsvError(e) => Error::CsvError(e),
+            #[cfg(feature = "pdf")]
+            ragit_utils::error::Error::MuPdfError(e) => Error::MuPdfError(e),
+            #[cfg(feature = "svg")]
+            ragit_utils::error::Error::UsvgError(e) => Error::UsvgError(e),
+            #[cfg(feature = "svg")]
+            ragit_utils::error::Error::PngEncodingError(e) => Error::PngEncodingError(e),
+        }
     }
 }
+
+

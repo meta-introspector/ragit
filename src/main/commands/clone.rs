@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
-use ragit_utils::index::commands::clone::clone_command;
+use crate::main::commands::clone_command::clone_command;
 
-pub async fn clone_command_main(args: Vec<String>, pre_args: ragit_args::ParsedArgs) -> Result<(), Error> {
-    clone_command(args, pre_args).await
+pub async fn clone_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), Error> {
+    clone_command(&args).await
 }
