@@ -2,12 +2,11 @@ use crate::error::Error;
 use crate::index::index_struct::Index;
 use crate::index::load_mode::LoadMode;
 use ragit_api::{get_model_by_name, Model, ModelRaw, Request};
-use ragit_cli::{ArgCount, ArgParser, ArgType};
+use crate::cli_types::{ArgCount, ArgParser, ArgType};
 use ragit_fs::{create_dir, exists, join, read_string};
 use ragit_pdl::{self, render_pdl_schema};
 use serde_json::Value;
 use chrono::Local;
-use std::path::PathBuf;
 use std::path::PathBuf;
 
 pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error> {
@@ -21,7 +20,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
         .args(ArgType::Path, ArgCount::Exact(1))
         .parse(args, 2)?;
 
-    let index = Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::OnlyJson);
+    let index = Index::load(root_dir.clone(), LoadMode::OnlyJson);
     let pdl_at = parsed_args.get_args_exact(1)?[0].clone();
     let strict_mode = parsed_args.get_flag(0).unwrap() == "--strict";
     let models = match parsed_args.arg_flags.get("--models") {
@@ -37,7 +36,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
             models
         }
         None => match &index {
-            Ok(Ok(index)) => index.models.clone(),
+            Ok(index) => index.models.clone(),
             _ => {
                 let models_raw = Index::get_initial_models()?;
                 let mut models = Vec::with_capacity(models_raw.len());
@@ -53,7 +52,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
     let model = match parsed_args.arg_flags.get("--model") {
         Some(model) => get_model_by_name(&models, model)?,
         None => match &index {
-            Ok(Ok(index)) => get_model_by_name(&models, &index.api_config.model)?,
+            Ok(index) => get_model_by_name(&models, &index.api_config.model)?,
             _ => match Index::load_config_from_home::<Value>("api.json") {
                 Ok(Some(Value::Object(api_config))) => match api_config.get("model") {
                     Some(Value::String(model)) => get_model_by_name(&models, model)?,
@@ -74,12 +73,12 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
         Some(log_at) => {
             let now = Local::now();
 
-            if !exists(log_at) {
-                create_dir(log_at)?;
+            if !exists(&PathBuf::from(log_at)) {
+                create_dir(PathBuf::from(log_at).to_str().ok_or_else(|| Error::Internal(format!("Invalid path: {}", log_at)))?)?;
             }
 
             (
-                Some(join(log_at, &format!("{}.pdl", now.to_rfc3339()))?),
+                Some(join(PathBuf::from(log_at).to_str().ok_or_else(|| Error::Internal(format!("Invalid path: {}", log_at)))?, &format!("{}.pdl", now.to_rfc3339()))?),
                 Some(log_at.to_string()),
             )
         }
@@ -100,7 +99,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
         _ => None,
     };
     let dump_api_usage_at = match &index {
-        Ok(Ok(index)) => index.api_config.dump_api_usage_at(&index.root_dir, "pdl"),
+        Ok(index) => index.api_config.dump_api_usage_at(&index.root_dir, "pdl"),
         _ => None,
     };
 

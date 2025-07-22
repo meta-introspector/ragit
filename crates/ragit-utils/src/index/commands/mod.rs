@@ -27,7 +27,4 @@ pub use remove::RemoveResult;
 pub use summary::{Summary, SummaryMode};
 pub use version::{VersionInfo, get_compatibility_warning};
 pub use pdl::pdl_command;
-pub use qa_test::qa_test_command;
-pub use qa_tune::qa_tune_command;
-pub use query::query_command;
-pub use status::status_command;
+

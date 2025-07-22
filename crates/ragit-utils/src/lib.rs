@@ -12,5 +12,6 @@ pub mod path_utils;
 pub mod agent;
 pub mod string_utils;
 pub mod uid;
+pub mod cli_types;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
