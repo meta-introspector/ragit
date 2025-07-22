@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::prompts::Prompt;
+use ragit_pdl::Prompt;
 use ragit_utils::query::QueryResponse;
 use ragit_uid::Uid;
 

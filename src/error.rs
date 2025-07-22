@@ -73,6 +73,7 @@ pub enum Error {
 
     /// If a user sees this error, that's a bug in ragit.
     Internal(String),
+    AnyhowError(anyhow::Error),
 
     // If you're implementing a new FileReaderImpl, and don't know which variant to use,
     // just use this one.
@@ -125,6 +126,12 @@ pub enum Error {
 
     // I'm too lazy to add all the variants of ragit_pdl::Error
     PdlError(ragit_pdl::Error),
+}
+
+impl From<anyhow::Error> for Error {
+    fn from(e: anyhow::Error) -> Self {
+        Error::AnyhowError(e)
+    }
 }
 
 impl From<reqwest::Error> for Error {

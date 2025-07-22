@@ -40,6 +40,7 @@ ragit-fs = { path = "./crates/fs", version = "0.4.2", features = ["diff"] }
 ragit-ignore = { path = "./crates/ignore", version = "0.4.2" }
 ragit-korean = { path = "./crates/korean", version = "0.4.2", optional = true }
 ragit-pdl = { path = "./crates/pdl", version = "0.4.2" }
+ragit-uid = { path = "./crates/ragit-uid", version = "0.1.0" }
 ragit-utils = { path = "./crates/ragit-utils", version = "0.1.0" }
 ragit-schema = { path = "./crates/ragit-schema", version = "0.1.0" }
 regex = "1.11.1"
@@ -51,6 +52,7 @@ serde_json = { version = "1.0.139", features = ["arbitrary_precision"] }
 sha3 = "0.10.8"
 strum = { version = "0.26", features = ["derive"] }
 tera = "1.20.0"
+anyhow = "1.0"
 tokio = { version = "1.43.0", features = ["full"] }
 url = "2.5.4"
 zstd = "0.13.3"

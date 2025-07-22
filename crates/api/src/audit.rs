@@ -20,7 +20,7 @@ pub struct AuditRecordAt {
     pub id: String,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, serde::Deserialize, serde::Serialize)]
 pub struct AuditRecord {
     pub input_tokens: u64,
     pub output_tokens: u64,
@@ -36,6 +36,17 @@ impl AddAssign<AuditRecord> for AuditRecord {
         self.output_tokens += rhs.output_tokens;
         self.input_cost += rhs.input_cost;
         self.output_cost += rhs.output_cost;
+    }
+}
+
+impl Default for AuditRecord {
+    fn default() -> Self {
+        Self {
+            input_tokens: 0,
+            output_tokens: 0,
+            input_cost: 0,
+            output_cost: 0,
+        }
     }
 }
 

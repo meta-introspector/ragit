@@ -56,6 +56,8 @@ pub enum Error {
     ParseBoolError(#[from] std::str::ParseBoolError),
     #[error(transparent)]
     ParseFloatError(#[from] std::num::ParseFloatError),
+    #[error(transparent)]
+    UidError(#[from] ragit_uid::UidError),
 }
 
 

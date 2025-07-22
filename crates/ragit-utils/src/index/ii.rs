@@ -95,7 +95,7 @@ impl Index {
         let ii_path = get_ii_path(&self.root_dir, hash(term));
 
         if exists(&ii_path) {
-            Ok(crate::uid::uid_io::load_from_file(&ii_path)?)
+            Ok(ragit_uid::load_from_file(&ii_path)?)
         }
 
         else {
@@ -212,7 +212,7 @@ impl Index {
             }
 
             let uids = if ii_path.exists() {
-                let mut prev_uids = crate::uid::uid_io::load_from_file(&ii_path)?;
+                let mut prev_uids = ragit_uid::load_from_file(&ii_path)?;
                 prev_uids.extend(uids);
                 prev_uids
             }
@@ -221,7 +221,7 @@ impl Index {
                 uids
             };
 
-            crate::uid::uid_io::save_to_file(&ii_path, &uids, UidWriteMode::Compact)?;
+            ragit_uid::save_to_file(&ii_path, &uids, UidWriteMode::Compact)?;
         }
 
         Ok(())

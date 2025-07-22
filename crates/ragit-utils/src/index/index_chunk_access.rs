@@ -85,7 +85,7 @@ impl Index {
         )?;
 
         if exists(&file_index_path) {
-            return Ok(crate::uid::uid_io::load_from_file(&file_index_path)?);
+            return Ok(ragit_uid::load_from_file(&file_index_path)?);
         }
 
         Err(Error::NoSuchFile { path: None, uid: Some(file_uid) })

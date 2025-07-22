@@ -24,6 +24,8 @@ pub mod model_management;
 pub mod get_model_by_name;
 pub mod get_prompt;
 pub mod index_add_file_index;
+pub mod index_add_files;
+pub mod index_audit;
 pub mod index_remove_file_index;
 pub mod muse_logic;
 pub mod config_access;
@@ -39,16 +41,7 @@ pub mod answer_query_with_chunks;
 pub mod summaries_to_chunks;
 
 
-pub use commands::add::{AddMode, AddResult};
-pub use commands::audit::Audit;
-pub use commands::build::BuildResult;
-pub use commands::merge::{MergeMode, MergeResult};
-pub use commands::pull::PullResult;
-pub use commands::push::PushResult;
-pub use commands::recover::RecoverResult;
-pub use commands::remove::RemoveResult;
-pub use commands::summary::{Summary, SummaryMode};
-pub use commands::version::{VersionInfo, get_compatibility_warning};
+
 pub use config::BuildConfig;
 pub use file::{FileReader, ImageDescription};
 pub use ii::IIStatus;

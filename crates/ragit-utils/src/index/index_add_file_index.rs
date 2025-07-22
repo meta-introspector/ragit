@@ -22,6 +22,6 @@ impl Index {
             try_create_dir(parent_path.to_str().unwrap())?;
         }
 
-        crate::uid::uid_io::save_to_file(&file_index_path, &uids.to_vec(), UidWriteMode::Naive)
+        Ok(ragit_uid::save_to_file(&file_index_path, &uids.to_vec(), UidWriteMode::Naive)?)
     }
 }

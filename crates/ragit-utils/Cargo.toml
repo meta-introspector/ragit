@@ -24,3 +24,4 @@ strum = { version = "0.27.2", features = ["derive"] }
 thiserror = "1.0"
 url = "2.5.4"
 image = "0.25.6"
+ragit-cli = { path = "../cli" }

@@ -1,5 +1,6 @@
 use crate::prelude::*;
-use ragit_cli::{ArgCount, ArgParser, ArgType, Span};
+use crate::main::find_root;
+use crate::{AddMode, Index, LoadMode};
 
 pub async fn add_command_main(args: Vec<String>, _pre_args: ragit_cli::ParsedArgs) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -15,12 +16,11 @@ pub async fn add_command_main(args: Vec<String>, _pre_args: ragit_cli::ParsedArg
         return Ok(());
     }
 
-    let root_dir = crate::find_root()?;
-    let mut index = Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
-    let add_mode = parsed_args.get_flag(0).map(|flag| AddMode::parse_flag(&flag)).unwrap_or(None);
+    let root_dir = find_root()?;
+    let mut index = Index::load(root_dir.to_string_lossy().into_owned().into(), LoadMode::QuickCheck)?;
+    let add_mode = if parsed_args.get_flag(0).is_some() { Some(AddMode::Manual) } else { Some(AddMode::Auto) };
     let all = parsed_args.get_flag(1).is_some();
     let dry_run = parsed_args.get_flag(2).is_some();
-    //    let ignore_file = index.read_ignore_file_command(&root_dir.to_string_lossy().into_owned())?;
 
     let mut files = parsed_args.get_args();
 
@@ -42,18 +42,11 @@ pub async fn add_command_main(args: Vec<String>, _pre_args: ragit_cli::ParsedArg
         });
     }
 
-    // if it's `--reject` mode, it first runs with `--dry-run` mode.
-    // if the dry_run has no problem, then it actually runs
     let result = index.add_files_command(
         &files,
         add_mode,
-        dry_run || add_mode == Some(AddMode::Reject),
-        // &ignore_file,
+        dry_run,
     ).await?;
-
-    if add_mode == Some(AddMode::Reject) && !dry_run {
-        index.add_files_command(&files, add_mode, dry_run, /* &ignore_file */).await?;
-    }
 
     println!("{result}");
     Ok(())
