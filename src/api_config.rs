@@ -172,7 +172,7 @@ impl ApiConfig {
                         );
                     }
 
-                    Some(AuditRecordAt { path, id: id.to_string() })
+                    Some(AuditRecordAt { path: path.to_str().unwrap().to_string(), id: id.to_string() })
                 },
                 Err(_) => None,
             }
@@ -186,7 +186,7 @@ impl ApiConfig {
     pub fn get_api_usage(&self, root_dir: &PathBuf, id: &str) -> Result<HashMap<String, AuditRecord>, Error> {
         match &self.dump_api_usage_at(root_dir, id) {
             Some(AuditRecordAt { path, id }) => {
-                let tracker = ragit_api::audit::Tracker::load_from_file(&ragit_utils::path_utils::pathbuf_to_str(path))?;
+                let tracker = ragit_api::audit::Tracker::load_from_file(path)?;
 
                 match tracker.0.get(id) {
                     Some(record) => Ok(record.clone()),

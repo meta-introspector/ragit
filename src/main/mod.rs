@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+pub mod commands;
 mod main_run;
 mod main_find_root;
 mod main_handle_error;

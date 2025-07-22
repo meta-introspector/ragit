@@ -1,6 +1,6 @@
 use crate::constant::FILE_INDEX_DIR_NAME;
 use crate::error::Error;
-use crate::uid::Uid;
+use ragit_uid::Uid;
 use crate::path_utils::get_uid_path;
 use ragit_fs::{exists, remove_file};
 

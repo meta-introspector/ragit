@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
-use crate::Uid;
+use ragit_uid::Uid;
 use crate::chunk::ChunkSource;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]

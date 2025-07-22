@@ -1,3 +1,4 @@
+use ragit_uid::Uid;
 use crate::error::Error;
 use crate::query::Keywords;
 use crate::prelude::*;

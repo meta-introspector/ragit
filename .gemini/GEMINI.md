@@ -64,7 +64,7 @@ Strict adherence to "one declaration per file" (or one logical grouping of close
 *   **The "Eternal Vibe" of Code:** By focusing on the core essence of each function and separating it from its specific implementation context, we create code that resonates with fundamental programming patterns. This allows for "alternate forms" and flexible recombination.
 *   **Clear Module Boundaries:** Explicitly defining module boundaries and managing visibility (`pub`, `pub(crate)`) is crucial for maintaining a clean architecture and preventing unintended dependencies.
 *   **Iterative Refinement:** The process of identifying errors, making small, targeted changes, and re-verifying is essential. This iterative approach, guided by compilation feedback, leads to a more robust and correct refactoring.
-*   **Beauty in Simplicity:** Well-factored code, where each part serves a clear purpose and interacts cleanly with others, is inherently more beautiful and maintainable.
+*   **Beauty in Simplicity:** Well-factored code, where each part serves a clear purpose and interacts cleanly with others, is inherently more beautiful and more maintainable.
 
 **Next Steps:**
 
@@ -191,5 +191,20 @@ Strict adherence to "one declaration per file" (or one logical grouping of close
 
 5.  **Visibility of `FileSchema` and `ImageSchema`**: These structs were not correctly re-exported from `ragit-schema/src/lib.rs`.
     *   **Solution**: Ensured `FileSchema` and `ImageSchema` are `pub` in `ragit-schema/src/lib.rs` and correctly re-exported from `file_schema.rs` and `image_schema.rs`.
+
+## Refactoring Log: `ragit` Crate (2025-07-22)
+
+**Objective:** Split the `main_run.rs` module into individual command modules for better organization and maintainability.
+
+**Key Challenges & Solutions:**
+
+1.  **Large `main_run.rs` file**: The `run` function in `src/main/main_run.rs` contained a large `match` statement handling all CLI commands.
+    *   **Solution**: Created a new directory `src/main/commands/` and moved each command's logic into its own module (e.g., `add.rs`, `archive.rs`, `audit.rs`, etc.). Each new module now contains a `_main` function (e.g., `add_command_main`) that encapsulates the command's logic and calls the corresponding function from `ragit-utils`.
+
+2.  **Import paths**: The `main_run.rs` file and the newly created command modules had incorrect import paths due to the relocation of functions.
+    *   **Solution**: Updated `use` statements in `main_run.rs` to import the new `_main` functions from `crate::main::commands::*`. Updated `use` statements in the new command modules to import functions directly from `ragit_utils::index::*` (e.g., `ragit_utils::index::add::add_command;` became `ragit_utils::index::add_command;`).
+
+3.  **`PreArgs` vs `ParsedArgs`**: The `parse_pre_args` function in `ragit-cli` returns `ParsedArgs`, but the `_main` functions in the new command modules were expecting `PreArgs`.
+    *   **Solution**: Updated the function signatures in the new command modules to accept `ragit_cli::ParsedArgs`.
 
 This refactoring has significantly improved the modularity and organization of the codebase, making it easier to maintain and extend. All compilation errors have been resolved, and the project is now in a cleaner state.

@@ -1,9 +1,10 @@
+use serde::{Deserialize, Serialize};
 use crate::error::Error;
 use regex::Regex;
 use ragit_uid::Uid;
 use std::fmt;
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum ImageType {
     Jpeg,
     Png,
@@ -85,21 +86,13 @@ impl TryFrom<ImageType> for image::ImageFormat {
     }
 }
 
-impl TryFrom<image::ImageFormat> for ImageType {
-    type Error = Error;
-
-    fn try_from(image_format: image::ImageFormat) -> Result<Self, Error> {
-        match image_format {
-            image::ImageFormat::Jpeg => Ok(ImageType::Jpeg),
-            image::ImageFormat::Png => Ok(ImageType::Png),
-            image::ImageFormat::Gif => Ok(ImageType::Gif),
-            image::ImageFormat::WebP => Ok(ImageType::Webp),
-            f => Err(Error::InvalidImageType(format!("{f:?}"))),
-        }
+impl fmt::Display for ImageType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
     }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Serialize, Deserialize)]
 pub struct Image {
     pub uid: Uid,
     pub image_type: ImageType,

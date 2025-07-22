@@ -5,7 +5,7 @@ use crate::error::Error;
 use crate::index::index_struct::Index;
 use crate::query::{QueryResponse, Keywords};
 use crate::uid::{UidQueryConfig, uid_query};
-use crate::prelude::Uid;
+use ragit_uid::Uid;
 use crate::string_utils::substr_edit_distance;
 use ragit_pdl::Schema;
 use serde::Serialize;

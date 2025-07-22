@@ -423,12 +423,12 @@ pub struct ArgFlag {
 }
 
 pub struct ParsedArgs {
-    skip_first_n: usize,
-    raw_args: Vec<String>,
-    args: Vec<String>,
-    flags: Vec<Option<String>>,
     pub arg_flags: HashMap<String, String>,
-    show_help: bool,  // TODO: options for help messages
+    pub show_help: bool,
+    pub raw_args: Vec<String>,
+    pub skip_first_n: usize,
+    pub args: Vec<String>,
+    pub flags: Vec<Option<String>>,
 }
 
 impl ParsedArgs {

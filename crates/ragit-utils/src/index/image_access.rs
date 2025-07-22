@@ -1,7 +1,7 @@
 use crate::constant::IMAGE_DIR_NAME;
 use crate::error::Error;
 use crate::index::file::ImageDescription;
-use crate::uid::Uid;
+use ragit_uid::Uid;
 use crate::path_utils::get_uid_path;
 use ragit_fs::{read_bytes, read_string};
 

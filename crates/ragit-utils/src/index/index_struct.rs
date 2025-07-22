@@ -1,3 +1,4 @@
+use ragit_uid::Uid;
 use std::path::PathBuf;
 use crate::api_config::ApiConfig;
 use crate::error::Error;

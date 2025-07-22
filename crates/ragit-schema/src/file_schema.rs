@@ -1,3 +1,4 @@
+use ragit_uid::Uid;
 use ragit_utils::prelude::*;
 use ragit_utils::index::index_struct::Index;
 use ragit_utils::chunk::ChunkBuildInfo;

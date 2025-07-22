@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 use crate::error::Error;
 use ragit_fs::{into_abs_path, join, join3, normalize};
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME};
-use crate::uid::Uid;
+use ragit_uid::Uid;
 
 /// Converts a `PathBuf` to an `&str`. Panics if the path is not valid UTF-8.
 pub fn pathbuf_to_str(path: &PathBuf) -> String {

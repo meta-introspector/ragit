@@ -25,14 +25,17 @@ pub mod uid;
 
 pub use ragit_utils::agent::action::{Action as AgentAction, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};
 pub use ragit_utils::agent::file_tree::FileTree;
-pub use crate::api_config::ApiConfig;
-pub use ragit_utils::chunk::{Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, into_multi_modal_contents, merge_and_convert_chunks, RenderedChunk};
-pub use constant::*;
+
+pub use ragit_utils::chunk::{Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, merge_and_convert_chunks, RenderedChunk};
+pub use ragit_utils::chunk::utils::into_multi_modal_contents;
+
+pub use ragit_utils::index::{AddMode, Audit, IIStatus, MergeMode, ProcessedDoc, PullResult, PushResult, RemoveResult, SummaryMode, MergeResult, BuildResult, get_compatibility_warning, Index, LoadMode};
+pub use ragit_utils::api_config::ApiConfig;
+pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn};
+pub use ragit_uid::{Uid, UidQueryConfig, UidQueryResult};
+pub use ragit_utils::agent::action::AgentAction;
 pub use ragit_utils::error::Error;
-pub use ragit_utils::index::{AddMode, AddResult, Audit, BuildConfig, BuildResult, IIStatus, ImageDescription, Index, LoadMode, MergeMode, MergeResult, ProcessedDoc, PullResult, PushResult, RecoverResult, RemoveResult, Summary, SummaryMode, TfidfResult, VersionInfo, get_compatibility_warning,};
-pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn,};
-pub use ragit_utils::uid::{Uid, UidQueryConfig, UidQueryResult};
-pub use ragit_schema::{FileSchema, ImageSchema, Prettify};
+pub use ragit_utils::index::commands::build::get_build_options;
 
 // My rules for version numbers
 // Let's say I'm working on 0.1.2

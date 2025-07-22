@@ -1,7 +1,7 @@
 use crate::error::Error;
 use crate::prompts::Prompt;
 use ragit_utils::query::QueryResponse;
-use ragit_utils::Uid;
+use ragit_uid::Uid;
 
 use ragit_utils::chunk::{Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, AtomicToken, RenderedChunk};
 use ragit_utils::index::index_struct::Index;

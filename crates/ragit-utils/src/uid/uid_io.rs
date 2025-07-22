@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
 use crate::error::Error;
-use crate::uid::Uid;
-use crate::uid::UidWriteMode;
+use ragit_uid::Uid;
+use ragit_uid::UidWriteMode;
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
 
 pub fn load_from_file(path: &PathBuf) -> Result<Vec<Uid>, Error> {

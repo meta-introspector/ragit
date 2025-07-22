@@ -3,6 +3,7 @@ use crate::chunk::chunk_extra_info::ChunkExtraInfo;
 use ragit_pdl::Image;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub enum AtomicToken {
     String { data: String, char_len: usize },
     Image(Image),

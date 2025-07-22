@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::io::Read;
 use crate::prelude::*;
 use crate::chunk::chunk_struct::Chunk;
 
@@ -25,26 +26,28 @@ pub fn save_to_file(
     root_dir: &PathBuf,
     create_tfidf: bool,
 ) -> Result<()> {
-    let parent_path = ragit_fs::parent(&crate::path_utils::pathbuf_to_str(path))?;
+    let parent_path = ragit_fs::parent(path)?;
 
-    if !ragit_fs::exists(&crate::path_utils::pathbuf_to_str(&parent_path)) {
+    if !ragit_fs::exists(&parent_path) {
         ragit_fs::try_create_dir(&crate::path_utils::pathbuf_to_str(&parent_path))?;
     }
 
     if create_tfidf {
         let tfidf_path = crate::path_utils::str_to_pathbuf(&ragit_fs::set_extension(&crate::path_utils::pathbuf_to_str(path), "tfidf")?);
-        crate::index::tfidf::save_to_file(&tfidf_path, &chunk.data)?;
+        crate::index::tfidf::save_to_file(tfidf_path.to_str().unwrap(), chunk, root_dir.to_str().unwrap())?;
     }
 
     let serialized_chunk = serde_json::to_vec(chunk)?;
 
     if serialized_chunk.len() as u64 > compression_threshold {
-        let mut gz = flate2::read::GzEncoder::new(&serialized_chunk[..], flate2::Compression::new(compression_level));
-        let compressed_bytes = gz.finish()?;
-        Ok(ragit_fs::write_bytes(&crate::path_utils::pathbuf_to_str(path), &compressed_bytes, ragit_fs::WriteMode::Create)?)
+        use std::io::Write;
+        let mut encoder = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::new(compression_level));
+        encoder.write_all(&serialized_chunk)?;
+        let compressed_bytes = encoder.finish()?;
+        Ok(ragit_fs::write_bytes(&crate::path_utils::pathbuf_to_str(path), &compressed_bytes, ragit_fs::WriteMode::CreateOrTruncate)?)
     }
 
     else {
-        Ok(ragit_fs::write_bytes(&crate::path_utils::pathbuf_to_str(path), &serialized_chunk, ragit_fs::WriteMode::Create)?)
+        Ok(ragit_fs::write_bytes(&crate::path_utils::pathbuf_to_str(path), &serialized_chunk, ragit_fs::WriteMode::CreateOrTruncate)?)
     }
 }

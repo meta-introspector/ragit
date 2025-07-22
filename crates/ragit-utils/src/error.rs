@@ -1,4 +1,4 @@
-use crate::uid::Uid;
+use ragit_uid::Uid;
 pub use ragit_api::Error as ApiError;
 pub use ragit_pdl::JsonType;
 pub use ragit_fs::FileError;

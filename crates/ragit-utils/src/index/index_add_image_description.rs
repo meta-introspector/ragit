@@ -1,3 +1,4 @@
+use ragit_uid::Uid;
 use crate::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME};
 use crate::prelude::*;
 use ragit_fs::{read_bytes, read_string, remove_file, try_create_dir, write_bytes, WriteMode};

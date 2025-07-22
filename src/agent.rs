@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::prelude::*;
-use crate::prompts::Prompt;
+use ragit_pdl::Prompt;
 use ragit_utils::query::QueryResponse;
 use crate::Uid;
 

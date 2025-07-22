@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
-use crate::uid_struct::Uid;
+use ragit_uid::Uid;
 
 use crate::error::Error;
 use crate::index::index_struct::Index;
