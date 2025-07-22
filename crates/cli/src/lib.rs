@@ -3,10 +3,9 @@ use std::collections::HashMap;
 
 
 pub use ragit_utils::error::Error;
-pub use ragit_utils::error::Span;
 
-use ragit_utils::cli_types::ParsedArgs;
-use ragit_utils::cli_types::{ArgType, ArgCount};
+
+pub use ragit_utils::cli_types::{ArgType, ArgCount, ArgParser, ParsedArgs, Span};
 use ragit_utils::error::ErrorKind;
 
 /// It parses `rag [-C <path>] <command> <args>` and returns

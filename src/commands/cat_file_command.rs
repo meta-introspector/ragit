@@ -1,4 +1,10 @@
-use ragit::{Error, Index, LoadMode, Path, UidQueryConfig, into_multi_modal_contents};
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::load_mode::LoadMode;
+use std::path::PathBuf;
+use ragit_utils::uid::query_helpers::UidQueryConfig;
+use ragit_utils::chunk::utils::into_multi_modal_contents;
+use ragit_utils::project_root::find_root;
 use ragit_cli::{ArgCount, ArgParser, ArgType};
 use ragit_pdl::encode_base64;
 use std::io::Write;
@@ -15,7 +21,7 @@ pub async fn cat_file_command(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
+    let index = Index::load(find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
     let query = parsed_args.get_args_exact(1)?.clone();
     let query_result = index.uid_query(&args, UidQueryConfig::new())?;
     let json_mode = parsed_args.get_flag(0).is_some();

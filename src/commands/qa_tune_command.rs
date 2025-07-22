@@ -1,6 +1,6 @@
-use ragit::Error;
+use ragit_utils::error::Error;
 use ragit_api::ModelQAResult;
-use ragit_cli::{ArgParser, ArgCount, ArgType, Span};
+use ragit_utils::cli_types::{ArgParser, ArgCount, ArgType, Span};
 
 pub async fn qa_tune_command(args: &Vec<String>) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

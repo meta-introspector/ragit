@@ -1,8 +1,10 @@
-use crate::Error;
-use crate::Index;
-use crate::LoadMode;
-use crate::SummaryMode;
-use ragit_cli::{ArgCount, ArgParser, ArgType};
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::load_mode::LoadMode;
+use ragit_utils::index::commands::summary::SummaryMode;
+use std::path::PathBuf;
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType};
+use ragit_utils::project_root::find_root;
 
 pub async fn muse_summarize_command(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -15,8 +17,8 @@ pub async fn muse_summarize_command(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let root_dir = crate::find_root()?;
-    let mut index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
+    let root_dir = find_root()?;
+    let mut index = Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
     index.api_config.enable_muse_mode = true;
     let summary_mode = if parsed_args.get_flag(0).is_some() {
         SummaryMode::Rerank
@@ -27,7 +29,7 @@ pub async fn muse_summarize_command(args: &[String]) -> Result<(), Error> {
     let quiet = parsed_args.get_flag(1).is_some();
     let query = parsed_args.get_args();
 
-    let summary = index.summary(&query, summary_mode, quiet).await?;
+    let summary = index.summary(Some(summary_mode)).await?;
 
     println!("{}", summary.unwrap_or_default());
 

@@ -1,5 +1,10 @@
-use ragit::{AddMode, Error, Index, LoadMode, Path};
-use ragit_cli::{ArgCount, ArgParser, ArgType, Span};
+use ragit_utils::index::add_files::AddMode;
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::index_load::LoadMode;
+use std::path::PathBuf;
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, Span};
+use ragit_utils::project_root::find_root;
 
 pub async fn add_command(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -15,31 +20,25 @@ pub async fn add_command(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let root_dir = crate::find_root()?;
+    let root_dir = find_root()?;
     let mut index = Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
     let add_mode = parsed_args.get_flag(0).map(|flag| AddMode::parse_flag(&flag)).unwrap_or(None);
     let all = parsed_args.get_flag(1).is_some();
     let dry_run = parsed_args.get_flag(2).is_some();
-    //    let ignore_file = index.read_ignore_file_command(&root_dir.to_string_lossy().into_owned())?;
+    let ignore_file = index.read_ignore_file_command(&root_dir.to_string_lossy().into_owned())?;
 
     let mut files = parsed_args.get_args();
 
     if all {
         if !files.is_empty() {
-            return Err(Error::CliError {
-                message: String::from("You cannot use `--all` option with paths."),
-                span: (String::new(), 0, 0),  // TODO
-            });
+            return Err(Error::CliError::new("You cannot use `--all` option with paths.", Span::End));
         }
 
         files.push(root_dir.to_string_lossy().into_owned());
     }
 
     else if files.is_empty() {
-        return Err(Error::CliError {
-            message: String::from("Please specify which files to add."),
-            span: Span::End.render(args, 2).unwrap_rendered(),
-        });
+        return Err(Error::CliError::new("Please specify which files to add.", Span::End.render(args, 2).unwrap_rendered()));
     }
 
     // if it's `--reject` mode, it first runs with `--dry-run` mode.

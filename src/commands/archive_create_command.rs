@@ -1,5 +1,9 @@
-use ragit::{Error, Index, LoadMode, Path};
-use ragit_cli::{ArgCount, ArgParser, ArgType};
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::index_load::LoadMode;
+use std::path::PathBuf;
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType};
+use ragit_utils::project_root::find_root;
 
 pub async fn archive_create_command(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -18,7 +22,7 @@ pub async fn archive_create_command(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
+    let index = Index::load(find_root()?.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
     let jobs = parsed_args.arg_flags.get("--jobs").as_ref().unwrap().parse::<usize>().unwrap();
     let size_limit = parsed_args.arg_flags.get("--size-limit").as_ref().map(|n| n.parse::<u64>().unwrap());
     let output = parsed_args.arg_flags.get("--output").as_ref().unwrap().to_string();

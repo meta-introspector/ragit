@@ -1,5 +1,7 @@
-use ragit::{Error, Index, Path};
-use ragit_cli::{ArgCount, ArgParser, ArgType};
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use std::path::PathBuf;
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType};
 
 pub async fn archive_extract_command(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

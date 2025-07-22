@@ -1,6 +1,10 @@
-use crate::{Error, Index, LoadMode};
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::load_mode::LoadMode;
+use std::path::PathBuf;
 use ragit_api::{get_model_by_name, Model, ModelRaw};
-use ragit_cli::{ArgCount, ArgParser, ArgType, Span};
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, Span};
+use ragit_utils::project_root::find_root;
 use serde_json::{Map, Value};
 
 pub async fn model_command(args: &[String]) -> Result<(), Error> {
@@ -95,7 +99,7 @@ pub async fn model_command(args: &[String]) -> Result<(), Error> {
                 .args(ArgType::String, ArgCount::Leq(1))
                 .parse(args, 3)?;
 
-            let mut index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
+            let mut index = Index::load(find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
             let all = parsed_args.get_flag(0).is_some();
             let existing_only = parsed_args.get_flag(1).is_some();
             let quiet = parsed_args.get_flag(2).is_some();
@@ -104,20 +108,14 @@ pub async fn model_command(args: &[String]) -> Result<(), Error> {
 
             let result = if let Some(model_name) = model_name {
                 if all {
-                    return Err(Error::CliError {
-                        message: String::from("You cannot use `--all` option with a model name."),
-                        span: (String::new(), 0, 0),  // TODO
-                    });
+                    return Err(Error::CliError(ragit_utils::error::CliError::new(String::from("You cannot use `--all` option with a model name."), Span::End)));
                 }
 
                 index.fetch_remote_models(&model_name, existing_only, remote).await?
             } else if all {
                 index.fetch_all_remote_models(existing_only, remote).await?
             } else {
-                return Err(Error::CliError {
-                    message: String::from("Please specify which model to fetch."),
-                    span: Span::End.render(args, 2).unwrap_rendered(),
-                });
+                return Err(Error::CliError(ragit_utils::error::CliError::new(String::from("Please specify which model to fetch."), Span::End.render(args, 2).unwrap_rendered())));
             };
 
             if !quiet {
@@ -131,39 +129,27 @@ pub async fn model_command(args: &[String]) -> Result<(), Error> {
                 .args(ArgType::String, ArgCount::Leq(1))
                 .parse(args, 3)?;
 
-            let mut index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
+            let mut index = Index::load(find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
             let all = parsed_args.get_flag(0).is_some();
             let model_name = parsed_args.get_args().get(0).map(|model| model.to_string());
 
             if let Some(model_name) = model_name {
                 if all {
-                    return Err(Error::CliError {
-                        message: String::from("You cannot use `--all` option with a model name."),
-                        span: (String::new(), 0, 0),  // TODO
-                    });
+                    return Err(Error::CliError(ragit_utils::error::CliError::new(String::from("You cannot use `--all` option with a model name."), Span::End)));
                 }
 
                 index.remove_local_model(&model_name)?;
             } else if all {
                 index.remove_all_local_models()?;
             } else {
-                return Err(Error::CliError {
-                    message: String::from("Please specify which model to remove."),
-                    span: Span::End.render(args, 2).unwrap_rendered(),
-                });
+                return Err(Error::CliError(ragit_utils::error::CliError::new(String::from("Please specify which model to remove."), Span::End.render(args, 2).unwrap_rendered())));
             }
         }
         Some(flag) => {
-            return Err(Error::CliError {
-                message: format!("Unknown flag: `{flag}`. Valid flags are --search | --update | --remove."),
-                span: Span::Exact(2).render(args, 2).unwrap_rendered(),
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new(format!("Unknown flag: `{flag}`. Valid flags are --search | --update | --remove."), Span::End)));
         }
         None => {
-            return Err(Error::CliError {
-                message: String::from("Flag `--search | --update | --remove` is missing."),
-                span: Span::End.render(args, 2).unwrap_rendered(),
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new(String::from("Flag `--search | --update | --remove` is missing."), Span::End)));
         }
     }
 

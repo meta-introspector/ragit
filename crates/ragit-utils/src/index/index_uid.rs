@@ -1,13 +1,11 @@
-use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
+use crate::constant::{INDEX_FILE_NAME};
 use crate::error::Error;
 use crate::index::index_struct::Index;
-use crate::index::load_mode::LoadMode;
-use crate::prelude::*;
-use ragit_uid::{load_from_file, Uid, UidWriteMode};
-use ragit_fs::{exists, file_name, join, join3, join4, normalize, parent, read_dir, read_string, remove_file, set_extension, try_create_dir, write_bytes, write_string, WriteMode};
-use sha3::{Digest, Sha3_256};
-use std::collections::{HashMap, HashSet};
+use ragit_uid::{load_from_file, Uid};
+use ragit_fs::{file_name, parent};
+use sha3::{Sha3_256};
 use std::path::PathBuf;
+use std::collections::{HashMap, HashSet};
 
 impl Index {
     pub fn calculate_and_save_uid(&mut self) -> Result<Uid, Error> {

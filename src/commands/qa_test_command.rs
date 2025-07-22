@@ -1,8 +1,10 @@
-use ragit::{ApiConfig, Error, Index};
+use ragit_utils::api_config::ApiConfig;
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
 use ragit_api::{Model, Request};
 use ragit_api::{ModelQASystem, ModelQAResult, QualityScores};
 use ragit_pdl::{Message, Role};
-use ragit_cli::{ArgParser, ArgCount, ArgType};
+use ragit_utils::cli_types::{ArgParser, ArgCount, ArgType};
 
 pub async fn qa_test_command(args: &Vec<String>) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

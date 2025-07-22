@@ -3,26 +3,7 @@ use crate::error::Error;
 use ragit_fs::{into_abs_path, join, join3, normalize};
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME};
 use ragit_uid::Uid;
-
-/// Converts a `PathBuf` to an `&str`. Panics if the path is not valid UTF-8.
-pub fn pathbuf_to_str(path: &PathBuf) -> String {
-    path.to_str().expect("Path is not valid UTF-8").to_string()
-}
-
-/// Converts an `&str` to a `PathBuf`.
-pub fn str_to_pathbuf(s: &str) -> PathBuf {
-    PathBuf::from(s)
-}
-
-/// Returns a displayable object for a `Path`.
-pub fn path_to_display<'a>(path: &'a Path) -> impl std::fmt::Display + 'a {
-    path.display()
-}
-
-/// Converts an `&str` to an `&Path`.
-pub fn str_to_path_ref(s: &str) -> &Path {
-    Path::new(s)
-}
+pub use ragit_core_utils::path_utils::{pathbuf_to_str, str_to_pathbuf, path_to_display, str_to_path_ref};
 
 pub fn join_paths(path: &Path, child: &Path) -> Result<PathBuf, Error> {
     let joined = join(&pathbuf_to_str(&path.to_path_buf()), &pathbuf_to_str(&child.to_path_buf()))?;
@@ -64,8 +45,7 @@ pub fn get_uid_path(root_dir: &PathBuf, dir: &str, uid: Uid, ext: Option<&str>) 
     }
 }
 
-// root_dir/.ragit/ii/term_hash_prefix/term_hash_suffix
-pub(crate) fn get_ii_path(root_dir: &PathBuf, term_hash: String) -> PathBuf {
+pub fn get_ii_path(root_dir: &PathBuf, term_hash: String) -> PathBuf {
     let ii_at = join3_paths(
         root_dir,
         &str_to_pathbuf(INDEX_DIR_NAME),
@@ -81,7 +61,7 @@ pub(crate) fn get_ii_path(root_dir: &PathBuf, term_hash: String) -> PathBuf {
     ).unwrap()
 }
 
-pub(crate) fn get_ii_path_str(root_dir: &str, term_hash: String) -> PathBuf {
+pub fn get_ii_path_str(root_dir: &str, term_hash: String) -> PathBuf {
     let ii_at = join3(
         root_dir,
         INDEX_DIR_NAME,
@@ -100,4 +80,3 @@ pub(crate) fn get_ii_path_str(root_dir: &str, term_hash: String) -> PathBuf {
 pub fn get_normalized_abs_pathbuf(path: &PathBuf) -> Result<PathBuf, Error> {
     Ok(PathBuf::from(normalize(&into_abs_path(path.to_str().unwrap())?)?))
 }
-

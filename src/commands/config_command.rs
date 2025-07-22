@@ -1,9 +1,14 @@
-use crate::{Error, Index, LoadMode};
-use ragit_cli::{ArgCount, ArgParser, ArgType, Span};
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::load_mode::LoadMode;
+use std::path::PathBuf;
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, Span};
+use ragit_utils::project_root::find_root;
 use serde_json::Value;
+use ragit_api::get_model_by_name;
 
 pub fn config_command(args: &[String]) -> Result<(), Error> {
-    let mut index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
+    let mut index = Index::load(find_root()?.to_string_lossy().into_owned(), LoadMode::OnlyJson)?;
 
     match args.get(2).map(|s| s.as_str()) {
         Some("--get") => {
@@ -38,14 +43,14 @@ pub fn config_command(args: &[String]) -> Result<(), Error> {
 
             // QoL improvement: it warns if the user typed a wrong model name.
             if &key == "model" {
-                let models = Index::list_models(
-                    &index.get_path().join("models.json"),
+                let models = ragit_api::list_models(
+                    &index.root_dir.join("models.json"),
                     &|_| true,  // no filter
                     &|model| model,  // no map
                     &|model| model.name.to_string(),
                 )?;
 
-                if let Err(e @ ragit_api::Error::InvalidModelName { .. }) = ragit_api::get_model_by_name(&models, &value) {
+                if let Err(e @ ragit_api::Error::InvalidModelName { .. }) = get_model_by_name(&models, &value) {
                     return Err(e.into());
                 }
             }
@@ -89,16 +94,10 @@ pub fn config_command(args: &[String]) -> Result<(), Error> {
             }
         }
         Some(flag) => {
-            return Err(Error::CliError {
-                message: format!("Unknown flag: `{flag}`. Valid flags are --get | --get-all | --set."),
-                span: Span::Exact(2).render(args, 2).unwrap_rendered(),
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new(format!("Unknown flag: `{flag}`. Valid flags are --get | --get-all | --set."), Span::End)));
         }
         None => {
-            return Err(Error::CliError {
-                message: String::from("Flag `--get | --get-all | --set` is missing."),
-                span: Span::End.render(args, 2).unwrap_rendered(),
-            });
+            return Err(Error::CliError(ragit_utils::error::CliError::new(String::from("Flag `--get | --get-all | --set` is missing."), Span::End)));
         }
     }
 

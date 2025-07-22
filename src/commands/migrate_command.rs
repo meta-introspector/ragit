@@ -11,7 +11,7 @@ pub fn migrate_command(args: &[String]) -> Result<(), Error> {
 
     let root_dir = crate::find_root()?;
 
-    if let Some((v1, v2)) = Index::migrate(&root_dir, ragit::VERSION.to_string())? {
+    if let Some((v1, v2)) = Index::migrate(&root_dir, env!("CARGO_PKG_VERSION").to_string())? {
         println!("migrated from `{v1}` to `{v2}`");
     }
 

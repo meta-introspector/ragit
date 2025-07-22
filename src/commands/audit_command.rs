@@ -1,6 +1,10 @@
-use chrono::{Days, Local};
-use ragit::{Audit, Error, Index, LoadMode, Path};
-use ragit_cli::{ArgCount, ArgParser, ArgType};
+use ragit_utils::index::commands::audit::Audit;
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::load_mode::LoadMode;
+use std::path::PathBuf;
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, Span};
+use ragit_utils::project_root::find_root;
 use serde_json::Value;
 
 pub async fn audit_command(args: &[String]) -> Result<(), Error> {
@@ -23,7 +27,7 @@ pub async fn audit_command(args: &[String]) -> Result<(), Error> {
     let show_tokens = parsed_args.get_flag(1).unwrap_or_else(|| String::from("--only-tokens")) != "--only-costs";
     let show_costs = parsed_args.get_flag(1).unwrap_or_else(|| String::from("--only-costs")) != "--only-tokens";
     let json_mode = parsed_args.get_flag(2).is_some();
-    let index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::Minimum)?;
+    let index = Index::load(find_root()?.to_string_lossy().into_owned(), LoadMode::Minimum)?;
     let mut result = index.audit(if this_week { Some(since) } else { None })?;
     let mut total = Audit::default();
 
@@ -37,10 +41,7 @@ pub async fn audit_command(args: &[String]) -> Result<(), Error> {
         let result = match result.get(category) {
             Some(r) => *r,
             None => {
-                return Err(Error::CliError {
-                    message: format!("`{category}` is an invalid category."),
-                    span: (String::new(), 0, 0),  // TODO
-                });
+                return Err(Error::CliError(ragit_utils::error::CliError::new(format!("`{category}` is an invalid category."), Span::End)));
             },
         };
 

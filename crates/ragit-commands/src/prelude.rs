@@ -30,5 +30,6 @@ pub use async_recursion::async_recursion;
 pub use lazy_static::lazy_static;
 pub use regex::Regex;
 pub use std::fmt;
-pub use crate::find_root;
-pub use crate::get_doc_content;
+pub use ragit_utils::project_root::find_root;
+pub use ragit_utils::doc_utils::get_doc_content;
+pub use ragit_utils::index::commands::AddMode;

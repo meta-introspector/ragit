@@ -58,11 +58,12 @@ impl Uid {
     const CHUNK_TYPE: u128 = (0x1 << 32);
     const IMAGE_TYPE: u128 = (0x2 << 32);
     const FILE_TYPE: u128 = (0x3 << 32);
+    
     const GROUP_TYPE: u128 = (0x4 << 32);
     const KNOWLEDGE_BASE_TYPE: u128 = (0x5 << 32);
     const SUMMARY_TYPE: u128 = (0x6 << 32);
 
-    pub(crate) fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
         match bytes.len() {
             0 => Ok(Uid { high: 0, low: 0 }),
             1..=15 => Ok(Uid { high: 0, low: u128_from_bytes(bytes)? }),
@@ -73,7 +74,7 @@ impl Uid {
         }
     }
 
-    pub(crate) fn encode_partial(&self, len: usize, buffer: &mut Vec<u8>) {
+    pub fn encode_partial(&self, len: usize, buffer: &mut Vec<u8>) {
         for b in self.high.to_be_bytes().into_iter().chain(self.low.to_be_bytes().into_iter()).skip(32 - len) {
             buffer.push(b);
         }
@@ -92,7 +93,7 @@ impl Uid {
         }
     }
 
-    pub(crate) fn byte_len(&self) -> usize {
+    pub fn byte_len(&self) -> usize {
         if self.high == 0 {
             (255 - self.low.leading_zeros() as usize) / 8 - 15
         } else {
@@ -187,7 +188,7 @@ impl Uid {
         old
     }
 
-    pub(crate) fn from_prefix_and_suffix(prefix: &str, suffix: &str) -> Result<Self, UidError> {
+    pub fn from_prefix_and_suffix(prefix: &str, suffix: &str) -> Result<Self, UidError> {
         if prefix.len() != 2 || suffix.len() != 62 {
             Err(UidError::InvalidUid(format!("Invalid Uid: {}{}", prefix, suffix)))
         }
@@ -243,7 +244,7 @@ impl Uid {
         result
     }
 
-    pub(crate) fn get_uid_type(&self) -> Result<UidType, UidError> {
+    pub fn get_uid_type(&self) -> Result<UidType, UidError> {
         let field = ((self.low >> 32) & 0xf) << 32;
 
         match field {

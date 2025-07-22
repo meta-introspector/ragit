@@ -1,10 +1,15 @@
-use crate::{Error, Index, LoadMode};
+use ragit_utils::error::Error;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::load_mode::LoadMode;
+use std::path::PathBuf;
 use ragit_api::{get_model_by_name, Model, ModelRaw, Request};
-use ragit_cli::{ArgCount, ArgParser, ArgType};
+use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType};
 use ragit_fs::{create_dir, exists, join, read_string};
 use ragit_pdl::{self, render_pdl_schema};
 use serde_json::Value;
 use chrono::Local;
+use ragit_utils::project_root::find_root;
+use ragit_utils::path_utils::{pathbuf_to_str, str_to_pathbuf};
 
 pub async fn pdl_command(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -22,7 +27,7 @@ pub async fn pdl_command(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let index = crate::find_root().map(|root_dir| Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::OnlyJson));
+    let index = find_root().map(|root_dir| Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::OnlyJson));
     let pdl_at = parsed_args.get_args_exact(1)?[0].clone();
     let strict_mode = parsed_args.get_flag(0).unwrap() == "--strict";
     let models = match parsed_args.arg_flags.get("--models") {
@@ -75,12 +80,12 @@ pub async fn pdl_command(args: &[String]) -> Result<(), Error> {
         Some(log_at) => {
             let now = Local::now();
 
-            if !exists(log_at) {
+            if !exists(&str_to_pathbuf(log_at)) {
                 create_dir(log_at)?;
             }
 
             (
-                Some(join(log_at, &format!("{}.pdl", now.to_rfc3339()))?),
+                Some(str_to_pathbuf(&join(log_at, &format!("{}.pdl", now.to_rfc3339()))?)),
                 Some(log_at.to_string()),
             )
         }

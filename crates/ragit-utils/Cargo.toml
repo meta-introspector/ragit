@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 
+ragit-core-utils = { path = "../ragit-core-utils" }
 ragit-api = { path = "../api" }
 ragit-pdl = { path = "../pdl" }
 ragit-uid = { path = "../ragit-uid" }

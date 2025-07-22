@@ -1,7 +1,6 @@
 use crate::{
     FileError,
     WriteMode,
-    exists,
     file_size,
     rename,
     write_string,

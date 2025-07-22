@@ -12,7 +12,6 @@ use crate::response::Response;
 use ragit_fs::{
     WriteMode,
     create_dir_all,
-    exists,
     join,
     write_log,
     write_string,
