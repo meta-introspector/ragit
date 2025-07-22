@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use crate::error::Error;
 use ragit_fs::{exists, parent, current_dir};
 use crate::constant::INDEX_DIR_NAME;
@@ -16,7 +16,7 @@ pub fn find_root() -> Result<PathBuf, Error> {
         }
     }
 
-    let mut current_path_str = current_dir()?;
+    let current_path_str = current_dir()?;
     let mut current_path = PathBuf::from(current_path_str);
 
     loop {

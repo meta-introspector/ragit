@@ -41,7 +41,7 @@ pub async fn audit_command(args: &[String]) -> Result<(), Error> {
         let result = match result.get(category) {
             Some(r) => *r,
             None => {
-                return Err(Error::CliError(ragit_utils::error::CliError::new(format!("`{category}` is an invalid category."), Span::End)));
+                return Err(Error::CliError(CliError::new_message(format!("`{category}` is an invalid category."))));
             },
         };
 

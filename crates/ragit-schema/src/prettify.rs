@@ -1,5 +1,5 @@
-use crate::{FileSchema, ImageSchema};
-use ragit_utils::prelude::*;
+use ragit_types::{FileSchema, ImageSchema};
+use ragit_utils::error::Error;
 use serde_json::Value;
 
 pub trait Prettify {

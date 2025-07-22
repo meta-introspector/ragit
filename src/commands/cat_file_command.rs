@@ -71,7 +71,7 @@ pub async fn cat_file_command(args: &[String]) -> Result<(), Error> {
     }
 
     else {
-        return Err(Error::UidQueryError(format!("There's no chunk/file/image that matches `{}`.", query[0])));
+        return Err(Error::CliError(CliError::new_message(format!("There's no chunk/file/image that matches `{}`.", query[0]))));
     }
     Ok(())
 }

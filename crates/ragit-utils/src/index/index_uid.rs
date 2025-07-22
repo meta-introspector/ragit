@@ -3,9 +3,7 @@ use crate::error::Error;
 use crate::index::index_struct::Index;
 use ragit_uid::{load_from_file, Uid};
 use ragit_fs::{file_name, parent};
-use sha3::{Sha3_256};
 use std::path::PathBuf;
-use std::collections::{HashMap, HashSet};
 
 impl Index {
     pub fn calculate_and_save_uid(&mut self) -> Result<Uid, Error> {

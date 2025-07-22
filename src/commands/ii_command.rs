@@ -1,49 +1,15 @@
-use crate::{Error, IIStatus, Index, LoadMode};
-use ragit_cli::ArgParser;
+use ragit_commands::{Error, Index, LoadMode, ArgParser, IIStatus, find_root, get_doc_content, ii_build_command_main, ii_reset_command_main, ii_status_command_main};
 
 pub fn ii_command(args: &[String]) -> Result<(), Error> {
-    let mut index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
-
     match args.get(1).map(|arg| arg.as_str()) {
         Some("ii-build") | Some("build-ii") => {
-            let parsed_args = ArgParser::new()
-                .optional_flag(&["--quiet"])
-                .short_flag(&["--quiet"])
-                .parse(args, 2)?;
-
-            if parsed_args.show_help() {
-                println!("{}", include_str!("../../docs/commands/ii-build.txt"));
-                return Ok(());
-            }
-
-            let quiet = parsed_args.get_flag(0).is_some();
-            index.build_ii(quiet)?;
+            ii_build_command_main(args)?;
         }
         Some("ii-reset") | Some("reset-ii") => {
-            let parsed_args = ArgParser::new().parse(args, 2)?;
-
-            if parsed_args.show_help() {
-                println!("{}", include_str!("../../docs/commands/ii-reset.txt"));
-                return Ok(());
-            }
-
-            index.reset_ii()?;
+            ii_reset_command_main(args)?;
         }
         Some("ii-status") => {
-            let parsed_args = ArgParser::new().parse(args, 2)?;
-
-            if parsed_args.show_help() {
-                println!("{}", include_str!("../../docs/commands/ii-status.txt"));
-                return Ok(());
-            }
-
-            let status = match index.ii_status {
-                IIStatus::None => "not initialized",
-                IIStatus::Complete => "complete",
-                IIStatus::Outdated => "outdated",
-                IIStatus::Ongoing(_) => "interrupted",
-            };
-            println!("{status}");
+            ii_status_command_main(args)?;
         }
         _ => unreachable!(),
     }

@@ -1,10 +1,5 @@
-use ragit_utils::index::add_files::AddMode;
-use ragit_utils::error::Error;
-use ragit_utils::index::index_struct::Index;
-use ragit_utils::index::index_load::LoadMode;
+use ragit_commands::{AddMode, Error, Index, LoadMode, ArgCount, ArgParser, ArgType, Span, find_root, CliError};
 use std::path::PathBuf;
-use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, Span};
-use ragit_utils::project_root::find_root;
 
 pub async fn add_command(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -21,7 +16,7 @@ pub async fn add_command(args: &[String]) -> Result<(), Error> {
     }
 
     let root_dir = find_root()?;
-    let mut index = Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
+    let mut index = Index::load(root_dir.into(), LoadMode::QuickCheck)?;
     let add_mode = parsed_args.get_flag(0).map(|flag| AddMode::parse_flag(&flag)).unwrap_or(None);
     let all = parsed_args.get_flag(1).is_some();
     let dry_run = parsed_args.get_flag(2).is_some();
@@ -51,7 +46,7 @@ pub async fn add_command(args: &[String]) -> Result<(), Error> {
     ).await?;
 
     if add_mode == Some(AddMode::Reject) && !dry_run {
-        index.add_files_command(&files, add_mode, dry_run, &ignore_file).await?;
+        index.add_files_command(&files, add_mode, dry_run).await?;
     }
 
     println!("{result}");

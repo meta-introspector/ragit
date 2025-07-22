@@ -26,6 +26,7 @@ pub use crate::qa_system::model_qa_system_struct::ModelQASystem;
 pub use crate::qa_system::quality_scores::QualityScores;
 pub use crate::muse::muse_enum::MuseName;
 pub use crate::muse::muse_struct::Muse;
+pub struct FetchResult { pub fetched: usize, pub updated: usize, }
 
 pub use ragit_pdl::{
     JsonType,

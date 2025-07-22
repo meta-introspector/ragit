@@ -1,6 +1,17 @@
 use crate::prelude::*;
 
-pub async fn status_command_main(args: Vec<String>, pre_args: ParsedArgs) -> Result<(), Error> {
-    println!("{}", get_doc_content("commands/status.txt"));
-    Err(Error::CliError(CliError::new_message("status command is not implemented yet".to_string())))
+pub fn status_command_main(args: &[String]) -> Result<(), Error> {
+    let parsed_args = ArgParser::new().parse(args, 2)?;
+
+    if parsed_args.show_help() {
+        println!("{}", get_doc_content("commands/status.txt"));
+        return Ok(());
+    }
+
+    let index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+    let status = index.status()?;
+
+    println!("{status}");
+
+    Ok(())
 }

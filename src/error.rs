@@ -94,11 +94,7 @@ pub enum Error {
     PngEncodingError(#[from] png::EncodingError),
 }
 
-impl From<ragit_cli::Error> for Error {
-    fn from(e: ragit_cli::Error) -> Self {
-        Error::CliError(e)
-    }
-}
+
 
 impl From<ragit_utils::error::Error> for Error {
     fn from(e: ragit_utils::error::Error) -> Self {

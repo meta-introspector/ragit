@@ -1,55 +1,5 @@
-use crate::{Error, Index, LoadMode, QueryTurn, UidQueryConfig};
-use ragit_cli::{ArgCount, ArgParser, ArgType};
-use serde_json::Value;
+use ragit_commands::{Error, query_command_main};
 
 pub async fn query_command(args: &[String]) -> Result<(), Error> {
-    let parsed_args = ArgParser::new()
-        .optional_flag(&["--no-pdl"])
-        .optional_flag(&["--multi-turn"])
-        .optional_flag(&["--json"])
-        .short_flag(&["--json"])
-        .args(ArgType::Query, ArgCount::Geq(1))
-        .parse(args, 2)?;
-
-    if parsed_args.show_help() {
-        println!("{}", include_str!("../../docs/commands/query.txt"));
-        return Ok(());
-    }
-
-    let mut index = Index::load(crate::find_root()?.to_string_lossy().into_owned(), LoadMode::QuickCheck)?;
-    let no_pdl = parsed_args.get_flag(0).is_some();
-    let multi_turn = parsed_args.get_flag(1).is_some();
-    let json_mode = parsed_args.get_flag(2).is_some();
-    let query = parsed_args.get_args().join(" ");
-
-    if multi_turn {
-        let mut turns = vec![];
-
-        loop {
-            let mut input = String::new();
-            std::io::stdin().read_line(&mut input)?;
-            let input = input.trim();
-
-            if input == ".exit" {
-                break;
-            }
-
-            let response = index.query(&input, Some(turns.clone())).await?;
-            println!("{}", response.get_message());
-            turns.push(QueryTurn {
-                query: input.to_string(),
-                response: response.get_message().to_string(),
-            });
-        }
-    } else {
-        let response = index.query(&query, None).await?;
-
-        if json_mode {
-            println!("{}", serde_json::to_string_pretty(&response.to_json())?);
-        } else {
-            println!("{}", response.get_message());
-        }
-    }
-
-    Ok(())
+    query_command_main(args).await
 }

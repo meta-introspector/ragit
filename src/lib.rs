@@ -14,8 +14,8 @@ pub mod imports;
 
 pub mod log_qa_results;
 
-pub mod commands;
-pub use commands::*;
+
+
 
 pub mod prompts;
 pub mod query;
@@ -31,16 +31,16 @@ pub use ragit_utils::agent::file_tree::FileTree;
 pub use ragit_utils::chunk::{Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, merge_and_convert_chunks, RenderedChunk};
 pub use ragit_utils::chunk::utils::into_multi_modal_contents;
 
-pub use ragit_utils::index::commands::{AddMode, Audit, MergeMode, PullResult, PushResult, RemoveResult, SummaryMode, MergeResult, BuildResult, get_compatibility_warning};
+
 pub use ragit_utils::index::{IIStatus, ProcessedDoc};
 pub use ragit_utils::index::index_struct::Index;
 pub use ragit_utils::index::load_mode::LoadMode;
 
 pub use ragit_utils::api_config::ApiConfig;
 pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn};
-pub use ragit_uid::Uid;
-pub use crate::uid::{UidQueryConfig, UidQueryResult};
-pub use ragit_utils::error::Error;
+pub use ragit_utils::uid::Uid;
+pub use ragit_utils::uid::{UidQueryConfig, UidQueryResult};
+
 
 // My rules for version numbers
 // Let's say I'm working on 0.1.2
@@ -53,32 +53,4 @@ pub use ragit_utils::error::Error;
 //
 // Feel free to use whatever rules for your branches. But please keep version numbers
 // distinguishable, so that chunks generated from your branches can easily be identified.
-pub const VERSION: &str = "0.4.2-dev";
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct BuildOptions {
-    pub version: String,
-    pub profile: String,  // debug | release | production
-    pub features: HashMap<String, bool>,
-}
-
-pub fn get_build_options() -> BuildOptions {
-    let profile = if cfg!(feature = "production") {
-        "production"
-    } else if cfg!(debug_assertions) {
-        "debug"
-    } else {
-        "release"
-    };
-
-    BuildOptions {
-        version: VERSION.to_string(),
-        profile: profile.to_string(),
-        features: vec![
-            (String::from("csv"), cfg!(feature = "csv")),
-            (String::from("korean"), cfg!(feature = "korean")),
-            (String::from("pdf"), cfg!(feature = "pdf")),
-            (String::from("svg"), cfg!(feature = "svg")),
-        ].into_iter().collect(),
-    }
-}

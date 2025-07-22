@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ragit-utils = { path = "../ragit-utils" }
+ragit-types = { path = "../ragit-types" }
 ragit-fs = { path = "../fs" }
 ragit-pdl = { path = "../pdl" }
 ragit-uid = { path = "../ragit-uid" }

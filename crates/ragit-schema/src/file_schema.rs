@@ -1,34 +1,9 @@
-use ragit_uid::Uid;
-use ragit_utils::prelude::*;
-use ragit_utils::index::index_struct::Index;
+use ragit_types::{Uid, FileSchema};
+use ragit_utils::error::Error;
+use ragit_utils::index::Index;
 use ragit_utils::chunk::ChunkBuildInfo;
 use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct FileSchema {
-    pub path: String,
-    pub is_processed: bool,
-    pub length: u64,
-    pub uid: Uid,
-    pub chunks: usize,
-    pub model: String,
-    pub last_updated: u64,
-}
-
-impl FileSchema {
-    pub fn dummy() -> Self {
-        FileSchema {
-            path: String::new(),
-            is_processed: false,
-            length: 0,
-            uid: Uid::dummy(),
-            chunks: 0,
-            model: String::new(),
-            last_updated: 0,
-        }
-    }
-}
 
 pub fn get_file_schema(index: &Index, path: Option<String>, uid: Option<Uid>) -> Result<FileSchema, Error> {
     if let Some(uid) = uid {

@@ -10,15 +10,10 @@ use ragit_fs::{
     write_string,
 };
 use ragit_pdl::{Message, JsonType};
+use ragit_types::AuditRecordAt;
 use serde_json::{Map, Value};
 use std::collections::HashMap;
 use std::ops::AddAssign;
-
-#[derive(Clone, Debug)]
-pub struct AuditRecordAt {
-    pub path: String,
-    pub id: String,
-}
 
 #[derive(Clone, Copy, Debug, serde::Deserialize, serde::Serialize)]
 pub struct AuditRecord {

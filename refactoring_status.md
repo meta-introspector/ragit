@@ -1,20 +1,29 @@
-# Refactoring Status Update
+## Refactoring Status Report
 
-## Current Progress:
+**Date:** July 22, 2025
 
-*   **`audit` command:** The `audit` command has been successfully refactored into submodules (`args.rs`, `output.rs`, and `mod.rs`) within `src/main/commands/audit/`. The `Audit` struct's definition has been moved to `ragit_api` and now correctly implements `Default` and `Deserialize`.
-*   **`add` command:** The `add_files_command` has been implemented as a method of the `Index` struct in `crates/ragit-utils/src/index/index_add_files.rs`. The `AddMode` and `AddResult` types have been updated, and `Display` is implemented for `AddResult`.
-*   **`ragit-utils` crate:**
-    *   The `lib.rs` file has been reverted to a simplified state, containing only direct `pub mod` declarations for its immediate submodules and the `VERSION` constant. All previous attempts to split `lib.rs` into `partX.rs` files and `exports_*.rs` files have been undone.
+### Progress Made:
 
-## Current Build Errors (from the last `cargo build` output):
+*   **`ragit-types` crate created:** A new `ragit-types` crate has been successfully created.
+*   **Core types moved:** The `Uid` struct, `UidType` enum, `UidWriteMode` enum, `FileSchema` struct, `ImageSchema` struct, `ChunkSchema` struct, `Ignore` struct, `Pattern` struct, and `PatternUnit` enum have all been successfully moved to `ragit-types/src/lib.rs`.
+*   **`ragit-uid` updated:** `ragit-uid` now correctly uses `ragit-types` for `Uid` and related types.
+*   **`ragit-schema` updated:** `ragit-schema` now correctly uses `ragit-types` for `FileSchema` and `ImageSchema`.
+*   **`ragit-commands` refactored:** All command implementations have been moved from the root `ragit` crate into the `ragit-commands` crate. The root `ragit` crate's command files now act as wrappers calling the functions in `ragit-commands`.
+*   **`Cargo.toml` files updated:** Dependencies in `ragit-uid`, `ragit-schema`, `ragit-utils`, and the root `Cargo.toml` have been updated to reflect the new `ragit-types` crate and the refactored command structure.
+*   **Placeholder methods added:** Placeholder implementations were added to `ragit-utils/src/index/index_struct.rs` for methods that were not found or had duplicate definitions, to allow compilation to proceed.
 
-The errors are still concentrated within the `ragit-utils` crate and are primarily related to `ragit_uid` imports:
+### Current Issues (from last `cargo build`):
 
-1.  **`error[E0252]: the name Uid is defined multiple times` in `crates/ragit-utils/src/agent/action.rs`**: This indicates a duplicate import of `Uid`.
-2.  **`error[E0432]: unresolved import ragit_uid::query_helpers` in `crates/ragit-utils/src/agent/action.rs`**: This suggests that `ragit_uid` does not directly expose a `query_helpers` module.
-3.  **`error[E0433]: failed to resolve: could not find uid_io in ragit_uid` in `crates/ragit-utils/src/index/ii.rs`, `crates/ragit-utils/src/index/index_chunk_access.rs`, `crates/ragit-utils/src/index/index_add_file_index.rs`**: This indicates that `ragit_uid` does not directly expose a `uid_io` module.
+*   **Unresolved imports in `ragit-utils`:** `ragit-utils` is still trying to import types from `ragit_schema` and `ragit_ignore` directly, but these types are now in `ragit-types`. This indicates that `ragit-utils` needs to update its imports to point to `ragit-types`.
+*   **Missing `Error` type in `ragit-schema`:** The `Error` type is not found in scope within `ragit-schema`. This needs to be imported from `ragit_utils::error::Error`.
+*   **Multiple applicable items in `ragit-utils`:** This error indicates that some of the placeholder methods added to `ragit-utils/src/index/index_struct.rs` are conflicting with existing, actual implementations in other files within `ragit-utils`. These duplicate placeholder implementations need to be removed from `index_struct.rs`.
 
-## Next Steps:
+### Next Steps:
 
-I will investigate the `ragit-uid` crate's structure to determine the correct paths for `Uid`, `UidQueryConfig`, `uid_query`, and `uid_io`. Then, I will refactor the import statements in `crates/ragit-utils/src/agent/action.rs`, `crates/ragit-utils/src/index/ii.rs`, `crates/ragit-utils/src/index/index_chunk_access.rs`, and `crates/ragit-utils/src/index/index_add_file_index.rs` to use the correct, fully qualified paths for these items.
+1.  **Update imports in `ragit-utils`:**
+    *   Modify `ragit-utils/src/index/index_struct.rs` to import `FileSchema`, `ImageSchema`, `ChunkSchema`, and `Ignore` from `ragit-types`.
+    *   Adjust other imports in `ragit-utils` to use `ragit-types` where appropriate.
+2.  **Fix `Error` import in `ragit-schema`:** Ensure `ragit-schema` correctly imports the `Error` type from `ragit_utils::error::Error`.
+3.  **Remove duplicate placeholder methods:** Go through `ragit-utils/src/index/index_struct.rs` and remove the placeholder implementations for methods that are already defined elsewhere in `ragit-utils`.
+
+After these steps, we will run `cargo build` again to check the progress.

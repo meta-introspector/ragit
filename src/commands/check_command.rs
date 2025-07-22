@@ -12,7 +12,7 @@ pub async fn check_command(args: &[String]) -> Result<(), Error> {
         .parse(args, 2)?;
 
     if parsed_args.show_help() {
-        println!("{}", include_str!("../../docs/commands/check.txt"));
+        println!("{}", get_doc_content("commands/check.txt"));
         return Ok(());
     }
 
@@ -53,7 +53,7 @@ pub async fn check_command(args: &[String]) -> Result<(), Error> {
         }
         Err(e) => {
             if recover {
-                let mut index = Index::load(root_dir.to_string_lossy().into_owned(), LoadMode::Minimum)?;
+                let mut index = Index::load(root_dir.into(), LoadMode::Minimum)?;
                 let recover_result = index.recover()?;
                 index.check()?;
                 println!("recovered from a corrupted knowledge-base: {recover_result:?}");

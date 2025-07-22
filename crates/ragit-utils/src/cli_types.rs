@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 pub use crate::error::ErrorKind;
-use crate::error::{Error, underline_span};
+use crate::error::Error;
 pub use crate::error::{CliError, Span};
 use crate::string_utils::get_closest_string;
 
@@ -110,7 +110,7 @@ impl ArgParser {
     pub fn parse(&self, raw_args: &[String], skip_first_n: usize) -> Result<ParsedArgs, Error> {
         self.parse_worker(raw_args, skip_first_n).map_err(
             |e| match e {
-                Error::CliError(mut cli_err) => {
+                Error::CliError(cli_err) => {
                     Error::CliError(cli_err)
                 },
                 _ => e,

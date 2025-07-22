@@ -1,6 +1,15 @@
 use crate::prelude::*;
 
-pub async fn version_command_main(args: Vec<String>, pre_args: ParsedArgs) -> Result<(), Error> {
-    println!("{}", get_doc_content("commands/version.txt"));
-    Err(Error::CliError(CliError::new_message("version command is not implemented yet".to_string())))
+pub fn version_command_main(args: &[String]) -> Result<(), Error> {
+    let parsed_args = ArgParser::new().parse(args, 2)?;
+
+    if parsed_args.show_help() {
+        println!("{}", get_doc_content("commands/version.txt"));
+        return Ok(());
+    }
+
+    println!("ragit version {}", env!("CARGO_PKG_VERSION"));
+    println!("build options: {:?}", get_build_options());
+
+    Ok(())
 }

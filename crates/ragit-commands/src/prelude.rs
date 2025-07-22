@@ -8,9 +8,44 @@ pub use ragit_utils::chunk::utils::into_multi_modal_contents;
 pub use ragit_utils::api_config::ApiConfig;
 pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn};
 pub use ragit_uid::Uid;
-pub use ragit_api::{Model, ModelRaw, get_model_by_name, Request};
+pub use ragit_utils::index::commands::{AddMode, MergeMode, PullResult, PushResult, RemoveResult, SummaryMode, MergeResult, BuildResult, get_compatibility_warning};
+pub use crate::commands::ls_chunks::ls_chunks_command_main;
+pub use crate::commands::ls_files::ls_files_command_main;
+pub use crate::commands::ls_images::ls_images_command_main;
+pub use crate::commands::ls_models::ls_models_command_main;
+pub use crate::commands::ls_terms::ls_terms_command_main;
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct BuildOptions {
+    pub version: String,
+    pub profile: String,  // debug | release | production
+    pub features: HashMap<String, bool>,
+}
+
+pub fn get_build_options() -> BuildOptions {
+    let profile = if cfg!(feature = "production") {
+        "production"
+    } else if cfg!(debug_assertions) {
+        "debug"
+    } else {
+        "release"
+    };
+
+    BuildOptions {
+        version: VERSION.to_string(),
+        profile: profile.to_string(),
+        features: vec![
+            (String::from("csv"), cfg!(feature = "csv")),
+            (String::from("korean"), cfg!(feature = "korean")),
+            (String::from("pdf"), cfg!(feature = "pdf")),
+            (String::from("svg"), cfg!(feature = "svg")),
+        ].into_iter().collect(),
+    }
+}
+pub use ragit_api::{Model, ModelRaw, get_model_by_name, Request, ModelQASystem, ModelQAResult, QualityScores, list_models};
 pub use ragit_api::Error as ApiError;
-pub use ragit_pdl::{Pdl, encode_base64, escape_pdl_tokens, parse_pdl, parse_schema, render_pdl_schema, JsonType};
+pub use ragit_pdl::{Pdl, encode_base64, escape_pdl_tokens, parse_pdl, parse_schema, render_pdl_schema, JsonType, Message, Role, parse_pdl_from_file};
 pub use ragit_fs::{WriteMode, exists, extension, file_name, file_size, get_relative_path, is_dir, join, join3, join4, read_bytes, read_bytes_offset, read_dir, remove_dir_all, remove_file, set_extension, try_create_dir, write_bytes, write_string, normalize, into_abs_path};
 pub use chrono::{Days, Local};
 pub use serde::{Deserialize, Serialize};

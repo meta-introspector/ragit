@@ -1,5 +1,5 @@
 use std::fmt::Formatter;
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Debug)]
 pub enum AddMode { Auto, Manual, Reject, } pub struct AddResult;
 
 impl AddMode {

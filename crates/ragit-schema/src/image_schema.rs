@@ -1,6 +1,6 @@
-use ragit_uid::Uid;
-use ragit_utils::prelude::*;
-use ragit_utils::index::index_struct::Index;
+use ragit_types::{Uid, ImageSchema};
+use ragit_utils::error::Error;
+use ragit_utils::index::Index;
 
 use ragit_utils::constant::IMAGE_DIR_NAME;
 use ragit_fs::{file_size, read_bytes, read_string, set_extension};
@@ -10,15 +10,6 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 use ragit_utils::path_utils::get_uid_path;
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ImageSchema {
-    pub uid: Uid,
-    pub extracted_text: String,
-    pub explanation: String,
-    pub size: u64,
-    pub bytes: Vec<u8>,
-}
 
 pub fn get_image_schema(index: &Index, uid: Uid, load_bytes: bool) -> Result<ImageSchema, Error> {
     let description_path = get_uid_path(

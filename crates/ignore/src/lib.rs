@@ -1,9 +1,8 @@
-use ragit_fs::{FileError, get_relative_path, is_dir, is_symlink, read_dir};
 use regex::Regex;
+use std::path::{Path, PathBuf};
 use std::str::FromStr;
-
-#[cfg(test)]
-mod tests;
+use ragit_core::Matcher;
+use ragit_core_utils::path::{is_dir, is_symlink, get_relative_path, read_dir};
 
 #[derive(Debug)]
 pub struct Ignore {
@@ -51,11 +50,11 @@ impl Ignore {
     /// It returns `Vec<(ignored: bool, file: String)>`. It only returns files, not dirs.
     pub fn walk_tree(
         &self,
-        root_dir: &str,
-        dir: &str,
+        root_dir: &Path,
+        dir: &Path,
         follow_symlink: bool,
         skip_ignored_dirs: bool,
-    ) -> Result<Vec<(bool, String)>, FileError> {
+    ) -> Result<Vec<(bool, String)>, std::io::Error> {
         let mut result = vec![];
         self.walk_tree_worker(root_dir, dir, &mut result, follow_symlink, skip_ignored_dirs, false)?;
         Ok(result)
@@ -63,13 +62,13 @@ impl Ignore {
 
     fn walk_tree_worker(
         &self,
-        root_dir: &str,
-        file: &str,
+        root_dir: &Path,
+        file: &Path,
         buffer: &mut Vec<(bool, String)>,
         follow_symlink: bool,
         skip_ignored_dirs: bool,
         already_ignored: bool,  // if a file is inside an ignored directory, there's no need to call `is_match` again
-    ) -> Result<(), FileError> {
+    ) -> Result<(), std::io::Error> {
         if self.is_strong_match(root_dir, file) {
             return Ok(());
         }
@@ -79,7 +78,7 @@ impl Ignore {
             return Ok(());
         }
 
-        let is_match = already_ignored || self.is_match(root_dir, file);
+        let is_match = already_ignored || self.is_match(file);
 
         if is_dir(file) {
             if !skip_ignored_dirs || !is_match {
@@ -90,16 +89,17 @@ impl Ignore {
         }
 
         else {
-            buffer.push((is_match, file.to_string()));
+            buffer.push((is_match, file.to_str().unwrap().to_string()));
         }
 
         Ok(())
     }
 
-    pub fn is_match(&self, root_dir: &str, file: &str) -> bool {
-        let Ok(rel_path) = get_relative_path(&root_dir.to_string(), &file.to_string()) else { return false; };
+    /// Some patterns are stronger than others. For example, you cannot `rag add .ragit/` even with `--force`.
+    pub fn is_strong_match(&self, root_dir: &Path, file: &Path) -> bool {
+        let Ok(rel_path) = get_relative_path(root_dir, file) else { return false; };
 
-        for pattern in self.patterns.iter() {
+        for pattern in self.strong_patterns.iter() {
             if pattern.is_match(&rel_path) {
                 return true;
             }
@@ -107,13 +107,12 @@ impl Ignore {
 
         false
     }
+}
 
-    /// Some patterns are stronger than others. For example, you cannot `rag add .ragit/` even with `--force`.
-    pub fn is_strong_match(&self, root_dir: &str, file: &str) -> bool {
-        let Ok(rel_path) = get_relative_path(&root_dir.to_string(), &file.to_string()) else { return false; };
-
-        for pattern in self.strong_patterns.iter() {
-            if pattern.is_match(&rel_path) {
+impl Matcher for Ignore {
+    fn is_match(&self, path: &Path) -> bool {
+        for pattern in self.patterns.iter() {
+            if pattern.is_match(path) {
                 return true;
             }
         }
@@ -132,7 +131,7 @@ impl Pattern {
         // `a/b` -> `**/a/b`
         // `/a/b` -> `a/b`
         if !pattern.starts_with("/") {
-            pattern = format!("**/{pattern}");
+            pattern = format!("**/{}", pattern);
         }
 
         else {
@@ -156,19 +155,21 @@ impl Pattern {
 
         Pattern(result)
     }
+}
 
+impl Matcher for Pattern {
     // `path` must be a normalized, relative path
-    pub fn is_match(&self, path: &str) -> bool {
-        let mut path = path.to_string();
+    fn is_match(&self, path: &Path) -> bool {
+        let mut path_str = path.to_str().unwrap().to_string();
 
         // there's no reason to treat `a/b` and `a/b/` differently
-        if path.len() > 1 && path.ends_with("/") {
-            path = path.get(0..(path.len() - 1)).unwrap().to_string();
+        if path_str.len() > 1 && path_str.ends_with("/") {
+            path_str = path_str.get(0..(path_str.len() - 1)).unwrap().to_string();
         }
 
         match_worker(
             self.0.clone(),
-            path.split("/").map(|p| p.to_string()).collect::<Vec<_>>(),
+            path_str.split("/").map(|p| p.to_string()).collect::<Vec<_>>(),
         )
     }
 }
@@ -247,7 +248,7 @@ impl FromStr for PatternUnit {
                 .replace("*", ".*")
                 .replace("?", ".");
 
-            Ok(PatternUnit::Regex(Regex::new(&format!("^{s}$"))?))
+            Ok(PatternUnit::Regex(Regex::new(&format!("^{s}$")))?)
         }
 
         else {

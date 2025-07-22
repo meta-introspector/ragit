@@ -17,4 +17,3 @@ pub use chunk_struct::*;
 pub use io::*;
 pub use rendered_chunk::*;
 pub use utils::*;
-pub use render_impl::*;

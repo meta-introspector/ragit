@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use ragit_api::audit::AuditRecordAt;
+use ragit_types::AuditRecordAt;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct ApiConfig {
