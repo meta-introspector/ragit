@@ -8,4 +8,5 @@ repository = "https://github.com/baehyunsol/ragit"
 documentation = "https://docs.rs/ragit-cli"
 
 [dependencies]
+ragit-args = { path = "../ragit-args" }
 ragit-utils = { path = "../ragit-utils" }

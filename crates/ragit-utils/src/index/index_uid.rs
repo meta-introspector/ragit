@@ -3,7 +3,7 @@ use crate::error::Error;
 use crate::index::index_struct::Index;
 use crate::index::load_mode::LoadMode;
 use crate::prelude::*;
-use crate::uid::{self, Uid, UidWriteMode};
+use ragit_uid::{load_from_file, Uid, UidWriteMode};
 use ragit_fs::{exists, file_name, join, join3, join4, normalize, parent, read_dir, read_string, remove_file, set_extension, try_create_dir, write_bytes, write_string, WriteMode};
 use sha3::{Digest, Sha3_256};
 use std::collections::{HashMap, HashSet};
@@ -34,14 +34,14 @@ impl Index {
                 }
 
                 for image_path in self.get_all_image_files()?.iter() {
-                    let image_uid_prefix = file_name(&parent(image_path.as_path())?)?;
+                    let image_uid_prefix = file_name(parent(image_path.as_path())?.to_str().unwrap())?;
                     let image_uid_suffix = file_name(image_path.to_str().unwrap())?;
                     let uid = format!("{}{}", image_uid_prefix, image_uid_suffix).parse::<Uid>()?;
                     uids.push(uid);
                 }
 
                 for file_index_path in self.get_all_file_indexes()?.iter() {
-                    for uid in uid::load_from_file(file_index_path.to_str().unwrap())? {
+                    for uid in load_from_file(&PathBuf::from(file_index_path.to_str().unwrap()))? {
                         uids.push(uid);
                     }
                 }
