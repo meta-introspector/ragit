@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::main::find_root;
-use crate::main::commands::push_command;
+use ragit_utils::index::commands::push::push_command;
 
 pub async fn push_command_main(args: Vec<String>, _pre_args: ragit_cli::ParsedArgs) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

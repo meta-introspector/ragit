@@ -1,8 +1,11 @@
 use crate::prelude::*;
-use crate::main::find_root;
-use crate::{AddMode, Index, LoadMode};
+use crate::main::main_find_root::find_root;
+use ragit_utils::index::index_struct::Index;
+use ragit_utils::index::load_mode::LoadMode;
+use ragit_utils::index::commands::add::AddMode;
+use ragit_args::{ArgParser, ArgType, ArgCount, Span};
 
-pub async fn add_command_main(args: Vec<String>, _pre_args: ragit_cli::ParsedArgs) -> Result<(), Error> {
+pub async fn add_command_main(args: Vec<String>, _pre_args: ragit_args::ParsedArgs) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--reject", "--force"])
         .optional_flag(&["--all"])
