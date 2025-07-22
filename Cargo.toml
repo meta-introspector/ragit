@@ -9,7 +9,7 @@ documentation = "https://docs.rs/ragit"
 
 [[bin]]
 name = "rag"
-path = "src/main.rs"
+path = "crates/ragit-commands/src/main.rs"
 
 [workspace]
 members = [
@@ -23,6 +23,7 @@ members = [
     "crates/ragit-utils",
     "crates/ragit-schema",
     "crates/ragit-uid",
+    "crates/ragit-commands",
 ]
 
 [dependencies]
@@ -43,6 +44,7 @@ ragit-pdl = { path = "./crates/pdl", version = "0.4.2" }
 ragit-uid = { path = "./crates/ragit-uid", version = "0.1.0" }
 ragit-utils = { path = "./crates/ragit-utils", version = "0.1.0" }
 ragit-schema = { path = "./crates/ragit-schema", version = "0.1.0" }
+ragit-commands = { path = "./crates/ragit-commands", version = "0.1.0" }
 regex = "1.11.1"
 reqwest = { version = "0.12.12", features = ["multipart"] }
 resvg = { version = "0.45.1", optional = true }

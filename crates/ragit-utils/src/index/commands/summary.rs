@@ -22,7 +22,7 @@ impl DerefMut for Summary {
     }
 }
 
-pub async fn summary_command(args: Vec<String>, pre_args: ragit_args::ParsedArgs) -> Result<(), Error> {
+pub async fn summary_command(args: Vec<String>, pre_args: crate::cli_types::ParsedArgs) -> Result<(), Error> {
     println!("summary_command is not yet implemented");
     Ok(())
 }
