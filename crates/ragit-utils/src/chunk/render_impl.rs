@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::chunk::{MultiModalContent, RenderedChunk};
+use crate::chunk::{rendered_chunk::MultiModalContent, rendered_chunk::RenderedChunk};
 use crate::index::index_struct::Index;
 use crate::error::Error;
 use ragit_pdl::{escape_pdl_tokens, encode_base64};
@@ -21,7 +21,8 @@ impl Chunk {
                     pdl_data.push(escape_pdl_tokens(content));
                 },
                 MultiModalContent::Image { uid } => {
-                    pdl_data.push(format!("<|raw_media(png:{})|>", encode_base64(&index.get_image_bytes_by_uid(*uid)?)));
+                    let image_bytes = index.get_image_bytes_by_uid(*uid)?;
+                    pdl_data.push(format!("<|raw_media(png:{})|>", encode_base64(&image_bytes)));
                 },
             }
         }

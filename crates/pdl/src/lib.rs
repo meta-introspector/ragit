@@ -13,7 +13,9 @@ pub mod schema;
 mod util;
 
 pub use error::{Error, JsonType};
-pub use image::ImageType;
+use ragit_uid::Uid;
+pub use image::{Image, ImageType};
+use ragit_uid::Uid;
 pub use message::{Message, MessageContent};
 pub use role::{PdlRole, Role};
 pub use schema::{Schema, SchemaParseError, parse_schema, render_pdl_schema, Prompt};

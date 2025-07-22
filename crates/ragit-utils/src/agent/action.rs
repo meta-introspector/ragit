@@ -1,5 +1,6 @@
 use std::path::PathBuf;
-use crate::chunk::{Chunk, RenderedChunk};
+use crate::chunk::chunk_struct::Chunk;
+use crate::chunk::rendered_chunk::RenderedChunk;
 use crate::error::Error;
 use crate::index::index_struct::Index;
 use crate::query::{QueryResponse, Keywords};

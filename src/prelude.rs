@@ -49,3 +49,4 @@ pub use async_recursion::async_recursion;
 pub use lazy_static::lazy_static;
 pub use regex::Regex;
 pub use std::fmt;
+pub use chunk::render::*;

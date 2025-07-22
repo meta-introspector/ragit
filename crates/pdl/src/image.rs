@@ -1,5 +1,7 @@
 use crate::error::Error;
 use regex::Regex;
+use ragit_uid::Uid;
+use std::fmt;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum ImageType {
@@ -94,5 +96,21 @@ impl TryFrom<image::ImageFormat> for ImageType {
             image::ImageFormat::WebP => Ok(ImageType::Webp),
             f => Err(Error::InvalidImageType(format!("{f:?}"))),
         }
+    }
+}
+
+#[derive(Clone, PartialEq)]
+pub struct Image {
+    pub uid: Uid,
+    pub image_type: ImageType,
+    pub bytes: Vec<u8>,
+}
+
+impl fmt::Debug for Image {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        fmt.debug_struct("Image")
+            .field("uid", &self.uid)
+            .field("image_type", &self.image_type)
+            .finish()
     }
 }

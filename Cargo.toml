@@ -22,6 +22,7 @@ members = [
     "crates/server",
     "crates/ragit-utils",
     "crates/ragit-schema",
+    "crates/ragit-uid",
 ]
 
 [dependencies]

@@ -1,7 +1,11 @@
-use crate::chunk::{self, Chunk, RenderedChunk, merge_and_convert_chunks};
+use crate::chunk::chunk_struct::Chunk;
+use crate::chunk::rendered_chunk::RenderedChunk;
+use crate::chunk::utils::merge_and_convert_chunks;
+use crate::chunk;
+
 use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME};
 use crate::error::Error;
-use crate::uid::Uid;
+use ragit_uid::Uid;
 use crate::path_utils::get_uid_path;
 use ragit_fs::exists;
 use std::collections::HashSet;

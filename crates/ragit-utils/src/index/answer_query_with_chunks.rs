@@ -1,4 +1,4 @@
-use crate::chunk::{Chunk, merge_and_convert_chunks, RenderedChunk};
+use crate::chunk::{Chunk, merge_and_convert_chunks, rendered_chunk::RenderedChunk};
 use crate::error::Error;
 use crate::index::index_struct::Index;
 use ragit_api::Request;
