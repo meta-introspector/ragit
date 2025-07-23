@@ -1,9 +1,9 @@
-use crate::chunk::chunk_struct::Chunk;
-use crate::prelude::*;
+use ragit_types::chunk::chunk_struct::Chunk;
+//use ragit_index::error::Error;
 use std::io::Read;
 use std::path::PathBuf;
 
-pub fn load_from_file(path: &PathBuf) -> Result<Chunk> {
+pub fn load_from_file(path: &PathBuf) -> Result<Chunk, Error> {
     let content = ragit_fs::read_bytes(path.to_str().unwrap())?;
 
     if content[0] == 0x1f && content[1] == 0x8b {
@@ -23,7 +23,7 @@ pub fn save_to_file(
     compression_level: u32,
     root_dir: &PathBuf,
     create_tfidf: bool,
-) -> Result<()> {
+) -> Result<(), Error> {
     let parent_path = ragit_fs::parent(path)?;
 
     if !ragit_fs::exists(&parent_path) {

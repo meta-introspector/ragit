@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use ragit_utils::index::commands::merge::MergeMode;
+
 pub async fn merge_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--ignore", "--force", "--interactive", "--reject"])

@@ -1,7 +1,6 @@
 use ragit_utils::error::Error;
-use ragit_types::{FileSchema, Uid};
-use ragit_utils::chunk::ChunkBuildInfo;
-use ragit_utils::index::index_struct::Index;
+use ragit_types::{FileSchema, Uid, ChunkBuildInfo};
+use ragit_index::index::Index;
 use std::path::{Path, PathBuf};
 
 pub fn get_file_schema(

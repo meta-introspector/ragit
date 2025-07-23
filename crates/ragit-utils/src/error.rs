@@ -2,6 +2,8 @@ pub use ragit_api::Error as ApiError;
 pub use ragit_fs::FileError;
 pub use ragit_pdl::JsonType;
 use ragit_uid::Uid;
+//use ragit_types::uid::UidError;
+use ragit_types::uid::UidError;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ErrorKind {
@@ -148,7 +150,7 @@ pub enum Error {
     #[error(transparent)]
     CliError(#[from] CliError),
     #[error(transparent)]
-    UidErrorFromTypes(#[from] ragit_types::UidError),
+    UidErrorFromTypes(#[from] UidError),
 }
 
 #[derive(Debug, thiserror::Error)]

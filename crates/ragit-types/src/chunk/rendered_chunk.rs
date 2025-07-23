@@ -1,4 +1,4 @@
-use ragit_uid::Uid;
+use crate::uid::Uid;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]

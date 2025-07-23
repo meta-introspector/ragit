@@ -5,4 +5,4 @@ pub mod prettify;
 pub use file_schema::get_file_schema;
 pub use image_schema::get_image_schema;
 pub use prettify::Prettify;
-pub use ragit_types::{FileSchema, ImageSchema};
+

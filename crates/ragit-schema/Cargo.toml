@@ -12,3 +12,4 @@ serde_json = "1.0.141"
 anyhow = "1.0.98"
 ragit-utils = { path = "../ragit-utils" }
 ragit-core-utils = { path = "../ragit-core-utils" }
+ragit-index = { path = "../ragit-index" }

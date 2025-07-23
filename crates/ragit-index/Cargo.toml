@@ -7,9 +7,21 @@ edition = "2021"
 ragit-api = { path = "../api" }
 ragit-uid = { path = "../ragit-uid" }
 ragit-types = { path = "../ragit-types" }
-ragit-utils = { path = "../ragit-utils" }
-ragit-commands = { path = "../ragit-commands" }
+
 ragit-config = { path = "../ragit-config" }
 ragit-readers = { path = "../ragit-readers" }
+ragit-commands = { path = "../ragit-commands" }
+ragit-fs = { path = "../fs" }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha3 = "0.10.8"
 tokio = { version = "1.0", features = ["full"] }
+flate2 = "1.0"
+rust-stemmers = "1.2"
+tera = "1.19"
+chrono = { version = "0.4", features = ["serde"] }
+anyhow = "1.0"
+thiserror = "1.0"
+strum = { version = "0.25", features = ["derive"] }
+url = "2.4"
+image = "0.24"

@@ -19,6 +19,8 @@ pub use message::{Message, MessageContent};
 pub use role::{PdlRole, Role};
 pub use schema::{Prompt, Schema, SchemaParseError, parse_schema, render_pdl_schema};
 pub use util::{decode_base64, encode_base64};
+pub use crate::Pdl as Process;
+pub use tera::Template;
 
 lazy_static! {
     static ref MEDIA_RE: Regex = Regex::new(r"^media\((.+)\)$").unwrap();

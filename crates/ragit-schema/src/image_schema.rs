@@ -1,6 +1,6 @@
 use ragit_utils::error::Error;
-use ragit_types::{ImageSchema, Uid};
-use ragit_utils::index::index_struct::Index;
+
+use ragit_index::index::Index;
 
 use ragit_fs::{file_size, read_bytes, read_string, set_extension};
 use ragit_pdl::JsonType;

@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use ragit_utils::index::commands::summary::SummaryMode;
+
 pub async fn muse_summarize_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--force", "--cached"])

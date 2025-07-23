@@ -1,8 +1,9 @@
-use crate::chunk::atomic_token::AtomicToken;
-use crate::chunk::chunk_source::ChunkSource;
-use crate::chunk::chunk_struct::Chunk;
-use crate::chunk::io::save_to_file;
-use crate::prelude::*;
+use ragit_types::chunk::atomic_token::AtomicToken;
+use ragit_types::chunk::chunk_source::ChunkSource;
+use ragit_types::chunk::chunk_struct::Chunk;
+use crate::chunk_methods::io::save_to_file;
+use crate::index::Index;
+//use crate::error::Error;
 use ragit_uid::Uid;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -38,7 +39,7 @@ impl Chunk {
     // }
 
     pub fn create_chunk_from(
-        index: &crate::index::index_struct::Index,
+        index: &Index,
         path: &PathBuf,
         data: &str,
         source: ChunkSource,
@@ -47,7 +48,7 @@ impl Chunk {
         compression_threshold: u64,
         compression_level: u32,
         create_tfidf: bool,
-    ) -> Result<Chunk> {
+    ) -> Result<Chunk, Error> {
         let mut result = Chunk::dummy(data.to_string(), source);
         result.uid = Uid::new_from_slice(result.data.as_bytes());
 

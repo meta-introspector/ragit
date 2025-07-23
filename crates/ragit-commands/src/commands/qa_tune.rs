@@ -28,7 +28,7 @@ pub async fn qa_tune_command_main(args: &[String]) -> Result<(), Error> {
         if user_score >= 0.0 && user_score <= 1.0 {
             result.user_score = Some(user_score);
             let updated_log = serde_json::to_string_pretty(&results)?;
-            write_string(&result_file, &updated_log)?;
+            write_string(&result_file, &updated_log, WriteMode::CreateOrTruncate)?;
             println!(
                 "Updated user score for {} to {:.2} in {}",
                 model_name, user_score, result_file

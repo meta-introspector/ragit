@@ -33,7 +33,7 @@ pub async fn help_command_main(args: &[String]) -> Result<(), Error> {
             let mut new_args = args.to_vec();
             new_args[1] = command.to_string();
             new_args[2] = String::from("--help");
-            return run_command_main(&new_args).await;
+            return crate::commands::main::run_command_main(&new_args).await;
         }
         None => {
             println!("{}", get_doc_content("intro.txt"));

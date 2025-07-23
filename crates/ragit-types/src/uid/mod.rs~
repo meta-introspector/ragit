@@ -1,0 +1,48 @@
+use serde::{Deserialize, Serialize};
+use sha3::{Digest, Sha3_256};
+use std::fmt;
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct Uid(pub String);
+
+impl fmt::Display for Uid {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl From<&str> for Uid {
+    fn from(s: &str) -> Self {
+        Uid(s.to_string())
+    }
+}
+
+impl From<String> for Uid {
+    fn from(s: String) -> Self {
+        Uid(s)
+    }
+}
+
+impl Uid {
+    pub fn new(data: &str) -> Self {
+        let mut hasher = Sha3_256::new();
+        hasher.update(data.as_bytes());
+        let result = hasher.finalize();
+        Uid(format!("{:x}", result))
+    }
+
+    pub fn from_bytes(data: &[u8]) -> Self {
+        let mut hasher = Sha3_256::new();
+        hasher.update(data);
+        let result = hasher.finalize();
+        Uid(format!("{:x}", result))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+
+    pub fn dummy() -> Self {
+        Uid("dummy_uid".to_string())
+    }
+}

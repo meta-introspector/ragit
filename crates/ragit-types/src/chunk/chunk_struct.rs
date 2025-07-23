@@ -1,5 +1,5 @@
-use crate::chunk::ChunkSource;
-use ragit_uid::Uid;
+use crate::chunk::chunk_source::ChunkSource;
+use crate::uid::Uid;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 

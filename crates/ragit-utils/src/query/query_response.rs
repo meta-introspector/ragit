@@ -1,4 +1,4 @@
-use crate::chunk::Chunk;
+use ragit_types::chunk::chunk_struct::Chunk;
 use serde::{Deserialize, Serialize};
 
 use super::MultiTurnSchema;

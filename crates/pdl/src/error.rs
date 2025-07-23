@@ -42,4 +42,6 @@ pub enum Error {
     TeraError(#[from] tera::Error),
     #[error(transparent)]
     FromUtf8Error(#[from] std::string::FromUtf8Error),
+    #[error(transparent)]
+    ImageError(#[from] ragit_types::image::image_struct::Error),
 }

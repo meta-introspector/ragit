@@ -1,5 +1,5 @@
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
-pub use ragit_types::{Uid, UidType, UidWriteMode};
+pub use ragit_types::uid::{Uid, UidType, UidWriteMode};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
