@@ -8,7 +8,9 @@ pub use crate::{
     error::Error,
     path_utils::{
         get_ii_path, get_normalized_abs_pathbuf, get_rag_path, get_uid_path, join3_paths,
-        join_paths, path_to_display, str_to_path_ref,
+        join_paths,
+	//path_to_display,
+	//str_to_path_ref,
     },
     prompts::PROMPTS,
     query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn},

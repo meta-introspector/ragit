@@ -1,6 +1,5 @@
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
 pub use ragit_types::{Uid, UidType, UidWriteMode};
-use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 #[derive(Error, Debug)]

@@ -310,12 +310,12 @@ pub fn tokenize(s: &str) -> Vec<String> {
             }
         })
         .map(move |s| {
-            #[cfg(feature = "korean")]
-            {
-                ragit_korean::tokenize(&stemmer.stem(s))
-            }
+//            #[cfg(feature = "korean")]
+//            {
+//                ragit_korean::tokenize(&stemmer.stem(s))
+//            }
 
-            #[cfg(not(feature = "korean"))]
+//            #[cfg(not(feature = "korean"))]
             {
                 [stemmer.stem(s).to_string()]
             }

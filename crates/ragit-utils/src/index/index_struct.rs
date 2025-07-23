@@ -7,6 +7,7 @@ use ragit_uid::Uid;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
+use ragit_ignore::Ignore;
 
 pub use super::config::BuildConfig;
 pub use super::ii::IIStatus;
@@ -201,17 +202,17 @@ impl Index {
         Ok(None)
     }
 
-    pub fn set_config_by_key(
-        &mut self,
-        key: String,
-        value: String,
-    ) -> Result<Option<String>, Error> {
-        eprintln!(
-            "Placeholder for set_config_by_key: key={}, value={}",
-            key, value
-        );
-        Ok(None)
-    }
+    // pub fn set_config_by_key(
+    //     &mut self,
+    //     key: String,
+    //     value: String,
+    // ) -> Result<Option<String>, Error> {
+    //     eprintln!(
+    //         "Placeholder for set_config_by_key: key={}, value={}",
+    //         key, value
+    //     );
+    //     Ok(None)
+    // }
 
     pub fn remove_meta_by_key(&mut self, key: String) -> Result<Option<String>, Error> {
         eprintln!("Placeholder for remove_meta_by_key: key={}", key);
@@ -317,15 +318,15 @@ impl Index {
         ))
     }
 
-    pub fn get_chunks_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
-        eprintln!("Placeholder for get_chunks_of_file: file_uid={}", file_uid);
-        Ok(vec![])
-    }
+//    pub fn get_chunks_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
+//        eprintln!("Placeholder for get_chunks_of_file: file_uid={}", file_uid);
+//        Ok(vec![])
+//    }
 
-    pub fn get_images_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
-        eprintln!("Placeholder for get_images_of_file: file_uid={}", file_uid);
-        Ok(vec![])
-    }
+    // pub fn get_images_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
+    //     eprintln!("Placeholder for get_images_of_file: file_uid={}", file_uid);
+    //     Ok(vec![])
+    // }
 
     pub fn get_tfidf_by_file_uid(
         &self,
@@ -340,40 +341,40 @@ impl Index {
         ))
     }
 
-    pub fn get_tfidf_by_chunk_uid(
-        &self,
-        chunk_uid: Uid,
-    ) -> Result<crate::index::ProcessedDoc, Error> {
-        eprintln!(
-            "Placeholder for get_tfidf_by_chunk_uid: chunk_uid={}",
-            chunk_uid
-        );
-        Err(Error::Internal(
-            "Placeholder for get_tfidf_by_chunk_uid".to_string(),
-        ))
-    }
+    // pub fn get_tfidf_by_chunk_uid(
+    //     &self,
+    //     chunk_uid: Uid,
+    // ) -> Result<crate::index::ProcessedDoc, Error> {
+    //     eprintln!(
+    //         "Placeholder for get_tfidf_by_chunk_uid: chunk_uid={}",
+    //         chunk_uid
+    //     );
+    //     Err(Error::Internal(
+    //         "Placeholder for get_tfidf_by_chunk_uid".to_string(),
+    //     ))
+    // }
 
-    pub fn get_chunk_by_uid(&self, chunk_uid: Uid) -> Result<crate::chunk::Chunk, Error> {
-        eprintln!("Placeholder for get_chunk_by_uid: chunk_uid={}", chunk_uid);
-        Err(Error::Internal(
-            "Placeholder for get_chunk_by_uid".to_string(),
-        ))
-    }
+//    pub fn get_chunk_by_uid(&self, chunk_uid: Uid) -> Result<crate::chunk::Chunk, Error> {
+//        eprintln!("Placeholder for get_chunk_by_uid: chunk_uid={}", chunk_uid);
+//        Err(Error::Internal(
+//            "Placeholder for get_chunk_by_uid".to_string(),
+//        ))
+//    }
 
-    pub fn get_merged_chunk_of_file(
-        &self,
-        file_uid: Uid,
-    ) -> Result<crate::chunk::RenderedChunk, Error> {
-        eprintln!(
-            "Placeholder for get_merged_chunk_of_file: file_uid={}",
-            file_uid
-        );
-        Err(Error::Internal(
-            "Placeholder for get_merged_chunk_of_file".to_string(),
-        ))
-    }
+    // pub fn get_merged_chunk_of_file(
+    //     &self,
+    //     file_uid: Uid,
+    // ) -> Result<crate::chunk::RenderedChunk, Error> {
+    //     eprintln!(
+    //         "Placeholder for get_merged_chunk_of_file: file_uid={}",
+    //         file_uid
+    //     );
+    //     Err(Error::Internal(
+    //         "Placeholder for get_merged_chunk_of_file".to_string(),
+    //     ))
+    // }
 
-    pub fn read_ignore_file_command(&self, root_dir: &str) -> Result<ragit_types::Ignore, Error> {
+    pub fn read_ignore_file_command(&self, root_dir: &str) -> Result<Ignore, Error> {
         eprintln!(
             "Placeholder for read_ignore_file_command: root_dir={}",
             root_dir
@@ -399,37 +400,37 @@ impl Index {
         })
     }
 
-    pub fn get_initial_models() -> Result<Vec<ragit_api::ModelRaw>, Error> {
-        eprintln!("Placeholder for get_initial_models");
-        Ok(vec![])
-    }
+    // pub fn get_initial_models() -> Result<Vec<ragit_api::ModelRaw>, Error> {
+    //     eprintln!("Placeholder for get_initial_models");
+    //     Ok(vec![])
+    // }
 
-    pub fn load_config_from_home<T: serde::de::DeserializeOwned>(
-        file_name: &str,
-    ) -> Result<Option<T>, Error> {
-        eprintln!(
-            "Placeholder for load_config_from_home: file_name={}",
-            file_name
-        );
-        Ok(None)
-    }
+    // pub fn load_config_from_home<T: serde::de::DeserializeOwned>(
+    //     file_name: &str,
+    // ) -> Result<Option<T>, Error> {
+    //     eprintln!(
+    //         "Placeholder for load_config_from_home: file_name={}",
+    //         file_name
+    //     );
+    //     Ok(None)
+    // }
 
-    pub fn get_all_configs(&self) -> Result<Vec<(String, String)>, Error> {
-        eprintln!("Placeholder for get_all_configs");
-        Ok(vec![])
-    }
+    // pub fn get_all_configs(&self) -> Result<Vec<(String, String)>, Error> {
+    //     eprintln!("Placeholder for get_all_configs");
+    //     Ok(vec![])
+    // }
 
-    pub fn set_config_by_key(
-        &mut self,
-        key: String,
-        value: String,
-    ) -> Result<Option<String>, Error> {
-        eprintln!(
-            "Placeholder for set_config_by_key: key={}, value={}",
-            key, value
-        );
-        Ok(None)
-    }
+    // pub fn set_config_by_key(
+    //     &mut self,
+    //     key: String,
+    //     value: String,
+    // ) -> Result<Option<String>, Error> {
+    //     eprintln!(
+    //         "Placeholder for set_config_by_key: key={}, value={}",
+    //         key, value
+    //     );
+    //     Ok(None)
+    // }
 
     pub async fn pull(
         &mut self,
@@ -458,8 +459,8 @@ impl Index {
         Ok(())
     }
 
-    pub fn find_lowest_cost_model(&self) -> Option<&ragit_api::Model> {
-        eprintln!("Placeholder for find_lowest_cost_model");
-        None
-    }
+    // pub fn find_lowest_cost_model(&self) -> Option<&ragit_api::Model> {
+    //     eprintln!("Placeholder for find_lowest_cost_model");
+    //     None
+    // }
 }

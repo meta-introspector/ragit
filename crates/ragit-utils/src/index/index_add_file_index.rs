@@ -3,10 +3,10 @@ use crate::error::Error;
 use crate::path_utils::get_uid_path;
 use ragit_fs::{exists, parent, try_create_dir};
 use ragit_uid::{Uid, UidWriteMode};
-use std::path::{Path, PathBuf};
+//use std::path::{Path, PathBuf};
 
 use crate::index::index_struct::Index;
-
+use crate::index::path_management::Path;
 impl Index {
     pub fn add_file_index(&mut self, file_uid: Uid, uids: &[Uid]) -> Result<(), Error> {
         let file_index_path = get_uid_path(

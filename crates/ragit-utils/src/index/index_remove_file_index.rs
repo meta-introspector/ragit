@@ -3,8 +3,8 @@ use crate::error::Error;
 use crate::path_utils::get_uid_path;
 use ragit_fs::{exists, remove_file};
 use ragit_uid::Uid;
-use std::path::PathBuf;
-
+//use std::path::PathBuf;
+use crate::index::path_management::Path;
 use crate::index::index_struct::Index;
 
 impl Index {

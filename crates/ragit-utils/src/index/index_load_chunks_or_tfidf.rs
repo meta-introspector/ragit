@@ -4,7 +4,7 @@ use crate::prelude::*;
 use crate::index::index_struct::Index;
 
 impl Index {
-    pub(crate) async fn extract_keywords(&self, query: &str) -> Result<Keywords> {
+    pub(crate) async fn extract_keywords(&self, _query: &str) -> Result<Keywords> {
         Err(anyhow!("Not implemented"))
     }
 
