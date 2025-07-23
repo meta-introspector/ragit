@@ -31,7 +31,6 @@ pub mod index_push;
 pub mod index_remove_file_index;
 pub mod index_run_tfidf;
 pub mod index_save_to_file;
-pub mod index_struct;
 pub mod index_uid;
 pub mod load_mode;
 pub mod model_management;
@@ -43,7 +42,6 @@ pub mod rephrase_multi_turn;
 pub mod retrieve_chunks;
 pub mod summaries_to_chunks;
 
-pub use config::BuildConfig;
+pub use ragit_index::{BuildConfig, IIStatus};
 pub use file::{FileReader, ImageDescription};
-pub use ii::IIStatus;
 pub use tfidf::{consume_processed_doc, ProcessedDoc, TfidfResult, TfidfState};

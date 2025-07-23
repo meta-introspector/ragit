@@ -66,6 +66,8 @@ pub struct Index {
     pub models: Vec<Model>,
 }
 
+pub mod agent_methods;
+
 impl Index {
     pub fn get_summary(&self) -> Option<&str> {
         self.summary.as_ref().map(|s| s.as_str())
