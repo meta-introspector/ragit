@@ -1,8 +1,10 @@
-use super::{BuildConfig, IIStatus};
-use crate::index::index_struct::Index;
-use crate::{api_config::ApiConfig, query::config::QueryConfig};
+use ragit_config::BuildConfig;
+use ragit_utils::api_config::ApiConfig;
+use ragit_utils::query::QueryConfig;
 use std::collections::HashMap;
 use std::path::PathBuf;
+
+use super::{Index, IIStatus};
 
 impl Index {
     pub fn dummy() -> Self {
@@ -23,5 +25,11 @@ impl Index {
             prompts: HashMap::new(),
             models: vec![],
         }
+    }
+
+    pub fn dummy_with_version(version: String) -> Self {
+        let mut dummy_index = Index::dummy();
+        dummy_index.ragit_version = version;
+        dummy_index
     }
 }

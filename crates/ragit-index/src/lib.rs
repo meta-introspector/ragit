@@ -9,8 +9,33 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 // From ragit-utils/src/index
-pub use ragit_utils::index::config::BuildConfig;
-pub use ragit_utils::index::ii::IIStatus;
+pub use ragit_config::BuildConfig;
+use sha3::{Digest, Sha3_256};
+
+pub type Term = String;
+pub type Weight = f32;
+
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+pub enum IIStatus {
+    None,
+    Outdated,
+    Complete,
+    Ongoing(Uid),
+}
+
+#[derive(Default)]
+struct IIBuildState {
+    total_uid: usize,
+    buffer_uid: usize,
+    buffer_term: usize,
+    buffer_flush: usize,
+}
+
+fn hash(term: &Term) -> String {
+    let mut hasher = Sha3_256::new();
+    hasher.update(term.as_bytes());
+    format!("{:064x}", hasher.finalize())
+}
 
 // From ragit-commands
 use ragit_commands::summary::{Summary, SummaryMode};
@@ -67,6 +92,16 @@ pub struct Index {
 }
 
 pub mod agent_methods;
+pub mod query_methods;
+pub mod chunk_access_methods;
+pub mod config_methods;
+pub mod model_access_methods;
+pub mod ii_methods;
+pub mod image_access_methods;
+pub mod file_index_methods;
+pub mod image_description_methods;
+pub mod audit_methods;
+pub mod dummy_methods;
 
 impl Index {
     pub fn get_summary(&self) -> Option<&str> {

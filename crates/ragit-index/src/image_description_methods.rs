@@ -1,18 +1,17 @@
-use crate::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME};
-use crate::prelude::*;
+use ragit_utils::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME};
+use ragit_utils::prelude::*;
 use ragit_fs::{read_bytes, read_string, remove_file, try_create_dir, write_bytes, WriteMode};
 use ragit_pdl::{encode_base64, parse_pdl, Pdl};
 use ragit_uid::Uid;
 use serde_json::Value;
 use std::path::Path;
 
-use crate::index::file::ImageDescription;
-use crate::index::index_struct::Index;
-use crate::path_utils::get_uid_path;
+use ragit_readers::ImageDescription;
+use ragit_utils::ragit_path_utils::get_uid_path;
 use ragit_api::Request;
 use ragit_fs::parent;
 
-impl Index {
+impl super::Index {
     pub async fn add_image_description(&self, uid: Uid) -> Result<(), Error> {
         let description_path =
             get_uid_path(&self.root_dir, Path::new(CHUNK_DIR_NAME), uid, Some("json"))?;
@@ -29,7 +28,8 @@ impl Index {
         if let Ok(j) = read_string(description_path.to_str().unwrap()) {
             if serde_json::from_str::<Value>(&j).is_ok() {
                 return Ok(());
-            } else {
+            }
+            else {
                 remove_file(description_path.to_str().unwrap())?;
             }
         }

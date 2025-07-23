@@ -1,5 +1,5 @@
 pub mod commands;
-mod config;
+
 pub mod file;
 mod ii;
 mod path_management;
@@ -7,9 +7,9 @@ pub mod tfidf;
 
 pub mod agent_logic;
 pub mod answer_query_with_chunks;
-pub mod check_constants;
-pub mod config_access;
-pub mod get_model_by_name;
+
+
+
 pub mod get_prompt;
 pub mod image_access;
 pub mod index_add_file_index;
@@ -17,7 +17,7 @@ pub mod index_add_files;
 pub mod index_add_image_description;
 pub mod index_audit;
 pub mod index_chunk_access;
-pub mod index_config_loading;
+
 pub mod index_dummy;
 pub mod index_dummy_with_version;
 pub mod index_find_lowest_cost_model;
@@ -42,6 +42,6 @@ pub mod rephrase_multi_turn;
 pub mod retrieve_chunks;
 pub mod summaries_to_chunks;
 
-pub use ragit_index::{BuildConfig, IIStatus};
+pub use ragit_index::IIStatus;
 pub use file::{FileReader, ImageDescription};
 pub use tfidf::{consume_processed_doc, ProcessedDoc, TfidfResult, TfidfState};

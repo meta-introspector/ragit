@@ -9,5 +9,7 @@ ragit-uid = { path = "../ragit-uid" }
 ragit-types = { path = "../ragit-types" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-commands = { path = "../ragit-commands" }
+ragit-config = { path = "../ragit-config" }
+ragit-readers = { path = "../ragit-readers" }
 serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }

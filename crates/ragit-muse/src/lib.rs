@@ -1,5 +1,5 @@
-use crate::error::Error;
-use crate::prompts::PROMPTS;
+use ragit_utils::error::Error;
+use ragit_utils::prompts::PROMPTS;
 use ragit_pdl::{Process, Template};
 use tera::Context;
 

@@ -1,0 +1,9 @@
+[package]
+name = "ragit-muse"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-utils = { path = "../ragit-utils" }
+ragit-pdl = { path = "../pdl" }
+tera = "1.20.0"

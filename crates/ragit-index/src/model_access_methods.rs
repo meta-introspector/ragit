@@ -1,8 +1,11 @@
+use ragit_utils::error::Error;
 use ragit_api::Model;
 
-use crate::index::index_struct::Index;
+impl super::Index {
+    pub(crate) fn get_model_by_name(&self, name: &str) -> Result<Model, Error> {
+        Ok(ragit_api::get_model_by_name(&self.models, name)?.clone())
+    }
 
-impl Index {
     /// Finds the lowest-cost model in the loaded models.
     pub fn find_lowest_cost_model(&self) -> Option<&Model> {
         if self.models.is_empty() {

@@ -1,57 +1,15 @@
-// Inverted Index Implementation
-// Inverted Index is still very naive and lacking many features.
-//
-// 1. You can only build ii from scratch. There's no incremental build.
-// 2. You can only remove the entire ii. There's no removing a single file or a chunk.
-// 3. If something goes wrong while an ii is building, you have to build it from scratch.
-
-use super::index_struct::Index;
-use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
-use crate::error::Error;
-use crate::index::commands::archive::erase_lines;
-use crate::ragit_path_utils::{get_ii_path, join3_paths};
+use ragit_utils::error::Error;
+use ragit_utils::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
+use ragit_utils::ragit_path_utils::{get_ii_path, join3_paths};
 use ragit_fs::{exists, is_dir, parent, read_dir, remove_dir_all, try_create_dir};
 use ragit_uid::{Uid, UidWriteMode};
 use serde::{Deserialize, Serialize};
-use sha3::{Digest, Sha3_256};
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use std::path::PathBuf;
 
-pub type Term = String;
-pub type Weight = f32;
-const AUTO_FLUSH: usize = 65536; // TODO: make it configurable
+use super::{Index, IIStatus, IIBuildState, Term, Weight, hash};
 
-// It takes too long to iterate all the terms and chunks.
-//const CHECK_II_LIMIT: usize = 512;
-
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
-#[serde(tag = "type")]
-pub enum IIStatus {
-    /// Initial state. There's no ii at all.
-    None,
-
-    /// ii used to be `Complete` or `Ongoing`, but there're added or removed chunks.
-    Outdated,
-
-    /// ii is built and is usable.
-    Complete,
-
-    /// ii-building is still going on. `ii-build` commands will
-    /// start from this uid. `ii-build` ALWAYS processes chunks in
-    /// uid order.
-    Ongoing(Uid),
-}
-
-//pub fn to_uid(p: PathBuf) -> Uid {}
-
-#[derive(Default)]
-struct IIBuildState {
-    total_uid: usize,
-    buffer_uid: usize,
-    buffer_term: usize,
-    buffer_flush: usize,
-}
+const AUTO_FLUSH: usize = 65536;
 
 impl Index {
     pub fn get_search_candidates(
@@ -162,8 +120,8 @@ impl Index {
     pub fn reset_ii(&mut self) -> Result<(), Error> {
         let ii_path = join3_paths(
             &self.root_dir,
-            &PathBuf::from(INDEX_DIR_NAME),
-            &PathBuf::from(II_DIR_NAME),
+            &std::path::PathBuf::from(INDEX_DIR_NAME),
+            &std::path::PathBuf::from(II_DIR_NAME),
         )?;
 
         for dir in read_dir(ii_path.to_str().unwrap(), false)? {
@@ -238,10 +196,4 @@ impl Index {
         println!("buffer term: {}", state.buffer_term);
         println!("buffer flush: {}", state.buffer_flush);
     }
-}
-
-fn hash(term: &Term) -> String {
-    let mut hasher = Sha3_256::new();
-    hasher.update(term.as_bytes());
-    format!("{:064x}", hasher.finalize())
 }

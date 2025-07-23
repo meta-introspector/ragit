@@ -1,10 +1,8 @@
-use crate::constant::INDEX_FILE_NAME;
-use crate::error::Error;
+use ragit_utils::constant::INDEX_FILE_NAME;
+use ragit_utils::error::Error;
 use serde_json::Value;
 
-use super::index_struct::Index;
-
-impl Index {
+impl super::Index {
     pub fn get_config_by_key(&self, key: String) -> Result<Value, Error> {
         let value = match key.as_str() {
             "model" => serde_json::to_value(&self.api_config.model)?,

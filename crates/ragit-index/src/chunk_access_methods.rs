@@ -1,8 +1,8 @@
-use crate::chunk::{self, Chunk, ChunkBuildInfo, RenderedChunk, merge_and_convert_chunks};
-use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
-use crate::error::Error;
-use crate::index::{tfidf, ImageDescription};
-use crate::uid::{self, Uid};
+use ragit_utils::chunk::{self, Chunk, ChunkBuildInfo, RenderedChunk, merge_and_convert_chunks};
+use ragit_utils::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
+use ragit_utils::error::Error;
+use ragit_utils::index::tfidf;
+use ragit_utils::uid::{self, Uid};
 use ragit_fs::{exists, extension, is_dir, join3, read_dir, read_bytes, read_string};
 use serde_json::Value;
 use std::collections::HashSet;
@@ -153,7 +153,7 @@ impl super::Index {
     pub fn get_tfidf_by_chunk_uid(
         &self,
         uid: Uid,
-    ) -> Result<ProcessedDoc, Error> {
+    ) -> Result<ragit_types::ProcessedDoc, Error> {
         let tfidf_at = self.get_uid_path(
             &self.root_dir,
             CHUNK_DIR_NAME,
@@ -171,9 +171,9 @@ impl super::Index {
     pub fn get_tfidf_by_file_uid(
         &self,
         uid: Uid,
-    ) -> Result<ProcessedDoc, Error> {
+    ) -> Result<ragit_types::ProcessedDoc, Error> {
         let chunk_uids = self.get_chunks_of_file(uid)?;
-        let mut result = ProcessedDoc::empty();
+        let mut result = ragit_types::ProcessedDoc::empty();
 
         for uid in chunk_uids.iter() {
             result.extend(&self.get_tfidf_by_chunk_uid(*uid)?);
@@ -236,9 +236,9 @@ impl super::Index {
         Ok(read_bytes(&self.get_uid_path(IMAGE_DIR_NAME, uid, Some("png"))?)?)
     }
 
-    pub fn get_image_description_by_uid(&self, uid: Uid) -> Result<ImageDescription, Error> {
+    pub fn get_image_description_by_uid(&self, uid: Uid) -> Result<ragit_types::ImageSchema, Error> {
         let j = read_string(&self.get_uid_path(IMAGE_DIR_NAME, uid, Some("json"))?)?;
-        let v = serde_json::from_str::<ImageDescription>(&j)?;
+        let v = serde_json::from_str::<ragit_types::ImageSchema>(&j)?;
         Ok(v)
     }
 }
