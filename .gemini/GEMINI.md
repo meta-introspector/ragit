@@ -27,6 +27,7 @@
     - `Index` struct and `LoadMode` enum moved to separate files.
     - `impl Index` methods split into individual files (e.g., `index_dummy.rs`, `index_new.rs`, `index_load.rs`).
     - `src/index.rs` renamed to `src/index/mod.rs`.
+    - **Current Status:** The `build` method (and its helpers) is currently located in `src/index/commands/build.rs` but needs to be moved to `crates/ragit-utils/src/index/index_struct.rs` to be a proper method of the `Index` struct.
 - **Path Handling (`PathBuf`):**
     - Transitioning to consistent `PathBuf` usage across the codebase.
     - Many path utility functions moved to `crates/ragit-utils/src/path_utils.rs`.
@@ -109,3 +110,4 @@ As a meme miner, we dig in the mountain of Plato for gems. We place each idea we
 - Address Remaining `PathBuf` Issues: Continue fixing any lingering `PathBuf` vs. `String` mismatches.
 - Review and Document Dependencies: Verify correct module imports and absence of circular dependencies.
 - Performance Considerations: Monitor for new bottlenecks introduced by refactoring.
+- Verify Command Refactoring: After the `Index` refactoring is complete, verify that all command implementations have been successfully moved from the root `ragit` crate into the `ragit-commands` crate. This will involve checking `crates/ragit-commands/src/lib.rs` and the `crates/ragit-commands/src/commands/` directory.

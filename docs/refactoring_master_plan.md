@@ -48,11 +48,17 @@ The goal is to get the project to compile again by methodically fixing the error
 
 Phase 1 will result in a working but architecturally awkward build. The final step is to restore the ergonomic `index.method()` calling convention by creating a dedicated crate for the `Index`.
 
-**Action: Create the `ragit-index` Crate**
+**Current Status of `Index` Refactoring:** The `Index` struct and its associated methods are still being consolidated. Specifically, the `build` method (and its helpers) is currently located in `src/index/commands/build.rs` but needs to be moved to `crates/ragit-utils/src/index/index_struct.rs` to be a proper method of the `Index` struct.
+
+**Action: Create the `ragit-index` Crate (Revised)**
 
 1.  **Create New Crate:** Initialize a new crate at `crates/ragit-index`.
 2.  **Move `Index` Struct:** Relocate the `Index` struct definition from `ragit-utils` to `crates/ragit-index/src/lib.rs`.
-3.  **Consolidate Methods:** Move all the standalone index-related functions from the `ragit-utils/src/index/` submodules back into `impl Index` blocks within the new `ragit-index` crate. Make these methods `pub`.
+3.  **Consolidate Methods:** Move all the standalone index-related functions (including the `build` method and its helpers) from the `ragit-utils/src/index/` submodules and `src/index/commands/build.rs` back into `impl Index` blocks within the new `ragit-index` crate. Make these methods `pub`.
 4.  **Update Dependencies:** Modify the `Cargo.toml` files for `ragit-commands` and any other relevant crates to depend on the new `ragit-index` crate for all index-related functionality.
 
 **Benefit:** This final step will complete the refactoring. It will centralize all core index logic into a single, cohesive crate, restoring an intuitive and ergonomic API for the rest of the application to use.
+
+### **Phase 3: Verify Command Refactoring**
+
+After the `Index` refactoring is complete, I will verify that all command implementations have been successfully moved from the root `ragit` crate into the `ragit-commands` crate. This will involve checking `crates/ragit-commands/src/lib.rs` and the `crates/ragit-commands/src/commands/` directory.
