@@ -7,7 +7,7 @@ use ragit_uid::Uid;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use ragit_ignore::Ignore;
+
 
 pub use super::config::BuildConfig;
 pub use super::ii::IIStatus;
@@ -374,15 +374,7 @@ impl Index {
     //     ))
     // }
 
-    pub fn read_ignore_file_command(&self, root_dir: &str) -> Result<Ignore, Error> {
-        eprintln!(
-            "Placeholder for read_ignore_file_command: root_dir={}",
-            root_dir
-        );
-        Err(Error::Internal(
-            "Placeholder for read_ignore_file_command".to_string(),
-        ))
-    }
+    
 
     pub async fn add_files_command(
         &mut self,

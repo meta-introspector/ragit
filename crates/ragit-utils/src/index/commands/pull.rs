@@ -17,7 +17,7 @@ pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), Erro
         return Ok(());
     }
 
-    let index = Index::load(root_dir, LoadMode::QuickCheck)?;
+    let mut index = Index::load(root_dir, LoadMode::QuickCheck)?;
     let include_configs = parsed_args.get_flag(0).unwrap() == "--configs";
     let include_prompts = parsed_args.get_flag(1).unwrap() == "--prompts";
     let quiet = parsed_args.get_flag(2).is_some();

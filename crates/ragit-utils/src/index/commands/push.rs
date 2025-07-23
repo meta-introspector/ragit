@@ -1,4 +1,4 @@
-pub struct PushResult {
-    pub success: usize,
-    pub errors: usize,
+pub enum PushResult {
+    AlreadyUpToDate,
+    Pushed,
 }

@@ -20,7 +20,7 @@ impl Index {
         let parent_path = parent(image_path.as_path())?;
 
         if !parent_path.exists() {
-            try_create_dir(&parent_path)?;
+            try_create_dir(parent_path.to_str().unwrap())?;
         }
 
         let image_bytes = read_bytes(image_path.to_str().unwrap())?;

@@ -345,7 +345,7 @@ impl Chunk {
         for image in &self.images {
             let description_at = crate::path_utils::get_uid_path(
                 &PathBuf::from(root_dir),
-                Path::new(IMAGE_DIR_NAME),
+                &Path::new(IMAGE_DIR_NAME),
                 *image,
                 Some("json"),
             )?;

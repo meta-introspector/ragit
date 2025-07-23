@@ -47,7 +47,7 @@ impl Index {
         let prompt_real_dir = get_rag_path(&self.root_dir, &PathBuf::from(PROMPT_DIR_NAME))?;
 
         if !prompt_real_dir.exists() {
-            create_dir_all(&prompt_real_dir)?;
+            create_dir_all(prompt_real_dir.to_str().unwrap())?;
         }
 
         for (prompt_name, prompt) in self.prompts.iter() {

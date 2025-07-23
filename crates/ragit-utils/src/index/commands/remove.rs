@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RemoveResult {
-    pub success: usize,
-    pub errors: usize,
+    pub removed_files: usize,
+    pub removed_chunks: usize,
 }
 
 pub async fn remove_command(

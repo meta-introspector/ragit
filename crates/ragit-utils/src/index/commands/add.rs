@@ -5,7 +5,10 @@ pub enum AddMode {
     Manual,
     Reject,
 }
-pub struct AddResult;
+pub struct AddResult {
+    pub added_files: usize,
+    pub added_chunks: usize,
+}
 
 impl AddMode {
     pub fn parse_flag(flag: &str) -> Option<Self> {
