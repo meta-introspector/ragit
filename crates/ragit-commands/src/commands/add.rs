@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_utils::index::commands::add::AddMode;
 
 pub async fn add_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

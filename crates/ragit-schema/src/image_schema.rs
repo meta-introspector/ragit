@@ -1,18 +1,17 @@
-use anyhow::Error;
+use ragit_utils::error::Error;
 use ragit_types::{ImageSchema, Uid};
-use ragit_utils::index::Index;
+use ragit_utils::index::index_struct::Index;
 
 use ragit_fs::{file_size, read_bytes, read_string, set_extension};
 use ragit_pdl::JsonType;
 use ragit_utils::constant::IMAGE_DIR_NAME;
-use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use ragit_core_utils::path::get_uid_path;
+use ragit_utils::path_utils::get_uid_path;
 
 pub fn get_image_schema(index: &Index, uid: Uid, load_bytes: bool) -> Result<ImageSchema, Error> {
-    let description_path = get_uid_path(&index.root_dir, IMAGE_DIR_NAME, uid, Some("json"))?;
+    let description_path = get_uid_path(&index.root_dir, Path::new(IMAGE_DIR_NAME), uid, Some("json"))?;
     let image_path = set_extension(description_path.to_string_lossy().as_ref(), "png")?;
     let description = read_string(description_path.to_string_lossy().as_ref())?;
     let description = serde_json::from_str::<Value>(&description)?;

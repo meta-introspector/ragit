@@ -1,8 +1,4 @@
-pub use crate::commands::ls_chunks::ls_chunks_command_main;
-pub use crate::commands::ls_files::ls_files_command_main;
-pub use crate::commands::ls_images::ls_images_command_main;
-pub use crate::commands::ls_models::ls_models_command_main;
-pub use crate::commands::ls_terms::ls_terms_command_main;
+pub use crate::commands::ls::ls_command_main;
 pub use ragit_uid::Uid;
 pub use ragit_utils::api_config::ApiConfig;
 pub use ragit_utils::chunk::utils::into_multi_modal_contents;
@@ -11,10 +7,19 @@ pub use ragit_utils::chunk::{
 };
 pub use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, ParsedArgs, Span};
 pub use ragit_utils::error::{CliError, Error, ErrorKind};
-pub use ragit_utils::index::commands::{
-    get_compatibility_warning, AddMode, BuildResult, MergeMode, MergeResult, PullResult,
-    PushResult, RemoveResult, SummaryMode,
-};
+//pub use ragit_utils::index::commands::{
+//    get_compatibility_warning, BuildResult, MergeMode, MergeResult, PullResult,
+//    PushResult, RemoveResult, SummaryMode,
+//};
+use ragit_utils::index::commands::build::BuildResult;
+use ragit_utils::index::commands::merge::MergeMode;
+use ragit_utils::index::commands::merge::MergeResult;
+use ragit_utils::index::commands::pull::PullResult;
+use ragit_utils::index::commands::push::PushResult;
+use ragit_utils::index::commands::remove::RemoveResult;
+use ragit_utils::index::commands::summary::SummaryMode;
+
+    
 pub use ragit_utils::index::index_struct::Index;
 pub use ragit_utils::index::load_mode::LoadMode;
 pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn};
@@ -58,7 +63,9 @@ pub use image::ImageError;
 pub use lazy_static::lazy_static;
 pub use ragit_api::Error as ApiError;
 pub use ragit_api::{
-    get_model_by_name, list_models, Model, ModelQAResult, ModelQASystem, ModelRaw, QualityScores,
+    get_model_by_name,
+    //list_models,
+    Model, ModelQAResult, ModelQASystem, ModelRaw, QualityScores,
     Request,
 };
 pub use ragit_fs::{
@@ -71,7 +78,7 @@ pub use ragit_pdl::{
     render_pdl_schema, JsonType, Message, Pdl, Role,
 };
 pub use ragit_utils::doc_utils::get_doc_content;
-pub use ragit_utils::index::commands::AddMode;
+
 pub use ragit_utils::project_root::find_root;
 pub use regex::Regex;
 pub use reqwest::Error as ReqwestError;

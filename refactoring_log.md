@@ -24,5 +24,12 @@ This log documents the refactoring steps taken to resolve dependency cycles and 
 *   Corrected `serde_json::from_slice` usage in `ragit-uid` to expect `&[u8]`.
 *   Fixed `ok_or_else` to `or_else` in `ragit-core-utils/src/path.rs`.
 *   Cleaned up unused imports across various crates.
+*   **`ragit-utils` Refactoring**: The `ragit-utils` crate has undergone significant refactoring, including:
+    *   Splitting `chunk/mod.rs` into smaller, single-responsibility modules.
+    *   Correcting `Path` and `PathBuf` usage and imports across the crate.
+    *   Resolving duplicate function definitions by consolidating implementations.
+    *   Updating `AddResult` and `RemoveResult` struct definitions to match expected fields.
+    *   Making the `index` mutable in `crates/ragit-utils/src/index/commands/pull.rs`.
+    *   Fixing `PushResult` definition to be an enum.
 
 This refactoring aims to improve modularity, reduce coupling, and make the codebase easier to maintain and extend.

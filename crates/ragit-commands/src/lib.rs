@@ -1,12 +1,7 @@
 pub mod commands;
 pub mod prelude;
 
-pub use commands::ii_reset;
-pub use commands::ii_status;
-pub use commands::ls_chunks;
-pub use commands::ls_files;
-pub use commands::ls_images;
-pub use commands::ls_models;
-pub use commands::ls_terms;
-pub use commands::*;
+//pub use commands::ii_reset::ii_reset_command_main;
+//pub use commands::ii_status::ii_status_command_main;
+pub use commands::ls::*;
 pub use prelude::*;
