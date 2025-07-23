@@ -25,7 +25,7 @@ members = [
     "crates/ragit-uid",
     "crates/ragit-commands",
     "crates/ragit-core-utils",
-    "crates/ragit-types", "crates/ragit-core",
+    "crates/ragit-types", "crates/ragit-core", "crates/ragit-index",
 ]
 
 [dependencies]

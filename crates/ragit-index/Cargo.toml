@@ -1,0 +1,13 @@
+[package]
+name = "ragit-index"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-api = { path = "../api" }
+ragit-uid = { path = "../ragit-uid" }
+ragit-types = { path = "../ragit-types" }
+ragit-utils = { path = "../ragit-utils" }
+ragit-commands = { path = "../ragit-commands" }
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }
