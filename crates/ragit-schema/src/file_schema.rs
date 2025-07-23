@@ -1,5 +1,5 @@
 use ragit_types::{Uid, FileSchema};
-use ragit_utils::error::Error;
+use anyhow::Error;
 use ragit_utils::index::Index;
 use ragit_utils::chunk::ChunkBuildInfo;
 use std::path::{Path, PathBuf};

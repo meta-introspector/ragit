@@ -12,3 +12,4 @@ regex = "1.11.1"
 ragit-core = { path = "../ragit-core" }
 ragit-core-utils = { path = "../ragit-core-utils" }
 ragit-types = { path = "../ragit-types", version = "0.1.0" }
+ragit-fs = { path = "../fs" }

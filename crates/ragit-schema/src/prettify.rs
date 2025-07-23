@@ -1,5 +1,5 @@
 use ragit_types::{FileSchema, ImageSchema};
-use ragit_utils::error::Error;
+use anyhow::Error;
 use serde_json::Value;
 
 pub trait Prettify {

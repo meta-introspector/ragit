@@ -27,3 +27,4 @@ thiserror = "1.0"
 tokio = { version = "1.43.0", features = ["full"] }
 toml = "0.8.14"
 rand = "0.8"
+ragit-types = { path = "../ragit-types" }

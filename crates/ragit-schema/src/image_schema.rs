@@ -1,5 +1,5 @@
 use ragit_types::{Uid, ImageSchema};
-use ragit_utils::error::Error;
+use anyhow::Error;
 use ragit_utils::index::Index;
 
 use ragit_utils::constant::IMAGE_DIR_NAME;
@@ -9,7 +9,7 @@ use serde_json::Value;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-use ragit_utils::path_utils::get_uid_path;
+use ragit_core_utils::path::get_uid_path;
 
 pub fn get_image_schema(index: &Index, uid: Uid, load_bytes: bool) -> Result<ImageSchema, Error> {
     let description_path = get_uid_path(
