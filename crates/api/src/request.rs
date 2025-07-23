@@ -1,4 +1,4 @@
-use crate::audit::{AuditRecordAt, dump_api_usage, dump_pdl};
+use crate::audit::{dump_api_usage, dump_pdl};
 use crate::message::{message_contents_to_json_array, message_to_json};
 use crate::model::{Model, ModelRaw};
 use crate::rate_limit::RateLimiter;
@@ -9,6 +9,7 @@ use chrono::Local;
 use ragit_fs::exists_str;
 use ragit_fs::{WriteMode, create_dir_all, join, write_log, write_string};
 use ragit_pdl::{Message, Role, Schema};
+use ragit_types::AuditRecordAt;
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 use std::time::{Duration, Instant};

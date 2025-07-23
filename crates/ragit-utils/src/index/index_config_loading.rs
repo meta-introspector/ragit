@@ -1,7 +1,8 @@
 use crate::api_config::{ApiConfig, PartialApiConfig};
 use crate::error::Error;
-use crate::path_utils::{join_paths, str_to_pathbuf};
+use crate::path_utils::join_paths;
 use ragit_fs::{exists, read_string};
+use std::path::PathBuf;
 
 use crate::index::index_struct::Index;
 
@@ -23,10 +24,10 @@ impl Index {
         };
 
         let config_path = join_paths(
-            &str_to_pathbuf(&home_dir),
+            &PathBuf::from(home_dir),
             &join_paths(
-                &str_to_pathbuf(".config"),
-                &join_paths(&str_to_pathbuf("ragit"), &str_to_pathbuf(filename))?,
+                &PathBuf::from(".config"),
+                &join_paths(&PathBuf::from("ragit"), &PathBuf::from(filename))?,
             )?,
         )?;
 

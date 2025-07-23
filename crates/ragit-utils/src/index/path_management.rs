@@ -2,7 +2,7 @@ use crate::constant::{
     API_CONFIG_FILE_NAME, BUILD_CONFIG_FILE_NAME, CONFIG_DIR_NAME, QUERY_CONFIG_FILE_NAME,
 };
 use crate::error::Error;
-use crate::path_utils::{get_rag_path, join_paths, str_to_pathbuf};
+use crate::path_utils::{get_rag_path, join_paths};
 use std::path::PathBuf;
 
 pub type Path = PathBuf;
@@ -16,8 +16,8 @@ impl Index {
         Ok(get_rag_path(
             &self.root_dir,
             &join_paths(
-                &str_to_pathbuf(CONFIG_DIR_NAME),
-                &str_to_pathbuf(API_CONFIG_FILE_NAME),
+                &PathBuf::from(CONFIG_DIR_NAME),
+                &PathBuf::from(API_CONFIG_FILE_NAME),
             )?,
         )?)
     }
@@ -26,8 +26,8 @@ impl Index {
         Ok(get_rag_path(
             &self.root_dir,
             &join_paths(
-                &str_to_pathbuf(CONFIG_DIR_NAME),
-                &str_to_pathbuf(BUILD_CONFIG_FILE_NAME),
+                &PathBuf::from(CONFIG_DIR_NAME),
+                &PathBuf::from(BUILD_CONFIG_FILE_NAME),
             )?,
         )?)
     }
@@ -36,8 +36,8 @@ impl Index {
         Ok(get_rag_path(
             &self.root_dir,
             &join_paths(
-                &str_to_pathbuf(CONFIG_DIR_NAME),
-                &str_to_pathbuf(QUERY_CONFIG_FILE_NAME),
+                &PathBuf::from(CONFIG_DIR_NAME),
+                &PathBuf::from(QUERY_CONFIG_FILE_NAME),
             )?,
         )?)
     }

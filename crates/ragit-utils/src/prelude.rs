@@ -7,8 +7,8 @@ pub use crate::{
     constant::*,
     error::Error,
     path_utils::{
-        get_ii_path, get_ii_path_str, get_normalized_abs_pathbuf, get_rag_path, get_uid_path,
-        join3_paths, join_paths, path_to_display, pathbuf_to_str, str_to_path_ref, str_to_pathbuf,
+        get_ii_path, get_normalized_abs_pathbuf, get_rag_path, get_uid_path, join3_paths,
+        join_paths, path_to_display, str_to_path_ref,
     },
     prompts::PROMPTS,
     query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn},

@@ -9,13 +9,14 @@ use super::index_struct::Index;
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
 use crate::error::Error;
 use crate::index::commands::archive::erase_lines;
-use crate::ragit_path_utils::{get_ii_path, join3_paths, pathbuf_to_str, str_to_pathbuf};
+use crate::ragit_path_utils::{get_ii_path, join3_paths};
 use ragit_fs::{exists, is_dir, parent, read_dir, remove_dir_all, try_create_dir};
 use ragit_uid::{Uid, UidWriteMode};
 use serde::{Deserialize, Serialize};
 use sha3::{Digest, Sha3_256};
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 pub type Term = String;
 pub type Weight = f32;
@@ -161,11 +162,11 @@ impl Index {
     pub fn reset_ii(&mut self) -> Result<(), Error> {
         let ii_path = join3_paths(
             &self.root_dir,
-            &str_to_pathbuf(INDEX_DIR_NAME),
-            &str_to_pathbuf(II_DIR_NAME),
+            &PathBuf::from(INDEX_DIR_NAME),
+            &PathBuf::from(II_DIR_NAME),
         )?;
 
-        for dir in read_dir(&pathbuf_to_str(&ii_path), false)? {
+        for dir in read_dir(ii_path.to_str().unwrap(), false)? {
             if is_dir(&dir) {
                 remove_dir_all(&dir)?;
             }
@@ -208,7 +209,7 @@ impl Index {
             let parent_path = parent(&ii_path)?;
 
             if !parent_path.exists() {
-                try_create_dir(&pathbuf_to_str(&parent_path))?;
+                try_create_dir(&parent_path)?;
             }
 
             let uids = if ii_path.exists() {

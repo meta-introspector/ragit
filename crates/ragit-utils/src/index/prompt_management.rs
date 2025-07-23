@@ -1,8 +1,9 @@
 use crate::constant::PROMPT_DIR_NAME;
 use crate::error::Error;
-use crate::path_utils::{get_rag_path, join_paths, pathbuf_to_str, str_to_pathbuf};
+use crate::path_utils::{get_rag_path, join_paths};
 use crate::prompts::PROMPTS;
 use ragit_fs::{create_dir_all, read_string, set_extension, write_string, WriteMode};
+use std::path::PathBuf;
 
 use crate::index::index_struct::Index;
 
@@ -15,8 +16,8 @@ impl Index {
             let prompt_path = get_rag_path(
                 &self.root_dir,
                 &join_paths(
-                    &str_to_pathbuf(PROMPT_DIR_NAME),
-                    &str_to_pathbuf(&set_extension(prompt_name, "pdl")?),
+                    &PathBuf::from(PROMPT_DIR_NAME),
+                    &PathBuf::from(set_extension(prompt_name, "pdl")?),
                 )?,
             )?;
 
@@ -43,16 +44,16 @@ impl Index {
     }
 
     pub fn save_prompts(&self) -> Result<(), Error> {
-        let prompt_real_dir = get_rag_path(&self.root_dir, &str_to_pathbuf(PROMPT_DIR_NAME))?;
+        let prompt_real_dir = get_rag_path(&self.root_dir, &PathBuf::from(PROMPT_DIR_NAME))?;
 
         if !prompt_real_dir.exists() {
-            create_dir_all(&pathbuf_to_str(&prompt_real_dir))?;
+            create_dir_all(&prompt_real_dir)?;
         }
 
         for (prompt_name, prompt) in self.prompts.iter() {
             let prompt_path = join_paths(
                 &prompt_real_dir,
-                &str_to_pathbuf(&set_extension(prompt_name, "pdl")?),
+                &PathBuf::from(set_extension(prompt_name, "pdl")?),
             )?;
 
             write_string(prompt_path.to_str().unwrap(), prompt, WriteMode::Atomic)?;

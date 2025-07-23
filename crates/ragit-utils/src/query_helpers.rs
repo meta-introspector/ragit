@@ -21,56 +21,56 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
     if UID_RE.is_match(q) {
         if q.len() == 1 {
             if config.search_chunk {
-                for chunk_dir in read_dir(path_utils::str_to_path_ref(&join3(
-                    path_utils::pathbuf_to_str(&index.root_dir),
+                for chunk_dir in read_dir(&join3(
+                    index.root_dir.to_str().unwrap(),
                     INDEX_DIR_NAME,
                     CHUNK_DIR_NAME,
-                )?), false).unwrap_or(vec![]) {
-                    let chunk_prefix = file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_dir)))?;
+                )?, false).unwrap_or(vec![]) {
+                    let chunk_prefix = file_name(&chunk_dir)?;
 
                     if chunk_prefix.starts_with(q) {
-                        for chunk_file in read_dir(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_dir)), false)? {
-                            if extension(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_file)))?.unwrap_or(String::new()) != "chunk" {
+                        for chunk_file in read_dir(&chunk_dir, false)? {
+                            if extension(&chunk_file)?.unwrap_or(String::new()) != "chunk" {
                                 continue;
                             }
 
-                            chunks.push(Uid::from_prefix_and_suffix(&chunk_prefix, &file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_file)))?)?);
+                            chunks.push(Uid::from_prefix_and_suffix(&chunk_prefix, &file_name(&chunk_file)?)?);
                         }
                     }
                 }
             }
 
             if config.search_file_uid {
-                for file_index_dir in read_dir(path_utils::str_to_path_ref(&join3(
-                    path_utils::pathbuf_to_str(&index.root_dir),
+                for file_index_dir in read_dir(&join3(
+                    index.root_dir.to_str().unwrap(),
                     INDEX_DIR_NAME,
                     FILE_INDEX_DIR_NAME,
-                )?), false).unwrap_or(vec![]) {
-                    let file_index_prefix = file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&file_index_dir)))?;
+                )?, false).unwrap_or(vec![]) {
+                    let file_index_prefix = file_name(&file_index_dir)?;
 
                     if file_index_prefix.starts_with(q) {
-                        for file_index in read_dir(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&file_index_dir)), false)? {
-                            file_uids.push(Uid::from_prefix_and_suffix(&file_index_prefix, &file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&file_index)))?)?);
+                        for file_index in read_dir(&file_index_dir, false)? {
+                            file_uids.push(Uid::from_prefix_and_suffix(&file_index_prefix, &file_name(&file_index)?)?);
                         }
                     }
                 }
             }
 
             if config.search_image {
-                for image_dir in read_dir(path_utils::str_to_path_ref(&join3(
-                    path_utils::pathbuf_to_str(&index.root_dir),
+                for image_dir in read_dir(&join3(
+                    index.root_dir.to_str().unwrap(),
                     INDEX_DIR_NAME,
                     IMAGE_DIR_NAME,
-                )?), false).unwrap_or(vec![]) {
-                    let image_prefix = file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_dir)))?;
+                )?, false).unwrap_or(vec![]) {
+                    let image_prefix = file_name(&image_dir)?;
 
                     if image_prefix.starts_with(q) {
-                        for image_file in read_dir(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_dir)), false)? {
-                            if extension(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_file)))?.unwrap_or(String::new()) != "png" {
+                        for image_file in read_dir(&image_dir, false)? {
+                            if extension(&image_file)?.unwrap_or(String::new()) != "png" {
                                 continue;
                             }
 
-                            images.push(Uid::from_prefix_and_suffix(&image_prefix, &file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_file)))?)?);
+                            images.push(Uid::from_prefix_and_suffix(&image_prefix, &file_name(&image_file)?)?);
                         }
                     }
                 }
@@ -79,43 +79,43 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
 
         else if q.len() == 2 {
             if config.search_chunk {
-                for chunk_file in read_dir(path_utils::str_to_path_ref(&join4(
-                    path_utils::pathbuf_to_str(&index.root_dir),
+                for chunk_file in read_dir(&join4(
+                    index.root_dir.to_str().unwrap(),
                     INDEX_DIR_NAME,
                     CHUNK_DIR_NAME,
                     q,
-                )?), false).unwrap_or(vec![]) {
-                    if extension(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_file)))?.unwrap_or(String::new()) != "chunk" {
+                )?, false).unwrap_or(vec![]) {
+                    if extension(&chunk_file)?.unwrap_or(String::new()) != "chunk" {
                         continue;
                     }
 
-                    chunks.push(Uid::from_prefix_and_suffix(q, &file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_file)))?)?);
+                    chunks.push(Uid::from_prefix_and_suffix(q, &file_name(&chunk_file)?)?);
                 }
             }
 
             if config.search_file_uid {
-                for file_index in read_dir(path_utils::str_to_path_ref(&join4(
-                    path_utils::pathbuf_to_str(&index.root_dir),
+                for file_index in read_dir(&join4(
+                    index.root_dir.to_str().unwrap(),
                     INDEX_DIR_NAME,
                     FILE_INDEX_DIR_NAME,
                     q,
-                )?), false).unwrap_or(vec![]) {
-                    file_uids.push(Uid::from_prefix_and_suffix(q, &file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&file_index)))?)?);
+                )?, false).unwrap_or(vec![]) {
+                    file_uids.push(Uid::from_prefix_and_suffix(q, &file_name(&file_index)?)?);
                 }
             }
 
             if config.search_image {
-                for image_file in read_dir(path_utils::str_to_path_ref(&join4(
-                    path_utils::pathbuf_to_str(&index.root_dir),
+                for image_file in read_dir(&join4(
+                    index.root_dir.to_str().unwrap(),
                     INDEX_DIR_NAME,
                     IMAGE_DIR_NAME,
                     q,
-                )?), false).unwrap_or(vec![]) {
-                    if extension(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_file)))?.unwrap_or(String::new()) != "png" {
+                )?, false).unwrap_or(vec![]) {
+                    if extension(&image_file)?.unwrap_or(String::new()) != "png" {
                         continue;
                     }
 
-                    images.push(Uid::from_prefix_and_suffix(q, &file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_file)))?)?);
+                    images.push(Uid::from_prefix_and_suffix(q, &file_name(&image_file)?)?);
                 }
             }
         }
@@ -127,37 +127,37 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_chunk {
                 if q.len() == 64 {
                     let chunk_at = join(
-                        path_utils::str_to_path_ref(&join3(
-                            path_utils::pathbuf_to_str(&index.root_dir),
+                        &join3(
+                            index.root_dir.to_str().unwrap(),
                             INDEX_DIR_NAME,
                             CHUNK_DIR_NAME,
-                        )?),
-                        path_utils::str_to_path_ref(&join(
+                        )?,
+                        &join(
                             &prefix,
                             &set_extension(
                                 &suffix,
                                 "chunk",
                             )?,
-                        )?),
+                        )?,
                     )?;
 
-                    if exists(path_utils::str_to_path_ref(path_utils::pathbuf_to_str(&chunk_at))) {
+                    if exists(&chunk_at) {
                         chunks.push(q.parse::<Uid>()?);
                     }
                 }
 
                 else {
-                    for chunk_file in read_dir(path_utils::str_to_path_ref(&join4(
-                        path_utils::pathbuf_to_str(&index.root_dir),
+                    for chunk_file in read_dir(&join4(
+                        index.root_dir.to_str().unwrap(),
                         INDEX_DIR_NAME,
                         CHUNK_DIR_NAME,
                         &prefix,
-                    )?), false).unwrap_or(vec![]) {
-                        if extension(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_file)))?.unwrap_or(String::new()) != "chunk" {
+                    )?, false).unwrap_or(vec![]) {
+                        if extension(&chunk_file)?.unwrap_or(String::new()) != "chunk" {
                             continue;
                         }
 
-                        let chunk_file = file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&chunk_file)))?;
+                        let chunk_file = file_name(&chunk_file)?;
 
                         if chunk_file.starts_with(&suffix) {
                             chunks.push(Uid::from_prefix_and_suffix(&prefix, &chunk_file)?);
@@ -169,30 +169,30 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_file_uid {
                 if q.len() == 64 {
                     let file_index = join(
-                        path_utils::str_to_path_ref(&join3(
-                            path_utils::pathbuf_to_str(&index.root_dir),
+                        &join3(
+                            index.root_dir.to_str().unwrap(),
                             INDEX_DIR_NAME,
                             FILE_INDEX_DIR_NAME,
-                        )?),
-                        path_utils::str_to_path_ref(&join(
+                        )?,
+                        &join(
                             &prefix,
                             &suffix,
-                        )?),
+                        )?,
                     )?;
 
-                    if exists(path_utils::str_to_path_ref(path_utils::pathbuf_to_str(&file_index))) {
+                    if exists(&file_index) {
                         file_uids.push(q.parse::<Uid>()?);
                     }
                 }
 
                 else {
-                    for file_index in read_dir(path_utils::str_to_path_ref(&join4(
-                        path_utils::pathbuf_to_str(&index.root_dir),
+                    for file_index in read_dir(&join4(
+                        index.root_dir.to_str().unwrap(),
                         INDEX_DIR_NAME,
                         FILE_INDEX_DIR_NAME,
                         &prefix,
-                    )?), false).unwrap_or(vec![]) {
-                        let file_index = file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&file_index)))?;
+                    )?, false).unwrap_or(vec![]) {
+                        let file_index = file_name(&file_index)?;
 
                         if file_index.starts_with(&suffix) {
                             file_uids.push(Uid::from_prefix_and_suffix(&prefix, &file_index)?);
@@ -204,37 +204,37 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_image {
                 if q.len() == 64 {
                     let image_at = join(
-                        path_utils::str_to_path_ref(&join3(
-                            path_utils::pathbuf_to_str(&index.root_dir),
+                        &join3(
+                            index.root_dir.to_str().unwrap(),
                             INDEX_DIR_NAME,
                             IMAGE_DIR_NAME,
-                        )?),
-                        path_utils::str_to_path_ref(&join(
+                        )?,
+                        &join(
                             &prefix,
                             &set_extension(
                                 &suffix,
                                 "png",
                             )?,
-                        )?),
+                        )?,
                     )?;
 
-                    if exists(path_utils::str_to_path_ref(path_utils::pathbuf_to_str(&image_at))) {
+                    if exists(&image_at) {
                         images.push(q.parse::<Uid>()?);
                     }
                 }
 
                 else {
-                    for image_file in read_dir(path_utils::str_to_path_ref(&join4(
-                        path_utils::pathbuf_to_str(&index.root_dir),
+                    for image_file in read_dir(&join4(
+                        index.root_dir.to_str().unwrap(),
                         INDEX_DIR_NAME,
                         IMAGE_DIR_NAME,
                         &prefix,
-                    )?), false).unwrap_or(vec![]) {
-                        if extension(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_file)))?.unwrap_or(String::new()) != "png" {
+                    )?, false).unwrap_or(vec![]) {
+                        if extension(&image_file)?.unwrap_or(String::new()) != "png" {
                             continue;
                         }
 
-                        let image_file = file_name(path_utils::str_to_path_ref(&path_utils::pathbuf_to_str(&image_file)))?;
+                        let image_file = file_name(&image_file)?;
 
                         if image_file.starts_with(&suffix) {
                             images.push(Uid::from_prefix_and_suffix(&prefix, &image_file)?);
@@ -246,16 +246,16 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
     }
 
     if config.search_file_path {
-        if let Ok(mut rel_path) = get_relative_path(path_utils::pathbuf_to_str(&index.root_dir), q) {
+        if let Ok(mut rel_path) = get_relative_path(index.root_dir.to_str().unwrap(), q) {
             // 1. It tries to exact-match a processed file.
-            if index.processed_files.contains_key(&path_utils::str_to_pathbuf(&rel_path)) {
+            if index.processed_files.contains_key(&PathBuf::from(&rel_path)) {
                 file_paths.push(rel_path.to_string());
             }
 
             // 2. It tries to exact-match a staged file.
             //    In some cases, a file can be both processed and staged at the
             //    same time. In that case, it has to choose the processed file.
-            else if config.search_staged_file && index.staged_files.contains(&path_utils::str_to_pathbuf(&rel_path)) {
+            else if config.search_staged_file && index.staged_files.contains(&PathBuf::from(&rel_path)) {
                 staged_files.push(rel_path);
             }
 
@@ -289,7 +289,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
     ).collect();
 
     for path in file_paths.iter() {
-        processed_files.insert((path.clone(), *index.processed_files.get(&path_utils::str_to_pathbuf(path)).unwrap()));
+        processed_files.insert((path.clone(), *index.processed_files.get(&PathBuf::from(path)).unwrap()));
     }
 
     for uid in file_uids.iter() {
@@ -305,3 +305,4 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
         staged_files,
     })
 }
+

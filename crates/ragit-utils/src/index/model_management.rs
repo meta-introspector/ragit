@@ -1,14 +1,15 @@
 use crate::constant::MODEL_FILE_NAME;
 use crate::error::Error;
-use crate::path_utils::{get_rag_path, join_paths, str_to_pathbuf};
+use crate::path_utils::{get_rag_path, join_paths};
 use ragit_api::{Model, ModelRaw};
 use ragit_fs::{exists, read_string, write_string, WriteMode};
+use std::path::PathBuf;
 
 use crate::index::index_struct::Index;
 
 impl Index {
     pub fn load_or_init_models(&mut self) -> Result<(), Error> {
-        let models_at = get_rag_path(&self.root_dir, &str_to_pathbuf(MODEL_FILE_NAME))?;
+        let models_at = get_rag_path(&self.root_dir, &PathBuf::from(MODEL_FILE_NAME))?;
 
         if !exists(&models_at) {
             // Initialize models from an external source or defaults
@@ -42,7 +43,7 @@ impl Index {
     pub fn get_initial_models() -> Result<Vec<ModelRaw>, Error> {
         // Check for environment variable RAGIT_MODEL_CONFIG
         if let Ok(env_path_str) = std::env::var("RAGIT_MODEL_CONFIG") {
-            let env_path = str_to_pathbuf(&env_path_str);
+            let env_path = PathBuf::from(env_path_str);
             if exists(&env_path) {
                 // Load from the environment variable path
                 let env_content = read_string(env_path.to_str().unwrap())?;
@@ -70,10 +71,10 @@ impl Index {
 
         if !home_dir.is_empty() {
             let config_path = join_paths(
-                &str_to_pathbuf(&home_dir),
+                &PathBuf::from(home_dir),
                 &join_paths(
-                    &str_to_pathbuf(".config"),
-                    &join_paths(&str_to_pathbuf("ragit"), &str_to_pathbuf(MODEL_FILE_NAME))?,
+                    &PathBuf::from(".config"),
+                    &join_paths(&PathBuf::from("ragit"), &PathBuf::from(MODEL_FILE_NAME))?,
                 )?,
             )?;
             if exists(&config_path) {

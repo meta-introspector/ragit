@@ -4,6 +4,7 @@ use ragit_fs::{read_bytes, read_string, remove_file, try_create_dir, write_bytes
 use ragit_pdl::{encode_base64, parse_pdl, Pdl};
 use ragit_uid::Uid;
 use serde_json::Value;
+use std::path::Path;
 
 use crate::index::file::ImageDescription;
 use crate::index::index_struct::Index;
@@ -13,22 +14,23 @@ use ragit_fs::parent;
 
 impl Index {
     pub async fn add_image_description(&self, uid: Uid) -> Result<(), Error> {
-        let description_path = get_uid_path(&self.root_dir, CHUNK_DIR_NAME, uid, Some("json"))?;
-        let image_path = get_uid_path(&self.root_dir, IMAGE_DIR_NAME, uid, Some("png"))?;
+        let description_path =
+            get_uid_path(&self.root_dir, Path::new(CHUNK_DIR_NAME), uid, Some("json"))?;
+        let image_path = get_uid_path(&self.root_dir, Path::new(IMAGE_DIR_NAME), uid, Some("png"))?;
         let parent_path = parent(image_path.as_path())?;
 
         if !parent_path.exists() {
-            try_create_dir(&pathbuf_to_str(&parent_path))?;
+            try_create_dir(&parent_path)?;
         }
 
-        let image_bytes = read_bytes(&pathbuf_to_str(&image_path))?;
+        let image_bytes = read_bytes(image_path.to_str().unwrap())?;
         let image_bytes = encode_base64(&image_bytes);
 
-        if let Ok(j) = read_string(&pathbuf_to_str(&description_path)) {
+        if let Ok(j) = read_string(description_path.to_str().unwrap()) {
             if serde_json::from_str::<Value>(&j).is_ok() {
                 return Ok(());
             } else {
-                remove_file(&pathbuf_to_str(&description_path))?;
+                remove_file(description_path.to_str().unwrap())?;
             }
         }
 

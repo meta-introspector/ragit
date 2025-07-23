@@ -1,7 +1,7 @@
 use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
 use crate::error::Error;
 use crate::index::index_struct::Index;
-use crate::path_utils::{join3_paths, pathbuf_to_str, str_to_pathbuf};
+use crate::path_utils::join3_paths;
 use ragit_fs::{extension, is_dir, read_dir};
 use std::path::PathBuf;
 
@@ -14,11 +14,11 @@ impl Index {
         let mut result = vec![];
         let base_path = join3_paths(
             &self.root_dir,
-            &str_to_pathbuf(INDEX_DIR_NAME),
-            &str_to_pathbuf(subdir_name),
+            &PathBuf::from(INDEX_DIR_NAME),
+            &PathBuf::from(subdir_name),
         )?;
 
-        for internal in read_dir(&pathbuf_to_str(&base_path), false)? {
+        for internal in read_dir(base_path.to_str().unwrap(), false)? {
             if !is_dir(&internal) {
                 continue;
             }

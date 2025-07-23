@@ -1,6 +1,6 @@
 use crate::constant::INDEX_FILE_NAME;
 use crate::error::Error;
-use crate::path_utils::{get_normalized_abs_pathbuf, get_rag_path, str_to_pathbuf};
+use crate::path_utils::{get_normalized_abs_pathbuf, get_rag_path};
 use ragit_fs::{read_string, write_bytes, WriteMode};
 use std::path::PathBuf;
 
@@ -76,7 +76,7 @@ impl Index {
     pub fn load_minimum(root_dir: PathBuf) -> Result<Self, Error> {
         let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
         let index_json = read_string(
-            get_rag_path(&root_dir, &str_to_pathbuf(INDEX_FILE_NAME))?
+            get_rag_path(&root_dir, &PathBuf::from(INDEX_FILE_NAME))?
                 .to_str()
                 .unwrap(),
         )?;

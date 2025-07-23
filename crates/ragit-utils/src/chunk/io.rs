@@ -4,7 +4,7 @@ use std::io::Read;
 use std::path::PathBuf;
 
 pub fn load_from_file(path: &PathBuf) -> Result<Chunk> {
-    let content = ragit_fs::read_bytes(&crate::path_utils::pathbuf_to_str(path))?;
+    let content = ragit_fs::read_bytes(path.to_str().unwrap())?;
 
     if content[0] == 0x1f && content[1] == 0x8b {
         let mut gz = flate2::read::GzDecoder::new(&content[1..]);
@@ -27,14 +27,11 @@ pub fn save_to_file(
     let parent_path = ragit_fs::parent(path)?;
 
     if !ragit_fs::exists(&parent_path) {
-        ragit_fs::try_create_dir(&crate::path_utils::pathbuf_to_str(&parent_path))?;
+        ragit_fs::try_create_dir(parent_path.to_str().unwrap())?;
     }
 
     if create_tfidf {
-        let tfidf_path = crate::path_utils::str_to_pathbuf(&ragit_fs::set_extension(
-            &crate::path_utils::pathbuf_to_str(path),
-            "tfidf",
-        )?);
+        let tfidf_path = PathBuf::from(ragit_fs::set_extension(path.to_str().unwrap(), "tfidf")?);
         crate::index::tfidf::save_to_file(
             tfidf_path.to_str().unwrap(),
             chunk,
@@ -51,13 +48,13 @@ pub fn save_to_file(
         encoder.write_all(&serialized_chunk)?;
         let compressed_bytes = encoder.finish()?;
         Ok(ragit_fs::write_bytes(
-            &crate::path_utils::pathbuf_to_str(path),
+            path.to_str().unwrap(),
             &compressed_bytes,
             ragit_fs::WriteMode::CreateOrTruncate,
         )?)
     } else {
         Ok(ragit_fs::write_bytes(
-            &crate::path_utils::pathbuf_to_str(path),
+            path.to_str().unwrap(),
             &serialized_chunk,
             ragit_fs::WriteMode::CreateOrTruncate,
         )?)

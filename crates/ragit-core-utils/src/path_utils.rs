@@ -15,7 +15,6 @@ pub fn path_to_display<'a>(path: &'a Path) -> impl std::fmt::Display + 'a {
     path.display()
 }
 
-/// Converts an `&str` to an `&Path`.
 pub fn str_to_path_ref(s: &str) -> &Path {
     Path::new(s)
 }

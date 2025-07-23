@@ -147,6 +147,8 @@ pub enum Error {
     UidError(#[from] ragit_uid::UidError),
     #[error(transparent)]
     CliError(#[from] CliError),
+    #[error(transparent)]
+    UidErrorFromTypes(#[from] ragit_types::UidError),
 }
 
 #[derive(Debug, thiserror::Error)]

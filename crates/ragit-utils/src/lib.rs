@@ -9,8 +9,8 @@ pub mod error;
 pub mod index;
 pub mod prompts;
 pub mod query;
+pub mod string_utils;
 
-pub use ragit_core_utils::string_utils;
 pub mod api_utils;
 pub mod cli_types;
 pub mod doc_utils;

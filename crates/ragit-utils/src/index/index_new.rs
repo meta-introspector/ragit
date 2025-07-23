@@ -6,7 +6,7 @@ use crate::constant::{
 };
 use crate::error::Error;
 use crate::index::index_struct::Index;
-use crate::path_utils::{get_normalized_abs_pathbuf, get_rag_path, join_paths, str_to_pathbuf};
+use crate::path_utils::{get_normalized_abs_pathbuf, get_rag_path, join_paths};
 use crate::prompts::PROMPTS;
 use crate::query::QueryConfig;
 use ragit_fs::{create_dir_all, exists, write_bytes, WriteMode};
@@ -18,7 +18,7 @@ impl Index {
     /// It reads the files in the repo and creates index.
     pub fn new(root_dir: PathBuf) -> Result<Self, Error> {
         let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
-        let index_dir = join_paths(&root_dir, &str_to_pathbuf(INDEX_DIR_NAME))?;
+        let index_dir = join_paths(&root_dir, &PathBuf::from(INDEX_DIR_NAME))?;
 
         if exists(&index_dir) {
             return Err(Error::IndexAlreadyExists(index_dir));
@@ -34,7 +34,7 @@ impl Index {
             II_DIR_NAME,
         ] {
             create_dir_all(
-                get_rag_path(&root_dir.to_path_buf(), &str_to_pathbuf(dir))?
+                get_rag_path(&root_dir.to_path_buf(), &PathBuf::from(dir))?
                     .to_str()
                     .unwrap(),
             )?;

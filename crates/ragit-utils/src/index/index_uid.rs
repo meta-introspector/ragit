@@ -4,6 +4,7 @@ use crate::index::index_struct::Index;
 use ragit_fs::{file_name, parent};
 use ragit_uid::{load_from_file, Uid};
 use std::path::PathBuf;
+use std::str::FromStr;
 
 impl Index {
     pub fn calculate_and_save_uid(&mut self) -> Result<Uid, Error> {
@@ -33,7 +34,7 @@ impl Index {
                     let image_uid_prefix =
                         file_name(parent(image_path.as_path())?.to_str().unwrap())?;
                     let image_uid_suffix = file_name(image_path.to_str().unwrap())?;
-                    let uid = format!("{}{}", image_uid_prefix, image_uid_suffix).parse::<Uid>()?;
+                    let uid = Uid::from_str(&format!("{}{}", image_uid_prefix, image_uid_suffix))?;
                     uids.push(uid);
                 }
 

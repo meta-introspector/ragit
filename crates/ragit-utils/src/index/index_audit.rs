@@ -1,5 +1,6 @@
 use crate::index::index_struct::Index;
 use crate::prelude::*;
+use chrono::{DateTime, Utc};
 use ragit_api::AuditRecord;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -7,7 +8,7 @@ use std::path::PathBuf;
 impl Index {
     pub fn audit(
         &self,
-        since: Option<chrono::DateTime<chrono::Local>>,
+        since: Option<DateTime<chrono::Local>>,
     ) -> Result<HashMap<String, AuditRecord>> {
         let mut result = HashMap::new();
         let audit_path =
@@ -29,7 +30,7 @@ impl Index {
             let timestamp = parts[0].parse::<i64>()?;
             let category = parts[1].to_string();
             if let Some(since) = since {
-                if chrono::NaiveDateTime::from_timestamp(timestamp, 0) < since.naive_local() {
+                if DateTime::<Utc>::from_timestamp(timestamp, 0).unwrap() < since.to_utc() {
                     continue;
                 }
             }
