@@ -247,9 +247,9 @@ impl Index {
 
     pub fn list_files<F, M, S>(
         &self,
-        filter: &F,
-        map: &M,
-        sort: &S,
+        _filter: &F,
+        _map: &M,
+        _sort: &S,
     ) -> Result<Vec<ragit_types::FileSchema>, Error>
     where
         F: Fn(&ragit_types::FileSchema) -> bool,
@@ -262,9 +262,9 @@ impl Index {
 
     pub fn list_chunks<F, M, S>(
         &self,
-        filter: &F,
-        map: &M,
-        sort: &S,
+        _filter: &F,
+        _map: &M,
+        _sort: &S,
     ) -> Result<Vec<ragit_types::ChunkSchema>, Error>
     where
         F: Fn(&ragit_types::ChunkSchema) -> bool,
@@ -277,9 +277,9 @@ impl Index {
 
     pub fn list_images<F, M, S>(
         &self,
-        filter: &F,
-        map: &M,
-        sort: &S,
+        _filter: &F,
+        _map: &M,
+        _sort: &S,
     ) -> Result<Vec<ragit_types::ImageSchema>, Error>
     where
         F: Fn(&ragit_types::ImageSchema) -> bool,

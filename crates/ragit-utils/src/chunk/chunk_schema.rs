@@ -8,7 +8,7 @@ pub struct ChunkSchema {
 }
 
 impl ChunkSchema {
-    pub fn dummy(data: &str, len: usize) -> Self {
+    pub fn dummy(_data: &str, _len: usize) -> Self {
         Self {
             title: String::new(),
             summary: String::new(),

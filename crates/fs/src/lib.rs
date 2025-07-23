@@ -15,6 +15,7 @@ use std::io::{self, Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
+
 #[derive(Clone, PartialEq, thiserror::Error)]
 pub struct FileError {
     pub kind: FileErrorKind,

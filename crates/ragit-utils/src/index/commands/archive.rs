@@ -1,1 +1,1 @@
-pub fn erase_lines(n: usize) {}
+pub fn erase_lines(_n: usize) {}

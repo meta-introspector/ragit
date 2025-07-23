@@ -7,12 +7,12 @@ use tera::Context;
 use super::index_struct::Index;
 
 impl Index {
-    pub(crate) fn select_muse(&self, index: usize) -> MuseName {
+    pub fn select_muse(&self, index: usize) -> MuseName {
         let muses: Vec<MuseName> = MuseName::iter().collect();
         muses[index % muses.len()].clone()
     }
 
-    pub(crate) fn apply_muse_template(&self, muse_name: &str, text: &str) -> Result<String, Error> {
+    pub fn apply_muse_template(&self, muse_name: &str, text: &str) -> Result<String, Error> {
         let prompt_name = format!("muse_{}", muse_name.to_lowercase());
         let pdl = self
             .prompts

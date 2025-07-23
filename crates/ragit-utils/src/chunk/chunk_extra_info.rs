@@ -6,7 +6,7 @@ pub struct ChunkExtraInfo {
 }
 
 impl ChunkExtraInfo {
-    pub fn merge(&self, other: &ChunkExtraInfo) -> ChunkExtraInfo {
+    pub fn merge(&self, _other: &ChunkExtraInfo) -> ChunkExtraInfo {
         Self { page_no: None }
     }
 }

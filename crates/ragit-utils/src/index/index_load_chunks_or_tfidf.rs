@@ -4,11 +4,11 @@ use crate::prelude::*;
 use crate::index::index_struct::Index;
 
 impl Index {
-    pub(crate) async fn extract_keywords(&self, _query: &str) -> Result<Keywords> {
+    pub async fn extract_keywords(&self, _query: &str) -> Result<Keywords> {
         Err(anyhow!("Not implemented"))
     }
 
-    pub(crate) async fn load_chunks_or_tfidf(
+    pub async fn load_chunks_or_tfidf(
         &self,
         query: &str,
         limit: usize,

@@ -33,17 +33,17 @@ impl Chunk {
         String::new()
     }
 
-    pub(crate) fn get_approx_size(&self) -> usize {
-        0
-    }
+    // pub(crate) fn get_approx_size(&self) -> usize {
+    //     0
+    // }
 
     pub fn create_chunk_from(
         index: &crate::index::index_struct::Index,
         path: &PathBuf,
         data: &str,
         source: ChunkSource,
-        timestamp: u64,
-        searchable: bool,
+        _timestamp: u64,
+        _searchable: bool,
         compression_threshold: u64,
         compression_level: u32,
         create_tfidf: bool,
@@ -93,7 +93,7 @@ impl Chunk {
         for token in tokens {
             match token {
                 AtomicToken::String {
-                    data: s,
+                    data: _s,
                     char_len: n,
                 } => {
                     result += n;

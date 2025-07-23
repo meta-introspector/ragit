@@ -53,3 +53,27 @@ pub fn save_models(models: &[Model], path: &str) -> Result<(), Error> {
         WriteMode::CreateOrTruncate,
     )?)
 }
+
+pub fn list_models<Filter, Map, Sort, Key: Ord>(
+    // `.ragit/models.json`
+    models_at: &str,
+    
+    // `filter` is applied before `map`
+    filter: &Filter,
+    map: &Map,
+    sort_key: &Sort,
+) -> Result<Vec<Model>, Error> where Filter: Fn(&Model) -> bool, Map: Fn(Model) -> Model, Sort: Fn(&Model) -> Key {
+    let mut result = vec![];
+    
+    for model in load_models(models_at)? {
+        if !filter(&model) {
+            continue;
+        }
+
+            let model = map(model);
+            result.push(model);
+        }
+
+        result.sort_by_key(sort_key);
+        Ok(result)
+    }

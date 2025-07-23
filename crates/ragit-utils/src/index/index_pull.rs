@@ -1,6 +1,3 @@
-use crate::error::Error;
-use crate::index::commands::pull::PullResult;
-use crate::index::index_struct::Index;
 
 // impl Index {
 //     pub async fn pull(

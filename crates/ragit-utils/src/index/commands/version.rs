@@ -7,7 +7,7 @@ pub struct VersionInfo {
     pub compatible: bool,
 }
 
-pub fn get_compatibility_warning(version_info: &VersionInfo) -> Option<String> {
+pub fn get_compatibility_warning(_version_info: &VersionInfo) -> Option<String> {
     None
 }
 

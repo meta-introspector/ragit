@@ -1,11 +1,11 @@
 use crate::prelude::*;
 
-pub async fn archive_command_main(args: Vec<String>, pre_args: ParsedArgs) -> Result<(), Error> {
+pub async fn archive_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), Error> {
     let command = args.get(2).map(|arg| arg.as_str());
 
     match command {
         Some("create") => {
-            let index = Index::load(
+            let _index = Index::load(
                 find_root()?.to_string_lossy().into_owned().into(),
                 LoadMode::QuickCheck,
             )?;
@@ -38,28 +38,28 @@ pub async fn archive_command_main(args: Vec<String>, pre_args: ParsedArgs) -> Re
                 return Ok(());
             }
 
-            let jobs = parsed_args
+            let _jobs = parsed_args
                 .arg_flags
                 .get("--jobs")
                 .as_ref()
                 .unwrap()
                 .parse::<usize>()
                 .unwrap();
-            let size_limit = parsed_args
+            let _size_limit = parsed_args
                 .arg_flags
                 .get("--size-limit")
                 .as_ref()
                 .map(|n| n.parse::<u64>().unwrap());
-            let output = parsed_args
+            let _output = parsed_args
                 .arg_flags
                 .get("--output")
                 .as_ref()
                 .unwrap()
                 .to_string();
-            let include_configs = parsed_args.get_flag(0).unwrap() == "--configs";
-            let include_prompts = parsed_args.get_flag(1).unwrap() == "--prompts";
-            let force = parsed_args.get_flag(2).is_some();
-            let quiet = parsed_args.get_flag(3).is_some();
+            let _include_configs = parsed_args.get_flag(0).unwrap() == "--configs";
+            let _include_prompts = parsed_args.get_flag(1).unwrap() == "--prompts";
+            let _force = parsed_args.get_flag(2).is_some();
+            let _quiet = parsed_args.get_flag(3).is_some();
         }
         Some("extract") => {
             // TODO: implement extract

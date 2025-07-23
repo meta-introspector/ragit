@@ -4,7 +4,7 @@ use crate::index::file::ImageDescription;
 use crate::path_utils::get_uid_path;
 use ragit_fs::{read_bytes, read_string};
 use ragit_uid::Uid;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use crate::index::index_struct::Index;
 
 impl Index {

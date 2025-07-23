@@ -37,7 +37,7 @@ pub fn config_command_main(args: &[String]) -> Result<(), Error> {
             // QoL improvement: it warns if the user typed a wrong model name.
             if &key == "model" {
                 let models = ragit_api::list_models(
-                    &index.get_path().join("models.json"),
+                    &index.get_path().join("models.json").to_string_lossy(),
                     &|_| true,      // no filter
                     &|model| model, // no map
                     &|model| model.name.to_string(),

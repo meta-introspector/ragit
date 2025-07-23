@@ -94,9 +94,9 @@ impl UidQueryResult {
 }
 
 pub fn uid_query(
-    index: &Index,
-    qs: &[String],
-    config: UidQueryConfig,
+    _index: &Index,
+    _qs: &[String],
+    _config: UidQueryConfig,
 ) -> Result<UidQueryResult, Error> {
     Ok(UidQueryResult::empty())
 }

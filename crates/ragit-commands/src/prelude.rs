@@ -7,17 +7,13 @@ pub use ragit_utils::chunk::{
 };
 pub use ragit_utils::cli_types::{ArgCount, ArgParser, ArgType, ParsedArgs, Span};
 pub use ragit_utils::error::{CliError, Error, ErrorKind};
-//pub use ragit_utils::index::commands::{
-//    get_compatibility_warning, BuildResult, MergeMode, MergeResult, PullResult,
-//    PushResult, RemoveResult, SummaryMode,
-//};
-use ragit_utils::index::commands::build::BuildResult;
-use ragit_utils::index::commands::merge::MergeMode;
-use ragit_utils::index::commands::merge::MergeResult;
-use ragit_utils::index::commands::pull::PullResult;
-use ragit_utils::index::commands::push::PushResult;
-use ragit_utils::index::commands::remove::RemoveResult;
-use ragit_utils::index::commands::summary::SummaryMode;
+pub use ragit_utils::index::commands::build::BuildResult;
+pub use ragit_utils::index::commands::merge::{MergeMode, MergeResult};
+pub use ragit_utils::index::commands::pull::PullResult;
+pub use ragit_utils::index::commands::push::PushResult;
+pub use ragit_utils::index::commands::remove::RemoveResult;
+pub use ragit_utils::index::commands::summary::SummaryMode;
+pub use ragit_utils::index::commands::version::get_compatibility_warning;
 
     
 pub use ragit_utils::index::index_struct::Index;
@@ -92,3 +88,4 @@ pub use std::str::FromStr;
 pub use tera::Error as TeraError;
 pub use tokio::sync::mpsc;
 pub use url::ParseError;
+pub use ragit_fs::read_string;

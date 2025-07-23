@@ -9,7 +9,7 @@ use crate::path_utils::get_uid_path;
 use ragit_fs::exists;
 use ragit_uid::Uid;
 use std::collections::HashSet;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use crate::index::{index_struct::Index, tfidf};
 
 impl Index {

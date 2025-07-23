@@ -23,7 +23,7 @@ pub type Weight = f32;
 const AUTO_FLUSH: usize = 65536; // TODO: make it configurable
 
 // It takes too long to iterate all the terms and chunks.
-const CHECK_II_LIMIT: usize = 512;
+//const CHECK_II_LIMIT: usize = 512;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 #[serde(tag = "type")]
