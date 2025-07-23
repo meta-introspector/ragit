@@ -3,7 +3,10 @@ use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Serialize)]
-pub enum SummaryMode { Short, Long, }
+pub enum SummaryMode {
+    Short,
+    Long,
+}
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Serialize)]
 pub struct Summary(pub String);
@@ -22,7 +25,10 @@ impl DerefMut for Summary {
     }
 }
 
-pub async fn summary_command(args: Vec<String>, pre_args: crate::cli_types::ParsedArgs) -> Result<(), Error> {
+pub async fn summary_command(
+    args: Vec<String>,
+    pre_args: crate::cli_types::ParsedArgs,
+) -> Result<(), Error> {
     println!("summary_command is not yet implemented");
     Ok(())
 }

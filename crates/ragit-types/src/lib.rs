@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use sha3::{Digest, Sha3_256};
-use std::str::FromStr;
 use std::fmt;
+use std::str::FromStr;
 use thiserror::Error;
 
 #[derive(Clone, Debug)]
@@ -60,7 +60,7 @@ impl Uid {
     const CHUNK_TYPE: u128 = (0x1 << 32);
     const IMAGE_TYPE: u128 = (0x2 << 32);
     const FILE_TYPE: u128 = (0x3 << 32);
-    
+
     const GROUP_TYPE: u128 = (0x4 << 32);
     const KNOWLEDGE_BASE_TYPE: u128 = (0x5 << 32);
     const SUMMARY_TYPE: u128 = (0x6 << 32);
@@ -68,29 +68,55 @@ impl Uid {
     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
         match bytes.len() {
             0 => Ok(Uid { high: 0, low: 0 }),
-            1..=15 => Ok(Uid { high: 0, low: u128_from_bytes(bytes)? }),
-            16 => Ok(Uid { high: 0, low: u128_from_bytes(bytes)? }),
-            17..=31 => Ok(Uid { high: u128_from_bytes(&bytes[..(bytes.len() - 16)])?, low: u128_from_bytes(&bytes[(bytes.len() - 16)..])? }),
-            32 => Ok(Uid { high: u128_from_bytes(&bytes[0..16])?, low: u128_from_bytes(&bytes[16..])? }),
+            1..=15 => Ok(Uid {
+                high: 0,
+                low: u128_from_bytes(bytes)?,
+            }),
+            16 => Ok(Uid {
+                high: 0,
+                low: u128_from_bytes(bytes)?,
+            }),
+            17..=31 => Ok(Uid {
+                high: u128_from_bytes(&bytes[..(bytes.len() - 16)])?,
+                low: u128_from_bytes(&bytes[(bytes.len() - 16)..])?,
+            }),
+            32 => Ok(Uid {
+                high: u128_from_bytes(&bytes[0..16])?,
+                low: u128_from_bytes(&bytes[16..])?,
+            }),
             _ => Err(UidError::InvalidUid("Cannot decode Uid".to_string())),
         }
     }
 
     pub fn encode_partial(&self, len: usize, buffer: &mut Vec<u8>) {
-        for b in self.high.to_be_bytes().into_iter().chain(self.low.to_be_bytes().into_iter()).skip(32 - len) {
+        for b in self
+            .high
+            .to_be_bytes()
+            .into_iter()
+            .chain(self.low.to_be_bytes().into_iter())
+            .skip(32 - len)
+        {
             buffer.push(b);
         }
     }
 
     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
         match bytes.len() {
-            32 => Ok(Uid { high: u128_from_bytes(&bytes[0..16])?, low: u128_from_bytes(&bytes[16..])? }),
+            32 => Ok(Uid {
+                high: u128_from_bytes(&bytes[0..16])?,
+                low: u128_from_bytes(&bytes[16..])?,
+            }),
             _ => Err(UidError::InvalidUid("Cannot decode Uid".to_string())),
         }
     }
 
     pub fn encode(&self, buffer: &mut Vec<u8>) {
-        for b in self.high.to_be_bytes().into_iter().chain(self.low.to_be_bytes().into_iter()) {
+        for b in self
+            .high
+            .to_be_bytes()
+            .into_iter()
+            .chain(self.low.to_be_bytes().into_iter())
+        {
             buffer.push(b);
         }
     }
@@ -104,23 +130,19 @@ impl Uid {
     }
 
     pub fn dummy() -> Self {
-        Uid {
-            high: 0,
-            low: 0,
-        }
+        Uid { high: 0, low: 0 }
     }
 
     pub fn new_from_u128(n: u128) -> Self {
-        Uid {
-            high: 0,
-            low: n,
-        }
+        Uid { high: 0, low: n }
     }
 
     pub fn new_from_slice(data: &[u8]) -> Self {
         let mut hasher = Sha3_256::new();
         hasher.update(data);
-        let mut result = format!("{:064x}", hasher.finalize()).parse::<Uid>().unwrap();
+        let mut result = format!("{:064x}", hasher.finalize())
+            .parse::<Uid>()
+            .unwrap();
         result = result.clear_metadata();
         result.low |= Uid::CHUNK_TYPE;
         result.low |= (data.len() as u128) & 0xffff_ffff;
@@ -130,7 +152,9 @@ impl Uid {
     pub fn new_image(bytes: &[u8]) -> Self {
         let mut hasher = Sha3_256::new();
         hasher.update(bytes);
-        let mut result = format!("{:064x}", hasher.finalize()).parse::<Uid>().unwrap();
+        let mut result = format!("{:064x}", hasher.finalize())
+            .parse::<Uid>()
+            .unwrap();
         result = result.clear_metadata();
         result.low |= Uid::IMAGE_TYPE;
         result.low |= (bytes.len() as u128) & 0xffff_ffff;
@@ -168,7 +192,9 @@ impl Uid {
         let mut hasher = Sha3_256::new();
         hasher.update(summary.as_bytes());
 
-        let mut result = format!("{:064x}", hasher.finalize()).parse::<Uid>().unwrap();
+        let mut result = format!("{:064x}", hasher.finalize())
+            .parse::<Uid>()
+            .unwrap();
         result = result.clear_metadata();
         result.low |= Uid::SUMMARY_TYPE;
         result.low |= (summary.len() as u128) & 0xffff_ffff;
@@ -220,7 +246,11 @@ impl Uid {
     }
 
     pub fn get_suffix(&self) -> String {
-        format!("{:030x}{:032x}", self.high & 0xff_ffff_ffff_ffff_ffff_ffff_ffff_ffff, self.low)
+        format!(
+            "{:030x}{:032x}",
+            self.high & 0xff_ffff_ffff_ffff_ffff_ffff_ffff_ffff,
+            self.low
+        )
     }
 
     pub fn get_short_name(&self) -> String {
@@ -235,14 +265,13 @@ impl Uid {
     }
 
     pub fn is_valid_prefix(s: &str) -> bool {
-        s.len() <= 64 && s.chars().all(
-            |c| match c {
+        s.len() <= 64
+            && s.chars().all(|c| match c {
                 // `uid_query` does not allow upper case letters!!
                 '0'..='9' => true,
                 'a'..='f' => true,
                 _ => false,
-            }
-        )
+            })
     }
 
     #[must_use = "method returns a new uid and does not mutate the original value"]
@@ -278,9 +307,7 @@ impl Uid {
 
         if carry > self.high {
             None
-        }
-
-        else {
+        } else {
             match (self.high - carry).checked_sub(other.high) {
                 Some(high) => Some(Uid { high, low }),
                 None => None,
@@ -301,9 +328,7 @@ impl FromStr for Uid {
     fn from_str(s: &str) -> Result<Self, UidError> {
         if s.len() != 64 {
             Err(UidError::InvalidUid(s.to_string()))
-        }
-
-        else {
+        } else {
             match (s.get(0..32), s.get(32..)) {
                 (Some(high), Some(low)) => match (
                     u128::from_str_radix(high, 16),
@@ -348,10 +373,7 @@ impl std::ops::Add for Uid {
             high = high.wrapping_add(1);
         }
 
-        Uid {
-            low,
-            high,
-        }
+        Uid { low, high }
     }
 }
 
@@ -369,7 +391,7 @@ fn u128_from_bytes(bytes: &[u8]) -> Result<u128, UidError> {
             let mut padded = [0; 16];
             padded[(16 - bytes.len())..].copy_from_slice(bytes);
             Ok(u128::from_be_bytes(padded))
-        },
+        }
         16 => Ok(u128::from_be_bytes(bytes.try_into().unwrap())),
         _ => Err(UidError::DecodeError),
     }

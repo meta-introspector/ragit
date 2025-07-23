@@ -1,6 +1,6 @@
 use crate::prelude::*;
-use ragit_api::AuditRecord as Audit;
 use crate::LoadMode;
+use ragit_api::AuditRecord as Audit;
 
 mod args;
 mod output;
@@ -12,7 +12,11 @@ pub async fn audit_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Res
     let audit_args = AuditArgs::parse(&args)?;
 
     let index = Index::load(find_root()?, LoadMode::Minimum)?;
-    let mut result = index.audit(if audit_args.this_week { Some(audit_args.since) } else { None })?;
+    let mut result = index.audit(if audit_args.this_week {
+        Some(audit_args.since)
+    } else {
+        None
+    })?;
     let mut total = Audit::default();
 
     for a in result.values() {
@@ -25,4 +29,3 @@ pub async fn audit_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Res
 
     Ok(())
 }
-

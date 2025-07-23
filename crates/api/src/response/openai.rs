@@ -48,12 +48,16 @@ struct OpenAiMessage {
 impl IntoChatResponse for OpenAiResponse {
     fn into_chat_response(&self) -> Result<Response, Error> {
         Ok(Response {
-            messages: self.choices.iter().map(
-                |choice| choice.message.content.to_string()
-            ).collect(),
-            reasonings: self.choices.iter().map(
-                |choice| choice.message.reasoning_content.clone()
-            ).collect(),
+            messages: self
+                .choices
+                .iter()
+                .map(|choice| choice.message.content.to_string())
+                .collect(),
+            reasonings: self
+                .choices
+                .iter()
+                .map(|choice| choice.message.reasoning_content.clone())
+                .collect(),
             output_tokens: self.usage.completion_tokens,
             prompt_tokens: self.usage.prompt_tokens,
             total_tokens: self.usage.total_tokens,

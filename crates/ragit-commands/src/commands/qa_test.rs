@@ -20,7 +20,10 @@ pub async fn qa_test_command_main(args: &[String]) -> Result<(), Error> {
         ..Request::default()
     };
     let results = qa_system.test_request(request).await?;
-    println!("{}", ragit_api::qa_system::compare_results::compare_results(&qa_system.models, &results));
+    println!(
+        "{}",
+        ragit_api::qa_system::compare_results::compare_results(&qa_system.models, &results)
+    );
     // TODO: log_qa_results::log_qa_results(&results)?;
     Ok(())
 }

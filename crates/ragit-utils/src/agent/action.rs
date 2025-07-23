@@ -1,15 +1,15 @@
-use std::path::PathBuf;
 use crate::chunk::chunk_struct::Chunk;
 use crate::chunk::rendered_chunk::RenderedChunk;
 use crate::error::Error;
 use crate::index::index_struct::Index;
-use crate::query::{QueryResponse, Keywords};
-use ragit_uid::Uid;
-use crate::uid::query_helpers::{UidQueryConfig, uid_query};
+use crate::query::{Keywords, QueryResponse};
 use crate::string_utils::substr_edit_distance;
+use crate::uid::query_helpers::{uid_query, UidQueryConfig};
 use ragit_pdl::Schema;
+use ragit_uid::Uid;
 use serde::Serialize;
 use serde_json::Value;
+use std::path::PathBuf;
 
 use super::file_tree::FileTree;
 
@@ -81,9 +81,12 @@ impl Action {
     }
 
     pub(crate) fn write_prompt(actions: &[Action]) -> String {
-        actions.iter().enumerate().map(
-            |(i, p)| format!("{}. {}", i + 1, p.write_unit_prompt())
-        ).collect::<Vec<_>>().join("\n")
+        actions
+            .iter()
+            .enumerate()
+            .map(|(i, p)| format!("{}. {}", i + 1, p.write_unit_prompt()))
+            .collect::<Vec<_>>()
+            .join("\n")
     }
 
     pub(crate) fn write_unit_prompt(&self) -> String {
@@ -120,7 +123,7 @@ impl Action {
                                 chunk_uids,
                                 rendered: chunk,
                             }
-                        },
+                        }
                         n if n <= max_chunks => {
                             let chunk_uids = index.get_chunks_of_file(*uid)?;
                             let chunk = index.get_merged_chunk_of_file(*uid)?;
@@ -128,7 +131,7 @@ impl Action {
                                 chunk_uids,
                                 rendered: chunk,
                             }
-                        },
+                        }
                         _ => {
                             let mut chunks = Vec::with_capacity(chunk_uids.len());
 
@@ -137,15 +140,18 @@ impl Action {
                             }
 
                             ActionResult::ReadFileLong(chunks)
-                        },
+                        }
                     }
-                },
+                }
                 None => {
                     let mut similar_files = vec![];
 
                     // TODO: it might take very very long time if the knowledge-base is large...
                     for file in index.processed_files.keys() {
-                        let dist = substr_edit_distance(argument.as_bytes(), file.to_str().unwrap().as_bytes());
+                        let dist = substr_edit_distance(
+                            argument.as_bytes(),
+                            file.to_str().unwrap().as_bytes(),
+                        );
 
                         if dist < 3 {
                             similar_files.push((file.display().to_string(), dist));
@@ -158,12 +164,15 @@ impl Action {
                         similar_files = similar_files[..10].to_vec();
                     }
 
-                    let similar_files = similar_files.into_iter().map(|(f, _)| f).collect::<Vec<_>>();
+                    let similar_files = similar_files
+                        .into_iter()
+                        .map(|(f, _)| f)
+                        .collect::<Vec<_>>();
                     ActionResult::NoSuchFile {
                         file: argument_path.display().to_string(),
-                        similar_files
+                        similar_files,
                     }
-                },
+                }
             },
             Action::ReadDir => {
                 let mut argument_path_str = argument.to_string();
@@ -176,7 +185,8 @@ impl Action {
 
                 for file in index.processed_files.keys() {
                     if file.starts_with(&argument_path) {
-                        file_tree.insert(file.strip_prefix(&argument_path).unwrap().to_str().unwrap());
+                        file_tree
+                            .insert(file.strip_prefix(&argument_path).unwrap().to_str().unwrap());
                     }
                 }
 
@@ -188,19 +198,19 @@ impl Action {
                         //       but it's too tricky to find ones.
                         similar_dirs: vec![],
                     }
-                }
-
-                else {
+                } else {
                     ActionResult::ReadDir(file_tree)
                 }
-            },
+            }
             Action::ReadChunk => {
                 if !Uid::is_valid_prefix(&argument) {
                     ActionResult::NoSuchChunk(argument.to_string())
-                }
-
-                else {
-                    let query = uid_query(&index, &[argument.to_string()], UidQueryConfig::new().chunk_only())?;
+                } else {
+                    let query = uid_query(
+                        &index,
+                        &[argument.to_string()],
+                        UidQueryConfig::new().chunk_only(),
+                    )?;
                     let chunk_uids = query.get_chunk_uids();
 
                     match chunk_uids.len() {
@@ -217,14 +227,14 @@ impl Action {
                                 query: argument.to_string(),
                                 chunks,
                             }
-                        },
+                        }
                         _ => ActionResult::ReadChunkTooMany {
                             query: argument.to_string(),
                             chunk_uids: chunk_uids.len(),
                         },
                     }
                 }
-            },
+            }
             Action::SearchExact | Action::SearchTfidf => {
                 // The result of exact search is a subset of the result of tfidf search.
                 let mut limit = if *self == Action::SearchExact {
@@ -234,10 +244,8 @@ impl Action {
                 };
 
                 let chunks = 'chunks_loop: loop {
-                    let candidates = index.run_tfidf(
-                        Keywords::from(vec![argument.to_string()]),
-                        limit,
-                    )?;
+                    let candidates =
+                        index.run_tfidf(Keywords::from(vec![argument.to_string()]), limit)?;
                     let mut chunks = Vec::with_capacity(candidates.len());
                     let mut chunks_exact_match = vec![];
 
@@ -275,11 +283,9 @@ impl Action {
                     keyword: argument.to_string(),
                     chunks,
                 }
-            },
+            }
             Action::GetMeta => {
-                let mut candidates = vec![
-                    argument.to_string(),
-                ];
+                let mut candidates = vec![argument.to_string()];
 
                 // small QoL: the AI might wrap the key with quotation marks
                 if argument.starts_with("\"") {
@@ -298,13 +304,8 @@ impl Action {
                 }
 
                 if let Some((key, value)) = result {
-                    ActionResult::GetMeta {
-                        key,
-                        value,
-                    }
-                }
-
-                else {
+                    ActionResult::GetMeta { key, value }
+                } else {
                     let mut similar_keys = vec![];
 
                     for key in index.get_all_meta()?.keys() {
@@ -327,21 +328,23 @@ impl Action {
                         similar_keys,
                     }
                 }
-            },
+            }
             Action::GetSummary => {
                 // The summary must exist. Otherwise, this action should have been filtered out.
                 let summary = index.get_summary().unwrap();
                 ActionResult::GetSummary(summary.to_string())
-            },
+            }
             Action::SimpleRag => {
-                let response = index.query(
-                    &argument,
-                    vec![],  // no history
-                    None,  // no output schema
-                ).await?;
+                let response = index
+                    .query(
+                        &argument,
+                        vec![], // no history
+                        None,   // no output schema
+                    )
+                    .await?;
 
                 ActionResult::SimpleRag(response)
-            },
+            }
         };
 
         Ok(r)
@@ -563,7 +566,7 @@ pub struct ActionState {
     pub result: Option<ActionResult>,
 
     // If yes, it runs another action within the same context
-    pub r#continue: Option<String>,  // "yes" | "no"
+    pub r#continue: Option<String>, // "yes" | "no"
 }
 
 impl ActionState {
@@ -577,18 +580,15 @@ impl ActionState {
 
     pub fn get_schema(&self) -> Option<Schema> {
         if self.index.is_none() {
-            Some(Schema::integer_between(Some(1), Some(self.actions.len() as i128)))
-        }
-
-        else if !self.complete {
+            Some(Schema::integer_between(
+                Some(1),
+                Some(self.actions.len() as i128),
+            ))
+        } else if !self.complete {
             None
-        }
-
-        else if self.r#continue.is_none() {
+        } else if self.r#continue.is_none() {
             Some(Schema::default_yesno())
-        }
-
-        else {
+        } else {
             unreachable!()
         }
     }
@@ -605,7 +605,7 @@ impl ActionState {
             // So we just choose an arbitrary action. The AI's gonna fail
             // anyway and will break soon.
             let n = input.as_u64().unwrap_or(1) as usize;
-            let action = self.actions[n - 1];  // AI uses 1-based index
+            let action = self.actions[n - 1]; // AI uses 1-based index
             self.index = Some(n);
             self.instruction = Some(action.get_instruction(index)?);
 
@@ -618,11 +618,11 @@ impl ActionState {
                 if !result.has_to_retry() {
                     self.complete = true;
                 }
-
                 // If it's not complete, we have to give the instruction again so that the AI
                 // will generate the argument.
                 else {
-                    result_rendered = format!("{result_rendered}\n\n{}", action.get_instruction(index)?);
+                    result_rendered =
+                        format!("{result_rendered}\n\n{}", action.get_instruction(index)?);
                 }
 
                 self.argument_turns.push(ArgumentTurn {
@@ -636,10 +636,8 @@ impl ActionState {
                     result: result.clone(),
                 });
             }
-        }
-
-        else if !self.complete {
-            let action = self.actions[self.index.unwrap() - 1];  // AI uses 1-based index
+        } else if !self.complete {
+            let action = self.actions[self.index.unwrap() - 1]; // AI uses 1-based index
 
             // NOTE: pdl schema `string` is infallible
             let argument = input.as_str().unwrap();
@@ -651,10 +649,9 @@ impl ActionState {
             // it just breaks.
             if !result.has_to_retry() || self.argument_turns.len() > 0 {
                 self.complete = true;
-            }
-
-            else {
-                result_rendered = format!("{result_rendered}\n\n{}", action.get_instruction(index)?);
+            } else {
+                result_rendered =
+                    format!("{result_rendered}\n\n{}", action.get_instruction(index)?);
             }
 
             self.argument_turns.push(ArgumentTurn {
@@ -667,9 +664,7 @@ impl ActionState {
                 argument: None,
                 result: result.clone(),
             });
-        }
-
-        else if self.r#continue.is_none() {
+        } else if self.r#continue.is_none() {
             // If `input.as_bool()` fails, that means the AI is
             // not smart enough to generate a boolean. There's
             // no need to continue.
@@ -677,9 +672,7 @@ impl ActionState {
             let s = if input { "yes" } else { "no" };
 
             self.r#continue = Some(s.to_string());
-        }
-
-        else {
+        } else {
             unreachable!()
         }
 

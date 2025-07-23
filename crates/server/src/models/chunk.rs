@@ -36,7 +36,9 @@ impl ChunkDetail {
 impl From<Chunk> for ChunkDetail {
     fn from(c: Chunk) -> ChunkDetail {
         let (file, file_index, page_no) = match &c.source {
-            ChunkSource::File { path, index, page } => (Some(path.to_string()), Some(*index), page.clone()),
+            ChunkSource::File { path, index, page } => {
+                (Some(path.to_string()), Some(*index), page.clone())
+            }
             _ => (None, None, None),
         };
 

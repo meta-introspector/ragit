@@ -15,8 +15,14 @@ pub async fn add_command_main(args: &[String]) -> Result<(), Error> {
     }
 
     let root_dir = find_root()?;
-    let mut index = Index::load(PathBuf::from(root_dir.to_string_lossy().into_owned()), LoadMode::QuickCheck)?;
-    let add_mode = parsed_args.get_flag(0).map(|flag| AddMode::parse_flag(&flag)).unwrap_or(None);
+    let mut index = Index::load(
+        PathBuf::from(root_dir.to_string_lossy().into_owned()),
+        LoadMode::QuickCheck,
+    )?;
+    let add_mode = parsed_args
+        .get_flag(0)
+        .map(|flag| AddMode::parse_flag(&flag))
+        .unwrap_or(None);
     let all = parsed_args.get_flag(1).is_some();
     let dry_run = parsed_args.get_flag(2).is_some();
 
@@ -24,21 +30,26 @@ pub async fn add_command_main(args: &[String]) -> Result<(), Error> {
 
     if all {
         if !files.is_empty() {
-            return Err(Error::CliError(CliError::new_message("You cannot use `--all` option with paths.".to_string())));
+            return Err(Error::CliError(CliError::new_message(
+                "You cannot use `--all` option with paths.".to_string(),
+            )));
         }
 
         files.push(root_dir.to_string_lossy().into_owned());
+    } else if files.is_empty() {
+        return Err(Error::CliError(CliError::new_message_with_span(
+            "Please specify which files to add.".to_string(),
+            Span::End.render(args, 2),
+        )));
     }
 
-    else if files.is_empty() {
-        return Err(Error::CliError(CliError::new_message_with_span("Please specify which files to add.".to_string(), Span::End.render(args, 2))));
-    }
-
-    let result = index.add_files_command(
-        &files,
-        add_mode.clone(),
-        dry_run || add_mode.clone() == Some(AddMode::Reject),
-    ).await?;
+    let result = index
+        .add_files_command(
+            &files,
+            add_mode.clone(),
+            dry_run || add_mode.clone() == Some(AddMode::Reject),
+        )
+        .await?;
 
     if add_mode.clone() == Some(AddMode::Reject) && !dry_run {
         index.add_files_command(&files, add_mode, dry_run).await?;

@@ -1,25 +1,20 @@
-use ragit_uid::Uid;
-use std::path::PathBuf;
 use crate::chunk::Chunk;
-use crate::error::Error;
 use crate::constant::IMAGE_DIR_NAME;
-use crate::query::Keywords;
+use crate::error::Error;
 use crate::prelude::*;
-use flate2::Compression;
+use crate::query::Keywords;
 use flate2::read::{GzDecoder, GzEncoder};
-use ragit_fs::{
-    WriteMode,
-    read_bytes,
-    read_string,
-    write_bytes,
-};
+use flate2::Compression;
+use ragit_fs::{read_bytes, read_string, write_bytes, WriteMode};
 use ragit_pdl::JsonType;
+use ragit_uid::Uid;
 use rust_stemmers::{Algorithm, Stemmer};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::io::Read;
+use std::path::PathBuf;
 
 type Term = String;
 type Weight = f32;
@@ -73,29 +68,19 @@ pub fn save_to_file(path: &str, chunk: &Chunk, root_dir: &str) -> Result<(), Err
     let mut gz = GzEncoder::new(&result[..], Compression::best());
     gz.read_to_end(&mut compressed)?;
 
-    Ok(write_bytes(
-        path,
-        &compressed,
-        WriteMode::CreateOrTruncate,
-    )?)
+    Ok(write_bytes(path, &compressed, WriteMode::CreateOrTruncate)?)
 }
 
 pub fn consume_processed_doc(
     processed_doc: ProcessedDoc,
     tfidf_state: &mut TfidfState<Uid>,
 ) -> Result<(), Error> {
-    tfidf_state.consume(
-        processed_doc.uid.unwrap(),
-        &processed_doc,
-    );
+    tfidf_state.consume(processed_doc.uid.unwrap(), &processed_doc);
     Ok(())
 }
 
 impl ProcessedDoc {
-    pub fn new(
-        uid: Uid,
-        doc_content: &str,
-    ) -> Self {
+    pub fn new(uid: Uid, doc_content: &str) -> Self {
         let mut term_frequency = HashMap::new();
         let mut length = 0;
 
@@ -103,8 +88,12 @@ impl ProcessedDoc {
             length += 1;
 
             match term_frequency.get_mut(&term) {
-                Some(n) => { *n += 1; },
-                None => { term_frequency.insert(term, 1); },
+                Some(n) => {
+                    *n += 1;
+                }
+                None => {
+                    term_frequency.insert(term, 1);
+                }
             }
         }
 
@@ -132,8 +121,12 @@ impl ProcessedDoc {
 
         for (term, count) in other.term_frequency.iter() {
             match self.term_frequency.get_mut(term) {
-                Some(n) => { *n += *count; },
-                None => { self.term_frequency.insert(term.clone(), *count); },
+                Some(n) => {
+                    *n += *count;
+                }
+                None => {
+                    self.term_frequency.insert(term.clone(), *count);
+                }
             }
         }
     }
@@ -156,13 +149,15 @@ impl ProcessedDoc {
         if json_mode {
             if term_only {
                 return format!("{:?}", self.term_frequency.keys().collect::<Vec<_>>());
-            }
-
-            else if stat_only {
-                return format!("{}\"terms\": {}, \"unique terms\": {}{}", "{", self.length, self.term_frequency.len(), "}");
-            }
-
-            else {
+            } else if stat_only {
+                return format!(
+                    "{}\"terms\": {}, \"unique terms\": {}{}",
+                    "{",
+                    self.length,
+                    self.term_frequency.len(),
+                    "}"
+                );
+            } else {
                 return format!("{:?}", self.term_frequency);
             }
         }
@@ -170,7 +165,11 @@ impl ProcessedDoc {
         if !term_only {
             lines.push(format!(
                 "uid: {}, terms: {}, unique_terms: {}",
-                if let Some(u) = &self.uid { u.to_string() } else { String::from("None (not from a single chunk)") },
+                if let Some(u) = &self.uid {
+                    u.to_string()
+                } else {
+                    String::from("None (not from a single chunk)")
+                },
                 self.length,
                 self.term_frequency.len(),
             ));
@@ -209,17 +208,16 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
         }
     }
 
-    pub fn consume(
-        &mut self,
-        doc_id: DocId,
-        processed_doc: &ProcessedDoc,
-    ) {
-
+    pub fn consume(&mut self, doc_id: DocId, processed_doc: &ProcessedDoc) {
         for (term, _) in self.terms.clone().iter() {
             if processed_doc.contains_term(term) {
                 match self.document_frequency.get_mut(term) {
-                    Some(n) => { *n += 1; },
-                    None => { self.document_frequency.insert(term.to_string(), 1); },
+                    Some(n) => {
+                        *n += 1;
+                    }
+                    None => {
+                        self.document_frequency.insert(term.to_string(), 1);
+                    }
                 }
             }
 
@@ -229,7 +227,8 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
             );
         }
 
-        self.document_len.insert(doc_id.clone(), processed_doc.length());
+        self.document_len
+            .insert(doc_id.clone(), processed_doc.length());
         self.docs.push(doc_id);
     }
 
@@ -244,14 +243,20 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
             return vec![];
         }
 
-        let avg_len = self.document_len.values().sum::<usize>() as f32 / self.document_len.len() as f32;
+        let avg_len =
+            self.document_len.values().sum::<usize>() as f32 / self.document_len.len() as f32;
 
         for (term, weight) in self.terms.iter() {
-            let idf = ((self.docs.len() + 1) as f32 / (*self.document_frequency.get(term).unwrap_or(&0) + 1) as f32).log2();
+            let idf = ((self.docs.len() + 1) as f32
+                / (*self.document_frequency.get(term).unwrap_or(&0) + 1) as f32)
+                .log2();
             let idf = idf.max(0.1);
 
             for doc in self.docs.iter() {
-                let t = *self.term_frequency.get(&(doc.clone(), term.to_string())).unwrap_or(&0) as f32;
+                let t = *self
+                    .term_frequency
+                    .get(&(doc.clone(), term.to_string()))
+                    .unwrap_or(&0) as f32;
 
                 if t == 0.0 {
                     continue;
@@ -264,16 +269,21 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
                 match tfidfs.get_mut(doc) {
                     Some(val) => {
                         *val += tfidf * weight;
-                    },
+                    }
                     None => {
                         tfidfs.insert(doc.clone(), tfidf * weight);
-                    },
+                    }
                 }
             }
         }
 
-        let mut tfidfs: Vec<_> = tfidfs.into_iter().map(|(id, score)| TfidfResult { id, score }).collect();
-        tfidfs.sort_by(|TfidfResult { score: a, .. }, TfidfResult { score: b, .. }| b.partial_cmp(a).unwrap());  // rev sort
+        let mut tfidfs: Vec<_> = tfidfs
+            .into_iter()
+            .map(|(id, score)| TfidfResult { id, score })
+            .collect();
+        tfidfs.sort_by(
+            |TfidfResult { score: a, .. }, TfidfResult { score: b, .. }| b.partial_cmp(a).unwrap(),
+        ); // rev sort
 
         if tfidfs.len() > limit {
             tfidfs[..limit].to_vec()
@@ -287,26 +297,30 @@ pub fn tokenize(s: &str) -> Vec<String> {
     let stemmer = Stemmer::create(Algorithm::English);
     let mut result = vec![];
 
-    for token in s.to_ascii_lowercase().split(
-        |c| if c <= '~' {
-            match c {
-                '0'..='9'
-                | 'A'..='Z'
-                | 'a'..='z' => false,
-                _ => true,
+    for token in s
+        .to_ascii_lowercase()
+        .split(|c| {
+            if c <= '~' {
+                match c {
+                    '0'..='9' | 'A'..='Z' | 'a'..='z' => false,
+                    _ => true,
+                }
+            } else {
+                false
             }
-        } else {
-            false
-        }
-    ).map(
-        move |s| {
+        })
+        .map(move |s| {
             #[cfg(feature = "korean")]
-            { ragit_korean::tokenize(&stemmer.stem(s)) }
+            {
+                ragit_korean::tokenize(&stemmer.stem(s))
+            }
 
             #[cfg(not(feature = "korean"))]
-            { [stemmer.stem(s).to_string()] }
-        }
-    ) {
+            {
+                [stemmer.stem(s).to_string()]
+            }
+        })
+    {
         for t in token {
             if t.len() > 0 {
                 result.push(t);
@@ -342,20 +356,17 @@ impl Chunk {
                     (Some(e1), Some(e2)) => format!("<img> {e1} {e2} </img>"),
                     _ => {
                         return Err(Error::BrokenIndex(format!("schema error at {image}.json")));
-                    },
+                    }
                 },
                 j => {
                     return Err(Error::JsonTypeError {
                         expected: JsonType::Object,
                         got: (&j).into(),
                     });
-                },
+                }
             };
 
-            data = data.replace(
-                &format!("img_{image}"),
-                &rep_text,
-            );
+            data = data.replace(&format!("img_{image}"), &rep_text);
         }
 
         Ok(format!(

@@ -10,7 +10,7 @@ pub enum Error {
     NoSuchArchive(String),
     CliError {
         message: String,
-        span: (String, usize, usize),  // (args, error_from, error_to)
+        span: (String, usize, usize), // (args, error_from, error_to)
     },
     SqlxError(sqlx::Error),
     RagitError(ragit::Error),

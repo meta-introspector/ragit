@@ -1,11 +1,11 @@
-use std::collections::HashMap;
-use std::path::PathBuf;
+use crate::chunk::atomic_token::AtomicToken;
+use crate::chunk::chunk_source::ChunkSource;
+use crate::chunk::chunk_struct::Chunk;
+use crate::chunk::io::save_to_file;
 use crate::prelude::*;
 use ragit_uid::Uid;
-use crate::chunk::chunk_struct::Chunk;
-use crate::chunk::chunk_source::ChunkSource;
-use crate::chunk::io::save_to_file;
-use crate::chunk::atomic_token::AtomicToken;
+use std::collections::HashMap;
+use std::path::PathBuf;
 
 impl Chunk {
     pub fn dummy(data: String, source: ChunkSource) -> Self {
@@ -78,8 +78,7 @@ impl Chunk {
                 AtomicToken::WebImage { subst, url: _ } => {
                     result += subst.len();
                 }
-                AtomicToken::PageBreak
-                | AtomicToken::ChunkExtraInfo(_) => {
+                AtomicToken::PageBreak | AtomicToken::ChunkExtraInfo(_) => {
                     // do nothing
                 }
             }
@@ -93,7 +92,10 @@ impl Chunk {
 
         for token in tokens {
             match token {
-                AtomicToken::String { data: s, char_len: n } => {
+                AtomicToken::String {
+                    data: s,
+                    char_len: n,
+                } => {
                     result += n;
                 }
                 AtomicToken::Image(i) => {
@@ -103,8 +105,7 @@ impl Chunk {
                 AtomicToken::WebImage { subst, .. } => {
                     result += subst.len();
                 }
-                AtomicToken::PageBreak
-                | AtomicToken::ChunkExtraInfo(_) => {},
+                AtomicToken::PageBreak | AtomicToken::ChunkExtraInfo(_) => {}
             }
         }
 

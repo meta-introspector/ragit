@@ -1,19 +1,10 @@
-use chrono::Local;
 use crate::chunk::Chunk;
 use crate::error::Error;
 use crate::index::index_struct::Index;
+use chrono::Local;
 use ragit_api::Request;
-use ragit_fs::{
-    WriteMode,
-    join,
-    write_string,
-};
-use ragit_pdl::{
-    Pdl,
-    Schema,
-    into_context,
-    parse_pdl,
-};
+use ragit_fs::{join, write_string, WriteMode};
+use ragit_pdl::{into_context, parse_pdl, Pdl, Schema};
 use serde::Serialize;
 use serde_json::Value;
 use std::collections::{HashMap, HashSet};
@@ -47,17 +38,11 @@ impl AgentState {
     pub fn get_schema(&self) -> Option<Schema> {
         if self.has_enough_information {
             self.response_schema.clone()
-        }
-
-        else if self.needed_information.is_none() {
+        } else if self.needed_information.is_none() {
             None
-        }
-
-        else if self.has_action_to_run() {
+        } else if self.has_action_to_run() {
             self.action_states.last().unwrap().get_schema()
-        }
-
-        else {
+        } else {
             None
         }
     }
@@ -70,38 +55,30 @@ impl AgentState {
     ) -> Result<(), Error> {
         if self.has_enough_information {
             self.response = Some(input.as_str().unwrap().to_string());
-        }
-
-        else if self.needed_information.is_none() {
+        } else if self.needed_information.is_none() {
             self.needed_information = Some(input.as_str().unwrap().to_string());
-            self.action_states.push(ActionState::new(self.actions.clone()));
-        }
-
-        else if self.has_action_to_run() {
+            self.action_states
+                .push(ActionState::new(self.actions.clone()));
+        } else if self.has_action_to_run() {
             let last_action = self.action_states.last_mut().unwrap();
             last_action.update(input, index, action_traces).await?;
 
             match last_action.r#continue.as_ref().map(|s| s.as_str()) {
                 Some("yes") => {
-                    self.action_states.push(ActionState::new(self.actions.clone()));
-                },
+                    self.action_states
+                        .push(ActionState::new(self.actions.clone()));
+                }
                 Some("no") => {
                     self.is_actions_complete = true;
-                },
+                }
                 Some(s) => panic!("something went wrong: {s:?}"),
-                _ => {},
+                _ => {}
             }
-        }
-
-        else if self.new_information.is_none() {
+        } else if self.new_information.is_none() {
             self.new_information = Some(input.as_str().unwrap().to_string());
-        }
-
-        else if self.new_context.is_none() {
+        } else if self.new_context.is_none() {
             self.new_context = Some(input.as_str().unwrap().to_string());
-        }
-
-        else {
+        } else {
             unreachable!()
         }
 
@@ -122,9 +99,7 @@ impl AgentState {
     fn has_action_to_run(&self) -> bool {
         if let Some(action) = self.action_states.last() {
             action.r#continue.as_ref().map(|s| s.as_str()) != Some("no")
-        }
-
-        else {
+        } else {
             true
         }
     }
@@ -165,15 +140,15 @@ impl AgentResponse {
                     for chunk_uid in chunk_uids.iter() {
                         chunks.insert(*chunk_uid, index.get_chunk_by_uid(*chunk_uid)?);
                     }
-                },
+                }
                 ActionResult::SimpleRag(rag) => {
                     for chunk in rag.retrieved_chunks.iter() {
                         chunks.insert(chunk.uid, chunk.clone());
                     }
-                },
+                }
                 ActionResult::ReadChunk(chunk) => {
                     chunks.insert(chunk.uid, chunk.clone());
-                },
+                }
 
                 ActionResult::ReadFileLong(_)
                 | ActionResult::NoSuchFile { .. }
@@ -185,7 +160,7 @@ impl AgentResponse {
                 | ActionResult::Search { .. }
                 | ActionResult::GetMeta { .. }
                 | ActionResult::NoSuchMeta { .. }
-                | ActionResult::GetSummary(_) => {},
+                | ActionResult::GetSummary(_) => {}
             }
         }
 
@@ -203,18 +178,28 @@ impl Index {
 
         schema: Option<Schema>,
     ) -> Result<AgentResponse, Error> {
-        actions = actions.into_iter().collect::<HashSet<_>>().into_iter().collect();
+        actions = actions
+            .into_iter()
+            .collect::<HashSet<_>>()
+            .into_iter()
+            .collect();
 
         if self.get_summary().is_none() {
-            actions = actions.into_iter().filter(
-                |action| *action != Action::GetSummary
-            ).collect();
+            actions = actions
+                .into_iter()
+                .filter(|action| *action != Action::GetSummary)
+                .collect();
         }
 
-        if self.get_all_meta().unwrap_or_else(|_| HashMap::new()).is_empty() {
-            actions = actions.into_iter().filter(
-                |action| *action != Action::GetMeta
-            ).collect();
+        if self
+            .get_all_meta()
+            .unwrap_or_else(|_| HashMap::new())
+            .is_empty()
+        {
+            actions = actions
+                .into_iter()
+                .filter(|action| *action != Action::GetMeta)
+                .collect();
         }
 
         let mut state = AgentState::default();
@@ -248,7 +233,11 @@ impl Index {
         }
     }
 
-    pub async fn step_agent(&self, mut state: AgentState, action_traces: &mut Vec<ActionTrace>) -> Result<AgentState, Error> {
+    pub async fn step_agent(
+        &self,
+        mut state: AgentState,
+        action_traces: &mut Vec<ActionTrace>,
+    ) -> Result<AgentState, Error> {
         let schema = state.get_schema();
         let Pdl { messages, .. } = parse_pdl(
             &self.get_prompt("agent")?,
@@ -263,8 +252,14 @@ impl Index {
             sleep_between_retries: self.api_config.sleep_between_retries,
             timeout: self.api_config.timeout,
             dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "agent"),
-            dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "agent").map(|p| p.to_str().unwrap().to_string()),
-            dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
+            dump_pdl_at: self
+                .api_config
+                .create_pdl_path(&self.root_dir, "agent")
+                .map(|p| p.to_str().unwrap().to_string()),
+            dump_json_at: self
+                .api_config
+                .dump_log_at(&self.root_dir)
+                .map(|p| p.to_str().unwrap().to_string()),
             schema: schema.clone(),
             schema_max_try: 3,
             ..Request::default()

@@ -41,19 +41,28 @@ pub fn parse_cli_args(args: Vec<String>) -> Result<CliCommand, Error> {
             let parsed_args = ArgParser::new()
                 .optional_flag(&["--verbose", "--quiet"])
                 .optional_flag(&["--force-default-config"])
-                .optional_arg_flag("--port", ArgType::IntegerBetween { min: Some(0), max: Some(65535) })
+                .optional_arg_flag(
+                    "--port",
+                    ArgType::IntegerBetween {
+                        min: Some(0),
+                        max: Some(65535),
+                    },
+                )
                 .optional_arg_flag("--config", ArgType::Path)
                 .short_flag(&["--verbose", "--port"])
                 .parse(&args, 2)?;
 
             Ok(CliCommand::Run(RunArgs {
-                port_number: parsed_args.arg_flags.get("--port").map(|n| n.parse::<u16>().unwrap()),
+                port_number: parsed_args
+                    .arg_flags
+                    .get("--port")
+                    .map(|n| n.parse::<u16>().unwrap()),
                 verbose: parsed_args.get_flag(0).unwrap_or(String::new()) == "--verbose",
                 quiet: parsed_args.get_flag(0).unwrap_or(String::new()) == "--quiet",
                 config_file: parsed_args.arg_flags.get("--config").map(|f| f.to_string()),
                 force_default_config: parsed_args.get_flag(1).is_some(),
             }))
-        },
+        }
         Some(c @ ("drop-all" | "truncate-all")) => {
             let parsed_args = ArgParser::new()
                 .optional_flag(&["--force"])
@@ -63,11 +72,18 @@ pub fn parse_cli_args(args: Vec<String>) -> Result<CliCommand, Error> {
 
             let args = DropArgs {
                 force: parsed_args.get_flag(0).is_some(),
-                repo_data_dir: parsed_args.arg_flags.get("--repo-data").map(|d| d.to_string()),
+                repo_data_dir: parsed_args
+                    .arg_flags
+                    .get("--repo-data")
+                    .map(|d| d.to_string()),
             };
 
-            Ok(if c == "drop-all" { CliCommand::DropAll(args) } else { CliCommand::TruncateAll(args) })
-        },
+            Ok(if c == "drop-all" {
+                CliCommand::DropAll(args)
+            } else {
+                CliCommand::TruncateAll(args)
+            })
+        }
         // TODO: CliError
         // TODO: suggest similar commands
         Some(invalid_command) => panic!("invalid command: `{invalid_command}`"),

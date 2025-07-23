@@ -34,11 +34,4 @@ mod char;
 mod constants;
 
 pub use char::한글;
-pub use constants::{
-    종성_REV,
-    종성S,
-    중성_REV,
-    중성S,
-    초성_REV,
-    초성S,
-};
+pub use constants::{종성_REV, 종성S, 중성_REV, 중성S, 초성_REV, 초성S};

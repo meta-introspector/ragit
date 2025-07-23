@@ -1,25 +1,20 @@
+use crate::chunk;
 use crate::chunk::chunk_struct::Chunk;
 use crate::chunk::rendered_chunk::RenderedChunk;
 use crate::chunk::utils::merge_and_convert_chunks;
-use crate::chunk;
 
 use crate::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME};
 use crate::error::Error;
-use ragit_uid::Uid;
 use crate::path_utils::get_uid_path;
 use ragit_fs::exists;
+use ragit_uid::Uid;
 use std::collections::HashSet;
 
 use crate::index::{index_struct::Index, tfidf};
 
 impl Index {
     pub fn get_chunk_by_uid(&self, uid: Uid) -> Result<Chunk, Error> {
-        let chunk_at = get_uid_path(
-            &self.root_dir,
-            CHUNK_DIR_NAME,
-            uid,
-            Some("chunk"),
-        )?;
+        let chunk_at = get_uid_path(&self.root_dir, CHUNK_DIR_NAME, uid, Some("chunk"))?;
 
         if exists(&chunk_at) {
             return Ok(chunk::load_from_file(&chunk_at)?);
@@ -29,30 +24,15 @@ impl Index {
     }
 
     pub fn check_chunk_by_uid(&self, uid: Uid) -> bool {
-        if let Ok(chunk_at) = get_uid_path(
-            &self.root_dir,
-            CHUNK_DIR_NAME,
-            uid,
-            Some("chunk"),
-        ) {
+        if let Ok(chunk_at) = get_uid_path(&self.root_dir, CHUNK_DIR_NAME, uid, Some("chunk")) {
             exists(&chunk_at)
-        }
-
-        else {
+        } else {
             false
         }
     }
 
-    pub fn get_tfidf_by_chunk_uid(
-        &self,
-        uid: Uid,
-    ) -> Result<tfidf::ProcessedDoc, Error> {
-        let tfidf_at = get_uid_path(
-            &self.root_dir,
-            CHUNK_DIR_NAME,
-            uid,
-            Some("tfidf"),
-        )?;
+    pub fn get_tfidf_by_chunk_uid(&self, uid: Uid) -> Result<tfidf::ProcessedDoc, Error> {
+        let tfidf_at = get_uid_path(&self.root_dir, CHUNK_DIR_NAME, uid, Some("tfidf"))?;
 
         if exists(&tfidf_at) {
             return Ok(tfidf::load_from_file(tfidf_at.to_str().unwrap())?);
@@ -61,10 +41,7 @@ impl Index {
         Err(Error::NoSuchChunk(uid))
     }
 
-    pub fn get_tfidf_by_file_uid(
-        &self,
-        uid: Uid,
-    ) -> Result<tfidf::ProcessedDoc, Error> {
+    pub fn get_tfidf_by_file_uid(&self, uid: Uid) -> Result<tfidf::ProcessedDoc, Error> {
         let chunk_uids = self.get_chunks_of_file(uid)?;
         let mut result = tfidf::ProcessedDoc::empty();
 
@@ -77,18 +54,16 @@ impl Index {
     }
 
     pub fn get_chunks_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
-        let file_index_path = get_uid_path(
-            &self.root_dir,
-            FILE_INDEX_DIR_NAME,
-            file_uid,
-            None,
-        )?;
+        let file_index_path = get_uid_path(&self.root_dir, FILE_INDEX_DIR_NAME, file_uid, None)?;
 
         if exists(&file_index_path) {
             return Ok(ragit_uid::load_from_file(&file_index_path)?);
         }
 
-        Err(Error::NoSuchFile { path: None, uid: Some(file_uid) })
+        Err(Error::NoSuchFile {
+            path: None,
+            uid: Some(file_uid),
+        })
     }
 
     pub fn get_merged_chunk_of_file(&self, file_uid: Uid) -> Result<RenderedChunk, Error> {
@@ -110,9 +85,11 @@ impl Index {
         let chunks = merge_and_convert_chunks(self, chunks_rendered)?;
 
         match chunks.len() {
-            0 => todo!(),  // It's an empty file. Does ragit create a chunk for an empty file? I don't remember...
+            0 => todo!(), // It's an empty file. Does ragit create a chunk for an empty file? I don't remember...
             1 => Ok(chunks[0].clone()),
-            _ => Err(Error::BrokenIndex(format!("Internal error: `get_merged_chunk_of_file({file_uid})` returned multiple chunks"))),
+            _ => Err(Error::BrokenIndex(format!(
+                "Internal error: `get_merged_chunk_of_file({file_uid})` returned multiple chunks"
+            ))),
         }
     }
 
@@ -130,6 +107,4 @@ impl Index {
 
         Ok(result.into_iter().collect())
     }
-
-    
 }

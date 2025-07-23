@@ -7,12 +7,17 @@ use crate::index::index_struct::Index;
 
 impl Index {
     /// Attempts to load a config file from ~/.config/ragit/
-    pub fn load_config_from_home<T: serde::de::DeserializeOwned>(filename: &str) -> Result<Option<T>, Error> {
+    pub fn load_config_from_home<T: serde::de::DeserializeOwned>(
+        filename: &str,
+    ) -> Result<Option<T>, Error> {
         // Check for HOME environment variable
         let home_dir = match std::env::var("HOME") {
             Ok(path) => path,
             Err(_) => {
-                eprintln!("Warning: HOME environment variable not set, cannot check ~/.config/ragit/{}", filename);
+                eprintln!(
+                    "Warning: HOME environment variable not set, cannot check ~/.config/ragit/{}",
+                    filename
+                );
                 return Ok(None);
             }
         };
@@ -21,10 +26,7 @@ impl Index {
             &str_to_pathbuf(&home_dir),
             &join_paths(
                 &str_to_pathbuf(".config"),
-                &join_paths(
-                    &str_to_pathbuf("ragit"),
-                    &str_to_pathbuf(filename),
-                )?,
+                &join_paths(&str_to_pathbuf("ragit"), &str_to_pathbuf(filename))?,
             )?,
         )?;
 
@@ -33,15 +35,21 @@ impl Index {
             let config_content = read_string(config_path.to_str().unwrap())?;
             match serde_json::from_str::<T>(&config_content) {
                 Ok(config) => {
-                    eprintln!("Info: Using configuration from ~/.config/ragit/{}", filename);
+                    eprintln!(
+                        "Info: Using configuration from ~/.config/ragit/{}",
+                        filename
+                    );
                     return Ok(Some(config));
-                },
+                }
                 Err(e) => {
-                    eprintln!("Warning: Could not parse {} from ~/.config/ragit/{}: {}", filename, filename, e);
-                },
+                    eprintln!(
+                        "Warning: Could not parse {} from ~/.config/ragit/{}: {}",
+                        filename, filename, e
+                    );
+                }
             }
         }
-        
+
         Ok(None)
     }
 
@@ -51,12 +59,16 @@ impl Index {
     }
 
     /// Attempts to load PartialQueryConfig from ~/.config/ragit/query.json
-    pub(crate) fn load_query_config_from_home(&self) -> Result<Option<crate::query::config::PartialQueryConfig>, Error> {
+    pub(crate) fn load_query_config_from_home(
+        &self,
+    ) -> Result<Option<crate::query::config::PartialQueryConfig>, Error> {
         Index::load_config_from_home("query.json")
     }
 
     /// Attempts to load PartialBuildConfig from ~/.config/ragit/build.json
-    pub(crate) fn load_build_config_from_home(&self) -> Result<Option<crate::index::config::PartialBuildConfig>, Error> {
+    pub(crate) fn load_build_config_from_home(
+        &self,
+    ) -> Result<Option<crate::index::config::PartialBuildConfig>, Error> {
         Index::load_config_from_home("build.json")
     }
 
@@ -85,7 +97,7 @@ impl Index {
                          config.model, lowest_cost_model.name);
             }
         }
-        
+
         Ok(config)
     }
 }

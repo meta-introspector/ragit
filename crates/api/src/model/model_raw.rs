@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use lazy_static::lazy_static;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
@@ -121,27 +121,28 @@ impl Clone for ModelRaw {
 
 impl PartialEq for ModelRaw {
     fn eq(&self, other: &Self) -> bool {
-        self.name == other.name &&
-        self.api_name == other.api_name &&
-        self.can_read_images == other.can_read_images &&
-        self.api_provider == other.api_provider &&
-        self.api_url == other.api_url &&
-        self.input_price == other.input_price &&
-        self.output_price == other.output_price &&
-        self.api_timeout == other.api_timeout &&
-        self.explanation == other.explanation &&
-        self.api_key == other.api_key &&
-        self.api_env_var == other.api_env_var &&
-        self.requests_per_minute == other.requests_per_minute &&
-        self.requests_per_day == other.requests_per_day &&
-        self.tokens_per_minute == other.tokens_per_minute &&
-        self.tokens_per_day == other.tokens_per_day &&
-        self.quality_expectations == other.quality_expectations &&
-        self.expected_response_time_ms == other.expected_response_time_ms &&
-        self.initial_score == other.initial_score &&
-        self.api_keys == other.api_keys &&
-        self.api_env_vars == other.api_env_vars &&
-        self.current_key_index.load(Ordering::SeqCst) == other.current_key_index.load(Ordering::SeqCst)
+        self.name == other.name
+            && self.api_name == other.api_name
+            && self.can_read_images == other.can_read_images
+            && self.api_provider == other.api_provider
+            && self.api_url == other.api_url
+            && self.input_price == other.input_price
+            && self.output_price == other.output_price
+            && self.api_timeout == other.api_timeout
+            && self.explanation == other.explanation
+            && self.api_key == other.api_key
+            && self.api_env_var == other.api_env_var
+            && self.requests_per_minute == other.requests_per_minute
+            && self.requests_per_day == other.requests_per_day
+            && self.tokens_per_minute == other.tokens_per_minute
+            && self.tokens_per_day == other.tokens_per_day
+            && self.quality_expectations == other.quality_expectations
+            && self.expected_response_time_ms == other.expected_response_time_ms
+            && self.initial_score == other.initial_score
+            && self.api_keys == other.api_keys
+            && self.api_env_vars == other.api_env_vars
+            && self.current_key_index.load(Ordering::SeqCst)
+                == other.current_key_index.load(Ordering::SeqCst)
     }
 }
 
@@ -149,9 +150,10 @@ lazy_static! {
     static ref DEFAULT_MODELS: HashMap<String, ModelRaw> = {
         let models_dot_json = include_str!("../../models.json");
         let models = serde_json::from_str::<Vec<ModelRaw>>(&models_dot_json).unwrap();
-        models.into_iter().map(
-            |model| (model.name.clone(), model)
-        ).collect()
+        models
+            .into_iter()
+            .map(|model| (model.name.clone(), model))
+            .collect()
     };
 }
 
@@ -193,7 +195,8 @@ impl ModelRaw {
     }
 
     pub fn default_models() -> Vec<ModelRaw> {
-        let mut models: Vec<ModelRaw> = DEFAULT_MODELS.values().map(|model| model.clone()).collect();
+        let mut models: Vec<ModelRaw> =
+            DEFAULT_MODELS.values().map(|model| model.clone()).collect();
         let _ = crate::rate_limit::merge_rate_limits(&mut models);
         models
     }

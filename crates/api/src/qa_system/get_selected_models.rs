@@ -3,8 +3,26 @@ use crate::model::ModelRaw;
 use rand::seq::SliceRandom;
 
 pub fn get_selected_models(models: &[ModelRaw]) -> Result<Vec<ModelRaw>, Error> {
-    let presupposed: Vec<ModelRaw> = models.iter().filter(|m| m.initial_score.as_ref().map(|s| s.contains("presupposed")).unwrap_or(false)).cloned().collect();
-    let unknown: Vec<ModelRaw> = models.iter().filter(|m| m.initial_score.as_ref().map(|s| s == "unknown").unwrap_or(false)).cloned().collect();
+    let presupposed: Vec<ModelRaw> = models
+        .iter()
+        .filter(|m| {
+            m.initial_score
+                .as_ref()
+                .map(|s| s.contains("presupposed"))
+                .unwrap_or(false)
+        })
+        .cloned()
+        .collect();
+    let unknown: Vec<ModelRaw> = models
+        .iter()
+        .filter(|m| {
+            m.initial_score
+                .as_ref()
+                .map(|s| s == "unknown")
+                .unwrap_or(false)
+        })
+        .cloned()
+        .collect();
     let mut selected_models: Vec<ModelRaw> = Vec::new();
 
     if !presupposed.is_empty() {
@@ -14,7 +32,16 @@ pub fn get_selected_models(models: &[ModelRaw]) -> Result<Vec<ModelRaw>, Error> 
         selected_models.push(unknown.choose(&mut rand::thread_rng()).unwrap().clone());
     }
     if selected_models.len() < 2 && !presupposed.is_empty() {
-        selected_models.push(presupposed.iter().filter(|m| m.name != selected_models[0].name).cloned().collect::<Vec<ModelRaw>>().choose(&mut rand::thread_rng()).unwrap().clone());
+        selected_models.push(
+            presupposed
+                .iter()
+                .filter(|m| m.name != selected_models[0].name)
+                .cloned()
+                .collect::<Vec<ModelRaw>>()
+                .choose(&mut rand::thread_rng())
+                .unwrap()
+                .clone(),
+        );
     }
     if selected_models.len() < 2 {
         // Fallback to random selection if not enough specific models

@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use serde::Serialize;
+use std::collections::HashMap;
 
 #[derive(Clone, Debug, Serialize)]
 pub struct FileTree {
@@ -18,9 +18,7 @@ impl FileTree {
     pub fn len(&self) -> usize {
         if self.is_dir {
             self.children.values().map(|f| f.len()).sum()
-        }
-
-        else {
+        } else {
             1
         }
     }
@@ -37,9 +35,7 @@ impl FileTree {
                 for p in v.to_paths().iter() {
                     result.push(format!("{k}/{p}"));
                 }
-            }
-
-            else {
+            } else {
                 result.push(k.to_string());
             }
         }
@@ -59,9 +55,7 @@ impl FileTree {
             let mut paths = self.to_paths();
             paths.sort();
             paths.join("\n")
-        }
-
-        else {
+        } else {
             let mut dirs = vec![];
             let mut excessive_dirs = 0;
             let mut files = vec![];
@@ -70,9 +64,7 @@ impl FileTree {
             for (k, v) in self.children.iter() {
                 if v.is_dir {
                     dirs.push((k.to_string(), v.len()));
-                }
-
-                else {
+                } else {
                     files.push(k.to_string());
                 }
             }
@@ -91,23 +83,24 @@ impl FileTree {
             }
 
             let mut lines = vec![
-                dirs.iter().map(
-                    |(d, f)| format!("{d}/    ({f} files in it, recursively)")
-                ).collect::<Vec<_>>(),
+                dirs.iter()
+                    .map(|(d, f)| format!("{d}/    ({f} files in it, recursively)"))
+                    .collect::<Vec<_>>(),
                 files,
-            ].concat();
+            ]
+            .concat();
 
             match (excessive_dirs, excessive_files) {
-                (0, 0) => {},
+                (0, 0) => {}
                 (0, f) => {
                     lines.push(format!("... and {f} more files"));
-                },
+                }
                 (d, 0) => {
                     lines.push(format!("... and {d} more directories"));
-                },
+                }
                 (d, f) => {
                     lines.push(format!("... and {d} more directories and {f} more files"));
-                },
+                }
             }
 
             lines.join("\n")
@@ -115,7 +108,10 @@ impl FileTree {
     }
 
     pub fn insert(&mut self, path: &str) {
-        let path_elements = path.split(|s| s == '/').filter(|s| !s.is_empty()).collect::<Vec<_>>();
+        let path_elements = path
+            .split(|s| s == '/')
+            .filter(|s| !s.is_empty())
+            .collect::<Vec<_>>();
         self.insert_worker(&path_elements);
     }
 
@@ -128,26 +124,21 @@ impl FileTree {
                     children: HashMap::new(),
                 },
             );
-        }
-
-        else {
+        } else {
             let dir_name = &path_elements[0];
 
             match self.children.get_mut(*dir_name) {
                 Some(f) => {
                     f.insert_worker(&path_elements[1..]);
-                },
+                }
                 None => {
                     let mut children = FileTree {
                         is_dir: true,
                         children: HashMap::new(),
                     };
                     children.insert_worker(&path_elements[1..]);
-                    self.children.insert(
-                        dir_name.to_string(),
-                        children,
-                    );
-                },
+                    self.children.insert(dir_name.to_string(), children);
+                }
             }
         }
     }

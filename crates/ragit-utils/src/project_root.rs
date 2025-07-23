@@ -1,8 +1,8 @@
-use std::path::PathBuf;
-use crate::error::Error;
-use ragit_fs::{exists, parent, current_dir};
 use crate::constant::INDEX_DIR_NAME;
+use crate::error::Error;
+use ragit_fs::{current_dir, exists, parent};
 use std::env;
+use std::path::PathBuf;
 
 pub fn find_root() -> Result<PathBuf, Error> {
     if let Ok(root_env) = env::var("RAGIT_ROOT") {
@@ -11,7 +11,10 @@ pub fn find_root() -> Result<PathBuf, Error> {
             return Ok(env_path);
         } else {
             return Err(Error::CliError(crate::cli_types::CliError::new_message(
-                format!("RAGIT_ROOT environment variable points to a non-existent directory: {}", env_path.display()),
+                format!(
+                    "RAGIT_ROOT environment variable points to a non-existent directory: {}",
+                    env_path.display()
+                ),
             )));
         }
     }
@@ -28,7 +31,8 @@ pub fn find_root() -> Result<PathBuf, Error> {
             Ok(p) => current_path = p,
             Err(_) => {
                 return Err(Error::CliError(crate::cli_types::CliError::new_message(
-                    "Not a ragit repository (or any of the parent directories): .ragit not found!".to_string(),
+                    "Not a ragit repository (or any of the parent directories): .ragit not found!"
+                        .to_string(),
                 )));
             }
         }

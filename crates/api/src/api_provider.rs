@@ -1,17 +1,15 @@
 use crate::error::Error;
 use crate::model::TestModel;
 use crate::response::{
-    AnthropicResponse,
-    CohereResponse,
-    GoogleResponse,
-    IntoChatResponse,
-    OpenAiResponse,
+    AnthropicResponse, CohereResponse, GoogleResponse, IntoChatResponse, OpenAiResponse,
 };
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum ApiProvider {
-    OpenAi { url: String },
+    OpenAi {
+        url: String,
+    },
     Cohere,
     Anthropic,
     Google,
@@ -36,10 +34,19 @@ impl ApiProvider {
     }
 
     pub fn parse(s: &str, url: &Option<String>) -> Result<Self, Error> {
-        match s.to_ascii_lowercase().replace(" ", "").replace("-", "").as_str() {
+        match s
+            .to_ascii_lowercase()
+            .replace(" ", "")
+            .replace("-", "")
+            .as_str()
+        {
             "openai" => match url {
-                Some(url) => Ok(ApiProvider::OpenAi { url: url.to_string() }),
-                None => Ok(ApiProvider::OpenAi { url: String::from("https://api.openai.com/v1/chat/completions") }),
+                Some(url) => Ok(ApiProvider::OpenAi {
+                    url: url.to_string(),
+                }),
+                None => Ok(ApiProvider::OpenAi {
+                    url: String::from("https://api.openai.com/v1/chat/completions"),
+                }),
             },
             "cohere" => Ok(ApiProvider::Cohere),
             "anthropic" => Ok(ApiProvider::Anthropic),

@@ -32,100 +32,100 @@ pub fn extract_jsonish_literal(s: &'_ str) -> JsonishLiteral<'_> {
                 b'0'..=b'9' | b'-' => {
                     state = NaturalLanguageParseState::Integer;
                     start_index = index;
-                },
+                }
                 b'{' | b'[' => {
                     state = NaturalLanguageParseState::Json(JsonParseState::Init);
                     json_stack = vec![JsonGroup::from(c)];
                     start_index = index;
-                },
+                }
                 b'}' | b']' => {
                     result.likely_to_be_broken_json = true;
-                },
-                _ => {},
+                }
+                _ => {}
             },
             NaturalLanguageParseState::Integer => match c {
-                b'0'..=b'9' => {},
+                b'0'..=b'9' => {}
                 b'.' => {
                     state = NaturalLanguageParseState::Float;
-                },
+                }
                 _ => {
                     state = NaturalLanguageParseState::Init;
                     result.integers.push((start_index, index));
                     result.floats.push((start_index, index));
-                },
+                }
             },
             NaturalLanguageParseState::Float => match c {
-                b'0'..=b'9' => {},
+                b'0'..=b'9' => {}
                 _ => {
                     state = NaturalLanguageParseState::Init;
                     result.floats.push((start_index, index));
-                },
+                }
             },
             // It doesn't have to be a strict json parser. `serde_json` will do that.
             NaturalLanguageParseState::Json(json_state) => match json_state {
                 JsonParseState::Init => match c {
                     b'{' | b'[' => {
                         json_stack.push(JsonGroup::from(c));
-                    },
+                    }
                     b'}' | b']' => match json_stack.pop() {
-                        Some(jsg) => if jsg == JsonGroup::from(c) {
-                            if json_stack.is_empty() {
+                        Some(jsg) => {
+                            if jsg == JsonGroup::from(c) {
+                                if json_stack.is_empty() {
+                                    state = NaturalLanguageParseState::Init;
+
+                                    if c == b'}' {
+                                        result.braces.push((start_index, index + 1));
+                                    } else {
+                                        result.brackets.push((start_index, index + 1));
+                                    }
+                                }
+                            } else {
+                                // There's no point in parsing this json literal any further
                                 state = NaturalLanguageParseState::Init;
-
-                                if c == b'}' {
-                                    result.braces.push((start_index, index + 1));
-                                }
-
-                                else {
-                                    result.brackets.push((start_index, index + 1));
-                                }
+                                result.likely_to_be_broken_json = true;
+                                break;
                             }
-                        } else {
-                            // There's no point in parsing this json literal any further
-                            state = NaturalLanguageParseState::Init;
-                            result.likely_to_be_broken_json = true;
-                            break;
-                        },
+                        }
                         None => {
                             // There's no point in parsing this json literal any further
                             state = NaturalLanguageParseState::Init;
                             result.likely_to_be_broken_json = true;
                             break;
-                        },
+                        }
                     },
                     b'"' => {
                         *json_state = JsonParseState::String { escape: false };
-                    },
-                    _ => {},
+                    }
+                    _ => {}
                 },
                 JsonParseState::String { escape } => match (c, &escape) {
                     (b'"', false) => {
                         *json_state = JsonParseState::Init;
-                    },
+                    }
                     (b'\\', false) => {
                         *escape = true;
-                    },
-                    (_, false) => {},
+                    }
+                    (_, false) => {}
                     (_, true) => {
                         *escape = false;
-                    },
+                    }
                 },
             },
         }
     }
 
     match state {
-        NaturalLanguageParseState::Init => {},
+        NaturalLanguageParseState::Init => {}
         NaturalLanguageParseState::Integer => {
             result.integers.push((start_index, s.len()));
             result.floats.push((start_index, s.len()));
-        },
+        }
         NaturalLanguageParseState::Float => {
             result.floats.push((start_index, s.len()));
-        },
+        }
         NaturalLanguageParseState::Json(_) => {
             result.likely_to_be_broken_json = true;
-        },
+        }
     }
 
     result
@@ -152,24 +152,29 @@ impl<'a, 'b> JsonishLiteral<'a> {
 
                     for (start, end) in self.integers.iter() {
                         let s = &self.s.get(*start..*end).unwrap();
-                        let Ok(n) = s.parse::<i128>() else { continue; };
+                        let Ok(n) = s.parse::<i128>() else {
+                            continue;
+                        };
 
                         // If the LLM outputs the same literal multiple times, that's fine.
                         match parsed_integers.last() {
-                            None => { parsed_integers.push(n); selected_str = s; },
-                            Some(l) if *l != n => { return JsonMatch::MultipleMatches; },
-                            Some(_) => {},
+                            None => {
+                                parsed_integers.push(n);
+                                selected_str = s;
+                            }
+                            Some(l) if *l != n => {
+                                return JsonMatch::MultipleMatches;
+                            }
+                            Some(_) => {}
                         }
                     }
 
                     if parsed_integers.is_empty() {
                         JsonMatch::NoMatch
-                    }
-
-                    else {
+                    } else {
                         JsonMatch::Match(selected_str)
                     }
-                },
+                }
             },
             SchemaType::Float => match self.floats.len() {
                 0 => JsonMatch::NoMatch,
@@ -180,27 +185,36 @@ impl<'a, 'b> JsonishLiteral<'a> {
 
                     for (start, end) in self.floats.iter() {
                         let s = &self.s.get(*start..*end).unwrap();
-                        let Ok(n) = s.parse::<f64>() else { continue; };
+                        let Ok(n) = s.parse::<f64>() else {
+                            continue;
+                        };
 
                         // If the LLM outputs the same literal multiple times, that's fine.
                         match parsed_floats.last() {
-                            None => { parsed_floats.push(n); selected_str = s; },
-                            Some(l) if *l != n => { return JsonMatch::MultipleMatches; },
-                            Some(_) => {},
+                            None => {
+                                parsed_floats.push(n);
+                                selected_str = s;
+                            }
+                            Some(l) if *l != n => {
+                                return JsonMatch::MultipleMatches;
+                            }
+                            Some(_) => {}
                         }
                     }
 
                     if parsed_floats.is_empty() {
                         JsonMatch::NoMatch
-                    }
-
-                    else {
+                    } else {
                         JsonMatch::Match(selected_str)
                     }
-                },
+                }
             },
             ty @ (SchemaType::Array(_) | SchemaType::Object(_)) => {
-                let l = if let SchemaType::Array(_) = ty { &self.brackets } else { &self.braces };
+                let l = if let SchemaType::Array(_) = ty {
+                    &self.brackets
+                } else {
+                    &self.braces
+                };
 
                 match l.len() {
                     0 => JsonMatch::NoMatch,
@@ -211,26 +225,32 @@ impl<'a, 'b> JsonishLiteral<'a> {
 
                         for (start, end) in l.iter() {
                             let s = &self.s.get(*start..*end).unwrap();
-                            let Ok(n) = serde_json::from_str::<Value>(s) else { self.likely_to_be_broken_json = true; continue; };
+                            let Ok(n) = serde_json::from_str::<Value>(s) else {
+                                self.likely_to_be_broken_json = true;
+                                continue;
+                            };
 
                             // If the LLM outputs the same literal multiple times, that's fine.
                             match parsed_jsons.last() {
-                                None => { parsed_jsons.push(n); selected_str = s; },
-                                Some(l) if *l != n => { return JsonMatch::MultipleMatches; },
-                                Some(_) => {},
+                                None => {
+                                    parsed_jsons.push(n);
+                                    selected_str = s;
+                                }
+                                Some(l) if *l != n => {
+                                    return JsonMatch::MultipleMatches;
+                                }
+                                Some(_) => {}
                             }
                         }
 
                         if parsed_jsons.is_empty() {
                             JsonMatch::NoMatch
-                        }
-
-                        else {
+                        } else {
                             JsonMatch::Match(selected_str)
                         }
-                    },
+                    }
                 }
-            },
+            }
             _ => unreachable!(),
         }
     }

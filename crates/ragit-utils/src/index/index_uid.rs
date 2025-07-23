@@ -1,8 +1,8 @@
-use crate::constant::{INDEX_FILE_NAME};
+use crate::constant::INDEX_FILE_NAME;
 use crate::error::Error;
 use crate::index::index_struct::Index;
-use ragit_uid::{load_from_file, Uid};
 use ragit_fs::{file_name, parent};
+use ragit_uid::{load_from_file, Uid};
 use std::path::PathBuf;
 
 impl Index {
@@ -10,11 +10,11 @@ impl Index {
         match self.uid {
             Some(uid) => Ok(uid),
             None => {
-                let uid = self.calculate_uid(false  /* force */)?;
+                let uid = self.calculate_uid(false /* force */)?;
                 self.uid = Some(uid);
                 self.save_to_file(self.root_dir.join(INDEX_FILE_NAME))?;
                 Ok(uid)
-            },
+            }
         }
     }
 
@@ -30,7 +30,8 @@ impl Index {
                 }
 
                 for image_path in self.get_all_image_files()?.iter() {
-                    let image_uid_prefix = file_name(parent(image_path.as_path())?.to_str().unwrap())?;
+                    let image_uid_prefix =
+                        file_name(parent(image_path.as_path())?.to_str().unwrap())?;
                     let image_uid_suffix = file_name(image_path.to_str().unwrap())?;
                     let uid = format!("{}{}", image_uid_prefix, image_uid_suffix).parse::<Uid>()?;
                     uids.push(uid);
@@ -53,14 +54,11 @@ impl Index {
                 }
 
                 Ok(result)
-            },
+            }
         }
     }
 
-    pub fn reset_uid(
-        &mut self,
-        save_to_file: bool,
-    ) -> Result<(), Error> {
+    pub fn reset_uid(&mut self, save_to_file: bool) -> Result<(), Error> {
         if self.uid.is_some() {
             self.uid = None;
 

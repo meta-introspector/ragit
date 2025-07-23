@@ -4,10 +4,7 @@ use ragit_pdl::JsonType;
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("json type error: expected {expected}, got {got}")]
-    JsonTypeError {
-        expected: JsonType,
-        got: JsonType,
-    },
+    JsonTypeError { expected: JsonType, got: JsonType },
     #[error("json object invalid field: {0}")]
     JsonObjectInvalidField(String),
     #[error("json object missing field: {0}")]
@@ -54,13 +51,9 @@ pub enum Error {
         body: Result<String, reqwest::Error>,
     },
     #[error("unsupported media format: {extension:?}")]
-    UnsupportedMediaFormat {
-        extension: Option<String>,
-    },
+    UnsupportedMediaFormat { extension: Option<String> },
     #[error("test model")]
     TestModel,
     #[error("insufficient models")]
     InsufficientModels,
 }
-
-

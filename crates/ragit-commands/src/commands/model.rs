@@ -32,7 +32,12 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
 
             if json_mode {
                 if name_only {
-                    println!("{}", serde_json::to_string_pretty(&models.iter().map(|model| &model.name).collect::<Vec<_>>())?);
+                    println!(
+                        "{}",
+                        serde_json::to_string_pretty(
+                            &models.iter().map(|model| &model.name).collect::<Vec<_>>()
+                        )?
+                    );
                 } else {
                     println!(
                         "{}",
@@ -42,9 +47,18 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
                                 .map(|model| {
                                     vec![
                                         (String::from("name"), model.name.clone().into()),
-                                        (String::from("api_provider"), model.api_provider.to_string().into()),
-                                        (String::from("api_key_env_var"), model.api_env_var.clone().into()),
-                                        (String::from("can_read_images"), model.can_read_images.into()),
+                                        (
+                                            String::from("api_provider"),
+                                            model.api_provider.to_string().into(),
+                                        ),
+                                        (
+                                            String::from("api_key_env_var"),
+                                            model.api_env_var.clone().into(),
+                                        ),
+                                        (
+                                            String::from("can_read_images"),
+                                            model.can_read_images.into(),
+                                        ),
                                         (
                                             String::from("dollars_per_1b_input_tokens"),
                                             model.dollars_per_1b_input_tokens.into(),
@@ -77,8 +91,14 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
                     }
 
                     println!("can_read_images: {}", model.can_read_images);
-                    println!("dollars_per_1b_input_tokens: {}", model.dollars_per_1b_input_tokens);
-                    println!("dollars_per_1b_output_tokens: {}", model.dollars_per_1b_output_tokens);
+                    println!(
+                        "dollars_per_1b_input_tokens: {}",
+                        model.dollars_per_1b_input_tokens
+                    );
+                    println!(
+                        "dollars_per_1b_output_tokens: {}",
+                        model.dollars_per_1b_output_tokens
+                    );
                 }
             }
         }
@@ -101,18 +121,28 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
 
             let result = if let Some(model_name) = model_name {
                 if all {
-                    return Err(Error::CliError(CliError::new_message("You cannot use `--all` option with a model name.".to_string())));
+                    return Err(Error::CliError(CliError::new_message(
+                        "You cannot use `--all` option with a model name.".to_string(),
+                    )));
                 }
 
-                index.fetch_remote_models(&model_name, existing_only, remote).await?
+                index
+                    .fetch_remote_models(&model_name, existing_only, remote)
+                    .await?
             } else if all {
                 index.fetch_all_remote_models(existing_only, remote).await?
             } else {
-                return Err(Error::CliError(CliError::new_message_with_span("Please specify which model to fetch.".to_string(), Span::End.render(args, 2))));
+                return Err(Error::CliError(CliError::new_message_with_span(
+                    "Please specify which model to fetch.".to_string(),
+                    Span::End.render(args, 2),
+                )));
             };
 
             if !quiet {
-                println!("fetched {} new models, updated {} models", result.fetched, result.updated);
+                println!(
+                    "fetched {} new models, updated {} models",
+                    result.fetched, result.updated
+                );
             }
         }
         Some("--remove") => {
@@ -128,21 +158,32 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
 
             if let Some(model_name) = model_name {
                 if all {
-                    return Err(Error::CliError(CliError::new_message("You cannot use `--all` option with a model name.".to_string())));
+                    return Err(Error::CliError(CliError::new_message(
+                        "You cannot use `--all` option with a model name.".to_string(),
+                    )));
                 }
 
                 index.remove_local_model(&model_name)?;
             } else if all {
                 index.remove_all_local_models()?;
             } else {
-                return Err(Error::CliError(CliError::new_message_with_span("Please specify which model to remove.".to_string(), Span::End.render(args, 2))));
+                return Err(Error::CliError(CliError::new_message_with_span(
+                    "Please specify which model to remove.".to_string(),
+                    Span::End.render(args, 2),
+                )));
             }
         }
         Some(flag) => {
-            return Err(Error::CliError(CliError::new_message_with_span(format!("Unknown flag: `{flag}`. Valid flags are --search | --update | --remove."), Span::End)));
+            return Err(Error::CliError(CliError::new_message_with_span(
+                format!("Unknown flag: `{flag}`. Valid flags are --search | --update | --remove."),
+                Span::End,
+            )));
         }
         None => {
-            return Err(Error::CliError(CliError::new_message_with_span(String::from("Flag `--search | --update | --remove` is missing."), Span::End)));
+            return Err(Error::CliError(CliError::new_message_with_span(
+                String::from("Flag `--search | --update | --remove` is missing."),
+                Span::End,
+            )));
         }
     }
 

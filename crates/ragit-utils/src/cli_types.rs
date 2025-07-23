@@ -1,8 +1,8 @@
-use std::collections::HashMap;
-pub use crate::error::ErrorKind;
 use crate::error::Error;
+pub use crate::error::ErrorKind;
 pub use crate::error::{CliError, Span};
 use crate::string_utils::get_closest_string;
+use std::collections::HashMap;
 
 pub struct ArgParser {
     arg_count: ArgCount,
@@ -54,17 +54,46 @@ impl ArgParser {
     }
 
     pub fn arg_flag(&mut self, flag: &str, arg_type: ArgType) -> &mut Self {
-        self.arg_flags.insert(flag.to_string(), ArgFlag { flag: flag.to_string(), optional: false, default: None, arg_type });
+        self.arg_flags.insert(
+            flag.to_string(),
+            ArgFlag {
+                flag: flag.to_string(),
+                optional: false,
+                default: None,
+                arg_type,
+            },
+        );
         self
     }
 
     pub fn optional_arg_flag(&mut self, flag: &str, arg_type: ArgType) -> &mut Self {
-        self.arg_flags.insert(flag.to_string(), ArgFlag { flag: flag.to_string(), optional: true, default: None, arg_type });
+        self.arg_flags.insert(
+            flag.to_string(),
+            ArgFlag {
+                flag: flag.to_string(),
+                optional: true,
+                default: None,
+                arg_type,
+            },
+        );
         self
     }
 
-    pub fn arg_flag_with_default(&mut self, flag: &str, default: &str, arg_type: ArgType) -> &mut Self {
-        self.arg_flags.insert(flag.to_string(), ArgFlag { flag: flag.to_string(), optional: true, default: Some(default.to_string()), arg_type });
+    pub fn arg_flag_with_default(
+        &mut self,
+        flag: &str,
+        default: &str,
+        arg_type: ArgType,
+    ) -> &mut Self {
+        self.arg_flags.insert(
+            flag.to_string(),
+            ArgFlag {
+                flag: flag.to_string(),
+                optional: true,
+                default: Some(default.to_string()),
+                arg_type,
+            },
+        );
         self
     }
 
@@ -108,14 +137,11 @@ impl ArgParser {
     /// you don't care about the first 2 args (path and command name). You only want to parse
     /// the flags (the last 3 args). In this case, you set `skip_first_n` to 2.
     pub fn parse(&self, raw_args: &[String], skip_first_n: usize) -> Result<ParsedArgs, Error> {
-        self.parse_worker(raw_args, skip_first_n).map_err(
-            |e| match e {
-                Error::CliError(cli_err) => {
-                    Error::CliError(cli_err)
-                },
+        self.parse_worker(raw_args, skip_first_n)
+            .map_err(|e| match e {
+                Error::CliError(cli_err) => Error::CliError(cli_err),
                 _ => e,
-            }
-        )
+            })
     }
 
     fn parse_worker(&self, raw_args: &[String], skip_first_n: usize) -> Result<ParsedArgs, Error> {
@@ -144,7 +170,11 @@ impl ArgParser {
 
             if raw_arg == "--" {
                 if let Some(arg_flag) = expecting_flag_arg {
-                    return Err(Error::CliError(CliError::MissingArgument(arg_flag.flag.to_string(), arg_flag.arg_type, Span::End)));
+                    return Err(Error::CliError(CliError::MissingArgument(
+                        arg_flag.flag.to_string(),
+                        arg_flag.arg_type,
+                        Span::End,
+                    )));
                 }
 
                 no_more_flags = true;
@@ -153,7 +183,9 @@ impl ArgParser {
 
             if let Some(arg_flag) = expecting_flag_arg {
                 expecting_flag_arg = None;
-                arg_flag.arg_type.parse(&raw_arg, Span::Exact(arg_index + skip_first_n))?;
+                arg_flag
+                    .arg_type
+                    .parse(&raw_arg, Span::Exact(arg_index + skip_first_n))?;
 
                 if let Some(_) = arg_flags.insert(arg_flag.flag.clone(), raw_arg.to_string()) {
                     return Err(Error::CliError(CliError::SameFlagMultipleTimes(
@@ -174,9 +206,7 @@ impl ArgParser {
                         if flags[flag_index].is_none() {
                             flags[flag_index] = Some(mapped_flag.to_string());
                             continue 'raw_arg_loop;
-                        }
-
-                        else {
+                        } else {
                             return Err(Error::CliError(CliError::SameFlagMultipleTimes(
                                 flags[flag_index].as_ref().unwrap().to_string(),
                                 raw_arg.to_string(),
@@ -197,7 +227,9 @@ impl ArgParser {
                     let flag_arg = splitted[1];
 
                     if let Some(arg_flag) = self.arg_flags.get(&flag) {
-                        arg_flag.arg_type.parse(flag_arg, Span::Exact(arg_index + skip_first_n))?;
+                        arg_flag
+                            .arg_type
+                            .parse(flag_arg, Span::Exact(arg_index + skip_first_n))?;
 
                         if let Some(_) = arg_flags.insert(flag.to_string(), flag_arg.to_string()) {
                             return Err(Error::CliError(CliError::SameFlagMultipleTimes(
@@ -208,9 +240,7 @@ impl ArgParser {
                         }
 
                         continue;
-                    }
-
-                    else {
+                    } else {
                         return Err(Error::CliError(CliError::UnknownFlag {
                             flag: flag.to_string(),
                             similar_flag: self.get_similar_flag(&flag),
@@ -224,37 +254,45 @@ impl ArgParser {
                     similar_flag: self.get_similar_flag(&raw_arg),
                     span: Span::Exact(arg_index + skip_first_n),
                 }));
-            }
-
-            else {
-                args.push(self.arg_type.parse(&raw_arg, Span::Exact(arg_index + skip_first_n))?);
+            } else {
+                args.push(
+                    self.arg_type
+                        .parse(&raw_arg, Span::Exact(arg_index + skip_first_n))?,
+                );
             }
         }
 
         if let Some(arg_flag) = expecting_flag_arg {
-            return Err(Error::CliError(CliError::MissingArgument(arg_flag.flag.to_string(), arg_flag.arg_type, Span::End)));
+            return Err(Error::CliError(CliError::MissingArgument(
+                arg_flag.flag.to_string(),
+                arg_flag.arg_type,
+                Span::End,
+            )));
         }
 
         for i in 0..flags.len() {
             if flags[i].is_none() {
                 if let Some(j) = self.flags[i].default {
                     flags[i] = Some(self.flags[i].values[j].clone());
-                }
-
-                else if !self.flags[i].optional {
-                    return Err(Error::CliError(CliError::MissingFlag(self.flags[i].values.join(" | "), Span::End)));
+                } else if !self.flags[i].optional {
+                    return Err(Error::CliError(CliError::MissingFlag(
+                        self.flags[i].values.join(" | "),
+                        Span::End,
+                    )));
                 }
             }
         }
 
         loop {
             let span = match self.arg_count {
-                ArgCount::Geq(n) if args.len() < n => { Span::End },
-                ArgCount::Leq(n) if args.len() > n => { Span::NthArg(n + 1) },
-                ArgCount::Exact(n) if args.len() > n => { Span::NthArg(n + 1) },
-                ArgCount::Exact(n) if args.len() < n => { Span::NthArg(args.len().max(1) - 1) },
-                ArgCount::None if args.len() > 0 => { Span::FirstArg },
-                _ => { break; },
+                ArgCount::Geq(n) if args.len() < n => Span::End,
+                ArgCount::Leq(n) if args.len() > n => Span::NthArg(n + 1),
+                ArgCount::Exact(n) if args.len() > n => Span::NthArg(n + 1),
+                ArgCount::Exact(n) if args.len() < n => Span::NthArg(args.len().max(1) - 1),
+                ArgCount::None if args.len() > 0 => Span::FirstArg,
+                _ => {
+                    break;
+                }
             };
 
             return Err(Error::CliError(CliError::WrongArgCount {
@@ -267,15 +305,14 @@ impl ArgParser {
         for (flag, arg_flag) in self.arg_flags.iter() {
             if arg_flags.contains_key(flag) {
                 continue;
-            }
-
-            else if let Some(default) = &arg_flag.default {
+            } else if let Some(default) = &arg_flag.default {
                 arg_flags.insert(flag.to_string(), default.to_string());
+            } else if !arg_flag.optional {
+                return Err(Error::CliError(CliError::MissingFlag(
+                    flag.to_string(),
+                    Span::End,
+                )));
             }
-
-            else if !arg_flag.optional {
-                    return Err(Error::CliError(CliError::MissingFlag(flag.to_string(), Span::End)));
-                }
         }
 
         Ok(ParsedArgs {
@@ -346,18 +383,28 @@ impl ArgType {
                 Ok(n) => {
                     if let Some(min) = *min {
                         if n < min {
-                            return Err(Error::CliError(CliError::IntegerNotInRange { min: Some(min), max: *max, n, span }));
+                            return Err(Error::CliError(CliError::IntegerNotInRange {
+                                min: Some(min),
+                                max: *max,
+                                n,
+                                span,
+                            }));
                         }
                     }
 
                     if let Some(max) = *max {
                         if n > max {
-                            return Err(Error::CliError(CliError::IntegerNotInRange { min: *min, max: Some(max), n, span }));
+                            return Err(Error::CliError(CliError::IntegerNotInRange {
+                                min: *min,
+                                max: Some(max),
+                                n,
+                                span,
+                            }));
                         }
                     }
 
                     Ok(arg.to_string())
-                },
+                }
                 Err(e) => Err(Error::CliError(CliError::ParseIntError(e, span))),
             },
             ArgType::String
@@ -413,9 +460,7 @@ impl ParsedArgs {
     pub fn get_args_exact(&self, count: usize) -> Result<Vec<String>, Error> {
         if self.args.len() == count {
             Ok(self.args.clone())
-        }
-
-        else {
+        } else {
             Err(Error::CliError(CliError::WrongArgCount {
                 expected: ArgCount::Exact(count),
                 got: self.args.len(),
@@ -450,16 +495,27 @@ pub fn parse_pre_args(args: &[String]) -> Result<(Vec<String>, ParsedArgs), Erro
         Some("-C") => match args.get(2).map(|s| s.as_str()) {
             Some(path) => {
                 let mut result = ParsedArgs::new();
-                result.arg_flags.insert(String::from("-C"), path.to_string());
+                result
+                    .arg_flags
+                    .insert(String::from("-C"), path.to_string());
                 Ok((
                     vec![
                         vec![args[0].clone()],
-                        if args.len() < 4 { vec![] } else { args[3..].to_vec() },
-                    ].concat(),
+                        if args.len() < 4 {
+                            vec![]
+                        } else {
+                            args[3..].to_vec()
+                        },
+                    ]
+                    .concat(),
                     result,
                 ))
-            },
-            None => Err(Error::CliError(CliError::MissingArgument(String::from("-C"), ArgType::Path, Span::Exact(2)))),
+            }
+            None => Err(Error::CliError(CliError::MissingArgument(
+                String::from("-C"),
+                ArgType::Path,
+                Span::Exact(2),
+            ))),
         },
         _ => Ok((args.to_vec(), ParsedArgs::new())),
     }

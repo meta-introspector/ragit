@@ -1,6 +1,6 @@
-use crate::prelude::*;
-use crate::index::index_struct::Index;
 use crate::index::commands::add::{AddMode, AddResult};
+use crate::index::index_struct::Index;
+use crate::prelude::*;
 
 impl Index {
     pub async fn add_files_command(

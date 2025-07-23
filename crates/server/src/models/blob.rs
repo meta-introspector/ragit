@@ -1,13 +1,6 @@
 use crate::CONFIG;
 use crate::error::Error;
-use ragit_fs::{
-    WriteMode,
-    create_dir_all,
-    join3,
-    parent,
-    read_bytes,
-    write_bytes,
-};
+use ragit_fs::{WriteMode, create_dir_all, join3, parent, read_bytes, write_bytes};
 
 // Ragit-server has to read/write a lot of binary objects: mostly for archives.
 // My first attempt was a Postgres table, where the blobs are saved as `BYTEA` type.
@@ -23,11 +16,7 @@ pub fn save(id: &str, blob: &[u8]) -> Result<(), Error> {
     let blob_at = get_blob_path(id)?;
     create_dir_all(&parent(&blob_at)?)?;
 
-    Ok(write_bytes(
-        &blob_at,
-        blob,
-        WriteMode::CreateOrTruncate,
-    )?)
+    Ok(write_bytes(&blob_at, blob, WriteMode::CreateOrTruncate)?)
 }
 
 pub fn get(id: &str) -> Result<Vec<u8>, Error> {
@@ -39,9 +28,5 @@ fn get_blob_path(id: &str) -> Result<String, Error> {
     let prefix = id.get(0..2).unwrap();
     let suffix = id.get(2..).unwrap();
 
-    Ok(join3(
-        &config.blob_dir,
-        prefix,
-        suffix,
-    )?)
+    Ok(join3(&config.blob_dir, prefix, suffix)?)
 }

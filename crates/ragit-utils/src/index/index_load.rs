@@ -1,41 +1,39 @@
 use crate::constant::INDEX_FILE_NAME;
 use crate::error::Error;
-use crate::path_utils::{get_rag_path, str_to_pathbuf, get_normalized_abs_pathbuf};
+use crate::path_utils::{get_normalized_abs_pathbuf, get_rag_path, str_to_pathbuf};
 use ragit_fs::{read_string, write_bytes, WriteMode};
 use std::path::PathBuf;
 
 use super::BuildConfig;
+use crate::api_config::ApiConfig;
 use crate::index::{index_struct::Index, load_mode::LoadMode};
 use crate::query::QueryConfig;
-use crate::api_config::ApiConfig;
 
 impl Index {
-    pub fn load(
-    root_dir: PathBuf,
-    load_mode: LoadMode,
-) -> Result<Self, Error> {
+    pub fn load(root_dir: PathBuf, load_mode: LoadMode) -> Result<Self, Error> {
         let mut result = Index::load_minimum(root_dir)?;
 
         if load_mode == LoadMode::Minimum {
             return Ok(result);
         }
 
-        result.build_config = serde_json::from_str::<BuildConfig>(
-            &read_string(result.get_build_config_path()?.to_str().unwrap())?,
-        )?;
-        result.query_config = serde_json::from_str::<QueryConfig>(
-            &read_string(result.get_query_config_path()?.to_str().unwrap())?,
-        )?;
-        result.api_config = serde_json::from_str::<ApiConfig>(
-            &read_string(result.get_api_config_path()?.to_str().unwrap())?,
-        )?;
-        
+        result.build_config = serde_json::from_str::<BuildConfig>(&read_string(
+            result.get_build_config_path()?.to_str().unwrap(),
+        )?)?;
+        result.query_config = serde_json::from_str::<QueryConfig>(&read_string(
+            result.get_query_config_path()?.to_str().unwrap(),
+        )?)?;
+        result.api_config = serde_json::from_str::<ApiConfig>(&read_string(
+            result.get_api_config_path()?.to_str().unwrap(),
+        )?)?;
+
         // Load models before initializing API config to ensure we can validate the model
         result.load_or_init_prompts()?;
         result.load_or_init_models()?;
-        
+
         // Check if the model in api_config exists in the loaded models
-        let model_exists = ragit_api::get_model_by_name(&result.models, &result.api_config.model).is_ok();
+        let model_exists =
+            ragit_api::get_model_by_name(&result.models, &result.api_config.model).is_ok();
 
         if !model_exists && !result.models.is_empty() {
             // Find the lowest-cost model and update api_config
@@ -62,11 +60,13 @@ impl Index {
             LoadMode::QuickCheck if result.curr_processing_file.is_some() => {
                 result.recover()?;
                 Ok(result)
-            },
-            LoadMode::Check if result.curr_processing_file.is_some() || result.check_ii().is_err() => {
+            }
+            LoadMode::Check
+                if result.curr_processing_file.is_some() || result.check_ii().is_err() =>
+            {
                 result.recover()?;
                 Ok(result)
-            },
+            }
             _ => Ok(result),
         }
     }
@@ -75,10 +75,11 @@ impl Index {
     /// It's for `rag check --recover`: it only loads minimum data and the recover function will load or fix the others.
     pub fn load_minimum(root_dir: PathBuf) -> Result<Self, Error> {
         let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
-        let index_json = read_string(get_rag_path(
-            &root_dir,
-            &str_to_pathbuf(INDEX_FILE_NAME),
-        )?.to_str().unwrap())?;
+        let index_json = read_string(
+            get_rag_path(&root_dir, &str_to_pathbuf(INDEX_FILE_NAME))?
+                .to_str()
+                .unwrap(),
+        )?;
 
         let mut result = serde_json::from_str::<Index>(&index_json)?;
         result.root_dir = root_dir.into();
@@ -88,7 +89,9 @@ impl Index {
             compatible: true, // Assume compatible for now, actual compatibility check might be more complex
         };
 
-        if let Some(warn) = crate::index::commands::version::get_compatibility_warning(&version_info) {
+        if let Some(warn) =
+            crate::index::commands::version::get_compatibility_warning(&version_info)
+        {
             eprintln!("Warning: {warn}");
         }
 

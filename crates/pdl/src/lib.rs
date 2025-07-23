@@ -17,7 +17,7 @@ pub use error::{Error, JsonType};
 pub use image::{Image, ImageType};
 pub use message::{Message, MessageContent};
 pub use role::{PdlRole, Role};
-pub use schema::{Schema, SchemaParseError, parse_schema, render_pdl_schema, Prompt};
+pub use schema::{Prompt, Schema, SchemaParseError, parse_schema, render_pdl_schema};
 pub use util::{decode_base64, encode_base64};
 
 lazy_static! {
@@ -39,7 +39,7 @@ pub fn into_context<T: Serialize>(v: &T) -> Result<tera::Context, Error> {
             }
 
             Ok(result)
-        },
+        }
         _ => Err(Error::JsonTypeError {
             expected: JsonType::Object,
             got: (&v).into(),
@@ -66,34 +66,45 @@ impl Pdl {
             match role {
                 Role::User => {
                     if after_user {
-                        return Err(Error::InvalidPdl(String::from("<|user|> appeared twice in a row.")));
+                        return Err(Error::InvalidPdl(String::from(
+                            "<|user|> appeared twice in a row.",
+                        )));
                     }
 
                     after_user = true;
                     after_assistant = false;
-                },
+                }
                 Role::Assistant => {
                     if after_assistant {
-                        return Err(Error::InvalidPdl(String::from("<|assistant|> appeared twice in a row.")));
+                        return Err(Error::InvalidPdl(String::from(
+                            "<|assistant|> appeared twice in a row.",
+                        )));
                     }
 
                     after_user = false;
                     after_assistant = true;
-                },
+                }
                 Role::System => {
                     if index != 0 {
-                        return Err(Error::InvalidPdl(String::from("<|system|> must appear at top.")));
+                        return Err(Error::InvalidPdl(String::from(
+                            "<|system|> must appear at top.",
+                        )));
                     }
-                },
-                Role::Reasoning => {},  // TODO
+                }
+                Role::Reasoning => {} // TODO
             }
         }
 
         match self.messages.last() {
-            Some(Message { role: Role::Assistant, .. }) => {
-                return Err(Error::InvalidPdl(String::from("A pdl file ends with <|assistant|>.")));
-            },
-            _ => {},
+            Some(Message {
+                role: Role::Assistant,
+                ..
+            }) => {
+                return Err(Error::InvalidPdl(String::from(
+                    "A pdl file ends with <|assistant|>.",
+                )));
+            }
+            _ => {}
         }
 
         Ok(())
@@ -129,11 +140,13 @@ pub fn parse_pdl(
 
     let tera_rendered = match renderer.render_str(s, context) {
         Ok(t) => t,
-        Err(e) => if strict_mode {
-            return Err(e.into());
-        } else {
-            s.to_string()
-        },
+        Err(e) => {
+            if strict_mode {
+                return Err(e.into());
+            } else {
+                s.to_string()
+            }
+        }
     };
 
     let mut messages = vec![];
@@ -151,26 +164,32 @@ pub fn parse_pdl(
 
         // maybe a turn-separator
         if trimmed.starts_with("<|") && trimmed.ends_with("|>") && trimmed.len() > 4 {
-            match trimmed.to_ascii_lowercase().get(2..(trimmed.len() - 2)).unwrap() {
+            match trimmed
+                .to_ascii_lowercase()
+                .get(2..(trimmed.len() - 2))
+                .unwrap()
+            {
                 t @ ("user" | "system" | "assistant" | "schema" | "reasoning") => {
                     if !line_buffer.is_empty() || curr_role.is_some() {
                         match curr_role {
                             Some(PdlRole::Schema) => match parse_schema(&line_buffer.join("\n")) {
                                 Ok(s) => {
                                     if schema.is_some() && strict_mode {
-                                        return Err(Error::InvalidPdl(String::from("<|schema|> appeared multiple times.")));
+                                        return Err(Error::InvalidPdl(String::from(
+                                            "<|schema|> appeared multiple times.",
+                                        )));
                                     }
 
                                     schema = Some(s);
-                                },
+                                }
                                 Err(e) => {
                                     if strict_mode {
                                         return Err(e.into());
                                     }
-                                },
+                                }
                             },
                             // reasoning tokens are not fed to llm contexts
-                            Some(PdlRole::Reasoning) => {},
+                            Some(PdlRole::Reasoning) => {}
                             _ => {
                                 // there must be lots of unnecessary newlines due to the nature of the format
                                 // let's just trim them away
@@ -191,7 +210,7 @@ pub fn parse_pdl(
                                         }
 
                                         PdlRole::System
-                                    },
+                                    }
                                 };
 
                                 match into_message_contents(&raw_contents, curr_dir) {
@@ -200,39 +219,37 @@ pub fn parse_pdl(
                                             role: role.into(),
                                             content: t,
                                         });
-                                    },
+                                    }
                                     Err(e) => {
                                         if strict_mode {
                                             return Err(e);
-                                        }
-
-                                        else {
+                                        } else {
                                             messages.push(Message {
                                                 role: role.into(),
-                                                content: vec![MessageContent::String(raw_contents.to_string())],
+                                                content: vec![MessageContent::String(
+                                                    raw_contents.to_string(),
+                                                )],
                                             });
                                         }
-                                    },
+                                    }
                                 }
-                            },
+                            }
                         }
                     }
 
                     curr_role = Some(PdlRole::from(t));
                     line_buffer = vec![];
                     continue;
-                },
+                }
                 t => {
                     if strict_mode && t.chars().all(|c| c.is_ascii_alphabetic()) {
                         return Err(Error::InvalidTurnSeparator(t.to_string()));
                     }
 
                     line_buffer.push(line.to_string());
-                },
+                }
             }
-        }
-
-        else {
+        } else {
             line_buffer.push(line.to_string());
         }
     }
@@ -243,10 +260,7 @@ pub fn parse_pdl(
         }
     }
 
-    let result = Pdl {
-        schema,
-        messages,
-    };
+    let result = Pdl { schema, messages };
 
     if strict_mode {
         result.validate()?;
@@ -256,11 +270,16 @@ pub fn parse_pdl(
 }
 
 pub fn escape_pdl_tokens(s: &str) -> String {
-    s.replace("&", "&amp;").replace("|>", "|&gt;").replace("<|", "&lt;|")
+    s.replace("&", "&amp;")
+        .replace("|>", "|&gt;")
+        .replace("<|", "&lt;|")
 }
 
-pub fn unescape_pdl_tokens(s: &str) -> String {  // TODO: use `Cow` type
-    s.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+pub fn unescape_pdl_tokens(s: &str) -> String {
+    // TODO: use `Cow` type
+    s.replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
 }
 
 fn into_message_contents(s: &str, curr_dir: &str) -> Result<Vec<MessageContent>, Error> {
@@ -277,10 +296,10 @@ fn into_message_contents(s: &str, curr_dir: &str) -> Result<Vec<MessageContent>,
                         match String::from_utf8(string_buffer.clone()) {
                             Ok(s) => {
                                 result.push(MessageContent::String(unescape_pdl_tokens(&s)));
-                            },
+                            }
                             Err(e) => {
                                 return Err(e.into());
-                            },
+                            }
                         }
                     }
 
@@ -288,31 +307,31 @@ fn into_message_contents(s: &str, curr_dir: &str) -> Result<Vec<MessageContent>,
                     index = new_index;
                     string_buffer = vec![];
                     continue;
-                },
+                }
                 Ok(None) => {
                     string_buffer.push(b'<');
-                },
+                }
                 Err(e) => {
                     return Err(e);
-                },
+                }
             },
             Some(b) => {
                 string_buffer.push(*b);
-            },
+            }
             None => {
                 if !string_buffer.is_empty() {
                     match String::from_utf8(string_buffer) {
                         Ok(s) => {
                             result.push(MessageContent::String(unescape_pdl_tokens(&s)));
-                        },
+                        }
                         Err(e) => {
                             return Err(e.into());
-                        },
+                        }
                     }
                 }
 
                 break;
-            },
+            }
         }
 
         index += 1;
@@ -324,7 +343,11 @@ fn into_message_contents(s: &str, curr_dir: &str) -> Result<Vec<MessageContent>,
 // 1. It returns `Ok(Some(_))` if it's a valid inline block.
 // 2. It returns `Ok(None)` if it's not an inline block.
 // 3. It returns `Err(_)` if it's an inline block, but there's an error (syntax error, image type error, file error, ...).
-fn try_parse_inline_block(bytes: &[u8], index: usize, curr_dir: &str) -> Result<Option<(ImageType, Vec<u8>, usize)>, Error> {
+fn try_parse_inline_block(
+    bytes: &[u8],
+    index: usize,
+    curr_dir: &str,
+) -> Result<Option<(ImageType, Vec<u8>, usize)>, Error> {
     match try_get_pdl_token(bytes, index) {
         Some((token, new_index)) => {
             let media_re = &MEDIA_RE;
@@ -334,19 +357,23 @@ fn try_parse_inline_block(bytes: &[u8], index: usize, curr_dir: &str) -> Result<
                 let image_type = String::from_utf8_lossy(&cap[1]).to_string();
                 let image_bytes = String::from_utf8_lossy(&cap[2]).to_string();
 
-                Ok(Some((ImageType::from_extension(&image_type)?, decode_base64(&image_bytes)?, new_index)))
-            }
-
-            else if let Some(cap) = media_re.captures(token) {
+                Ok(Some((
+                    ImageType::from_extension(&image_type)?,
+                    decode_base64(&image_bytes)?,
+                    new_index,
+                )))
+            } else if let Some(cap) = media_re.captures(token) {
                 let path = &cap[1];
                 let file = join(curr_dir, &String::from_utf8_lossy(path).to_string())?;
-                Ok(Some((ImageType::from_extension(&extension(&file)?.unwrap_or(String::new()))?, read_bytes(&file)?, new_index)))
-            }
-
-            else {
+                Ok(Some((
+                    ImageType::from_extension(&extension(&file)?.unwrap_or(String::new()))?,
+                    read_bytes(&file)?,
+                    new_index,
+                )))
+            } else {
                 Err(Error::InvalidInlineBlock)
             }
-        },
+        }
 
         // not an inline block at all
         None => Ok(None),
@@ -364,19 +391,19 @@ fn try_get_pdl_token(bytes: &[u8], mut index: usize) -> Option<(&[u8], usize)> {
                 match (bytes.get(index), bytes.get(index + 1)) {
                     (Some(b'|'), Some(b'>')) => {
                         return Some((&bytes[(old_index + 2)..index], index + 2));
-                    },
+                    }
                     (_, Some(b'|')) => {
                         index += 1;
-                    },
+                    }
                     (_, None) => {
                         return None;
-                    },
+                    }
                     _ => {
                         index += 2;
-                    },
+                    }
                 }
             }
-        },
+        }
         _ => None,
     }
 }
@@ -384,33 +411,19 @@ fn try_get_pdl_token(bytes: &[u8], mut index: usize) -> Option<(&[u8], usize)> {
 #[cfg(test)]
 mod tests {
     use crate::{
-        ImageType,
-        Message,
-        MessageContent,
-        Pdl,
-        Role,
-        decode_base64,
-        parse_pdl,
+        ImageType, Message, MessageContent, Pdl, Role, decode_base64, parse_pdl,
         parse_pdl_from_file,
     };
-    use ragit_fs::{
-        WriteMode,
-        join,
-        temp_dir,
-        write_string,
-    };
+    use ragit_fs::{WriteMode, join, temp_dir, write_string};
 
     // more thorough test suites are in `tests/`
     #[test]
     fn messages_from_file_test() {
-        let tmp_path = join(
-            &temp_dir().unwrap(),
-            "test_messages.tera",
-        ).unwrap();
+        let tmp_path = join(&temp_dir().unwrap(), "test_messages.tera").unwrap();
 
         write_string(
             &tmp_path,
-"
+            "
 <|system|>
 
 You're a code helper.
@@ -422,69 +435,57 @@ Write me a sudoku-solver.
 
 ",
             WriteMode::CreateOrTruncate,
-        ).unwrap();
+        )
+        .unwrap();
 
-        let Pdl { messages, schema } = parse_pdl_from_file(
-            &tmp_path,
-            &tera::Context::new(),
-            true,
-            true,
-        ).unwrap();
+        let Pdl { messages, schema } =
+            parse_pdl_from_file(&tmp_path, &tera::Context::new(), true, true).unwrap();
 
         assert_eq!(
             messages,
             vec![
                 Message {
                     role: Role::System,
-                    content: vec![
-                        MessageContent::String(String::from("You're a code helper.")),
-                    ],
+                    content: vec![MessageContent::String(String::from(
+                        "You're a code helper."
+                    )),],
                 },
                 Message {
                     role: Role::User,
-                    content: vec![
-                        MessageContent::String(String::from("Write me a sudoku-solver.")),
-                    ],
+                    content: vec![MessageContent::String(String::from(
+                        "Write me a sudoku-solver."
+                    )),],
                 },
             ],
         );
-        assert_eq!(
-            schema,
-            None,
-        );
+        assert_eq!(schema, None,);
     }
 
     #[test]
     fn media_content_test() {
         let Pdl { messages, schema } = parse_pdl(
-"
+            "
 <|user|>
 
 <|raw_media(png:HiMyNameIsBaehyunsol)|>
 ",
             &tera::Context::new(),
-            ".",  // there's no `<|media|>`
+            ".", // there's no `<|media|>`
             true,
             true,
-        ).unwrap();
+        )
+        .unwrap();
 
         assert_eq!(
             messages,
-            vec![
-                Message {
-                    role: Role::User,
-                    content: vec![
-                        MessageContent::Image {
-                            image_type: ImageType::Png,
-                            bytes: decode_base64("HiMyNameIsBaehyunsol").unwrap(),
-                        },
-                    ],
-                },
-            ],
+            vec![Message {
+                role: Role::User,
+                content: vec![MessageContent::Image {
+                    image_type: ImageType::Png,
+                    bytes: decode_base64("HiMyNameIsBaehyunsol").unwrap(),
+                },],
+            },],
         );
-        assert_eq!(
-            schema,
-            None,
-        );
+        assert_eq!(schema, None,);
     }
 }

@@ -2,38 +2,37 @@ use super::{HandleError, RawResponse, get_or, get_pool, handler};
 use crate::CONFIG;
 use crate::models::chunk::ChunkDetail;
 use crate::models::repo::{self, RepoOperation};
-use ragit::{
-    ChunkSource,
-    Index,
-    Keywords,
-    LoadMode,
-    TfidfResult,
-    UidQueryConfig,
-};
+use ragit::{ChunkSource, Index, Keywords, LoadMode, TfidfResult, UidQueryConfig};
 use ragit_fs::{join3, write_log};
 use std::collections::HashMap;
 use warp::reply::{Reply, json};
 
-pub async fn search(user: String, repo: String, query: HashMap<String, String>, api_key: Option<String>) -> Box<dyn Reply> {
+pub async fn search(
+    user: String,
+    repo: String,
+    query: HashMap<String, String>,
+    api_key: Option<String>,
+) -> Box<dyn Reply> {
     handler(search_(user, repo, query, api_key).await)
 }
 
-pub async fn search_(user: String, repo: String, query: HashMap<String, String>, api_key: Option<String>) -> RawResponse {
+pub async fn search_(
+    user: String,
+    repo: String,
+    query: HashMap<String, String>,
+    api_key: Option<String>,
+) -> RawResponse {
     let pool = get_pool().await;
     let repo_id = repo::get_id(&user, &repo, pool).await.handle_error(404)?;
-    repo::check_auth(repo_id, RepoOperation::Read, api_key, pool).await.handle_error(500)?.handle_error(404)?;
+    repo::check_auth(repo_id, RepoOperation::Read, api_key, pool)
+        .await
+        .handle_error(500)?
+        .handle_error(404)?;
     let config = CONFIG.get().handle_error(500)?;
-    let rag_path = join3(
-        &config.repo_data_dir,
-        &user,
-        &repo,
-    ).handle_error(400)?;
+    let rag_path = join3(&config.repo_data_dir, &user, &repo).handle_error(400)?;
     let index = Index::load(rag_path, LoadMode::OnlyJson).handle_error(404)?;
 
-    write_log(
-        "search",
-        &format!("search({user:?}, {repo:?}, {query:?})"),
-    );
+    write_log("search", &format!("search({user:?}, {repo:?}, {query:?})"));
 
     let limit = get_or(&query, "limit", 100);
     let offset = get_or(&query, "offset", 0);
@@ -44,7 +43,11 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
     // but doesn't search for paths that start with "foo/bar".
     // It makes sense because the paths are all normalized.
     let file = get_or(&query, "file", String::new());
-    let dir = if !file.ends_with("/") { format!("{file}/") } else { file.clone() };
+    let dir = if !file.ends_with("/") {
+        format!("{file}/")
+    } else {
+        file.clone()
+    };
 
     let uid_prefix = get_or(&query, "uid", String::new());
     let keywords = get_or(&query, "query", String::new());
@@ -61,7 +64,10 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
 
     let mut chunks = if uid_prefix != "" {
         let query_result = index
-            .uid_query(&[uid_prefix.to_string()], UidQueryConfig::new().chunk_only())
+            .uid_query(
+                &[uid_prefix.to_string()],
+                UidQueryConfig::new().chunk_only(),
+            )
             .handle_error(500)?
             .get_chunk_uids();
         let mut chunks = Vec::with_capacity(query_result.len());
@@ -71,18 +77,17 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
         }
 
         if file != "" {
-            chunks = chunks.into_iter().filter(
-                |chunk| match &chunk.source {
+            chunks = chunks
+                .into_iter()
+                .filter(|chunk| match &chunk.source {
                     ChunkSource::File { path, .. } => path == &file || path.starts_with(&dir),
                     _ => false,
-                }
-            ).collect();
+                })
+                .collect();
         }
 
         chunks
-    }
-
-    else if file != "" {
+    } else if file != "" {
         let chunk_uids = match index.processed_files.get(&file) {
             Some(uid) => index.get_chunks_of_file(*uid).handle_error(500)?,
             None => {
@@ -95,7 +100,7 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
                 }
 
                 chunk_uids
-            },
+            }
         };
         let mut chunks = Vec::with_capacity(chunk_uids.len());
 
@@ -104,14 +109,11 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
         }
 
         chunks
-    }
-
-    else if keywords != "" {
+    } else if keywords != "" {
         // TODO: impl `offset` parameter for `run_tfidf`
-        let result = index.run_tfidf(
-            tokenized_keywords.clone(),
-            limit + offset,
-        ).handle_error(500)?;
+        let result = index
+            .run_tfidf(tokenized_keywords.clone(), limit + offset)
+            .handle_error(500)?;
         has_to_search_by_keywords = false;
         has_to_sort_by_file = false;
         let mut chunks = Vec::with_capacity(limit.min(result.len()));
@@ -126,7 +128,6 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
         is_limit_applied = true;
         chunks
     }
-
     // No condition at all: sort all the chunks by `sortable_string`, and apply limit & offset
     // Simple hack: `sortable_string` sorts chunks by file name
     // TODO: what if a chunk is not from a file?
@@ -153,11 +154,13 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
     };
 
     if has_to_search_by_keywords {
-        let result = index.run_tfidf_on(
-            &chunks.iter().map(|chunk| chunk.uid).collect::<Vec<_>>(),
-            tokenized_keywords,
-            limit + offset,
-        ).handle_error(500)?;
+        let result = index
+            .run_tfidf_on(
+                &chunks.iter().map(|chunk| chunk.uid).collect::<Vec<_>>(),
+                tokenized_keywords,
+                limit + offset,
+            )
+            .handle_error(500)?;
         let mut chunks_ = Vec::with_capacity(limit.min(result.len()));
 
         for (i, TfidfResult { id: uid, score: _ }) in result.iter().enumerate() {
@@ -179,9 +182,7 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
     if !is_offset_applied {
         if offset >= chunks.len() {
             chunks = vec![];
-        }
-
-        else {
+        } else {
             chunks = chunks[offset..].to_vec();
         }
     }
@@ -190,6 +191,9 @@ pub async fn search_(user: String, repo: String, query: HashMap<String, String>,
         chunks = chunks[..limit].to_vec();
     }
 
-    let chunks = chunks.into_iter().map(|c| ChunkDetail::from(c)).collect::<Vec<_>>();
+    let chunks = chunks
+        .into_iter()
+        .map(|c| ChunkDetail::from(c))
+        .collect::<Vec<_>>();
     Ok(Box::new(json(&chunks)))
 }

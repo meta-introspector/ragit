@@ -1,19 +1,12 @@
 #![recursion_limit = "256"]
 
+use ragit_fs::{WriteMode, exists, initialize_log, remove_dir_all, write_log, write_string};
 use ragit_server::CONFIG;
 use ragit_server::cli::{CliCommand, RunArgs, parse_cli_args};
 use ragit_server::config::Config;
 use ragit_server::methods::*;
 use ragit_server::models::ai_model::initialize_ai_models;
 use ragit_server::utils::fetch_form_data;
-use ragit_fs::{
-    WriteMode,
-    exists,
-    initialize_log,
-    remove_dir_all,
-    write_log,
-    write_string,
-};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::io::Write;
@@ -27,8 +20,7 @@ async fn main() {
     let args = match parse_cli_args(std::env::args().collect::<Vec<_>>()) {
         Ok(command) => match command {
             CliCommand::Run(args) => args,
-            CliCommand::DropAll(ref args)
-            | CliCommand::TruncateAll(ref args) => {
+            CliCommand::DropAll(ref args) | CliCommand::TruncateAll(ref args) => {
                 if !args.force {
                     println!("Are you sure?");
                     print!(">>> ");
@@ -46,7 +38,7 @@ async fn main() {
                     None => {
                         let config = Config::default();
                         config.repo_data_dir
-                    },
+                    }
                 };
 
                 if exists(&repo_data_dir) {
@@ -60,12 +52,12 @@ async fn main() {
                 }
 
                 return;
-            },
+            }
         },
         Err(e) => {
             eprintln!("{e:?}");
             std::process::exit(1);
-        },
+        }
     };
     initinalize_server(&args).await;
     let config = CONFIG.get().unwrap();
@@ -370,12 +362,21 @@ async fn main() {
         .and(warp::path::end())
         .and(warp::multipart::form())
         .and(warp::header::optional::<String>("x-api-key"))
-        .then(async |user: String, repo: String, chat_id: String, form: FormData, api_key: Option<String>| {
-            match fetch_form_data(form).await.handle_error(400) {
-                Ok(form) => post_chat(user, repo, chat_id, form, api_key).await,
-                Err((code, _)) => Box::new(with_status(String::new(), StatusCode::from_u16(code).unwrap())),
-            }
-        });
+        .then(
+            async |user: String,
+                   repo: String,
+                   chat_id: String,
+                   form: FormData,
+                   api_key: Option<String>| {
+                match fetch_form_data(form).await.handle_error(400) {
+                    Ok(form) => post_chat(user, repo, chat_id, form, api_key).await,
+                    Err((code, _)) => Box::new(with_status(
+                        String::new(),
+                        StatusCode::from_u16(code).unwrap(),
+                    )),
+                }
+            },
+        );
 
     // TODO: I want ragit-server to accept multipart requests and urlencoded requests. The problem is that
     //       `warp::body::form::<HashMap<String, String>>` can catch `application/x-www-form-urlencoded`,
@@ -388,15 +389,24 @@ async fn main() {
         .and(warp::path::end())
         .and(warp::body::form::<HashMap<String, String>>())
         .and(warp::header::optional::<String>("x-api-key"))
-        .then(async |user: String, repo: String, chat_id: String, form: HashMap<String, String>, api_key: Option<String>| {
-            post_chat(
-                user,
-                repo,
-                chat_id,
-                form.into_iter().map(|(key, value)| (key, value.as_bytes().to_vec())).collect(),
-                api_key,
-            ).await
-        });
+        .then(
+            async |user: String,
+                   repo: String,
+                   chat_id: String,
+                   form: HashMap<String, String>,
+                   api_key: Option<String>| {
+                post_chat(
+                    user,
+                    repo,
+                    chat_id,
+                    form.into_iter()
+                        .map(|(key, value)| (key, value.as_bytes().to_vec()))
+                        .collect(),
+                    api_key,
+                )
+                .await
+            },
+        );
 
     let post_chat_handler_json_form = warp::post()
         .and(warp::path::param::<String>())
@@ -406,18 +416,32 @@ async fn main() {
         .and(warp::path::end())
         .and(warp::body::json::<Value>())
         .and(warp::header::optional::<String>("x-api-key"))
-        .then(async |user: String, repo: String, chat_id: String, form: Value, api_key: Option<String>| {
-            match serde_json::from_value::<HashMap<String, String>>(form).handle_error(400) {
-                Ok(form) => post_chat(
-                    user,
-                    repo,
-                    chat_id,
-                    form.into_iter().map(|(key, value)| (key, value.as_bytes().to_vec())).collect(),
-                    api_key,
-                ).await,
-                Err((code, _)) => Box::new(with_status(String::new(), StatusCode::from_u16(code).unwrap())),
-            }
-        });
+        .then(
+            async |user: String,
+                   repo: String,
+                   chat_id: String,
+                   form: Value,
+                   api_key: Option<String>| {
+                match serde_json::from_value::<HashMap<String, String>>(form).handle_error(400) {
+                    Ok(form) => {
+                        post_chat(
+                            user,
+                            repo,
+                            chat_id,
+                            form.into_iter()
+                                .map(|(key, value)| (key, value.as_bytes().to_vec()))
+                                .collect(),
+                            api_key,
+                        )
+                        .await
+                    }
+                    Err((code, _)) => Box::new(with_status(
+                        String::new(),
+                        StatusCode::from_u16(code).unwrap(),
+                    )),
+                }
+            },
+        );
 
     let get_traffic_handler = warp::get()
         .and(warp::path::param::<String>())
@@ -472,9 +496,7 @@ async fn main() {
         .and(warp::header::optional::<String>("x-api-key"))
         .then(put_ai_model_list);
 
-    let get_health_handler = warp::get()
-        .and(warp::path("health"))
-        .map(get_health);
+    let get_health_handler = warp::get().and(warp::path("health")).map(get_health);
 
     let not_found_handler = warp::get().map(not_found);
 
@@ -526,31 +548,35 @@ async fn main() {
             .or(put_ai_model_list_handler)
             .or(get_health_handler)
             .or(not_found_handler)
-            .with(warp::log::custom(
-                |info| {
-                    let headers = info.request_headers();
+            .with(warp::log::custom(|info| {
+                let headers = info.request_headers();
 
-                    write_log(
-                        &info.remote_addr().map(
-                            |remote_addr| remote_addr.to_string()
-                        ).unwrap_or_else(|| String::from("NO REMOTE ADDR")),
-                        &format!(
-                            "{:4} {:16} {:4} {headers:?}",
-                            info.method().as_str(),
-                            info.path(),
-                            info.status().as_u16(),
-                        ),
-                    );
-                }
-            ))
-    ).run(([0, 0, 0, 0], args.port_number.unwrap_or(config.port_number))).await;
+                write_log(
+                    &info
+                        .remote_addr()
+                        .map(|remote_addr| remote_addr.to_string())
+                        .unwrap_or_else(|| String::from("NO REMOTE ADDR")),
+                    &format!(
+                        "{:4} {:16} {:4} {headers:?}",
+                        info.method().as_str(),
+                        info.path(),
+                        info.status().as_u16(),
+                    ),
+                );
+            })),
+    )
+    .run(([0, 0, 0, 0], args.port_number.unwrap_or(config.port_number)))
+    .await;
 }
 
 // It sets global value `crate::CONFIG` and initialize ai models (if needed).
 async fn initinalize_server(args: &RunArgs) {
     let pool = get_pool().await;
     sqlx::migrate!().run(pool).await.unwrap();
-    let config_file = args.config_file.clone().unwrap_or(String::from("./config.json"));
+    let config_file = args
+        .config_file
+        .clone()
+        .unwrap_or(String::from("./config.json"));
 
     if !exists(&config_file) {
         if args.force_default_config {
@@ -559,11 +585,12 @@ async fn initinalize_server(args: &RunArgs) {
                 &config_file,
                 &serde_json::to_string(&config).unwrap(),
                 WriteMode::CreateOrTruncate,
-            ).unwrap();
-        }
-
-        else {
-            println!("Config file `{config_file}` does not exist. Would you like to create a new one?");
+            )
+            .unwrap();
+        } else {
+            println!(
+                "Config file `{config_file}` does not exist. Would you like to create a new one?"
+            );
             println!("");
             println!("1) Create a default config file at `{config_file}`.");
             println!("2) Let me use a GUI to create a config file.");
@@ -582,14 +609,15 @@ async fn initinalize_server(args: &RunArgs) {
                             &config_file,
                             &serde_json::to_string(&config).unwrap(),
                             WriteMode::CreateOrTruncate,
-                        ).unwrap();
-                    },
+                        )
+                        .unwrap();
+                    }
                     Some("2") => todo!(),
                     Some("3") => todo!(),
                     _ => {
                         println!("Just say 1, 2 or 3.");
                         continue;
-                    },
+                    }
                 }
 
                 break;
@@ -606,9 +634,10 @@ async fn initinalize_server(args: &RunArgs) {
         initialize_log(
             config.log_file.clone(),
             args.verbose || config.dump_log_to_stdout,
-            false,    // dump_to_stderr
-            true,     // keep_previous_file
-        ).unwrap();
+            false, // dump_to_stderr
+            true,  // keep_previous_file
+        )
+        .unwrap();
     }
 
     if exists(&config.push_session_dir) {

@@ -78,7 +78,7 @@ pub const 종성S: [u16; 27] = [
 
 lazy_static! {
     pub static ref 초성_REV: Vec<u16> = {
-        let mut r = vec![0;30];
+        let mut r = vec![0; 30];
 
         for (ind, c) in 초성S.iter().enumerate() {
             r[*c as usize - 'ㄱ' as usize] = ind as u16;
@@ -86,9 +86,8 @@ lazy_static! {
 
         r
     };
-
     pub static ref 중성_REV: Vec<u16> = {
-        let mut r = vec![0;30];
+        let mut r = vec![0; 30];
 
         for (ind, c) in 중성S.iter().enumerate() {
             r[*c as usize - 'ㅏ' as usize] = ind as u16;
@@ -96,9 +95,8 @@ lazy_static! {
 
         r
     };
-
     pub static ref 종성_REV: Vec<u16> = {
-        let mut r = vec![0;30];
+        let mut r = vec![0; 30];
 
         for (ind, c) in 종성S.iter().enumerate() {
             r[*c as usize - 'ㄱ' as usize] = ind as u16;

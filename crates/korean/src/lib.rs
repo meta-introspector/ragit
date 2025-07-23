@@ -16,8 +16,8 @@ use crate::term_kind::{TermKind, get_term_kind};
 
 mod fsm;
 pub mod generator;
-mod jamo;
 mod hangul;
+mod jamo;
 mod term_kind;
 
 #[cfg(test)]

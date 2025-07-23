@@ -1,8 +1,8 @@
+use super::{BuildConfig, IIStatus};
+use crate::index::index_struct::Index;
+use crate::{api_config::ApiConfig, query::config::QueryConfig};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use super::{BuildConfig, IIStatus};
-use crate::{api_config::ApiConfig, query::config::QueryConfig};
-use crate::index::index_struct::Index;
 
 impl Index {
     pub fn dummy() -> Self {

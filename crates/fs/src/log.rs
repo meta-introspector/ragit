@@ -1,13 +1,7 @@
-use crate::{
-    FileError,
-    WriteMode,
-    file_size,
-    rename,
-    write_string,
-};
+use crate::exists_str;
+use crate::{FileError, WriteMode, file_size, rename, write_string};
 use chrono::Local;
 use std::sync::OnceLock;
-use crate::exists_str;
 static LOG_FILE_PATH: OnceLock<Option<String>> = OnceLock::new();
 static DUMP_TO_STDOUT: OnceLock<bool> = OnceLock::new();
 static DUMP_TO_STDERR: OnceLock<bool> = OnceLock::new();
@@ -55,7 +49,8 @@ pub fn write_log(owner: &str, msg: &str) {
 
     if let Some(path) = path {
         if let Ok(size) = file_size(&path) {
-            if size > (1 << 20) {  // at most 1 MiB per log file
+            if size > (1 << 20) {
+                // at most 1 MiB per log file
                 let dst = format!("{path}-{}", Local::now().to_rfc3339().get(0..19).unwrap());
 
                 if let Err(e) = rename(&path, &dst) {
@@ -63,16 +58,14 @@ pub fn write_log(owner: &str, msg: &str) {
                 }
 
                 if let Err(e) = write_string(&path, "", WriteMode::Atomic) {
-                    eprintln!("error at `write_string({path:?}, \"\", WriteMode::Atomic)` at `write_log(...)`: {e:?}");
+                    eprintln!(
+                        "error at `write_string({path:?}, \"\", WriteMode::Atomic)` at `write_log(...)`: {e:?}"
+                    );
                 }
             }
         }
 
-        if let Err(e) = write_string(
-            &path,
-            &message,
-            WriteMode::AlwaysAppend,
-        ) {
+        if let Err(e) = write_string(&path, &message, WriteMode::AlwaysAppend) {
             eprintln!("error at `write_string({path:?}, ..)` at `write_log(...)`: {e:?}");
         }
     }

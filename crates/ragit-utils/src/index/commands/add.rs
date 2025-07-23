@@ -1,6 +1,11 @@
 use std::fmt::Formatter;
 #[derive(PartialEq, Clone, Debug)]
-pub enum AddMode { Auto, Manual, Reject, } pub struct AddResult;
+pub enum AddMode {
+    Auto,
+    Manual,
+    Reject,
+}
+pub struct AddResult;
 
 impl AddMode {
     pub fn parse_flag(flag: &str) -> Option<Self> {

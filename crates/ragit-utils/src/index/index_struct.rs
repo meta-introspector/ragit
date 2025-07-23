@@ -1,21 +1,18 @@
-use ragit_uid::Uid;
-use std::path::PathBuf;
 use crate::api_config::ApiConfig;
 use crate::error::Error;
-use crate::query::QueryConfig;
 use crate::prelude::*;
+use crate::query::QueryConfig;
 use ragit_api::Model;
+use ragit_uid::Uid;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
+use std::path::PathBuf;
 
 pub use super::config::BuildConfig;
 pub use super::ii::IIStatus;
 
 use crate::index::commands::summary::{Summary, SummaryMode};
 use crate::index::commands::version::VersionInfo;
-
-
 
 /// This is a knowledge-base itself. I am trying my best to define a method
 /// for each command.
@@ -110,28 +107,68 @@ impl Index {
         Ok(vec![])
     }
 
-    pub async fn merge(&mut self, base: String, prefix: Option<String>, merge_mode: crate::index::commands::merge::MergeMode, quiet: bool, dry_run: bool) -> Result<(), Error> {
-        eprintln!("Placeholder for merge: base={}, prefix={:?}, merge_mode={:?}, quiet={}, dry_run={}", base, prefix, merge_mode, quiet, dry_run);
+    pub async fn merge(
+        &mut self,
+        base: String,
+        prefix: Option<String>,
+        merge_mode: crate::index::commands::merge::MergeMode,
+        quiet: bool,
+        dry_run: bool,
+    ) -> Result<(), Error> {
+        eprintln!(
+            "Placeholder for merge: base={}, prefix={:?}, merge_mode={:?}, quiet={}, dry_run={}",
+            base, prefix, merge_mode, quiet, dry_run
+        );
         Ok(())
     }
 
-    pub async fn search_remote_models(keyword: &str, remote: &str) -> Result<Vec<ragit_api::Model>, Error> {
-        eprintln!("Placeholder for search_remote_models: keyword={}, remote={}", keyword, remote);
+    pub async fn search_remote_models(
+        keyword: &str,
+        remote: &str,
+    ) -> Result<Vec<ragit_api::Model>, Error> {
+        eprintln!(
+            "Placeholder for search_remote_models: keyword={}, remote={}",
+            keyword, remote
+        );
         Ok(vec![])
     }
 
-    pub async fn fetch_remote_models(&mut self, model_name: &str, existing_only: bool, remote: &str) -> Result<ragit_api::FetchResult, Error> {
-        eprintln!("Placeholder for fetch_remote_models: model_name={}, existing_only={}, remote={}", model_name, existing_only, remote);
-        Ok(ragit_api::FetchResult { fetched: 0, updated: 0 })
+    pub async fn fetch_remote_models(
+        &mut self,
+        model_name: &str,
+        existing_only: bool,
+        remote: &str,
+    ) -> Result<ragit_api::FetchResult, Error> {
+        eprintln!(
+            "Placeholder for fetch_remote_models: model_name={}, existing_only={}, remote={}",
+            model_name, existing_only, remote
+        );
+        Ok(ragit_api::FetchResult {
+            fetched: 0,
+            updated: 0,
+        })
     }
 
-    pub async fn fetch_all_remote_models(&mut self, existing_only: bool, remote: &str) -> Result<ragit_api::FetchResult, Error> {
-        eprintln!("Placeholder for fetch_all_remote_models: existing_only={}, remote={}", existing_only, remote);
-        Ok(ragit_api::FetchResult { fetched: 0, updated: 0 })
+    pub async fn fetch_all_remote_models(
+        &mut self,
+        existing_only: bool,
+        remote: &str,
+    ) -> Result<ragit_api::FetchResult, Error> {
+        eprintln!(
+            "Placeholder for fetch_all_remote_models: existing_only={}, remote={}",
+            existing_only, remote
+        );
+        Ok(ragit_api::FetchResult {
+            fetched: 0,
+            updated: 0,
+        })
     }
 
     pub fn remove_local_model(&mut self, model_name: &str) -> Result<(), Error> {
-        eprintln!("Placeholder for remove_local_model: model_name={}", model_name);
+        eprintln!(
+            "Placeholder for remove_local_model: model_name={}",
+            model_name
+        );
         Ok(())
     }
 
@@ -164,8 +201,15 @@ impl Index {
         Ok(None)
     }
 
-    pub fn set_config_by_key(&mut self, key: String, value: String) -> Result<Option<String>, Error> {
-        eprintln!("Placeholder for set_config_by_key: key={}, value={}", key, value);
+    pub fn set_config_by_key(
+        &mut self,
+        key: String,
+        value: String,
+    ) -> Result<Option<String>, Error> {
+        eprintln!(
+            "Placeholder for set_config_by_key: key={}, value={}",
+            key, value
+        );
         Ok(None)
     }
 
@@ -184,12 +228,28 @@ impl Index {
         Ok("Placeholder status".to_string())
     }
 
-    pub fn remove_files(&mut self, query: &[String], dry_run: bool, recursive: bool, auto: bool, staged: bool, processed: bool) -> Result<crate::index::commands::remove::RemoveResult, Error> {
+    pub fn remove_files(
+        &mut self,
+        query: &[String],
+        dry_run: bool,
+        recursive: bool,
+        auto: bool,
+        staged: bool,
+        processed: bool,
+    ) -> Result<crate::index::commands::remove::RemoveResult, Error> {
         eprintln!("Placeholder for remove_files: query={:?}, dry_run={}, recursive={}, auto={}, staged={}, processed={}", query, dry_run, recursive, auto, staged, processed);
-        Ok(crate::index::commands::remove::RemoveResult { removed_files: 0, removed_chunks: 0 })
+        Ok(crate::index::commands::remove::RemoveResult {
+            removed_files: 0,
+            removed_chunks: 0,
+        })
     }
 
-    pub fn list_files<F, M, S>(&self, filter: &F, map: &M, sort: &S) -> Result<Vec<ragit_types::FileSchema>, Error>
+    pub fn list_files<F, M, S>(
+        &self,
+        filter: &F,
+        map: &M,
+        sort: &S,
+    ) -> Result<Vec<ragit_types::FileSchema>, Error>
     where
         F: Fn(&ragit_types::FileSchema) -> bool,
         M: Fn(&ragit_types::FileSchema) -> ragit_types::FileSchema,
@@ -199,7 +259,12 @@ impl Index {
         Ok(vec![])
     }
 
-    pub fn list_chunks<F, M, S>(&self, filter: &F, map: &M, sort: &S) -> Result<Vec<ragit_types::ChunkSchema>, Error>
+    pub fn list_chunks<F, M, S>(
+        &self,
+        filter: &F,
+        map: &M,
+        sort: &S,
+    ) -> Result<Vec<ragit_types::ChunkSchema>, Error>
     where
         F: Fn(&ragit_types::ChunkSchema) -> bool,
         M: Fn(&ragit_types::ChunkSchema) -> ragit_types::ChunkSchema,
@@ -209,7 +274,12 @@ impl Index {
         Ok(vec![])
     }
 
-    pub fn list_images<F, M, S>(&self, filter: &F, map: &M, sort: &S) -> Result<Vec<ragit_types::ImageSchema>, Error>
+    pub fn list_images<F, M, S>(
+        &self,
+        filter: &F,
+        map: &M,
+        sort: &S,
+    ) -> Result<Vec<ragit_types::ImageSchema>, Error>
     where
         F: Fn(&ragit_types::ImageSchema) -> bool,
         M: Fn(&ragit_types::ImageSchema) -> ragit_types::ImageSchema,
@@ -219,14 +289,32 @@ impl Index {
         Ok(vec![])
     }
 
-    pub fn get_image_schema(&self, image_uid: Uid, with_bytes: bool) -> Result<ragit_types::ImageSchema, Error> {
-        eprintln!("Placeholder for get_image_schema: image_uid={}, with_bytes={}", image_uid, with_bytes);
-        Err(Error::Internal("Placeholder for get_image_schema".to_string()))
+    pub fn get_image_schema(
+        &self,
+        image_uid: Uid,
+        with_bytes: bool,
+    ) -> Result<ragit_types::ImageSchema, Error> {
+        eprintln!(
+            "Placeholder for get_image_schema: image_uid={}, with_bytes={}",
+            image_uid, with_bytes
+        );
+        Err(Error::Internal(
+            "Placeholder for get_image_schema".to_string(),
+        ))
     }
 
-    pub fn get_file_schema(&self, path: Option<PathBuf>, uid: Option<Uid>) -> Result<ragit_types::FileSchema, Error> {
-        eprintln!("Placeholder for get_file_schema: path={:?}, uid={:?}", path, uid);
-        Err(Error::Internal("Placeholder for get_file_schema".to_string()))
+    pub fn get_file_schema(
+        &self,
+        path: Option<PathBuf>,
+        uid: Option<Uid>,
+    ) -> Result<ragit_types::FileSchema, Error> {
+        eprintln!(
+            "Placeholder for get_file_schema: path={:?}, uid={:?}",
+            path, uid
+        );
+        Err(Error::Internal(
+            "Placeholder for get_file_schema".to_string(),
+        ))
     }
 
     pub fn get_chunks_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
@@ -239,34 +327,76 @@ impl Index {
         Ok(vec![])
     }
 
-    pub fn get_tfidf_by_file_uid(&self, file_uid: Uid) -> Result<crate::index::ProcessedDoc, Error> {
-        eprintln!("Placeholder for get_tfidf_by_file_uid: file_uid={}", file_uid);
-        Err(Error::Internal("Placeholder for get_tfidf_by_file_uid".to_string()))
+    pub fn get_tfidf_by_file_uid(
+        &self,
+        file_uid: Uid,
+    ) -> Result<crate::index::ProcessedDoc, Error> {
+        eprintln!(
+            "Placeholder for get_tfidf_by_file_uid: file_uid={}",
+            file_uid
+        );
+        Err(Error::Internal(
+            "Placeholder for get_tfidf_by_file_uid".to_string(),
+        ))
     }
 
-    pub fn get_tfidf_by_chunk_uid(&self, chunk_uid: Uid) -> Result<crate::index::ProcessedDoc, Error> {
-        eprintln!("Placeholder for get_tfidf_by_chunk_uid: chunk_uid={}", chunk_uid);
-        Err(Error::Internal("Placeholder for get_tfidf_by_chunk_uid".to_string()))
+    pub fn get_tfidf_by_chunk_uid(
+        &self,
+        chunk_uid: Uid,
+    ) -> Result<crate::index::ProcessedDoc, Error> {
+        eprintln!(
+            "Placeholder for get_tfidf_by_chunk_uid: chunk_uid={}",
+            chunk_uid
+        );
+        Err(Error::Internal(
+            "Placeholder for get_tfidf_by_chunk_uid".to_string(),
+        ))
     }
 
     pub fn get_chunk_by_uid(&self, chunk_uid: Uid) -> Result<crate::chunk::Chunk, Error> {
         eprintln!("Placeholder for get_chunk_by_uid: chunk_uid={}", chunk_uid);
-        Err(Error::Internal("Placeholder for get_chunk_by_uid".to_string()))
+        Err(Error::Internal(
+            "Placeholder for get_chunk_by_uid".to_string(),
+        ))
     }
 
-    pub fn get_merged_chunk_of_file(&self, file_uid: Uid) -> Result<crate::chunk::RenderedChunk, Error> {
-        eprintln!("Placeholder for get_merged_chunk_of_file: file_uid={}", file_uid);
-        Err(Error::Internal("Placeholder for get_merged_chunk_of_file".to_string()))
+    pub fn get_merged_chunk_of_file(
+        &self,
+        file_uid: Uid,
+    ) -> Result<crate::chunk::RenderedChunk, Error> {
+        eprintln!(
+            "Placeholder for get_merged_chunk_of_file: file_uid={}",
+            file_uid
+        );
+        Err(Error::Internal(
+            "Placeholder for get_merged_chunk_of_file".to_string(),
+        ))
     }
 
     pub fn read_ignore_file_command(&self, root_dir: &str) -> Result<ragit_types::Ignore, Error> {
-        eprintln!("Placeholder for read_ignore_file_command: root_dir={}", root_dir);
-        Err(Error::Internal("Placeholder for read_ignore_file_command".to_string()))
+        eprintln!(
+            "Placeholder for read_ignore_file_command: root_dir={}",
+            root_dir
+        );
+        Err(Error::Internal(
+            "Placeholder for read_ignore_file_command".to_string(),
+        ))
     }
 
-    pub async fn add_files_command(&mut self, files: &[String], add_mode: Option<crate::index::commands::add::AddMode>, dry_run: bool) -> Result<crate::index::commands::add::AddResult, Error> {
-        eprintln!("Placeholder for add_files_command: files={:?}, add_mode={:?}, dry_run={}", files, add_mode, dry_run);
-        Ok(crate::index::commands::add::AddResult { added_files: 0, added_chunks: 0 })
+    pub async fn add_files_command(
+        &mut self,
+        files: &[String],
+        add_mode: Option<crate::index::commands::add::AddMode>,
+        dry_run: bool,
+    ) -> Result<crate::index::commands::add::AddResult, Error> {
+        eprintln!(
+            "Placeholder for add_files_command: files={:?}, add_mode={:?}, dry_run={}",
+            files, add_mode, dry_run
+        );
+        Ok(crate::index::commands::add::AddResult {
+            added_files: 0,
+            added_chunks: 0,
+        })
     }
 
     pub fn get_initial_models() -> Result<Vec<ragit_api::ModelRaw>, Error> {
@@ -274,8 +404,13 @@ impl Index {
         Ok(vec![])
     }
 
-    pub fn load_config_from_home<T: serde::de::DeserializeOwned>(file_name: &str) -> Result<Option<T>, Error> {
-        eprintln!("Placeholder for load_config_from_home: file_name={}", file_name);
+    pub fn load_config_from_home<T: serde::de::DeserializeOwned>(
+        file_name: &str,
+    ) -> Result<Option<T>, Error> {
+        eprintln!(
+            "Placeholder for load_config_from_home: file_name={}",
+            file_name
+        );
         Ok(None)
     }
 
@@ -284,17 +419,36 @@ impl Index {
         Ok(vec![])
     }
 
-    pub fn set_config_by_key(&mut self, key: String, value: String) -> Result<Option<String>, Error> {
-        eprintln!("Placeholder for set_config_by_key: key={}, value={}", key, value);
+    pub fn set_config_by_key(
+        &mut self,
+        key: String,
+        value: String,
+    ) -> Result<Option<String>, Error> {
+        eprintln!(
+            "Placeholder for set_config_by_key: key={}, value={}",
+            key, value
+        );
         Ok(None)
     }
 
-    pub async fn pull(&mut self, include_configs: bool, include_prompts: bool, quiet: bool) -> Result<crate::index::commands::pull::PullResult, Error> {
-        eprintln!("Placeholder for pull: include_configs={}, include_prompts={}, quiet={}", include_configs, include_prompts, quiet);
+    pub async fn pull(
+        &mut self,
+        include_configs: bool,
+        include_prompts: bool,
+        quiet: bool,
+    ) -> Result<crate::index::commands::pull::PullResult, Error> {
+        eprintln!(
+            "Placeholder for pull: include_configs={}, include_prompts={}, quiet={}",
+            include_configs, include_prompts, quiet
+        );
         Ok(crate::index::commands::pull::PullResult::AlreadyUpToDate)
     }
 
-    pub async fn push(&mut self, remote: String, quiet: bool) -> Result<crate::index::commands::push::PushResult, Error> {
+    pub async fn push(
+        &mut self,
+        remote: String,
+        quiet: bool,
+    ) -> Result<crate::index::commands::push::PushResult, Error> {
         eprintln!("Placeholder for push: remote={}, quiet={}", remote, quiet);
         Ok(crate::index::commands::push::PushResult::AlreadyUpToDate)
     }

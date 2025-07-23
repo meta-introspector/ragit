@@ -1,14 +1,10 @@
 use super::auth::hash_password;
-use chrono::{DateTime, Utc};
-use chrono::serde::ts_milliseconds;
 use crate::error::Error;
 use crate::utils::{get_rag_path, trim_long_string};
+use chrono::serde::ts_milliseconds;
+use chrono::{DateTime, Utc};
 use ragit_api::ModelRaw;
-use ragit_fs::{
-    WriteMode,
-    join,
-    write_string,
-};
+use ragit_fs::{WriteMode, join, write_string};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPool;
 use std::collections::HashMap;
@@ -144,14 +140,16 @@ pub async fn upsert_and_return_id(model: &AiModelCreation, pool: &PgPool) -> Res
         &model.name,
         &model.api_name,
         &model.api_provider,
-        model.api_url.as_ref().map(|s| s.as_str()),  // `Option<&str>` works, but `&Option<String>` does not... why?
+        model.api_url.as_ref().map(|s| s.as_str()), // `Option<&str>` works, but `&Option<String>` does not... why?
         model.can_read_images,
         model.input_price,
         model.output_price,
         model.explanation.as_ref().map(|s| s.as_str()),
         model.api_env_var.as_ref().map(|s| s.as_str()),
         &model.tags.clone(),
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
 
     Ok(model_id)
 }
@@ -196,7 +194,9 @@ pub async fn get_list(
                     LIMIT 50
                     OFFSET $1",
                     inner_offset,
-                ).fetch_all(pool).await?;
+                )
+                .fetch_all(pool)
+                .await?;
                 inner_offset += 50;
 
                 if models.is_empty() {
@@ -206,26 +206,33 @@ pub async fn get_list(
                 // It does roundtrips to `ragit_api::ModelRaw` and `ragit_api::Model`
                 // because I want to use `ragit_api::get_model_by_name` so that the api behaves
                 // exactly the same as `rag ls-models`.
-                let model_by_name = models.iter().map(|model| (model.name.clone(), model.clone())).collect::<HashMap<_, _>>();
-                let ra_models = models.iter().filter_map(
-                    |model| match tags.len() {
-                        0 => {
-                            ragit_api::Model::try_from(&ragit_api::ModelRaw::from(model)).ok()
-                        },
-                        _ => if tags.iter().all(|tag| model.tags.contains(tag)) {
-                            ragit_api::Model::try_from(&ragit_api::ModelRaw::from(model)).ok()
-                        } else {
-                            None
-                        },
-                    }
-                ).collect::<Vec<_>>();
+                let model_by_name = models
+                    .iter()
+                    .map(|model| (model.name.clone(), model.clone()))
+                    .collect::<HashMap<_, _>>();
+                let ra_models = models
+                    .iter()
+                    .filter_map(|model| match tags.len() {
+                        0 => ragit_api::Model::try_from(&ragit_api::ModelRaw::from(model)).ok(),
+                        _ => {
+                            if tags.iter().all(|tag| model.tags.contains(tag)) {
+                                ragit_api::Model::try_from(&ragit_api::ModelRaw::from(model)).ok()
+                            } else {
+                                None
+                            }
+                        }
+                    })
+                    .collect::<Vec<_>>();
                 let model_names = match ragit_api::get_model_by_name(&ra_models, name) {
                     Ok(model) => vec![model.name.clone()],
                     Err(ragit_api::Error::InvalidModelName { candidates, .. }) => candidates,
                     _ => vec![],
                 };
 
-                models = model_names.iter().map(|name| model_by_name.get(name).unwrap().clone()).collect();
+                models = model_names
+                    .iter()
+                    .map(|name| model_by_name.get(name).unwrap().clone())
+                    .collect();
                 result.append(&mut models);
 
                 if result.len() > limit + offset {
@@ -239,14 +246,12 @@ pub async fn get_list(
                 if result.len() > limit {
                     result = result[..limit].to_vec();
                 }
-            }
-
-            else {
+            } else {
                 result = vec![];
             }
 
             Ok(result)
-        },
+        }
         (None, 0) => {
             let models = crate::query_as!(
                 AiModel,
@@ -270,10 +275,12 @@ pub async fn get_list(
                 OFFSET $2",
                 limit,
                 offset,
-            ).fetch_all(pool).await?;
+            )
+            .fetch_all(pool)
+            .await?;
 
             Ok(models)
-        },
+        }
         (None, _) => {
             let mut models = crate::query_as!(
                 AiModel,
@@ -299,17 +306,20 @@ pub async fn get_list(
                 &tags[0],
                 limit,
                 offset,
-            ).fetch_all(pool).await?;
+            )
+            .fetch_all(pool)
+            .await?;
 
             // TODO: how do I query multiple tags against multiple tags using SQL?
             if tags.len() > 1 {
-                models = models.into_iter().filter(
-                    |model| tags.iter().all(|tag| model.tags.contains(tag))
-                ).collect();
+                models = models
+                    .into_iter()
+                    .filter(|model| tags.iter().all(|tag| model.tags.contains(tag)))
+                    .collect();
             }
 
             Ok(models)
-        },
+        }
     }
 }
 
@@ -331,7 +341,9 @@ pub async fn get_list_by_user_id(user: &str, pool: &PgPool) -> Result<Vec<UserAi
         FROM user_ai_model JOIN ai_model ON user_ai_model.ai_model_id = ai_model.id
         WHERE user_ai_model.user_ = $1",
         user,
-    ).fetch_all(pool).await?;
+    )
+    .fetch_all(pool)
+    .await?;
     let mut result = Vec::with_capacity(rows.len());
 
     for row in rows.iter() {
@@ -359,11 +371,7 @@ pub async fn get_list_by_user_id(user: &str, pool: &PgPool) -> Result<Vec<UserAi
 //       includes `api_key` field. But the user can never know the api key
 //       because `GET /user-list/{user}/ai-model-list` only returns a preview
 //       of the api key.
-pub async fn register(
-    user: &str,
-    update: &UserAiModelUpdate,
-    pool: &PgPool,
-) -> Result<(), Error> {
+pub async fn register(user: &str, update: &UserAiModelUpdate, pool: &PgPool) -> Result<(), Error> {
     crate::query!(
         "INSERT
         INTO user_ai_model (user_, ai_model_id, api_key, default_model, added_at)
@@ -374,7 +382,9 @@ pub async fn register(
         &update.model_id,
         update.api_key.as_ref().map(|s| s.as_str()),
         update.default_model,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     Ok(())
 }
 
@@ -384,11 +394,18 @@ pub async fn get_default_model_name(user: &str, pool: &PgPool) -> Result<String,
         FROM ai_model JOIN user_ai_model ON ai_model.id = user_ai_model.ai_model_id
         WHERE user_ai_model.default_model = TRUE AND user_ai_model.user_ = $1",
         user,
-    ).fetch_one(pool).await?.name;
+    )
+    .fetch_one(pool)
+    .await?
+    .name;
     Ok(name)
 }
 
-pub async fn get_model_schema(user: &str, model_name: &str, pool: &PgPool) -> Result<ModelRaw, Error> {
+pub async fn get_model_schema(
+    user: &str,
+    model_name: &str,
+    pool: &PgPool,
+) -> Result<ModelRaw, Error> {
     let row = crate::query!(
         "SELECT
             ai_model.name,
@@ -405,7 +422,9 @@ pub async fn get_model_schema(user: &str, model_name: &str, pool: &PgPool) -> Re
         WHERE user_ai_model.user_ = $1 AND ai_model.name = $2",
         user,
         model_name,
-    ).fetch_one(pool).await?;
+    )
+    .fetch_one(pool)
+    .await?;
 
     Ok(ModelRaw {
         name: row.name.clone(),
@@ -424,7 +443,12 @@ pub async fn get_model_schema(user: &str, model_name: &str, pool: &PgPool) -> Re
     })
 }
 
-pub async fn update_api_key(user: &str, model: &str, api_key: Option<String>, pool: &PgPool) -> Result<(), Error> {
+pub async fn update_api_key(
+    user: &str,
+    model: &str,
+    api_key: Option<String>,
+    pool: &PgPool,
+) -> Result<(), Error> {
     // I'm querying twice because
     //    1. I don't know how to use JOIN with an UPDATE clause.
     //    2. `fetch_one` makes sure that a row exists
@@ -434,13 +458,18 @@ pub async fn update_api_key(user: &str, model: &str, api_key: Option<String>, po
         WHERE user_ai_model.user_ = $1 AND ai_model.name = $2",
         user,
         model,
-    ).fetch_one(pool).await?.id;
+    )
+    .fetch_one(pool)
+    .await?
+    .id;
     crate::query!(
         "UPDATE user_ai_model SET api_key = $1 WHERE user_ = $2 AND ai_model_id = $3",
         api_key.as_ref().map(|s| s.as_str()),
         user,
         model_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
 
     Ok(())
 }
@@ -452,12 +481,17 @@ pub async fn set_default_model(user: &str, model: &str, pool: &PgPool) -> Result
         WHERE user_ai_model.user_ = $1 AND ai_model.name = $2",
         user,
         model,
-    ).fetch_one(pool).await?.id;
+    )
+    .fetch_one(pool)
+    .await?
+    .id;
     crate::query!(
         "UPDATE user_ai_model SET default_model = (ai_model_id = $1) WHERE user_ = $2",
         model_id,
         user,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
 
     Ok(())
 }
@@ -501,9 +535,7 @@ fn hash_model(m: &AiModelCreation) -> String {
 fn hide_api_key(key: &str) -> String {
     if key.chars().count() > 12 {
         trim_long_string(key, 4, 4)
-    }
-
-    else {
+    } else {
         String::from("...")
     }
 }

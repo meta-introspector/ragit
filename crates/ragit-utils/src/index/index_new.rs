@@ -1,21 +1,22 @@
-use crate::constant::{CHUNK_DIR_NAME, CONFIG_DIR_NAME, FILE_INDEX_DIR_NAME, II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME, IMAGE_DIR_NAME};
+use super::BuildConfig;
+use crate::api_config::ApiConfig;
+use crate::constant::{
+    CHUNK_DIR_NAME, CONFIG_DIR_NAME, FILE_INDEX_DIR_NAME, II_DIR_NAME, IMAGE_DIR_NAME,
+    INDEX_DIR_NAME, INDEX_FILE_NAME,
+};
 use crate::error::Error;
-use crate::path_utils::{get_rag_path, join_paths, str_to_pathbuf, get_normalized_abs_pathbuf};
+use crate::index::index_struct::Index;
+use crate::path_utils::{get_normalized_abs_pathbuf, get_rag_path, join_paths, str_to_pathbuf};
 use crate::prompts::PROMPTS;
+use crate::query::QueryConfig;
 use ragit_fs::{create_dir_all, exists, write_bytes, WriteMode};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use super::BuildConfig;
-use crate::index::index_struct::Index;
-use crate::query::QueryConfig;
-use crate::api_config::ApiConfig;
 
 impl Index {
     /// It works like git. `root_dir` is the root of the repo. And it creates dir `.ragit/`, like `.git/`.
     /// It reads the files in the repo and creates index.
-    pub fn new(
-    root_dir: PathBuf,
-) -> Result<Self, Error> {
+    pub fn new(root_dir: PathBuf) -> Result<Self, Error> {
         let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
         let index_dir = join_paths(&root_dir, &str_to_pathbuf(INDEX_DIR_NAME))?;
 
@@ -32,10 +33,11 @@ impl Index {
             FILE_INDEX_DIR_NAME,
             II_DIR_NAME,
         ] {
-            create_dir_all(get_rag_path(
-                &root_dir.to_path_buf(),
-                &str_to_pathbuf(dir),
-            )?.to_str().unwrap())?;
+            create_dir_all(
+                get_rag_path(&root_dir.to_path_buf(), &str_to_pathbuf(dir))?
+                    .to_str()
+                    .unwrap(),
+            )?;
         }
 
         // Start with default configs

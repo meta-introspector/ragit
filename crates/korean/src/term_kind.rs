@@ -1,4 +1,4 @@
-use crate::jamo::{자모, into_자모s};
+use crate::jamo::{into_자모s, 자모};
 
 pub enum TermKind {
     No한글(String),
@@ -23,16 +23,16 @@ pub fn get_term_kind(term: &str) -> TermKind {
                 '가'..='힣' => {
                     한글s.push(ch);
                     curr_state = TermKindParseState::Reading한글;
-                },
+                }
                 _ => {
                     no_한글s.push(ch);
                     curr_state = TermKindParseState::ReadingNon한글;
-                },
+                }
             },
             TermKindParseState::Reading한글 => match ch {
                 '가'..='힣' => {
                     한글s.push(ch);
-                },
+                }
                 _ => {
                     let char_vec = term.chars().collect::<Vec<_>>();
                     let (first, second) = char_vec.split_at(index);
@@ -40,7 +40,7 @@ pub fn get_term_kind(term: &str) -> TermKind {
                         first.iter().collect(),
                         second.iter().collect(),
                     ]);
-                },
+                }
             },
             TermKindParseState::ReadingNon한글 => match ch {
                 '가'..='힣' => {
@@ -50,17 +50,18 @@ pub fn get_term_kind(term: &str) -> TermKind {
                         first.iter().collect(),
                         second.iter().collect(),
                     ]);
-                },
+                }
                 _ => {
                     no_한글s.push(ch);
-                },
+                }
             },
         }
     }
 
     match curr_state {
-        TermKindParseState::Init
-        | TermKindParseState::ReadingNon한글 => TermKind::No한글(no_한글s.into_iter().collect()),
+        TermKindParseState::Init | TermKindParseState::ReadingNon한글 => {
+            TermKind::No한글(no_한글s.into_iter().collect())
+        }
         TermKindParseState::Reading한글 => TermKind::Only한글(into_자모s(한글s)),
     }
 }

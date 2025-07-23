@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::chunk::chunk_struct::Chunk;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Deserialize, PartialEq, Serialize)]
 pub struct ChunkSchema {

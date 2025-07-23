@@ -6,7 +6,7 @@ pub enum SchemaParseError {
     #[error("unexpected byte: {0}")]
     UnexpectedByte(u8),
     #[error("unmatched group: {0}")]
-    UnmatchedGroup(u8),  // an opening delim
+    UnmatchedGroup(u8), // an opening delim
     #[error("unexpected token: {0:?}")]
     UnexpectedToken(Token),
     #[error("unexpected eof")]
@@ -102,40 +102,38 @@ fn tokenize(s: &[u8], index: &mut usize) -> Result<Vec<Token>, SchemaParseError>
                             kind: GroupKind::from(*d),
                             tokens: inner,
                         });
-                    }
-
-                    else {
+                    } else {
                         return Err(SchemaParseError::UnmatchedGroup(*d));
                     }
-                },
+                }
                 Some(b'}' | b')' | b']') => {
                     return Ok(result);
-                },
+                }
                 Some(m @ (b'"' | b'\'')) => {
                     curr_state = TokenizeState::Literal(*m);
                     cursor = *index + 1;
-                },
+                }
                 Some(b'0'..=b'9') => {
                     curr_state = TokenizeState::Number;
                     cursor = *index;
-                },
-                Some(b' ' | b'\n' | b'\r' | b'\t') => {},
+                }
+                Some(b' ' | b'\n' | b'\r' | b'\t') => {}
                 Some(b'a'..=b'z' | b'A'..=b'Z' | b'_' | b'-') => {
                     curr_state = TokenizeState::Identifier;
                     cursor = *index;
-                },
+                }
                 Some(p @ (b':' | b',')) => {
                     result.push(Token::Punct(*p));
-                },
+                }
                 Some(c) => {
                     return Err(SchemaParseError::UnexpectedByte(*c));
-                },
+                }
                 None => {
                     return Ok(result);
-                },
+                }
             },
             TokenizeState::Number => match s.get(*index) {
-                Some(b'0'..=b'9' | b'.') => {},
+                Some(b'0'..=b'9' | b'.') => {}
                 _ => {
                     let ns = String::from_utf8_lossy(&s[cursor..*index]).to_string();
 
@@ -144,31 +142,31 @@ fn tokenize(s: &[u8], index: &mut usize) -> Result<Vec<Token>, SchemaParseError>
                             curr_state = TokenizeState::Init;
                             result.push(Token::Integer(n));
                             continue;
-                        },
+                        }
                         Err(_) => match ns.parse::<f64>() {
                             Ok(n) => {
                                 curr_state = TokenizeState::Init;
                                 result.push(Token::Float(n));
                                 continue;
-                            },
+                            }
                             Err(e) => {
                                 return Err(SchemaParseError::ParseFloatError(e));
-                            },
+                            }
                         },
                     }
-                },
+                }
             },
             TokenizeState::Identifier => match s.get(*index) {
-                Some(b'a'..=b'z' | b'A'..=b'Z' | b'_' | b'-') => {},
+                Some(b'a'..=b'z' | b'A'..=b'Z' | b'_' | b'-') => {}
                 _ => match String::from_utf8(s[cursor..*index].to_vec()) {
                     Ok(s) => {
                         curr_state = TokenizeState::Init;
                         result.push(Token::Literal(s));
                         continue;
-                    },
+                    }
                     Err(e) => {
                         return Err(SchemaParseError::Utf8Error(e));
-                    },
+                    }
                 },
             },
             TokenizeState::Literal(marker) => match s.get(*index) {
@@ -177,15 +175,15 @@ fn tokenize(s: &[u8], index: &mut usize) -> Result<Vec<Token>, SchemaParseError>
                         curr_state = TokenizeState::Init;
                         result.push(Token::Literal(s));
                         continue;
-                    },
+                    }
                     Err(e) => {
                         return Err(SchemaParseError::Utf8Error(e));
-                    },
+                    }
                 },
-                Some(_) => {},
+                Some(_) => {}
                 None => {
                     return Err(SchemaParseError::UnmatchedGroup(marker));
-                },
+                }
             },
         }
 
@@ -205,7 +203,7 @@ fn token_to_schema(tokens: &[Token], index: &mut usize) -> Result<Schema, Schema
             "tasklist" => Schema::default_task_list(),
             _ => {
                 return Err(SchemaParseError::UnexpectedToken(t.clone()));
-            },
+            }
         },
         Some(Token::Group {
             kind: GroupKind::Brace,
@@ -219,20 +217,22 @@ fn token_to_schema(tokens: &[Token], index: &mut usize) -> Result<Schema, Schema
                     Some(Token::Literal(s)) => s.to_string(),
                     Some(t) => {
                         return Err(SchemaParseError::UnexpectedToken(t.clone()));
-                    },
-                    None => { break; },
+                    }
+                    None => {
+                        break;
+                    }
                 };
 
                 inner_index += 1;
 
                 match inner.get(inner_index) {
-                    Some(Token::Punct(b':')) => {},
+                    Some(Token::Punct(b':')) => {}
                     Some(t) => {
                         return Err(SchemaParseError::UnexpectedToken(t.clone()));
-                    },
+                    }
                     None => {
                         return Err(SchemaParseError::UnexpectedEof);
-                    },
+                    }
                 }
 
                 inner_index += 1;
@@ -242,11 +242,13 @@ fn token_to_schema(tokens: &[Token], index: &mut usize) -> Result<Schema, Schema
                 match inner.get(inner_index) {
                     Some(Token::Punct(b',')) => {
                         inner_index += 1;
-                    },
+                    }
                     Some(t) => {
                         return Err(SchemaParseError::UnexpectedToken(t.clone()));
-                    },
-                    None => { break; },
+                    }
+                    None => {
+                        break;
+                    }
                 }
             }
 
@@ -254,7 +256,7 @@ fn token_to_schema(tokens: &[Token], index: &mut usize) -> Result<Schema, Schema
                 r#type: SchemaType::Object(result),
                 constraint: None,
             }
-        },
+        }
         Some(Token::Group {
             kind: GroupKind::Bracket,
             tokens: inner,
@@ -266,24 +268,30 @@ fn token_to_schema(tokens: &[Token], index: &mut usize) -> Result<Schema, Schema
                 let res = token_to_schema(&inner, &mut inner_index)?;
 
                 if inner_index < inner.len() {
-                    return Err(SchemaParseError::UnexpectedToken(inner[inner_index].clone()));
+                    return Err(SchemaParseError::UnexpectedToken(
+                        inner[inner_index].clone(),
+                    ));
                 }
 
                 Some(res)
             };
 
             Schema::default_array(inner_type)
-        },
+        }
         Some(t) => {
             return Err(SchemaParseError::UnexpectedToken(t.clone()));
-        },
+        }
         None => {
             return Err(SchemaParseError::UnexpectedEof);
-        },
+        }
     };
     *index += 1;
 
-    if let Some(Token::Group { kind: GroupKind::Brace, tokens: inner }) = tokens.get(*index) {
+    if let Some(Token::Group {
+        kind: GroupKind::Brace,
+        tokens: inner,
+    }) = tokens.get(*index)
+    {
         let constraint = parse_constraint(inner)?;
         r#type.add_constraint(constraint);
         *index += 1;
@@ -301,60 +309,70 @@ fn parse_constraint(tokens: &[Token]) -> Result<Constraint, SchemaParseError> {
             Some(Token::Literal(s)) => s.to_string(),
             Some(t) => {
                 return Err(SchemaParseError::UnexpectedToken(t.clone()));
-            },
-            None => { break; },
+            }
+            None => {
+                break;
+            }
         };
         index += 1;
 
         match tokens.get(index) {
-            Some(Token::Punct(b':')) => {},
+            Some(Token::Punct(b':')) => {}
             Some(t) => {
                 return Err(SchemaParseError::UnexpectedToken(t.clone()));
-            },
+            }
             None => {
                 return Err(SchemaParseError::UnexpectedEof);
-            },
+            }
         }
 
         index += 1;
 
         match key.as_str() {
             k @ ("min" | "max" | "len_min" | "len_max") => match tokens.get(index) {
-                Some(n @ (Token::Integer(_) | Token::Float(_))) => if k == "min" || k == "len_min" {
-                    if result.min.is_some() {
-                        return Err(SchemaParseError::InvalidConstraint(format!("A constraint `{key}` appears more than once.")));
-                    }
+                Some(n @ (Token::Integer(_) | Token::Float(_))) => {
+                    if k == "min" || k == "len_min" {
+                        if result.min.is_some() {
+                            return Err(SchemaParseError::InvalidConstraint(format!(
+                                "A constraint `{key}` appears more than once."
+                            )));
+                        }
 
-                    result.min = Some(n.to_string());
-                } else {
-                    if result.max.is_some() {
-                        return Err(SchemaParseError::InvalidConstraint(format!("A constraint `{key}` appears more than once.")));
-                    }
+                        result.min = Some(n.to_string());
+                    } else {
+                        if result.max.is_some() {
+                            return Err(SchemaParseError::InvalidConstraint(format!(
+                                "A constraint `{key}` appears more than once."
+                            )));
+                        }
 
-                    result.max = Some(n.to_string());
-                },
+                        result.max = Some(n.to_string());
+                    }
+                }
                 Some(t) => {
                     return Err(SchemaParseError::UnexpectedToken(t.clone()));
-                },
+                }
                 None => {
                     return Err(SchemaParseError::UnexpectedEof);
-                },
+                }
             },
             _ => {
-                return Err(SchemaParseError::InvalidConstraint(format!("`{key}` is not a valid constraint")));
-            },
+                return Err(SchemaParseError::InvalidConstraint(format!(
+                    "`{key}` is not a valid constraint"
+                )));
+            }
         }
 
         index += 1;
 
         match tokens.get(index) {
-            Some(Token::Punct(b',')) => {},
+            Some(Token::Punct(b',')) => {}
             Some(t) => {
                 return Err(SchemaParseError::UnexpectedToken(t.clone()));
-            },
+            }
             None => {
                 return Ok(result);
-            },
+            }
         }
 
         index += 1;

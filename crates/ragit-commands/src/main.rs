@@ -1,12 +1,22 @@
 use ragit::prelude::*;
-use ragit_commands::{add_command_main, archive_command_main, audit_command_main, build_command_main, cat_file_command_main, check_command_main, clone_command_main, config_command_main, extract_keywords_command_main, gc_command_main, help_command_main, ii_build_command_main, ii_reset_command_main, ii_status_command_main, init_command_main, ls_chunks_command_main, ls_files_command_main, ls_images_command_main, ls_models_command_main, ls_terms_command_main, merge_command_main, meta_command_main, migrate_command_main, model_command_main, muse_summarize_command_main, pdl_command_main, pull_command_main, push_command_main, qa_test_command_main, qa_tune_command_main, query_command_main, remove_command_main, status_command_main, summary_command_main, version_command_main};
-
+use ragit_commands::{
+    add_command_main, archive_command_main, audit_command_main, build_command_main,
+    cat_file_command_main, check_command_main, clone_command_main, config_command_main,
+    extract_keywords_command_main, gc_command_main, help_command_main, ii_build_command_main,
+    ii_reset_command_main, ii_status_command_main, init_command_main, ls_chunks_command_main,
+    ls_files_command_main, ls_images_command_main, ls_models_command_main, ls_terms_command_main,
+    merge_command_main, meta_command_main, migrate_command_main, model_command_main,
+    muse_summarize_command_main, pdl_command_main, pull_command_main, push_command_main,
+    qa_test_command_main, qa_tune_command_main, query_command_main, remove_command_main,
+    status_command_main, summary_command_main, version_command_main,
+};
 
 use async_recursion::async_recursion;
 
 #[async_recursion(?Send)]
 pub async fn run(args: Vec<String>) -> Result<(), Error> {
-    let (args, pre_args): (Vec<String>, ragit_utils::cli_types::ParsedArgs) = ragit_cli::parse_pre_args(&args)?;
+    let (args, pre_args): (Vec<String>, ragit_utils::cli_types::ParsedArgs) =
+        ragit_cli::parse_pre_args(&args)?;
 
     if let Some(path) = pre_args.arg_flags.get("-C") {
         std::env::set_current_dir(path)?;
@@ -45,7 +55,9 @@ pub async fn run(args: Vec<String>) -> Result<(), Error> {
         Some("summary") => summary_command_main(&args).await?,
         Some("version") => version_command_main(&args).await?,
         _ => {
-            return Err(Error::CliError(ragit_utils::error::CliError::new_message("Unknown command.".to_string())));
+            return Err(Error::CliError(ragit_utils::error::CliError::new_message(
+                "Unknown command.".to_string(),
+            )));
         }
     }
 

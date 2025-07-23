@@ -1,10 +1,10 @@
 use crate::constant::{INDEX_DIR_NAME, LOG_DIR_NAME};
 use crate::error::Error;
+use crate::prelude::*;
 use ragit_api::audit::{AuditRecord, AuditRecordAt};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use crate::prelude::*;
 
 // This struct is used for loading partial configurations from ~/.config/ragit/api.json
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -23,16 +23,16 @@ pub struct PartialApiConfig {
 
 impl PartialEq for PartialApiConfig {
     fn eq(&self, other: &Self) -> bool {
-        self.api_key == other.api_key &&
-        self.model == other.model &&
-        self.timeout == other.timeout &&
-        self.sleep_between_retries == other.sleep_between_retries &&
-        self.max_retry == other.max_retry &&
-        self.sleep_after_llm_call == other.sleep_after_llm_call &&
-        self.dump_log == other.dump_log &&
-        self.dump_api_usage == other.dump_api_usage &&
-        self.enable_muse_mode == other.enable_muse_mode &&
-        self.throttling_safety_margin == other.throttling_safety_margin
+        self.api_key == other.api_key
+            && self.model == other.model
+            && self.timeout == other.timeout
+            && self.sleep_between_retries == other.sleep_between_retries
+            && self.max_retry == other.max_retry
+            && self.sleep_after_llm_call == other.sleep_after_llm_call
+            && self.dump_log == other.dump_log
+            && self.dump_api_usage == other.dump_api_usage
+            && self.enable_muse_mode == other.enable_muse_mode
+            && self.throttling_safety_margin == other.throttling_safety_margin
     }
 }
 
@@ -103,16 +103,16 @@ pub struct ApiConfig {
 
 impl PartialEq for ApiConfig {
     fn eq(&self, other: &Self) -> bool {
-        self.api_key == other.api_key &&
-        self.model == other.model &&
-        self.timeout == other.timeout &&
-        self.sleep_between_retries == other.sleep_between_retries &&
-        self.max_retry == other.max_retry &&
-        self.sleep_after_llm_call == other.sleep_after_llm_call &&
-        self.dump_log == other.dump_log &&
-        self.dump_api_usage == other.dump_api_usage &&
-        self.enable_muse_mode == other.enable_muse_mode &&
-        self.throttling_safety_margin == other.throttling_safety_margin
+        self.api_key == other.api_key
+            && self.model == other.model
+            && self.timeout == other.timeout
+            && self.sleep_between_retries == other.sleep_between_retries
+            && self.max_retry == other.max_retry
+            && self.sleep_after_llm_call == other.sleep_after_llm_call
+            && self.dump_log == other.dump_log
+            && self.dump_api_usage == other.dump_api_usage
+            && self.enable_muse_mode == other.enable_muse_mode
+            && self.throttling_safety_margin == other.throttling_safety_margin
     }
 }
 
@@ -137,31 +137,34 @@ impl ApiConfig {
     pub fn create_pdl_path(&self, root_dir: &PathBuf, job: &str) -> Option<PathBuf> {
         let now = Local::now();
 
-        self.dump_log_at(root_dir).as_ref().map(
-            |path| path_utils::str_to_pathbuf(&join(
-                &path_utils::pathbuf_to_str(path),
-                &format!(
-                    "{job}.pdl",
-                ),
-            ).unwrap())
-        )
+        self.dump_log_at(root_dir).as_ref().map(|path| {
+            path_utils::str_to_pathbuf(
+                &join(&path_utils::pathbuf_to_str(path), &format!("{job}.pdl",)).unwrap(),
+            )
+        })
     }
 
     pub fn dump_log_at(&self, root_dir: &PathBuf) -> Option<PathBuf> {
         if self.dump_log {
-            ragit_fs::join3(&ragit_utils::path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, LOG_DIR_NAME)
-                .ok()
-                .map(|s| ragit_utils::path_utils::str_to_pathbuf(&s))
-        }
-
-        else {
+            ragit_fs::join3(
+                &ragit_utils::path_utils::pathbuf_to_str(root_dir),
+                INDEX_DIR_NAME,
+                LOG_DIR_NAME,
+            )
+            .ok()
+            .map(|s| ragit_utils::path_utils::str_to_pathbuf(&s))
+        } else {
             None
         }
     }
 
     pub fn dump_api_usage_at(&self, root_dir: &PathBuf, id: &str) -> Option<AuditRecordAt> {
         if self.dump_api_usage {
-            match ragit_fs::join3(&ragit_utils::path_utils::pathbuf_to_str(root_dir), INDEX_DIR_NAME, "usages.json") {
+            match ragit_fs::join3(
+                &ragit_utils::path_utils::pathbuf_to_str(root_dir),
+                INDEX_DIR_NAME,
+                "usages.json",
+            ) {
                 Ok(path_str) => {
                     let path = ragit_utils::path_utils::str_to_pathbuf(&path_str);
                     if !ragit_fs::exists(&path) {
@@ -172,18 +175,23 @@ impl ApiConfig {
                         );
                     }
 
-                    Some(AuditRecordAt { path: path.to_str().unwrap().to_string(), id: id.to_string() })
-                },
+                    Some(AuditRecordAt {
+                        path: path.to_str().unwrap().to_string(),
+                        id: id.to_string(),
+                    })
+                }
                 Err(_) => None,
             }
-        }
-
-        else {
+        } else {
             None
         }
     }
 
-    pub fn get_api_usage(&self, root_dir: &PathBuf, id: &str) -> Result<HashMap<String, AuditRecord>, Error> {
+    pub fn get_api_usage(
+        &self,
+        root_dir: &PathBuf,
+        id: &str,
+    ) -> Result<HashMap<String, AuditRecord>, Error> {
         match &self.dump_api_usage_at(root_dir, id) {
             Some(AuditRecordAt { path, id }) => {
                 let tracker = ragit_api::audit::Tracker::load_from_file(path)?;
@@ -194,8 +202,8 @@ impl ApiConfig {
                     // It's not an error, it's just that this id was never used
                     None => Ok(HashMap::new()),
                 }
-            },
-            None => Ok(HashMap::new()),  // TODO: is this an error attempting to do this? I'm not sure
+            }
+            None => Ok(HashMap::new()), // TODO: is this an error attempting to do this? I'm not sure
         }
     }
 }

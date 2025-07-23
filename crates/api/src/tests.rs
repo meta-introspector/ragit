@@ -2,17 +2,10 @@
 // It's so strange to test pdl functionalities in `ragit-api` crate.
 
 use crate::{ModelRaw, Request};
-use ragit_fs::{
-    WriteMode,
-    create_dir_all,
-    current_dir,
-    remove_dir_all,
-    write_bytes,
-    write_string,
-};
+use ragit_fs::{WriteMode, create_dir_all, current_dir, remove_dir_all, write_bytes, write_string};
 use ragit_pdl::{Pdl, parse_pdl, parse_pdl_from_file};
-use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
+use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 
 #[tokio::test]
@@ -37,34 +30,55 @@ What do you see in this picture?
     create_dir_all("__tmp_pdl_test/pdl").unwrap();
     create_dir_all("__tmp_pdl_test/images").unwrap();
     let image_file = include_bytes!("../../../tests/images/hello_world.webp");
-    write_string("__tmp_pdl_test/pdl/sample1.pdl", pdl1, WriteMode::AlwaysCreate).unwrap();
-    write_bytes("__tmp_pdl_test/images/sample.webp", image_file, WriteMode::AlwaysCreate).unwrap();
+    write_string(
+        "__tmp_pdl_test/pdl/sample1.pdl",
+        pdl1,
+        WriteMode::AlwaysCreate,
+    )
+    .unwrap();
+    write_bytes(
+        "__tmp_pdl_test/images/sample.webp",
+        image_file,
+        WriteMode::AlwaysCreate,
+    )
+    .unwrap();
 
-    let Pdl { messages: messages1, .. } = parse_pdl_from_file(
+    let Pdl {
+        messages: messages1,
+        ..
+    } = parse_pdl_from_file(
         "__tmp_pdl_test/pdl/sample1.pdl",
         &tera::Context::new(),
         true,
         true,
-    ).unwrap();
-    let Pdl { messages: messages2, .. } = parse_pdl(
+    )
+    .unwrap();
+    let Pdl {
+        messages: messages2,
+        ..
+    } = parse_pdl(
         pdl2,
         &tera::Context::new(),
         &current_dir().unwrap(),
         true,
         true,
-    ).unwrap();
+    )
+    .unwrap();
 
     for messages in [messages1, messages2] {
-        for model in [
-            ModelRaw::gpt_4o_mini(),
-            ModelRaw::gemini_2_flash(),
-        ] {
+        for model in [ModelRaw::gpt_4o_mini(), ModelRaw::gemini_2_flash()] {
             let request = Request {
                 model: (&model).try_into().unwrap(),
                 messages: messages.clone(),
                 ..Request::default()
             };
-            let response = request.send().await.unwrap().get_message(0).unwrap().to_ascii_lowercase();
+            let response = request
+                .send()
+                .await
+                .unwrap()
+                .get_message(0)
+                .unwrap()
+                .to_ascii_lowercase();
 
             // TODO: it's pratically correct, but not formally correct
             assert!(response.contains("hello"));
@@ -127,15 +141,19 @@ Below is a list of documents. Choose documents that are related to {{topic}}. Yo
 {{loop.index}}. {{document}}
 {% endfor %}
 ";
-    let result = run_pdl::<_, Vec<usize>>(pdl, json!({
-        "documents": vec![
-            "Rust programming manual: How to define a new function",
-            "Introduction to CPU: How computers work",
-            "Apple Pie Recipe",
-            "Healthy and delicious food",
-        ],
-        "topic": "food",
-    })).await;
+    let result = run_pdl::<_, Vec<usize>>(
+        pdl,
+        json!({
+            "documents": vec![
+                "Rust programming manual: How to define a new function",
+                "Introduction to CPU: How computers work",
+                "Apple Pie Recipe",
+                "Healthy and delicious food",
+            ],
+            "topic": "food",
+        }),
+    )
+    .await;
     assert_eq!(result.len(), 2);
     assert!(result.contains(&3));
     assert!(result.contains(&4));
@@ -157,14 +175,27 @@ Tom,12,soccer
 Mark,13,computer
 Sam,12,baseball
 ";
-    let result = run_pdl::<_, Vec<Student>>(pdl, json!({
-        "num_students": 3,
-        "csv_data": csv_data,
-    })).await;
+    let result = run_pdl::<_, Vec<Student>>(
+        pdl,
+        json!({
+            "num_students": 3,
+            "csv_data": csv_data,
+        }),
+    )
+    .await;
     assert_eq!(result.len(), 3);
-    assert!(result.contains(&Student { name: String::from("Tom"), age: 12 }));
-    assert!(result.contains(&Student { name: String::from("Mark"), age: 13 }));
-    assert!(result.contains(&Student { name: String::from("Sam"), age: 12 }));
+    assert!(result.contains(&Student {
+        name: String::from("Tom"),
+        age: 12
+    }));
+    assert!(result.contains(&Student {
+        name: String::from("Mark"),
+        age: 13
+    }));
+    assert!(result.contains(&Student {
+        name: String::from("Sam"),
+        age: 12
+    }));
 }
 
 #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -174,7 +205,9 @@ struct Student {
 }
 
 async fn run_pdl<T: Serialize, U: Default + DeserializeOwned>(pdl: &str, context: T) -> U {
-    let Value::Object(context_hash_map) = serde_json::to_value(context).unwrap() else { panic!("expected an object") };
+    let Value::Object(context_hash_map) = serde_json::to_value(context).unwrap() else {
+        panic!("expected an object")
+    };
     let mut context = tera::Context::new();
 
     for (k, v) in context_hash_map.iter() {
@@ -182,12 +215,10 @@ async fn run_pdl<T: Serialize, U: Default + DeserializeOwned>(pdl: &str, context
     }
 
     let Pdl { messages, schema } = parse_pdl(
-        pdl,
-        &context,
-        ".",  // no media files
-        true,
-        true,
-    ).unwrap();
+        pdl, &context, ".", // no media files
+        true, true,
+    )
+    .unwrap();
     let request = Request {
         model: (&ModelRaw::gpt_4o_mini()).try_into().unwrap(),
         messages,

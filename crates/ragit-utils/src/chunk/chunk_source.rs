@@ -1,11 +1,18 @@
-use serde::{Deserialize, Serialize};
 use crate::chunk::chunk_struct::Chunk;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum ChunkSource {
-    File { path: String, index: usize, page: Option<usize> },
+    File {
+        path: String,
+        index: usize,
+        page: Option<usize>,
+    },
     Dummy,
-    Merge { pre: Box<Chunk>, post: Box<Chunk> },
+    Merge {
+        pre: Box<Chunk>,
+        post: Box<Chunk>,
+    },
 }
 
 impl ChunkSource {

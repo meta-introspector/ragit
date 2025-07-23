@@ -1,19 +1,12 @@
-use chrono::{Datelike, DateTime, Local, Utc};
-use std::path::Path;
 use crate::Error;
-use ragit_fs::{
-    WriteMode,
-    create_dir_all,
-    exists,
-    parent,
-    read_string,
-    write_string,
-};
-use ragit_pdl::{Message, JsonType};
+use chrono::{DateTime, Datelike, Local, Utc};
+use ragit_fs::{WriteMode, create_dir_all, exists, parent, read_string, write_string};
+use ragit_pdl::{JsonType, Message};
 use ragit_types::AuditRecordAt;
 use serde_json::{Map, Value};
 use std::collections::HashMap;
 use std::ops::AddAssign;
+use std::path::Path;
 
 #[derive(Clone, Copy, Debug, serde::Deserialize, serde::Serialize)]
 pub struct AuditRecord {
@@ -65,20 +58,23 @@ impl TryFrom<&Value> for AuditRecord {
         match &j {
             Value::Array(arr) => {
                 if arr.len() != 4 {
-                    return Err(Error::WrongSchema(format!("expected an array of length 4, but got length {}", arr.len())));
+                    return Err(Error::WrongSchema(format!(
+                        "expected an array of length 4, but got length {}",
+                        arr.len()
+                    )));
                 }
 
                 for r in arr.iter() {
                     match r.as_u64() {
                         Some(n) => {
                             result.push(n);
-                        },
+                        }
                         None => {
                             return Err(Error::JsonTypeError {
                                 expected: JsonType::U64,
                                 got: r.into(),
                             });
-                        },
+                        }
                     }
                 }
 
@@ -88,7 +84,7 @@ impl TryFrom<&Value> for AuditRecord {
                     input_cost: result[2],
                     output_cost: result[3],
                 })
-            },
+            }
             _ => Err(Error::JsonTypeError {
                 expected: JsonType::Array,
                 got: j.into(),
@@ -107,7 +103,7 @@ fn records_from_json(j: &Value) -> Result<HashMap<String, AuditRecord>, Error> {
             }
 
             Ok(result)
-        },
+        }
         Value::Array(arr) => {
             let mut result: HashMap<String, AuditRecord> = HashMap::new();
 
@@ -132,13 +128,17 @@ fn records_from_json(j: &Value) -> Result<HashMap<String, AuditRecord>, Error> {
                 };
 
                 match result.get_mut(&date) {
-                    Some(record) => { *record += new_record; },
-                    None => { result.insert(date, new_record); },
+                    Some(record) => {
+                        *record += new_record;
+                    }
+                    None => {
+                        result.insert(date, new_record);
+                    }
                 }
             }
 
             Ok(result)
-        },
+        }
         _ => Err(Error::JsonTypeError {
             expected: JsonType::Object,
             got: j.into(),
@@ -147,7 +147,7 @@ fn records_from_json(j: &Value) -> Result<HashMap<String, AuditRecord>, Error> {
 }
 
 #[derive(Clone)]
-pub struct Tracker(pub HashMap<String, HashMap<String, AuditRecord>>);  // user_name -> usage
+pub struct Tracker(pub HashMap<String, HashMap<String, AuditRecord>>); // user_name -> usage
 
 impl Tracker {
     pub fn new() -> Self {
@@ -182,7 +182,7 @@ impl TryFrom<&Value> for Tracker {
                 }
 
                 Ok(Tracker(result))
-            },
+            }
             _ => Err(Error::JsonTypeError {
                 expected: JsonType::Object,
                 got: v.into(),
@@ -193,19 +193,21 @@ impl TryFrom<&Value> for Tracker {
 
 impl From<&Tracker> for Value {
     fn from(t: &Tracker) -> Value {
-        Value::Object(t.0.iter().map(
-            |(id, records)| (
-                id.to_string(),
-                Value::Object(
-                    records.iter().map(
-                        |(date, record)| (
-                            date.to_string(),
-                            Value::from(record),
-                        )
-                    ).collect::<Map<_, _>>()
-                ),
-            )
-        ).collect())
+        Value::Object(
+            t.0.iter()
+                .map(|(id, records)| {
+                    (
+                        id.to_string(),
+                        Value::Object(
+                            records
+                                .iter()
+                                .map(|(date, record)| (date.to_string(), Value::from(record)))
+                                .collect::<Map<_, _>>(),
+                        ),
+                    )
+                })
+                .collect(),
+        )
     }
 }
 
@@ -235,37 +237,47 @@ pub fn dump_api_usage(
         Some(records) => match records.get_mut(&today) {
             Some(record) => {
                 *record += new_record;
-            },
+            }
             None => {
                 records.insert(today, new_record);
-            },
+            }
         },
         None => {
-            tracker.0.insert(at.id.clone(), [(today, new_record)].into_iter().collect());
-        },
+            tracker
+                .0
+                .insert(at.id.clone(), [(today, new_record)].into_iter().collect());
+        }
     }
 
     tracker.save_to_file(&at.path)?;
     Ok(())
 }
 
-pub fn get_user_usage_data_since(at: AuditRecordAt, since: DateTime<Local>) -> Option<HashMap<String, AuditRecord>> {
+pub fn get_user_usage_data_since(
+    at: AuditRecordAt,
+    since: DateTime<Local>,
+) -> Option<HashMap<String, AuditRecord>> {
     let since = format!("{:04}{:02}{:02}", since.year(), since.month(), since.day());
 
     match Tracker::load_from_file(&at.path) {
         Ok(tracker) => match tracker.0.get(&at.id) {
-            Some(records) => Some(records.iter().filter(
-                |(date, _)| date >= &&since
-            ).map(
-                |(date, record)| (date.to_string(), record.clone())
-            ).collect()),
+            Some(records) => Some(
+                records
+                    .iter()
+                    .filter(|(date, _)| date >= &&since)
+                    .map(|(date, record)| (date.to_string(), record.clone()))
+                    .collect(),
+            ),
             None => None,
         },
         _ => None,
     }
 }
 
-pub fn get_usage_data_since(path: &str, since: DateTime<Local>) -> Option<HashMap<String, AuditRecord>> {
+pub fn get_usage_data_since(
+    path: &str,
+    since: DateTime<Local>,
+) -> Option<HashMap<String, AuditRecord>> {
     let since = format!("{:04}{:02}{:02}", since.year(), since.month(), since.day());
 
     match Tracker::load_from_file(path) {
@@ -281,7 +293,7 @@ pub fn get_usage_data_since(path: &str, since: DateTime<Local>) -> Option<HashMa
             }
 
             Some(result)
-        },
+        }
         _ => None,
     }
 }
@@ -289,9 +301,16 @@ pub fn get_usage_data_since(path: &str, since: DateTime<Local>) -> Option<HashMa
 /// It returns the cost in dollars (in a formatted string), without any currency unit.
 pub fn calc_usage(records: &HashMap<String, AuditRecord>) -> String {
     // cost * 1M
-    let mut total: u64 = records.values().map(
-        |AuditRecord { input_cost, output_cost, .. }| *input_cost + *output_cost
-    ).sum();
+    let mut total: u64 = records
+        .values()
+        .map(
+            |AuditRecord {
+                 input_cost,
+                 output_cost,
+                 ..
+             }| *input_cost + *output_cost,
+        )
+        .sum();
 
     // cost * 1K
     total /= 1000;
@@ -312,7 +331,12 @@ pub fn dump_pdl(
         markdown.push(format!(
             "\n\n<|{:?}|>\n\n{}",
             message.role,
-            message.content.iter().map(|c| c.to_string()).collect::<Vec<String>>().join(""),
+            message
+                .content
+                .iter()
+                .map(|c| c.to_string())
+                .collect::<Vec<String>>()
+                .join(""),
         ));
     }
 
@@ -324,7 +348,7 @@ pub fn dump_pdl(
             String::new()
         },
     ));
-    markdown.push(format!("{}# {metadata} #{}", '{', '}'));  // tera format
+    markdown.push(format!("{}# {metadata} #{}", '{', '}')); // tera format
 
     if let Ok(parent_path_buf) = parent(Path::new(path)) {
         if !exists(&parent_path_buf) {
@@ -332,11 +356,7 @@ pub fn dump_pdl(
         }
     }
 
-    write_string(
-        path,
-        &markdown.join("\n"),
-        WriteMode::CreateOrTruncate,
-    )?;
+    write_string(path, &markdown.join("\n"), WriteMode::CreateOrTruncate)?;
 
     Ok(())
 }
@@ -378,20 +398,23 @@ impl TryFrom<&Value> for AuditRecordLegacy {
         match &j {
             Value::Array(arr) => {
                 if arr.len() != 5 {
-                    return Err(Error::WrongSchema(format!("expected an array of length 5, but got length {}", arr.len())));
+                    return Err(Error::WrongSchema(format!(
+                        "expected an array of length 5, but got length {}",
+                        arr.len()
+                    )));
                 }
 
                 for r in arr.iter() {
                     match r.as_u64() {
                         Some(n) => {
                             result.push(n);
-                        },
+                        }
                         None => {
                             return Err(Error::JsonTypeError {
                                 expected: JsonType::U64,
                                 got: r.into(),
                             });
-                        },
+                        }
                     }
                 }
 
@@ -402,7 +425,7 @@ impl TryFrom<&Value> for AuditRecordLegacy {
                     input_weight: result[3],
                     output_weight: result[4],
                 })
-            },
+            }
             _ => Err(Error::JsonTypeError {
                 expected: JsonType::Array,
                 got: j.into(),

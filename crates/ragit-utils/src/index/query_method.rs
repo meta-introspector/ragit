@@ -14,21 +14,25 @@ impl Index {
         schema: Option<Schema>,
     ) -> Result<QueryResponse, Error> {
         // There's no need to rephrase the query if the rag pipeline is disabled.
-        let (multi_turn_schema, rephrased_query) = if history.is_empty() || !self.query_config.enable_rag || self.chunk_count == 0 {
-            (None, q.to_string())
-        } else {
-            let multi_turn_schema = self.rephrase_multi_turn(
-                select_turns_for_context(&history, q),
-            ).await?;
-            let rephrased_query = if multi_turn_schema.is_query && multi_turn_schema.in_context {
-                multi_turn_schema.query.clone()
+        let (multi_turn_schema, rephrased_query) =
+            if history.is_empty() || !self.query_config.enable_rag || self.chunk_count == 0 {
+                (None, q.to_string())
             } else {
-                q.to_string()
-            };
+                let multi_turn_schema = self
+                    .rephrase_multi_turn(select_turns_for_context(&history, q))
+                    .await?;
+                let rephrased_query = if multi_turn_schema.is_query && multi_turn_schema.in_context
+                {
+                    multi_turn_schema.query.clone()
+                } else {
+                    q.to_string()
+                };
 
-            (Some(multi_turn_schema), rephrased_query)
-        };
-        let chunks = self.retrieve_chunks(&rephrased_query, self.query_config.super_rerank).await?;
+                (Some(multi_turn_schema), rephrased_query)
+            };
+        let chunks = self
+            .retrieve_chunks(&rephrased_query, self.query_config.super_rerank)
+            .await?;
 
         let response = if chunks.is_empty() {
             let mut history_turns = Vec::with_capacity(history.len() * 2);
@@ -38,17 +42,10 @@ impl Index {
                 history_turns.push(h.response.response.clone());
             }
 
-            self.raw_request(
-                q,
-                history_turns,
-                schema,
-            ).await?
+            self.raw_request(q, history_turns, schema).await?
         } else {
-            self.answer_query_with_chunks(
-                &rephrased_query,
-                chunks.clone(),
-                schema,
-            ).await?
+            self.answer_query_with_chunks(&rephrased_query, chunks.clone(), schema)
+                .await?
         };
 
         Ok(QueryResponse {

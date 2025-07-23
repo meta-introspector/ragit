@@ -1,6 +1,6 @@
-use chrono::{DateTime, Utc};
-use chrono::serde::ts_milliseconds;
 use crate::error::Error;
+use chrono::serde::ts_milliseconds;
+use chrono::{DateTime, Utc};
 use ragit::{MultiTurnSchema, QueryResponse};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPool;
@@ -58,7 +58,9 @@ pub async fn get_chat_by_id(id: i32, pool: &PgPool) -> Result<Chat, Error> {
     let row = crate::query!(
         "SELECT id, repo_id, title, created_at, updated_at FROM chat WHERE id = $1",
         id,
-    ).fetch_one(pool).await?;
+    )
+    .fetch_one(pool)
+    .await?;
 
     Ok(Chat {
         id: row.id,
@@ -124,7 +126,9 @@ pub async fn add_chat_history(
         "UPDATE chat SET updated_at = $1 WHERE id = $2",
         now,
         chat_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
 
     let multi_turn_schema = match &response.multi_turn_schema {
         Some(m) => Some(serde_json::to_string(m)?),
@@ -154,7 +158,9 @@ pub async fn add_chat_history(
             chat_history_id,
             index as i32,
             chunk.uid.to_string(),
-        ).execute(pool).await?;
+        )
+        .execute(pool)
+        .await?;
     }
 
     Ok(())
@@ -176,7 +182,12 @@ pub async fn get_history_by_id(chat_id: i32, pool: &PgPool) -> Result<Vec<ChatHi
         let chunk_uids = crate::query!(
             "SELECT chunk_uid FROM chat_history_chunk_uid WHERE chat_history_id = $1 ORDER BY seq",
             row.id,
-        ).fetch_all(pool).await?.into_iter().map(|row| row.chunk_uid).collect();
+        )
+        .fetch_all(pool)
+        .await?
+        .into_iter()
+        .map(|row| row.chunk_uid)
+        .collect();
 
         history.push(ChatHistory {
             query: row.query.to_string(),

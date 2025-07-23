@@ -1,12 +1,12 @@
 use crate::error::Error;
 use ragit_pdl::Message;
-use std::io::{stdin, stdout, Write, Read};
+use std::io::{Read, Write, stdin, stdout};
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum TestModel {
-    Dummy,  // it always returns `"dummy"`
+    Dummy, // it always returns `"dummy"`
     Stdin,
-    Error,  // it always raises an error
+    Error, // it always raises an error
 }
 
 impl TestModel {
@@ -18,7 +18,12 @@ impl TestModel {
                     println!(
                         "<|{:?}|>\n\n{}\n\n",
                         message.role,
-                        message.content.iter().map(|c| c.to_string()).collect::<Vec<String>>().join(""),
+                        message
+                            .content
+                            .iter()
+                            .map(|c| c.to_string())
+                            .collect::<Vec<String>>()
+                            .join(""),
                     );
                 }
 
@@ -28,7 +33,7 @@ impl TestModel {
                 let mut s = String::new();
                 stdin().read_to_string(&mut s)?;
                 Ok(s)
-            },
+            }
             TestModel::Error => Err(Error::TestModel),
         }
     }

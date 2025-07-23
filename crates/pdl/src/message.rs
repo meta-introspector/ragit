@@ -1,7 +1,7 @@
-use std::fmt;
 use crate::image::ImageType;
 use crate::role::Role;
 use crate::util::encode_base64;
+use std::fmt;
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Message {
@@ -19,8 +19,8 @@ impl Message {
 
     pub fn is_valid_system_prompt(&self) -> bool {
         self.role == Role::System
-        && self.content.len() == 1
-        && matches!(&self.content[0], MessageContent::String(_))
+            && self.content.len() == 1
+            && matches!(&self.content[0], MessageContent::String(_))
     }
 
     pub fn is_user_prompt(&self) -> bool {
@@ -32,7 +32,9 @@ impl Message {
     }
 
     pub fn has_image(&self) -> bool {
-        self.content.iter().any(|content| matches!(content, MessageContent::Image { .. }))
+        self.content
+            .iter()
+            .any(|content| matches!(content, MessageContent::Image { .. }))
     }
 }
 

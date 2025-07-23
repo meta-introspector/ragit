@@ -1,11 +1,15 @@
-use ragit_types::{Uid, FileSchema};
 use anyhow::Error;
-use ragit_utils::index::Index;
+use ragit_types::{FileSchema, Uid};
 use ragit_utils::chunk::ChunkBuildInfo;
-use std::path::{Path, PathBuf};
+use ragit_utils::index::Index;
 use serde::{Deserialize, Serialize};
+use std::path::{Path, PathBuf};
 
-pub fn get_file_schema(index: &Index, path: Option<String>, uid: Option<Uid>) -> Result<FileSchema, Error> {
+pub fn get_file_schema(
+    index: &Index,
+    path: Option<String>,
+    uid: Option<Uid>,
+) -> Result<FileSchema, Error> {
     if let Some(uid) = uid {
         for (path, uid_) in index.processed_files.iter() {
             if uid == *uid_ {
@@ -24,14 +28,21 @@ pub fn get_file_schema(index: &Index, path: Option<String>, uid: Option<Uid>) ->
                 path: path.to_string(),
                 is_processed: false,
                 ..FileSchema::dummy()
-            })
+            });
         }
     }
 
-    Err(Error::NoSuchFile { path: path.map(|s| s.into()), uid })
+    Err(Error::NoSuchFile {
+        path: path.map(|s| s.into()),
+        uid,
+    })
 }
 
-pub(crate) fn get_file_schema_worker(index: &Index, path: String, uid: Uid) -> Result<FileSchema, Error> {
+pub(crate) fn get_file_schema_worker(
+    index: &Index,
+    path: String,
+    uid: Uid,
+) -> Result<FileSchema, Error> {
     let file_size = uid.get_data_size();
     let chunk_uids = index.get_chunks_of_file(uid).unwrap_or(vec![]);
     let mut chunks = Vec::with_capacity(chunk_uids.len());

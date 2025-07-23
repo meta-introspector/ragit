@@ -1,7 +1,7 @@
 use super::auth;
-use chrono::{DateTime, Utc};
-use chrono::serde::{ts_milliseconds, ts_milliseconds_option};
 use crate::error::Error;
+use chrono::serde::{ts_milliseconds, ts_milliseconds_option};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPool;
 
@@ -40,7 +40,12 @@ pub struct UserCreation {
     pub public: bool,
 }
 
-pub async fn get_list(include_privates: bool, limit: i64, offset: i64, pool: &PgPool) -> Result<Vec<UserSimple>, Error> {
+pub async fn get_list(
+    include_privates: bool,
+    limit: i64,
+    offset: i64,
+    pool: &PgPool,
+) -> Result<Vec<UserSimple>, Error> {
     // TODO: how do I parameterize `query!` macro?
     if include_privates {
         let rows = crate::query_as!(
@@ -51,9 +56,7 @@ pub async fn get_list(include_privates: bool, limit: i64, offset: i64, pool: &Pg
         ).fetch_all(pool).await?;
 
         Ok(rows)
-    }
-
-    else {
+    } else {
         let rows = crate::query_as!(
             UserSimple,
             "SELECT id, name, email, public, created_at, last_login_at FROM user_ WHERE public = TRUE ORDER BY id LIMIT $1 OFFSET $2",
@@ -114,7 +117,9 @@ pub async fn create(user: &UserCreation, pool: &PgPool) -> Result<(), Error> {
         password,
         user.readme.clone(),
         user.public,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
 
     Ok(())
 }
@@ -123,12 +128,17 @@ pub async fn check_auth(user: &str, api_key: Option<String>, pool: &PgPool) -> R
     let permission = auth::get_user_id_from_api_key(api_key, pool).await?;
 
     match permission {
-        Some(auth::Permission { user: user_, is_admin }) if user == user_ || is_admin => Ok(true),
+        Some(auth::Permission {
+            user: user_,
+            is_admin,
+        }) if user == user_ || is_admin => Ok(true),
         _ => Ok(false),
     }
 }
 
 pub async fn no_user_at_all(pool: &PgPool) -> Result<bool, Error> {
-    let rows = crate::query!("SELECT id FROM user_ LIMIT 1").fetch_all(pool).await?;
+    let rows = crate::query!("SELECT id FROM user_ LIMIT 1")
+        .fetch_all(pool)
+        .await?;
     Ok(rows.len() == 0)
 }

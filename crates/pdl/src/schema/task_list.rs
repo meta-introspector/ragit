@@ -56,44 +56,45 @@ pub fn try_extract_task_list(s: &str) -> Result<String, String> {
                         this_line_must_be_another_task: false,
                     };
                 }
-            },
-            ParseState::LookingAtTaskList { marker, this_line_must_be_another_task } => {
+            }
+            ParseState::LookingAtTaskList {
+                marker,
+                this_line_must_be_another_task,
+            } => {
                 if EMPTY_RE.is_match(line) {
                     curr_state = ParseState::AfterTaskList;
-                }
-
-                else if let Some(cap) = TASK_LIST_RE.captures(line) {
+                } else if let Some(cap) = TASK_LIST_RE.captures(line) {
                     let curr_marker = cap.get(2).unwrap().as_str().chars().next().unwrap();
 
                     if curr_marker != *marker {
-                        return Err(format!("I see multiple task lists in your output, each having different markers: `{curr_marker}` and `{marker}`. Please give me exactly one task list."));
+                        return Err(format!(
+                            "I see multiple task lists in your output, each having different markers: `{curr_marker}` and `{marker}`. Please give me exactly one task list."
+                        ));
                     }
 
                     buffer.push(line);
-                }
-
-                else if *this_line_must_be_another_task {
+                } else if *this_line_must_be_another_task {
                     curr_state = ParseState::AfterTaskList;
-                }
-
-                else {
+                } else {
                     *this_line_must_be_another_task = true;
                     buffer.push(line);
                 }
-            },
+            }
             ParseState::AfterTaskList => {
                 if TASK_LIST_RE.is_match(line) {
-                    return Err(String::from("I see multiple task lists in your output. Please give me exactly one task list."));
+                    return Err(String::from(
+                        "I see multiple task lists in your output. Please give me exactly one task list.",
+                    ));
                 }
-            },
+            }
         }
     }
 
     if buffer.is_empty() {
-        Err(String::from("I cannot find a task list in your output. Please give me a markdown task list. A task list consists of lines where each line starts with \"-\", followed by a whitespace, followed by \"[ ]\" (if the task is not complete) or \"[X]\" (if the task is complete), and followed by a task."))
-    }
-
-    else {
+        Err(String::from(
+            "I cannot find a task list in your output. Please give me a markdown task list. A task list consists of lines where each line starts with \"-\", followed by a whitespace, followed by \"[ ]\" (if the task is not complete) or \"[X]\" (if the task is complete), and followed by a task.",
+        ))
+    } else {
         Ok(buffer.join("\n"))
     }
 }

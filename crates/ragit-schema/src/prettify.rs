@@ -1,5 +1,5 @@
-use ragit_types::{FileSchema, ImageSchema};
 use anyhow::Error;
+use ragit_types::{FileSchema, ImageSchema};
 use serde_json::Value;
 
 pub trait Prettify {
@@ -13,18 +13,18 @@ impl Prettify for FileSchema {
         if self.is_processed {
             if let Value::Object(obj) = &mut result {
                 match obj.get_mut("uid") {
-                    Some(uid) => { *uid = prettify_uid(uid) },
-                    None => {},
+                    Some(uid) => *uid = prettify_uid(uid),
+                    None => {}
                 }
 
                 match obj.get_mut("last_updated") {
-                    Some(timestamp) => { *timestamp = prettify_timestamp(timestamp); },
-                    None => {},
+                    Some(timestamp) => {
+                        *timestamp = prettify_timestamp(timestamp);
+                    }
+                    None => {}
                 }
             }
-        }
-
-        else {
+        } else {
             if let Value::Object(obj) = &mut result {
                 for key in obj.keys().map(|k| k.to_string()).collect::<Vec<_>>() {
                     if key != "path" && key != "is_processed" {
@@ -44,8 +44,10 @@ impl Prettify for ImageSchema {
 
         if let Value::Object(obj) = &mut result {
             match obj.get_mut("uid") {
-                Some(uid) => { *uid = prettify_uid(uid); },
-                None => {},
+                Some(uid) => {
+                    *uid = prettify_uid(uid);
+                }
+                None => {}
             }
 
             obj.remove("bytes");

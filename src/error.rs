@@ -1,9 +1,9 @@
 use crate::uid::Uid;
 pub use ragit_api::Error as ApiError;
-pub use ragit_pdl::JsonType;
 use ragit_fs::FileError;
-use std::string::FromUtf8Error;
+pub use ragit_pdl::JsonType;
 use std::path::PathBuf;
+use std::string::FromUtf8Error;
 
 pub type Path = String;
 
@@ -12,10 +12,7 @@ pub enum Error {
     #[error("internal error: {0}")]
     Internal(String),
     #[error("json type error: {expected}, got {got}")]
-    JsonTypeError {
-        expected: JsonType,
-        got: JsonType,
-    },
+    JsonTypeError { expected: JsonType, got: JsonType },
     #[error(transparent)]
     ReqwestError(#[from] reqwest::Error),
     #[error(transparent)]
@@ -45,7 +42,10 @@ pub enum Error {
     #[error("no such chunk: {0}")]
     NoSuchChunk(Uid),
     #[error("no such file: {path:?}, {uid:?}")]
-    NoSuchFile { path: Option<PathBuf>, uid: Option<Uid> },
+    NoSuchFile {
+        path: Option<PathBuf>,
+        uid: Option<Uid>,
+    },
     #[error("broken index: {0}")]
     BrokenIndex(String),
     #[error("invalid config key: {0}")]
@@ -75,7 +75,10 @@ pub enum Error {
     #[error("feature not enabled: {action} requires feature {feature}")]
     FeatureNotEnabled { action: String, feature: String },
     #[error("invalid model name: {name}, candidates: {candidates:?}")]
-    InvalidModelName { name: String, candidates: Vec<String> },
+    InvalidModelName {
+        name: String,
+        candidates: Vec<String>,
+    },
     #[error("deprecated config: {key}, {message}")]
     DeprecatedConfig { key: String, message: String },
     #[error("dirty knowledge base")]
@@ -94,13 +97,13 @@ pub enum Error {
     PngEncodingError(#[from] png::EncodingError),
 }
 
-
-
 impl From<ragit_utils::error::Error> for Error {
     fn from(e: ragit_utils::error::Error) -> Self {
         match e {
             ragit_utils::error::Error::Internal(s) => Error::Internal(s),
-            ragit_utils::error::Error::JsonTypeError { expected, got } => Error::JsonTypeError { expected, got },
+            ragit_utils::error::Error::JsonTypeError { expected, got } => {
+                Error::JsonTypeError { expected, got }
+            }
             ragit_utils::error::Error::ReqwestError(e) => Error::ReqwestError(e),
             ragit_utils::error::Error::JsonSerdeError(e) => Error::JsonSerdeError(e),
             ragit_utils::error::Error::ImageError(e) => Error::ImageError(e),
@@ -138,5 +141,3 @@ impl From<ragit_utils::error::Error> for Error {
         }
     }
 }
-
-

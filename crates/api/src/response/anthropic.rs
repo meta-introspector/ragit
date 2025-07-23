@@ -31,9 +31,11 @@ struct AnthropicUsage {
 impl IntoChatResponse for AnthropicResponse {
     fn into_chat_response(&self) -> Result<Response, Error> {
         Ok(Response {
-            messages: self.content.iter().map(
-                |content| content.text.to_string()
-            ).collect(),
+            messages: self
+                .content
+                .iter()
+                .map(|content| content.text.to_string())
+                .collect(),
             reasonings: self.content.iter().map(|_| None).collect(),
             output_tokens: self.usage.output_tokens,
             prompt_tokens: self.usage.input_tokens,

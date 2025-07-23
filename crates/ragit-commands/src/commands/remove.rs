@@ -24,14 +24,7 @@ pub fn remove_command_main(args: &[String]) -> Result<(), Error> {
     let processed = parsed_args.get_flag(4).is_some();
     let query = parsed_args.get_args();
 
-    let result = index.remove_files(
-        &query,
-        dry_run,
-        recursive,
-        auto,
-        staged,
-        processed,
-    )?;
+    let result = index.remove_files(&query, dry_run, recursive, auto, staged, processed)?;
 
     println!("{result}");
 

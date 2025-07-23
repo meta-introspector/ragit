@@ -6,19 +6,12 @@
 // 3. If something goes wrong while an ii is building, you have to build it from scratch.
 
 use super::index_struct::Index;
-use crate::index::commands::archive::erase_lines;
 use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME, INDEX_FILE_NAME};
 use crate::error::Error;
-use ragit_uid::{Uid, UidWriteMode};
+use crate::index::commands::archive::erase_lines;
 use crate::ragit_path_utils::{get_ii_path, join3_paths, pathbuf_to_str, str_to_pathbuf};
-use ragit_fs::{
-    exists,
-    is_dir,
-    parent,
-    read_dir,
-    remove_dir_all,
-    try_create_dir,
-};
+use ragit_fs::{exists, is_dir, parent, read_dir, remove_dir_all, try_create_dir};
+use ragit_uid::{Uid, UidWriteMode};
 use serde::{Deserialize, Serialize};
 use sha3::{Digest, Sha3_256};
 use std::cmp::Ordering;
@@ -26,7 +19,7 @@ use std::collections::HashMap;
 
 pub type Term = String;
 pub type Weight = f32;
-const AUTO_FLUSH: usize = 65536;  // TODO: make it configurable
+const AUTO_FLUSH: usize = 65536; // TODO: make it configurable
 
 // It takes too long to iterate all the terms and chunks.
 const CHECK_II_LIMIT: usize = 512;
@@ -69,12 +62,17 @@ impl Index {
 
         for (term, weight) in terms.iter() {
             let chunk_uids = self.search_ii_by_term(term)?;
-            let score = weight * ((self.chunk_count + 1) as f32 / (chunk_uids.len() + 1) as f32).log2();
+            let score =
+                weight * ((self.chunk_count + 1) as f32 / (chunk_uids.len() + 1) as f32).log2();
 
             for chunk_uid in chunk_uids.iter() {
                 match result.get_mut(chunk_uid) {
-                    Some(score_) => { *score_ += score; },
-                    None => { result.insert(*chunk_uid, score); },
+                    Some(score_) => {
+                        *score_ += score;
+                    }
+                    None => {
+                        result.insert(*chunk_uid, score);
+                    }
                 }
             }
         }
@@ -82,7 +80,9 @@ impl Index {
         let mut result = result.into_iter().collect::<Vec<_>>();
 
         // It has to be sorted in reverse order
-        result.sort_by(|(_, score_a), (_, score_b)| score_b.partial_cmp(score_a).unwrap_or(Ordering::Equal));
+        result.sort_by(|(_, score_a), (_, score_b)| {
+            score_b.partial_cmp(score_a).unwrap_or(Ordering::Equal)
+        });
 
         if result.len() > limit {
             result = result[..limit].to_vec();
@@ -96,23 +96,21 @@ impl Index {
 
         if exists(&ii_path) {
             Ok(ragit_uid::load_from_file(&ii_path)?)
-        }
-
-        else {
+        } else {
             Ok(vec![])
         }
     }
 
     pub fn build_ii(&mut self, quiet: bool) -> Result<(), Error> {
         match self.ii_status {
-            IIStatus::None => {},
+            IIStatus::None => {}
             IIStatus::Complete => {
                 return Ok(());
-            },
+            }
             // TODO: resuming `Ongoing` ii-build is not implemented yet
             IIStatus::Outdated | IIStatus::Ongoing(_) => {
                 self.reset_ii()?;
-            },
+            }
         }
 
         let mut buffer = HashMap::with_capacity(AUTO_FLUSH);
@@ -138,7 +136,7 @@ impl Index {
             if buffer.len() > AUTO_FLUSH {
                 self.ii_status = IIStatus::Ongoing(*uid_check_point.unwrap());
                 uid_check_point = None;
-		self.save_to_file(self.root_dir.join(INDEX_FILE_NAME))?;
+                self.save_to_file(self.root_dir.join(INDEX_FILE_NAME))?;
 
                 self.flush_ii_buffer(buffer)?;
                 buffer = HashMap::with_capacity(AUTO_FLUSH);
@@ -178,23 +176,25 @@ impl Index {
         Ok(())
     }
 
-    
-
     pub fn is_ii_built(&self) -> bool {
         self.ii_status == IIStatus::Complete
     }
 
-    pub(crate) fn update_ii_buffer(&self, buffer: &mut HashMap<Term, Vec<Uid>>, uid: Uid) -> Result<(), Error> {
+    pub(crate) fn update_ii_buffer(
+        &self,
+        buffer: &mut HashMap<Term, Vec<Uid>>,
+        uid: Uid,
+    ) -> Result<(), Error> {
         let tfidf = self.get_tfidf_by_chunk_uid(uid)?;
 
         for term in tfidf.term_frequency.keys() {
             match buffer.get_mut::<str>(term) {
                 Some(uids) => {
                     uids.push(uid);
-                },
+                }
                 None => {
                     buffer.insert(term.to_string(), vec![uid]);
-                },
+                }
             }
         }
 
@@ -215,9 +215,7 @@ impl Index {
                 let mut prev_uids = ragit_uid::load_from_file(&ii_path)?;
                 prev_uids.extend(uids);
                 prev_uids
-            }
-
-            else {
+            } else {
                 uids
             };
 
@@ -227,11 +225,7 @@ impl Index {
         Ok(())
     }
 
-    fn render_ii_build_dashboard(
-        &self,
-        state: &IIBuildState,
-        has_to_erase_lines: bool,
-    ) {
+    fn render_ii_build_dashboard(&self, state: &IIBuildState, has_to_erase_lines: bool) {
         if has_to_erase_lines {
             erase_lines(6);
         }

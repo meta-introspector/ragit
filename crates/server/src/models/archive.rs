@@ -21,19 +21,27 @@ pub async fn get_list(session_id: &str, pool: &PgPool) -> Result<Vec<String>, Er
     let rows = crate::query!(
         "SELECT archive_id FROM archive WHERE session_id = $1",
         session_id,
-    ).fetch_all(pool).await?;
+    )
+    .fetch_all(pool)
+    .await?;
 
     Ok(rows.into_iter().map(|row| row.archive_id).collect())
 }
 
-pub async fn get_archive(session_id: &str, archive_id: &str, pool: &PgPool) -> Result<Vec<u8>, Error> {
+pub async fn get_archive(
+    session_id: &str,
+    archive_id: &str,
+    pool: &PgPool,
+) -> Result<Vec<u8>, Error> {
     let row = crate::query!(
         "SELECT blob_id
         FROM archive
         WHERE session_id = $1 AND archive_id = $2",
         session_id,
         archive_id,
-    ).fetch_one(pool).await?;
+    )
+    .fetch_one(pool)
+    .await?;
 
     blob::get(&row.blob_id)
 }
@@ -42,7 +50,9 @@ pub async fn create_new_session(repo_id: i32, pool: &PgPool) -> Result<String, E
     let curr_sessions = crate::query!(
         "SELECT id FROM push_session WHERE repo_id = $1 AND session_state = 'going' LIMIT 1;",
         repo_id,
-    ).fetch_all(pool).await?;
+    )
+    .fetch_all(pool)
+    .await?;
 
     if curr_sessions.len() > 0 {
         // TODO: is it even an error?
@@ -62,15 +72,25 @@ pub async fn create_new_session(repo_id: i32, pool: &PgPool) -> Result<String, E
         VALUES ($1, $2, 'going', NOW())",
         &session_id,
         repo_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     Ok(session_id)
 }
 
-pub async fn add_archive(session_id: &str, archive_id: &str, archive: &[u8], pool: &PgPool) -> Result<(), Error> {
+pub async fn add_archive(
+    session_id: &str,
+    archive_id: &str,
+    archive: &[u8],
+    pool: &PgPool,
+) -> Result<(), Error> {
     let curr_session = crate::query!(
         "UPDATE push_session SET updated_at = NOW() WHERE id = $1",
         session_id,
-    ).execute(pool).await?.rows_affected();
+    )
+    .execute(pool)
+    .await?
+    .rows_affected();
 
     if curr_session == 0 {
         return Err(Error::NoSuchSession(session_id.to_string()));
@@ -91,7 +111,9 @@ pub async fn add_archive(session_id: &str, archive_id: &str, archive: &[u8], poo
         archive_id,
         archive.len() as i32,
         &blob_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     Ok(())
 }
 
@@ -108,7 +130,9 @@ pub async fn finalize_push(
         "UPDATE push_session SET session_state = $1, updated_at = NOW() WHERE id = $2",
         result.as_str(),
         session_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     crate::query!(
         "UPDATE repository
         SET
@@ -118,7 +142,9 @@ pub async fn finalize_push(
         WHERE id = $2",
         session_id,
         repo_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     crate::query!(
         "INSERT
         INTO repository_stat (repo_id, date_str, year, month, day, push, clone)
@@ -130,7 +156,9 @@ pub async fn finalize_push(
         year,
         month as i32,
         day as i32,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
 
     Ok(())
 }
@@ -150,15 +178,23 @@ pub async fn increment_clone_count(repo_id: i32, pool: &PgPool) -> Result<(), Er
         year,
         month as i32,
         day as i32,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     Ok(())
 }
 
-pub async fn is_first_archive(session_id: &str, archive_id: &str, pool: &PgPool) -> Result<bool, Error> {
+pub async fn is_first_archive(
+    session_id: &str,
+    archive_id: &str,
+    pool: &PgPool,
+) -> Result<bool, Error> {
     let maybe_row = crate::query!(
         "SELECT archive_id FROM archive WHERE session_id = $1 ORDER BY created_at DESC LIMIT 1",
         session_id,
-    ).fetch_all(pool).await?;
+    )
+    .fetch_all(pool)
+    .await?;
 
     match maybe_row.get(0) {
         Some(row) if row.archive_id == archive_id => Ok(true),

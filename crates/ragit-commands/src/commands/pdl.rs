@@ -74,7 +74,10 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
             }
 
             (
-                Some(str_to_pathbuf(&join(log_at, &format!("{}.pdl", now.to_rfc3339()))?)),
+                Some(str_to_pathbuf(&join(
+                    log_at,
+                    &format!("{}.pdl", now.to_rfc3339()),
+                )?)),
                 Some(log_at.to_string()),
             )
         }
@@ -84,11 +87,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         Some(schema) => Some(parse_schema(schema)?),
         None => None,
     };
-    let pdl = parse_pdl_from_file(
-        &pdl_at,
-        &tera::Context::from_value(context)?,
-        strict_mode,
-    )?;
+    let pdl = parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
     let schema = match (pdl.schema, arg_schema) {
         (_, Some(schema)) => Some(schema),
         (Some(schema), _) => Some(schema),
@@ -117,7 +116,9 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
 
     match schema {
         Some(schema) => {
-            let result = request.send_and_validate::<serde_json::Value>(serde_json::Value::Null).await?;
+            let result = request
+                .send_and_validate::<serde_json::Value>(serde_json::Value::Null)
+                .await?;
             render_pdl_schema(&schema, &result)?;
         }
         None => {

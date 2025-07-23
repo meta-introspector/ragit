@@ -1,27 +1,17 @@
-use async_std::task;
-use chrono::Local;
-use crate::{ApiProvider, Error};
-use crate::audit::{
-    AuditRecordAt,
-    dump_api_usage,
-    dump_pdl,
-};
+use crate::audit::{AuditRecordAt, dump_api_usage, dump_pdl};
 use crate::message::{message_contents_to_json_array, message_to_json};
 use crate::model::{Model, ModelRaw};
-use crate::response::Response;
-use ragit_fs::{
-    WriteMode,
-    create_dir_all,
-    join,
-    write_log,
-    write_string,
-};
-use ragit_pdl::{Message, Role, Schema};
 use crate::rate_limit::RateLimiter;
+use crate::response::Response;
+use crate::{ApiProvider, Error};
+use async_std::task;
+use chrono::Local;
+use ragit_fs::exists_str;
+use ragit_fs::{WriteMode, create_dir_all, join, write_log, write_string};
+use ragit_pdl::{Message, Role, Schema};
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 use std::time::{Duration, Instant};
-use ragit_fs::exists_str;
 #[derive(Clone, Debug)]
 pub struct Request {
     pub messages: Vec<Message>,
@@ -90,15 +80,14 @@ impl Request {
 
                 for message in self.messages.iter() {
                     if message.role == Role::System {
-                        match message_contents_to_json_array(&message.content, &ApiProvider::Google) {
+                        match message_contents_to_json_array(&message.content, &ApiProvider::Google)
+                        {
                             Value::Array(parts) => {
                                 system_prompt.push(parts);
-                            },
+                            }
                             _ => unreachable!(),
                         }
-                    }
-
-                    else {
+                    } else {
                         contents.push(message_to_json(message, &self.model.api_provider));
                     }
                 }
@@ -114,7 +103,7 @@ impl Request {
 
                 result.insert(String::from("contents"), contents.into());
                 result.into()
-            },
+            }
             ApiProvider::OpenAi { .. } | ApiProvider::Cohere => {
                 let mut result = Map::new();
                 result.insert(String::from("model"), self.model.api_name.clone().into());
@@ -139,7 +128,7 @@ impl Request {
                 }
 
                 result.into()
-            },
+            }
             ApiProvider::Anthropic => {
                 let mut result = Map::new();
                 result.insert(String::from("model"), self.model.api_name.clone().into());
@@ -149,9 +138,7 @@ impl Request {
                 for message in self.messages.iter() {
                     if message.role == Role::System {
                         system_prompt.push(message.content[0].unwrap_str().to_string());
-                    }
-
-                    else {
+                    } else {
                         messages.push(message_to_json(message, &ApiProvider::Anthropic));
                     }
                 }
@@ -173,10 +160,13 @@ impl Request {
                 }
 
                 // it's a required field
-                result.insert(String::from("max_tokens"), self.max_tokens.unwrap_or(2048).into());
+                result.insert(
+                    String::from("max_tokens"),
+                    self.max_tokens.unwrap_or(2048).into(),
+                );
 
                 result.into()
-            },
+            }
             ApiProvider::Test(_) => Value::Null,
         }
     }
@@ -195,11 +185,14 @@ impl Request {
             match state.schema.as_ref().unwrap().validate(&response) {
                 Ok(v) => {
                     return Ok(serde_json::from_value::<T>(v)?);
-                },
+                }
                 Err(error_message) => {
-                    messages.push(Message::simple_message(Role::Assistant, response.to_string()));
+                    messages.push(Message::simple_message(
+                        Role::Assistant,
+                        response.to_string(),
+                    ));
                     messages.push(Message::simple_message(Role::User, error_message));
-                },
+                }
             }
         }
 
@@ -275,42 +268,42 @@ impl Request {
         let api_key = self.model.get_api_key()?;
         write_log(
             "chat_request::send",
-            &format!("entered chat_request::send() with {} bytes, model: {}", body.len(), self.model.name),
+            &format!(
+                "entered chat_request::send() with {} bytes, model: {}",
+                body.len(),
+                self.model.name
+            ),
         );
 
         for _ in 0..(self.max_retry + 1) {
             let delay = rate_limiter.check_and_throttle().unwrap();
             task::sleep(delay).await;
 
-            let mut request = client.post(&post_url)
+            let mut request = client
+                .post(&post_url)
                 .header(reqwest::header::CONTENT_TYPE, "application/json")
                 .body(body.clone());
 
             match &self.model.api_provider {
                 ApiProvider::Anthropic => {
-                    request = request.header("x-api-key", api_key.clone())
+                    request = request
+                        .header("x-api-key", api_key.clone())
                         .header("anthropic-version", "2023-06-01");
-                },
-                ApiProvider::Google => {},
+                }
+                ApiProvider::Google => {}
                 _ if !api_key.is_empty() => {
                     request = request.bearer_auth(api_key.clone());
-                },
-                _ => {},
+                }
+                _ => {}
             }
 
             if let Some(t) = self.timeout {
                 request = request.timeout(Duration::from_millis(t));
             }
 
-            write_log(
-                "chat_request::send",
-                "a request sent",
-            );
+            write_log("chat_request::send", "a request sent");
             let response = request.send().await;
-            write_log(
-                "chat_request::send",
-                "got a response from a request",
-            );
+            write_log("chat_request::send", "got a response from a request");
 
             match response {
                 Ok(response) => match response.status().as_u16() {
@@ -321,22 +314,25 @@ impl Request {
                                     Err(e) => {
                                         write_log(
                                             "dump_json",
-                                            &format!("dump_json(\"response\", ..) failed with {e:?}"),
+                                            &format!(
+                                                "dump_json(\"response\", ..) failed with {e:?}"
+                                            ),
                                         );
-                                    },
-                                    Ok(_) => {},
+                                    }
+                                    Ok(_) => {}
                                 },
                                 Err(e) => {
                                     write_log(
                                         "dump_json",
                                         &format!("dump_json(\"response\", ..) failed with {e:?}"),
                                     );
-                                },
+                                }
                             }
 
                             match Response::from_str(&text, &self.model.api_provider) {
                                 Ok(result) => {
-                                    rate_limiter.record_usage(1, result.get_output_token_count() as u32);
+                                    rate_limiter
+                                        .record_usage(1, result.get_output_token_count() as u32);
                                     if let Some(key) = &self.dump_api_usage_at {
                                         if let Err(e) = dump_api_usage(
                                             key,
@@ -348,7 +344,9 @@ impl Request {
                                         ) {
                                             write_log(
                                                 "dump_api_usage",
-                                                &format!("dump_api_usage({key:?}, ..) failed with {e:?}"),
+                                                &format!(
+                                                    "dump_api_usage({key:?}, ..) failed with {e:?}"
+                                                ),
                                             );
                                         }
                                     }
@@ -356,7 +354,10 @@ impl Request {
                                     if let Some(path) = &self.dump_pdl_at {
                                         if let Err(e) = dump_pdl(
                                             &self.messages,
-                                            &result.get_message(0).map(|m| m.to_string()).unwrap_or(String::new()),
+                                            &result
+                                                .get_message(0)
+                                                .map(|m| m.to_string())
+                                                .unwrap_or(String::new()),
                                             &result.get_reasoning(0).map(|m| m.to_string()),
                                             path,
                                             format!(
@@ -364,12 +365,16 @@ impl Request {
                                                 self.model.name,
                                                 result.get_prompt_token_count(),
                                                 result.get_output_token_count(),
-                                                Instant::now().duration_since(started_at.clone()).as_millis(),
+                                                Instant::now()
+                                                    .duration_since(started_at.clone())
+                                                    .as_millis(),
                                             ),
                                         ) {
                                             write_log(
                                                 "dump_pdl",
-                                                &format!("dump_pdl({path:?}, ..) failed with {e:?}"),
+                                                &format!(
+                                                    "dump_pdl({path:?}, ..) failed with {e:?}"
+                                                ),
                                             );
 
                                             // TODO: should it return an error?
@@ -378,23 +383,23 @@ impl Request {
                                     }
 
                                     return Ok(result);
-                                },
+                                }
                                 Err(e) => {
                                     write_log(
                                         "Response::from_str",
                                         &format!("Response::from_str(..) failed with {e:?}"),
                                     );
                                     curr_error = e;
-                                },
+                                }
                             }
-                        },
+                        }
                         Err(e) => {
                             write_log(
                                 "response.text()",
                                 &format!("response.text() failed with {e:?}"),
                             );
                             curr_error = Error::ReqwestError(e);
-                        },
+                        }
                     },
                     status_code => {
                         curr_error = Error::ServerError {
@@ -423,10 +428,12 @@ impl Request {
                         //   - That's why it tries once even though there is an image.
                         // 2. `self.model.can_read_images` is false, and it cannot read images.
                         //   - There's no point in retrying, so it just escapes immediately with a better error.
-                        if !self.model.can_read_images && self.messages.iter().any(|message| message.has_image()) {
+                        if !self.model.can_read_images
+                            && self.messages.iter().any(|message| message.has_image())
+                        {
                             return Err(Error::CannotReadImage(self.model.name.clone()));
                         }
-                    },
+                    }
                 },
                 Err(e) => {
                     write_log(
@@ -434,7 +441,7 @@ impl Request {
                         &format!("request.send().await failed with {e:?}"),
                     );
                     curr_error = Error::ReqwestError(e);
-                },
+                }
             }
 
             task::sleep(Duration::from_millis(self.sleep_between_retries)).await
@@ -453,7 +460,11 @@ impl Request {
                 &dir,
                 &format!("{header}-{}.json", Local::now().to_rfc3339()),
             )?;
-            write_string(&path, &serde_json::to_string_pretty(j)?, WriteMode::AlwaysCreate)?;
+            write_string(
+                &path,
+                &serde_json::to_string_pretty(j)?,
+                WriteMode::AlwaysCreate,
+            )?;
         }
 
         Ok(())

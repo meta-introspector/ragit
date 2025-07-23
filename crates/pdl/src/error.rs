@@ -27,10 +27,7 @@ pub enum Error {
     #[error(transparent)]
     SchemaParseError(#[from] SchemaParseError),
     #[error("json type error: expected {expected}, got {got}")]
-    JsonTypeError {
-        expected: JsonType,
-        got: JsonType,
-    },
+    JsonTypeError { expected: JsonType, got: JsonType },
 
     /// see <https://docs.rs/serde_json/latest/serde_json/struct.Error.html>
     #[error(transparent)]
@@ -46,5 +43,3 @@ pub enum Error {
     #[error(transparent)]
     FromUtf8Error(#[from] std::string::FromUtf8Error),
 }
-
-

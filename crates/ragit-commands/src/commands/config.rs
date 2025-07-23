@@ -38,12 +38,14 @@ pub fn config_command_main(args: &[String]) -> Result<(), Error> {
             if &key == "model" {
                 let models = ragit_api::list_models(
                     &index.get_path().join("models.json"),
-                    &|_| true,  // no filter
-                    &|model| model,  // no map
+                    &|_| true,      // no filter
+                    &|model| model, // no map
                     &|model| model.name.to_string(),
                 )?;
 
-                if let Err(e @ ApiError::InvalidModelName { .. }) = get_model_by_name(&models, &value) {
+                if let Err(e @ ApiError::InvalidModelName { .. }) =
+                    get_model_by_name(&models, &value)
+                {
                     return Err(e.into());
                 }
             }
@@ -73,10 +75,7 @@ pub fn config_command_main(args: &[String]) -> Result<(), Error> {
                 println!("{{");
 
                 for (i, (k, v)) in kv.iter().enumerate() {
-                    println!(
-                        "    {k:?}: {v}{}",
-                        if i != kv.len() - 1 { "," } else { "" },
-                    );
+                    println!("    {k:?}: {v}{}", if i != kv.len() - 1 { "," } else { "" },);
                 }
 
                 println!("}}");
@@ -87,10 +86,16 @@ pub fn config_command_main(args: &[String]) -> Result<(), Error> {
             }
         }
         Some(flag) => {
-            return Err(Error::CliError(CliError::new_message_with_span(format!("Unknown flag: `{flag}`. Valid flags are --get | --get-all | --set."), Span::End.render(args, 2))));
+            return Err(Error::CliError(CliError::new_message_with_span(
+                format!("Unknown flag: `{flag}`. Valid flags are --get | --get-all | --set."),
+                Span::End.render(args, 2),
+            )));
         }
         None => {
-            return Err(Error::CliError(CliError::new_message_with_span(String::from("Flag `--get | --get-all | --set` is missing."), Span::End.render(args, 2))));
+            return Err(Error::CliError(CliError::new_message_with_span(
+                String::from("Flag `--get | --get-all | --set` is missing."),
+                Span::End.render(args, 2),
+            )));
         }
     }
 

@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
 use crate::chunk::chunk_extra_info::ChunkExtraInfo;
 use ragit_pdl::Image;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]

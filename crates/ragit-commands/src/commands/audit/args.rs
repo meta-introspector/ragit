@@ -27,9 +27,18 @@ impl AuditArgs {
         Ok(Self {
             this_week: parsed_args.get_flag(0).is_some(),
             since: Local::now().checked_sub_days(Days::new(7)).unwrap(),
-            category: parsed_args.arg_flags.get("--category").map(|c| c.to_string()),
-            show_tokens: parsed_args.get_flag(1).unwrap_or_else(|| String::from("--only-tokens")) != "--only-costs",
-            show_costs: parsed_args.get_flag(1).unwrap_or_else(|| String::from("--only-costs")) != "--only-tokens",
+            category: parsed_args
+                .arg_flags
+                .get("--category")
+                .map(|c| c.to_string()),
+            show_tokens: parsed_args
+                .get_flag(1)
+                .unwrap_or_else(|| String::from("--only-tokens"))
+                != "--only-costs",
+            show_costs: parsed_args
+                .get_flag(1)
+                .unwrap_or_else(|| String::from("--only-costs"))
+                != "--only-tokens",
             json_mode: parsed_args.get_flag(2).is_some(),
         })
     }

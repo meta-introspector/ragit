@@ -1,6 +1,6 @@
 use crate::error::Error;
-use ragit_pdl::{parse_pdl, Pdl};
 use ragit_api::MuseName;
+use ragit_pdl::{parse_pdl, Pdl};
 use strum::IntoEnumIterator;
 use tera::Context;
 
@@ -22,21 +22,22 @@ impl Index {
         let mut context = Context::new();
         context.insert("text", &text);
 
-        let Pdl { messages, .. } = parse_pdl(
-            pdl,
-            &context,
-            ".",
-            true,
-        )?;
+        let Pdl { messages, .. } = parse_pdl(pdl, &context, ".", true)?;
 
-        let processed = messages.into_iter().map(|msg| {
-            msg.content.into_iter().map(|content| {
-                match content {
-                    ragit_pdl::MessageContent::String(s) => s,
-                    _ => String::new(), // Handle other content types as needed, or error
-                }
-            }).collect::<String>()
-        }).collect::<String>();
+        let processed = messages
+            .into_iter()
+            .map(|msg| {
+                msg.content
+                    .into_iter()
+                    .map(|content| {
+                        match content {
+                            ragit_pdl::MessageContent::String(s) => s,
+                            _ => String::new(), // Handle other content types as needed, or error
+                        }
+                    })
+                    .collect::<String>()
+            })
+            .collect::<String>();
         Ok(processed)
     }
 }

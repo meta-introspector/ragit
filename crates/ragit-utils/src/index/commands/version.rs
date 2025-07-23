@@ -11,7 +11,10 @@ pub fn get_compatibility_warning(version_info: &VersionInfo) -> Option<String> {
     None
 }
 
-pub async fn version_command(args: Vec<String>, pre_args: crate::cli_types::ParsedArgs) -> Result<(), Error> {
+pub async fn version_command(
+    args: Vec<String>,
+    pre_args: crate::cli_types::ParsedArgs,
+) -> Result<(), Error> {
     println!("version_command is not yet implemented");
     Ok(())
 }

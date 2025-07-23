@@ -56,8 +56,6 @@ impl FileError {
             given_path: path,
         }
     }
-
-    
 }
 
 impl fmt::Debug for FileError {
@@ -121,10 +119,18 @@ impl From<WriteMode> for OpenOptions {
         let mut result = OpenOptions::new();
 
         match m {
-            WriteMode::AlwaysAppend => { result.append(true); },
-            WriteMode::AppendOrCreate => { result.append(true).create(true); },
-            WriteMode::CreateOrTruncate | WriteMode::Atomic => { result.write(true).truncate(true).create(true); },
-            WriteMode::AlwaysCreate => { result.write(true).create_new(true); },
+            WriteMode::AlwaysAppend => {
+                result.append(true);
+            }
+            WriteMode::AppendOrCreate => {
+                result.append(true).create(true);
+            }
+            WriteMode::CreateOrTruncate | WriteMode::Atomic => {
+                result.write(true).truncate(true).create(true);
+            }
+            WriteMode::AlwaysCreate => {
+                result.write(true).create_new(true);
+            }
         }
 
         result
@@ -150,7 +156,7 @@ pub fn read_bytes_offset(path: &str, from: u64, to: u64) -> Result<Vec<u8>, File
                 }
 
                 Ok(buffer)
-            },
+            }
         },
     }
 }
@@ -167,7 +173,7 @@ pub fn read_string(path: &str) -> Result<String, FileError> {
         Ok(mut f) => match f.read_to_string(&mut s) {
             Ok(_) => Ok(s),
             Err(e) => Err(FileError::from_std(e, path)),
-        }
+        },
     }
 }
 
@@ -186,12 +192,12 @@ pub fn write_bytes(path: &str, bytes: &[u8], write_mode: WriteMode) -> Result<()
                     Err(e) => {
                         remove_file(&tmp_path)?;
                         Err(e)
-                    },
+                    }
                 },
                 Err(e) => {
                     remove_file(&tmp_path)?;
                     Err(FileError::from_std(e, path))
-                },
+                }
             },
             Err(e) => Err(FileError::from_std(e, path)),
         }
@@ -212,47 +218,47 @@ pub fn write_string(path: &str, s: &str, write_mode: WriteMode) -> Result<(), Fi
 
 /// `a/b/c.d` -> `c`
 pub fn file_name(path: &str) -> Result<String, FileError> {
-    let path_buf = PathBuf::from_str(path).unwrap();  // it's infallible
+    let path_buf = PathBuf::from_str(path).unwrap(); // it's infallible
 
     match path_buf.file_stem() {
         None => Ok(String::new()),
         Some(s) => match s.to_str() {
             Some(ext) => Ok(ext.to_string()),
             None => Err(FileError::os_str_err(s.to_os_string())),
-        }
+        },
     }
 }
 
 /// `a/b/c.d` -> `d`
 pub fn extension(path: &str) -> Result<Option<String>, FileError> {
-    let path_buf = PathBuf::from_str(path).unwrap();  // it's infallible
+    let path_buf = PathBuf::from_str(path).unwrap(); // it's infallible
 
     match path_buf.extension() {
         None => Ok(None),
         Some(s) => match s.to_str() {
             Some(ext) => Ok(Some(ext.to_string())),
             None => Err(FileError::os_str_err(s.to_os_string())),
-        }
+        },
     }
 }
 
 /// `a/b/c.d` -> `c.d`
 pub fn basename(path: &str) -> Result<String, FileError> {
-    let path_buf = PathBuf::from_str(path).unwrap();  // it's infallible
+    let path_buf = PathBuf::from_str(path).unwrap(); // it's infallible
 
     match path_buf.file_name() {
-        None => Ok(String::new()),  // when the path terminates in `..`
+        None => Ok(String::new()), // when the path terminates in `..`
         Some(s) => match s.to_str() {
             Some(ext) => Ok(ext.to_string()),
             None => Err(FileError::os_str_err(s.to_os_string())),
-        }
+        },
     }
 }
 
 /// `a/b/`, `c.d` -> `a/b/c.d`
 pub fn join(path: &str, child: &str) -> Result<String, FileError> {
-    let mut path_buf = PathBuf::from_str(path).unwrap();  // Infallible
-    let child = PathBuf::from_str(child).unwrap();  // Infallible
+    let mut path_buf = PathBuf::from_str(path).unwrap(); // Infallible
+    let child = PathBuf::from_str(child).unwrap(); // Infallible
 
     path_buf.push(child);
 
@@ -278,29 +284,26 @@ pub fn join2(path: &str, child: &str) -> Result<String, FileError> {
 }
 
 pub fn join3(path1: &str, path2: &str, path3: &str) -> Result<String, FileError> {
-    join(
-        path1,
-        &join(path2, path3)?,
-    )
+    join(path1, &join(path2, path3)?)
 }
 
 pub fn join4(path1: &str, path2: &str, path3: &str, path4: &str) -> Result<String, FileError> {
-    join(
-        &join(path1, path2)?,
-        &join(path3, path4)?,
-    )
+    join(&join(path1, path2)?, &join(path3, path4)?)
 }
 
-pub fn join5(path1: &str, path2: &str, path3: &str, path4: &str, path5: &str) -> Result<String, FileError> {
-    join(
-        &join(path1, path2)?,
-        &join(path3, &join(path4, path5)?)?,
-    )
+pub fn join5(
+    path1: &str,
+    path2: &str,
+    path3: &str,
+    path4: &str,
+    path5: &str,
+) -> Result<String, FileError> {
+    join(&join(path1, path2)?, &join(path3, &join(path4, path5)?)?)
 }
 
 /// `a/b/c.d, e` -> `a/b/c.e`
 pub fn set_extension(path: &str, ext: &str) -> Result<String, FileError> {
-    let mut path_buf = PathBuf::from_str(path).unwrap();  // Infallible
+    let mut path_buf = PathBuf::from_str(path).unwrap(); // Infallible
 
     if path_buf.set_extension(ext) {
         match path_buf.to_str() {
@@ -314,11 +317,15 @@ pub fn set_extension(path: &str, ext: &str) -> Result<String, FileError> {
 }
 
 pub fn is_dir(path: &str) -> bool {
-    PathBuf::from_str(path).map(|path| path.is_dir()).unwrap_or(false)
+    PathBuf::from_str(path)
+        .map(|path| path.is_dir())
+        .unwrap_or(false)
 }
 
 pub fn is_symlink(path: &str) -> bool {
-    PathBuf::from_str(path).map(|path| path.is_symlink()).unwrap_or(false)
+    PathBuf::from_str(path)
+        .map(|path| path.is_symlink())
+        .unwrap_or(false)
 }
 
 pub fn exists(path: &PathBuf) -> bool {
@@ -326,7 +333,9 @@ pub fn exists(path: &PathBuf) -> bool {
 }
 
 pub fn exists_str(path: &str) -> bool {
-    PathBuf::from_str(path).map(|path| path.exists()).unwrap_or(false)
+    PathBuf::from_str(path)
+        .map(|path| path.exists())
+        .unwrap_or(false)
 }
 
 /// `a/b/c.d` -> `a/b/`
@@ -372,9 +381,7 @@ pub fn copy_dir(src: &str, dst: &str) -> Result<(), FileError> {
         if is_dir(&e) {
             create_dir_all(&new_dst)?;
             copy_dir(&e, &new_dst)?;
-        }
-
-        else {
+        } else {
             copy_file(&e, &new_dst)?;
         }
     }
@@ -384,7 +391,7 @@ pub fn copy_dir(src: &str, dst: &str) -> Result<(), FileError> {
 
 /// It returns the total number of bytes copied.
 pub fn copy_file(src: &str, dst: &str) -> Result<u64, FileError> {
-    std::fs::copy(src, dst).map_err(|e| FileError::from_std(e, src))  // TODO: how about dst?
+    std::fs::copy(src, dst).map_err(|e| FileError::from_std(e, src)) // TODO: how about dst?
 }
 
 // it only returns the hash value of the modified time
@@ -397,7 +404,7 @@ pub fn last_modified(path: &str) -> Result<u64, FileError> {
                 let hash = hasher.finish();
 
                 Ok(hash)
-            },
+            }
             Err(e) => Err(FileError::from_std(e, path)),
         },
         Err(e) => Err(FileError::from_std(e, path)),
@@ -421,12 +428,12 @@ pub fn read_dir(path: &str, sort: bool) -> Result<Vec<String>, FileError> {
                 match entry {
                     Err(e) => {
                         return Err(FileError::from_std(e, path));
-                    },
+                    }
                     Ok(e) => {
                         if let Some(ee) = e.path().to_str() {
                             result.push(ee.to_string());
                         }
-                    },
+                    }
                 }
             }
 
@@ -456,13 +463,8 @@ pub fn into_abs_path(path: &str) -> Result<String, FileError> {
 
     if std_path.is_absolute() {
         Ok(path.to_string())
-    }
-
-    else {
-        Ok(join(
-            &current_dir()?,
-            path,
-        )?)
+    } else {
+        Ok(join(&current_dir()?, path)?)
     }
 }
 
@@ -486,7 +488,10 @@ pub fn diff(path: &str, base: &str) -> Result<String, FileError> {
             Some(path) => Ok(path.to_string()),
             None => Err(FileError::os_str_err(path.into_os_string())),
         },
-        None => Err(FileError::cannot_diff_path(path.to_string(), base.to_string())),
+        None => Err(FileError::cannot_diff_path(
+            path.to_string(),
+            base.to_string(),
+        )),
     }
 }
 
@@ -496,12 +501,8 @@ pub fn get_relative_path(base: &str, path: &str) -> Result<String, FileError> {
     // It has to normalize the output because `diff` behaves differently on windows and unix.
     Ok(normalize(&diff(
         // in order to calc diff, it needs a full path
-        &normalize(
-            &into_abs_path(path)?,
-        )?,
-        &normalize(
-            &into_abs_path(base)?,
-        )?,
+        &normalize(&into_abs_path(path)?)?,
+        &normalize(&into_abs_path(base)?)?,
     )?)?)
 }
 
@@ -511,24 +512,28 @@ pub fn normalize(path: &str) -> Result<String, FileError> {
 
     for component in path.split("/") {
         match component {
-            c if c == "." => {},
+            c if c == "." => {}
 
             // this branch is messy and that's a design decision
             // It's obvious that `normalize("./foo")` is `"foo"` and
             // `normalize("./foo/../bar/")` is `"bar"`. But what about
             // `normalize("../foo")`? Is that an error or just `"../foo"`?
             // I chose `"../foo"` and that's just a design decision.
-            c if c == ".." => if result.is_empty() {
-                result.push(c.to_string());
-            } else {
-                let p = result.pop().unwrap().to_string();
+            c if c == ".." => {
+                if result.is_empty() {
+                    result.push(c.to_string());
+                } else {
+                    let p = result.pop().unwrap().to_string();
 
-                if p == ".." {
-                    result.push(p);
+                    if p == ".." {
+                        result.push(p);
+                    }
                 }
-            },
+            }
 
-            c => { result.push(c.to_string()); },
+            c => {
+                result.push(c.to_string());
+            }
         }
     }
 

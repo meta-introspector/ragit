@@ -2,7 +2,7 @@ use crate::api_provider::ApiProvider;
 use crate::error::Error;
 use ragit_fs::join4;
 
-use super::{QualityExpectations, TestModel, ModelRaw};
+use super::{ModelRaw, QualityExpectations, TestModel};
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 
@@ -59,26 +59,27 @@ impl Clone for Model {
 
 impl PartialEq for Model {
     fn eq(&self, other: &Self) -> bool {
-        self.name == other.name &&
-        self.api_name == other.api_name &&
-        self.can_read_images == other.can_read_images &&
-        self.api_provider == other.api_provider &&
-        self.dollars_per_1b_input_tokens == other.dollars_per_1b_input_tokens &&
-        self.dollars_per_1b_output_tokens == other.dollars_per_1b_output_tokens &&
-        self.api_timeout == other.api_timeout &&
-        self.explanation == other.explanation &&
-        self.api_key == other.api_key &&
-        self.api_env_var == other.api_env_var &&
-        self.requests_per_minute == other.requests_per_minute &&
-        self.requests_per_day == other.requests_per_day &&
-        self.tokens_per_minute == other.tokens_per_minute &&
-        self.tokens_per_day == other.tokens_per_day &&
-        self.quality_expectations == other.quality_expectations &&
-        self.expected_response_time_ms == other.expected_response_time_ms &&
-        self.initial_score == other.initial_score &&
-        self.api_keys == other.api_keys &&
-        self.api_env_vars == other.api_env_vars &&
-        self.current_key_index.load(Ordering::SeqCst) == other.current_key_index.load(Ordering::SeqCst)
+        self.name == other.name
+            && self.api_name == other.api_name
+            && self.can_read_images == other.can_read_images
+            && self.api_provider == other.api_provider
+            && self.dollars_per_1b_input_tokens == other.dollars_per_1b_input_tokens
+            && self.dollars_per_1b_output_tokens == other.dollars_per_1b_output_tokens
+            && self.api_timeout == other.api_timeout
+            && self.explanation == other.explanation
+            && self.api_key == other.api_key
+            && self.api_env_var == other.api_env_var
+            && self.requests_per_minute == other.requests_per_minute
+            && self.requests_per_day == other.requests_per_day
+            && self.tokens_per_minute == other.tokens_per_minute
+            && self.tokens_per_day == other.tokens_per_day
+            && self.quality_expectations == other.quality_expectations
+            && self.expected_response_time_ms == other.expected_response_time_ms
+            && self.initial_score == other.initial_score
+            && self.api_keys == other.api_keys
+            && self.api_env_vars == other.api_env_vars
+            && self.current_key_index.load(Ordering::SeqCst)
+                == other.current_key_index.load(Ordering::SeqCst)
     }
 }
 
@@ -213,8 +214,14 @@ impl Model {
         }
 
         if available_keys.is_empty() {
-            return if self.api_key.is_some() || self.api_env_var.is_some() || self.api_keys.is_some() || self.api_env_vars.is_some() {
-                Err(Error::ApiKeyNotFound { env_var: self.api_env_var.clone() })
+            return if self.api_key.is_some()
+                || self.api_env_var.is_some()
+                || self.api_keys.is_some()
+                || self.api_env_vars.is_some()
+            {
+                Err(Error::ApiKeyNotFound {
+                    env_var: self.api_env_var.clone(),
+                })
             } else {
                 Ok(String::new()) // No key required
             };
@@ -235,12 +242,7 @@ impl Model {
 
         // Try to find the API key in ~/.config/ragit/models.json
         if let Ok(home_dir) = std::env::var("HOME") {
-            let config_path = join4(
-                &home_dir,
-                ".config",
-                "ragit",
-                "models.json",
-            )?;
+            let config_path = join4(&home_dir, ".config", "ragit", "models.json")?;
 
             if let Some(key) = self.find_api_key_in_file(&config_path)? {
                 return Ok(Some(key));
@@ -297,9 +299,10 @@ impl Model {
     }
 
     pub fn default_models() -> Vec<Model> {
-        ModelRaw::default_models().iter().map(
-            |model| model.try_into().unwrap()
-        ).collect()
+        ModelRaw::default_models()
+            .iter()
+            .map(|model| model.try_into().unwrap())
+            .collect()
     }
 }
 
@@ -311,10 +314,7 @@ impl TryFrom<&ModelRaw> for Model {
             name: m.name.clone(),
             api_name: m.api_name.clone(),
             can_read_images: m.can_read_images,
-            api_provider: ApiProvider::parse(
-                &m.api_provider,
-                &m.api_url,
-            )?,
+            api_provider: ApiProvider::parse(&m.api_provider, &m.api_url)?,
             dollars_per_1b_input_tokens: (m.input_price * 1000.0).round() as u64,
             dollars_per_1b_output_tokens: (m.output_price * 1000.0).round() as u64,
             api_timeout: m.api_timeout.unwrap_or(180),

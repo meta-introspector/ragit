@@ -1,7 +1,7 @@
 use super::auth;
-use chrono::{DateTime, Utc};
-use chrono::serde::{ts_milliseconds, ts_milliseconds_option};
 use crate::error::Error;
+use chrono::serde::{ts_milliseconds, ts_milliseconds_option};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPool;
 
@@ -25,7 +25,7 @@ pub struct Repository {
     pub description: Option<String>,
     pub website: Option<String>,
     pub stars: i32,
-    pub repo_size: i64,  // sum of the size of its archives, in bytes
+    pub repo_size: i64, // sum of the size of its archives, in bytes
     pub tags: Vec<String>,
     #[serde(with = "ts_milliseconds")]
     pub created_at: DateTime<Utc>,
@@ -177,11 +177,17 @@ pub async fn check_existence(user: &str, repo: &str, pool: &PgPool) -> Result<bo
         "SELECT id FROM repository WHERE owner = $1 AND name = $2",
         user,
         repo,
-    ).fetch_all(pool).await?;
+    )
+    .fetch_all(pool)
+    .await?;
     Ok(!rows.is_empty())
 }
 
-pub async fn create_and_return_id(user: &str, repo: &RepoCreation, pool: &PgPool) -> Result<i32, Error> {
+pub async fn create_and_return_id(
+    user: &str,
+    repo: &RepoCreation,
+    pool: &PgPool,
+) -> Result<i32, Error> {
     let repo_id = crate::query!(
         "INSERT
         INTO repository (
@@ -233,7 +239,10 @@ pub async fn create_and_return_id(user: &str, repo: &RepoCreation, pool: &PgPool
         repo.public_clone,
         repo.public_push,
         repo.public_chat,
-    ).fetch_one(pool).await?.id;
+    )
+    .fetch_one(pool)
+    .await?
+    .id;
 
     Ok(repo_id)
 }
@@ -260,7 +269,9 @@ pub async fn update_repo(repo_id: i32, repo: RepoUpdate, pool: &PgPool) -> Resul
         repo.public_push,
         repo.public_chat,
         repo_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     Ok(())
 }
 
@@ -268,7 +279,10 @@ pub async fn get_session_id(repo_id: i32, pool: &PgPool) -> Result<Option<String
     let session_id = crate::query!(
         "SELECT push_session_id FROM repository WHERE id = $1",
         repo_id,
-    ).fetch_one(pool).await?.push_session_id;
+    )
+    .fetch_one(pool)
+    .await?
+    .push_session_id;
 
     Ok(session_id)
 }
@@ -284,10 +298,15 @@ pub async fn get_traffic_by_key(repo_id: i32, key: &str, pool: &PgPool) -> Resul
         "SELECT push, clone FROM repository_stat WHERE repo_id = $1 AND date_str = $2",
         repo_id,
         key,
-    ).fetch_all(pool).await?;
+    )
+    .fetch_all(pool)
+    .await?;
 
     match maybe_row.get(0) {
-        Some(row) => Ok(Traffic { push: row.push as u64, clone: row.clone as u64 }),
+        Some(row) => Ok(Traffic {
+            push: row.push as u64,
+            clone: row.clone as u64,
+        }),
         None => Ok(Traffic { push: 0, clone: 0 }),
     }
 }
@@ -296,9 +315,14 @@ pub async fn get_traffic_all(repo_id: i32, pool: &PgPool) -> Result<Traffic, Err
     let row = crate::query!(
         "SELECT SUM(push) AS push, SUM(clone) AS clone FROM repository_stat WHERE repo_id = $1",
         repo_id,
-    ).fetch_one(pool).await?;
+    )
+    .fetch_one(pool)
+    .await?;
 
-    Ok(Traffic { push: row.push.unwrap_or(0) as u64, clone: row.clone.unwrap_or(0) as u64 })
+    Ok(Traffic {
+        push: row.push.unwrap_or(0) as u64,
+        clone: row.clone.unwrap_or(0) as u64,
+    })
 }
 
 pub async fn check_auth(
@@ -311,13 +335,7 @@ pub async fn check_auth(
         "SELECT owner, public_read, public_write, public_clone, public_push, public_chat FROM repository WHERE id = $1",
         repo_id,
     ).fetch_one(pool).await?;
-    let (
-        public_read,
-        public_write,
-        public_clone,
-        public_push,
-        public_chat,
-    ) = (
+    let (public_read, public_write, public_clone, public_push, public_chat) = (
         row.public_read,
         row.public_write,
         row.public_clone,
@@ -325,18 +343,25 @@ pub async fn check_auth(
         row.public_chat,
     );
 
-    match (operation, public_read, public_write, public_clone, public_push, public_chat) {
+    match (
+        operation,
+        public_read,
+        public_write,
+        public_clone,
+        public_push,
+        public_chat,
+    ) {
         (RepoOperation::Read, true, _, _, _, _)
         | (RepoOperation::Write, _, true, _, _, _)
         | (RepoOperation::Clone, _, _, true, _, _)
         | (RepoOperation::Push, _, _, _, true, _)
         | (RepoOperation::Chat, _, _, _, _, true) => {
             return Ok(true);
-        },
+        }
         _ if api_key.is_none() => {
             return Ok(false);
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     let permission = auth::get_user_id_from_api_key(api_key, pool).await?;
@@ -351,6 +376,8 @@ pub async fn update_search_index_build_time(repo_id: i32, pool: &PgPool) -> Resu
     crate::query!(
         "UPDATE repository SET search_index_built_at = NOW() WHERE id = $1",
         repo_id,
-    ).execute(pool).await?;
+    )
+    .execute(pool)
+    .await?;
     Ok(())
 }

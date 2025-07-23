@@ -15,8 +15,8 @@ mod task_list;
 pub use code_fence::try_extract_code_fence;
 pub use parse::{SchemaParseError, parse_schema};
 use parse_value::{JsonMatch, extract_jsonish_literal};
-pub use task_list::{count_task_list_elements, try_extract_task_list};
 pub use prompt::Prompt;
+pub use task_list::{count_task_list_elements, try_extract_task_list};
 
 #[cfg(test)]
 mod tests;
@@ -62,8 +62,7 @@ impl SchemaType {
 
     pub fn is_number(&self) -> bool {
         match self {
-            SchemaType::Integer
-            | SchemaType::Float => true,
+            SchemaType::Integer | SchemaType::Float => true,
             _ => false,
         }
     }
@@ -84,10 +83,10 @@ impl SchemaType {
 pub enum SchemaError {
     // _ is too (small | big | short | long). Make sure that _ (is at least | is at most | has at least | has at most) (N | N characters | N elements).
     RangeError {
-        s1: String,  // small | big | short | long
-        s2: String,  // is at least | is as most | has at least | has at most
-        s3: String,  // N | N characters | N elements  (constraint)
-        s4: Option<String>,  // N characters | N elements (current)
+        s1: String,         // small | big | short | long
+        s2: String,         // is at least | is as most | has at least | has at most
+        s3: String,         // N | N characters | N elements  (constraint)
+        s4: Option<String>, // N characters | N elements (current)
     },
     MissingKeys(Vec<String>),
     UnnecessaryKeys(Vec<String>),
@@ -113,20 +112,28 @@ impl SchemaError {
         match self {
             SchemaError::RangeError { s1, s2, s3, s4 } => format!(
                 "Your output is too {s1}. Make sure that the output {s2} {s3}.{}",
-                if let Some(s4) = s4 { format!(" Currently, it has {s4}.") } else { String::new() },
+                if let Some(s4) = s4 {
+                    format!(" Currently, it has {s4}.")
+                } else {
+                    String::new()
+                },
             ),
             SchemaError::MissingKeys(keys) => {
                 let schema_keys = schema.unwrap_keys();
 
                 format!(
                     "Your output is missing {}: {}. Make sure that your output contains {} key{}: {}",
-                    if keys.len() == 1 { "a field" } else { "fields "},
+                    if keys.len() == 1 {
+                        "a field"
+                    } else {
+                        "fields "
+                    },
                     keys.join(", "),
                     schema_keys.len(),
                     if schema_keys.len() == 1 { "" } else { "s" },
                     schema_keys.join(", "),
                 )
-            },
+            }
             SchemaError::UnnecessaryKeys(keys) => {
                 let schema_keys = schema.unwrap_keys();
 
@@ -139,11 +146,15 @@ impl SchemaError {
                     if schema_keys.len() == 1 { "" } else { "s" },
                     schema_keys.join(", "),
                 )
-            },
+            }
             SchemaError::ErrorInObject { key, error } => match error.as_ref() {
                 SchemaError::RangeError { s1, s2, s3, s4 } => format!(
                     "Field `{key}` of your output is too {s1}. Make sure that the field {s2} {s3}.{}",
-                    if let Some(s4) = s4 { format!(" Currently, it has {s4}.") } else { String::new() },
+                    if let Some(s4) = s4 {
+                        format!(" Currently, it has {s4}.")
+                    } else {
+                        String::new()
+                    },
                 ),
                 SchemaError::TypeError { expected, got } => format!(
                     "Field `{key}` of your output has a wrong type. Make sure that the field is `{}`, not `{}`.",
@@ -165,7 +176,11 @@ impl SchemaError {
                         4 => String::from("fifth"),
                         n => format!("{}th", n + 1),
                     },
-                    if let Some(s4) = s4 { format!(" Currently, it has {s4}.") } else { String::new() },
+                    if let Some(s4) = s4 {
+                        format!(" Currently, it has {s4}.")
+                    } else {
+                        String::new()
+                    },
                 ),
                 SchemaError::TypeError { expected, got } => format!(
                     "The {} value of your output has a wrong type. Make sure all the elements are `{}`, not `{}`.",
@@ -207,8 +222,10 @@ impl Schema {
         let v = match serde_json::from_str::<Value>(&extracted_text) {
             Ok(v) => v,
             Err(_) => {
-                return Err(String::from("I cannot parse your json output. Please make sure that your output contains valid json with valid data."));
-            },
+                return Err(String::from(
+                    "I cannot parse your json output. Please make sure that your output contains valid json with valid data.",
+                ));
+            }
         };
 
         self.validate_value(&v).map_err(|e| e.prettify(self))?;
@@ -221,7 +238,7 @@ impl Schema {
                 Some(n) => {
                     check_range(SchemaType::Integer, &self.constraint, n)?;
                     Ok(())
-                },
+                }
                 None => Err(SchemaError::TypeError {
                     expected: SchemaType::Integer,
                     got: SchemaType::Float,
@@ -231,25 +248,28 @@ impl Schema {
                 Some(n) => {
                     check_range(SchemaType::Float, &self.constraint, n)?;
                     Ok(())
-                },
+                }
                 None => unreachable!(),
             },
             (ty @ (SchemaType::String | SchemaType::Code), Value::String(s)) => {
                 check_range(ty.clone(), &self.constraint, s.len())?;
                 Ok(())
-            },
+            }
             (SchemaType::Array(schema), Value::Array(v)) => {
                 if let Some(schema) = schema {
                     for (index, e) in v.iter().enumerate() {
                         if let Err(e) = schema.validate_value(e) {
-                            return Err(SchemaError::ErrorInArray { index, error: Box::new(e) });
+                            return Err(SchemaError::ErrorInArray {
+                                index,
+                                error: Box::new(e),
+                            });
                         }
                     }
                 }
 
                 check_range(SchemaType::Array(None), &self.constraint, v.len())?;
                 Ok(())
-            },
+            }
             (SchemaType::Object(obj_schema), Value::Object(obj)) => {
                 let mut keys_in_schema = HashSet::with_capacity(obj_schema.len());
                 let mut missing_keys = vec![];
@@ -260,17 +280,17 @@ impl Schema {
 
                     match obj.get(k) {
                         Some(v) => match v_schema.validate_value(v) {
-                            Ok(_) => {},
+                            Ok(_) => {}
                             Err(e) => {
                                 return Err(SchemaError::ErrorInObject {
                                     key: k.to_string(),
                                     error: Box::new(e),
                                 });
-                            },
+                            }
                         },
                         None => {
                             missing_keys.push(k.to_string());
-                        },
+                        }
                     }
                 }
 
@@ -282,20 +302,20 @@ impl Schema {
 
                 if !missing_keys.is_empty() {
                     Err(SchemaError::MissingKeys(missing_keys))
-                }
-
-                else if !unnecessary_keys.is_empty() {
+                } else if !unnecessary_keys.is_empty() {
                     Err(SchemaError::UnnecessaryKeys(unnecessary_keys))
-                }
-
-                else {
+                } else {
                     Ok(())
                 }
-            },
+            }
             (SchemaType::TaskList, Value::String(s)) => {
-                check_range(SchemaType::TaskList, &self.constraint, count_task_list_elements(s))?;
+                check_range(
+                    SchemaType::TaskList,
+                    &self.constraint,
+                    count_task_list_elements(s),
+                )?;
                 Ok(())
-            },
+            }
             (SchemaType::Boolean | SchemaType::Yesno, Value::Bool(_)) => Ok(()),
             (t1, t2) => Err(SchemaError::TypeError {
                 expected: t1.clone(),
@@ -312,48 +332,71 @@ impl Schema {
         match &self.r#type {
             SchemaType::Boolean | SchemaType::Yesno => {
                 let s = s.to_ascii_lowercase();
-                let t = if self.r#type == SchemaType::Boolean { s.contains("true")} else { s.contains("yes") };
-                let f = if self.r#type == SchemaType::Boolean { s.contains("false")} else { s.contains("no") };
+                let t = if self.r#type == SchemaType::Boolean {
+                    s.contains("true")
+                } else {
+                    s.contains("yes")
+                };
+                let f = if self.r#type == SchemaType::Boolean {
+                    s.contains("false")
+                } else {
+                    s.contains("no")
+                };
 
                 match (t, f) {
                     (true, false) => Ok(String::from("true")),
                     (false, true) => Ok(String::from("false")),
-                    (true, true) => if self.r#type == SchemaType::Boolean {
-                        Err(String::from("Your output contains both `true` and `false`. Please be specific."))
-                    } else {
-                        Err(String::from("Just say yes or no."))
-                    },
-                    (false, false) => if self.r#type == SchemaType::Boolean {
-                        Err(String::from("I cannot find `boolean` in your output. Please make sure that your output contains a valid json value."))
-                    } else {
-                        Err(String::from("Just say yes or no."))
-                    },
+                    (true, true) => {
+                        if self.r#type == SchemaType::Boolean {
+                            Err(String::from(
+                                "Your output contains both `true` and `false`. Please be specific.",
+                            ))
+                        } else {
+                            Err(String::from("Just say yes or no."))
+                        }
+                    }
+                    (false, false) => {
+                        if self.r#type == SchemaType::Boolean {
+                            Err(String::from(
+                                "I cannot find `boolean` in your output. Please make sure that your output contains a valid json value.",
+                            ))
+                        } else {
+                            Err(String::from("Just say yes or no."))
+                        }
+                    }
                 }
-            },
+            }
             SchemaType::Null => {
                 let low = s.to_ascii_lowercase();
 
                 if low == "null" || low == "none" {
                     Ok(String::from("null"))
-                }
-
-                else {
+                } else {
                     Err(format!("{s:?} is not null."))
                 }
-            },
+            }
             SchemaType::String => Ok(format!("{s:?}")),
             SchemaType::Code => Ok(format!("{:?}", try_extract_code_fence(s)?)),
             SchemaType::TaskList => Ok(format!("{:?}", try_extract_task_list(s)?)),
-            SchemaType::Integer | SchemaType::Float
-            | SchemaType::Array(_) | SchemaType::Object(_) => {
+            SchemaType::Integer
+            | SchemaType::Float
+            | SchemaType::Array(_)
+            | SchemaType::Object(_) => {
                 let mut jsonish_literals = extract_jsonish_literal(s);
 
                 match jsonish_literals.get_matches(&self.r#type) {
-                    JsonMatch::NoMatch => Err(format!("I cannot find `{}` in your output. Please make sure that your output contains a valid json value.", self.type_name())),
-                    JsonMatch::MultipleMatches => Err(format!("I see more than 1 candidates that look like `{}`. I don't know which one to choose. Please give me just one `{}`.", self.type_name(), self.type_name())),
+                    JsonMatch::NoMatch => Err(format!(
+                        "I cannot find `{}` in your output. Please make sure that your output contains a valid json value.",
+                        self.type_name()
+                    )),
+                    JsonMatch::MultipleMatches => Err(format!(
+                        "I see more than 1 candidates that look like `{}`. I don't know which one to choose. Please give me just one `{}`.",
+                        self.type_name(),
+                        self.type_name()
+                    )),
                     JsonMatch::Match(s) => Ok(s.to_string()),
                 }
-            },
+            }
         }
     }
 
@@ -442,91 +485,124 @@ impl Schema {
 
     pub fn validate_constraint(&self) -> Result<(), SchemaParseError> {
         match (&self.r#type, &self.constraint) {
-            (ty @ (SchemaType::Integer | SchemaType::Array(_) | SchemaType::String | SchemaType::TaskList | SchemaType::Code), Some(constraint)) => {
+            (
+                ty @ (SchemaType::Integer
+                | SchemaType::Array(_)
+                | SchemaType::String
+                | SchemaType::TaskList
+                | SchemaType::Code),
+                Some(constraint),
+            ) => {
                 let mut min_ = i64::MIN;
                 let mut max_ = i64::MAX;
 
                 if let Some(min) = &constraint.min {
                     match min.parse::<i64>() {
-                        Ok(n) => { min_ = n; },
+                        Ok(n) => {
+                            min_ = n;
+                        }
                         Err(_) => {
-                            return Err(SchemaParseError::InvalidConstraint(format!("{min:?} is not a valid integer.")));
-                        },
+                            return Err(SchemaParseError::InvalidConstraint(format!(
+                                "{min:?} is not a valid integer."
+                            )));
+                        }
                     }
                 }
 
                 if let Some(max) = &constraint.max {
                     match max.parse::<i64>() {
-                        Ok(n) => { max_ = n; },
+                        Ok(n) => {
+                            max_ = n;
+                        }
                         Err(_) => {
-                            return Err(SchemaParseError::InvalidConstraint(format!("{max:?} is not a valid integer.")));
-                        },
+                            return Err(SchemaParseError::InvalidConstraint(format!(
+                                "{max:?} is not a valid integer."
+                            )));
+                        }
                     }
                 }
 
                 if min_ > max_ {
-                    return Err(SchemaParseError::InvalidConstraint(format!("`min` ({min_}) is greater than `max` ({max_}).")));
+                    return Err(SchemaParseError::InvalidConstraint(format!(
+                        "`min` ({min_}) is greater than `max` ({max_})."
+                    )));
                 }
 
                 if matches!(ty, SchemaType::String) || matches!(ty, SchemaType::Array(_)) {
                     if constraint.min.is_some() && min_ < 0 {
-                        return Err(SchemaParseError::InvalidConstraint(format!("`min` is supposed to be a positive integer, but is {min_}")));
+                        return Err(SchemaParseError::InvalidConstraint(format!(
+                            "`min` is supposed to be a positive integer, but is {min_}"
+                        )));
                     }
 
                     if constraint.max.is_some() && max_ < 0 {
-                        return Err(SchemaParseError::InvalidConstraint(format!("`max` is supposed to be a positive integer, but is {max_}")));
+                        return Err(SchemaParseError::InvalidConstraint(format!(
+                            "`max` is supposed to be a positive integer, but is {max_}"
+                        )));
                     }
                 }
 
                 Ok(())
-            },
+            }
             (SchemaType::Float, Some(constraint)) => {
                 let mut min_ = f64::MIN;
                 let mut max_ = f64::MAX;
 
                 if let Some(min) = &constraint.min {
                     match min.parse::<f64>() {
-                        Ok(n) => { min_ = n; },
+                        Ok(n) => {
+                            min_ = n;
+                        }
                         Err(_) => {
-                            return Err(SchemaParseError::InvalidConstraint(format!("{min:?} is not a valid number.")));
-                        },
+                            return Err(SchemaParseError::InvalidConstraint(format!(
+                                "{min:?} is not a valid number."
+                            )));
+                        }
                     }
                 }
 
                 if let Some(max) = &constraint.max {
                     match max.parse::<f64>() {
-                        Ok(n) => { max_ = n; },
+                        Ok(n) => {
+                            max_ = n;
+                        }
                         Err(_) => {
-                            return Err(SchemaParseError::InvalidConstraint(format!("{max:?} is not a valid number.")));
-                        },
+                            return Err(SchemaParseError::InvalidConstraint(format!(
+                                "{max:?} is not a valid number."
+                            )));
+                        }
                     }
                 }
 
                 if min_ > max_ {
-                    return Err(SchemaParseError::InvalidConstraint(format!("`min` ({min_}) is greater than `max` ({max_}).")));
+                    return Err(SchemaParseError::InvalidConstraint(format!(
+                        "`min` ({min_}) is greater than `max` ({max_})."
+                    )));
                 }
 
                 Ok(())
-            },
-            (ty @ (SchemaType::Null | SchemaType::Boolean | SchemaType::Object(_) | SchemaType::Yesno), Some(constraint)) => {
+            }
+            (
+                ty @ (SchemaType::Null
+                | SchemaType::Boolean
+                | SchemaType::Object(_)
+                | SchemaType::Yesno),
+                Some(constraint),
+            ) => {
                 if constraint.min.is_some() {
                     Err(SchemaParseError::InvalidConstraint(format!(
                         "Type `{}` cannot have constraint `min`",
                         ty.type_name(),
                     )))
-                }
-
-                else if constraint.max.is_some() {
+                } else if constraint.max.is_some() {
                     Err(SchemaParseError::InvalidConstraint(format!(
                         "Type `{}` cannot have constraint `max`",
                         ty.type_name(),
                     )))
-                }
-
-                else {
+                } else {
                     Ok(())
                 }
-            },
+            }
             (_, None) => Ok(()),
         }
     }
@@ -556,11 +632,13 @@ pub fn render_pdl_schema(
     let s = match (&schema.r#type, value) {
         (SchemaType::Code, Value::String(s)) => s.to_string(),
         (SchemaType::TaskList, Value::String(s)) => s.to_string(),
-        (SchemaType::Yesno, Value::Bool(b)) => if *b {
-            String::from("yes")
-        } else {
-            String::from("no")
-        },
+        (SchemaType::Yesno, Value::Bool(b)) => {
+            if *b {
+                String::from("yes")
+            } else {
+                String::from("no")
+            }
+        }
         _ => serde_json::to_string_pretty(value)?,
     };
 
@@ -582,12 +660,10 @@ fn get_schema_type(v: &Value) -> SchemaType {
         Value::Number(n) => {
             if n.is_i64() {
                 SchemaType::Integer
-            }
-
-            else {
+            } else {
                 SchemaType::Float
             }
-        },
+        }
         Value::String(_) => SchemaType::String,
         Value::Array(_) => SchemaType::Array(None),
         Value::Object(_) => SchemaType::Object(vec![]),
@@ -596,7 +672,14 @@ fn get_schema_type(v: &Value) -> SchemaType {
     }
 }
 
-fn check_range<T: PartialOrd + FromStr + ToString + Display>(schema: SchemaType, constraint: &Option<Constraint>, n: T) -> Result<(), SchemaError> where <T as FromStr>::Err: Debug {
+fn check_range<T: PartialOrd + FromStr + ToString + Display>(
+    schema: SchemaType,
+    constraint: &Option<Constraint>,
+    n: T,
+) -> Result<(), SchemaError>
+where
+    <T as FromStr>::Err: Debug,
+{
     // It's okay to unwrap values because `Constraint` is always validated at creation.
     if let Some(constraint) = constraint {
         if let Constraint { min: Some(min), .. } = &constraint {
@@ -605,9 +688,25 @@ fn check_range<T: PartialOrd + FromStr + ToString + Display>(schema: SchemaType,
             if n < min {
                 return Err(SchemaError::RangeError {
                     s1: String::from(if schema.is_number() { "small" } else { "short" }),
-                    s2: String::from(if schema.is_number() { "is at least" } else { "has at least" }),
-                    s3: if schema.is_number() { min.to_string() } else if schema.is_array() { format!("{min} elements") } else { format!("{min} characters") },
-                    s4: if schema.is_number() { None } else if schema.is_array() { Some(format!("{n} elements")) } else { Some(format!("{n} characters")) },
+                    s2: String::from(if schema.is_number() {
+                        "is at least"
+                    } else {
+                        "has at least"
+                    }),
+                    s3: if schema.is_number() {
+                        min.to_string()
+                    } else if schema.is_array() {
+                        format!("{min} elements")
+                    } else {
+                        format!("{min} characters")
+                    },
+                    s4: if schema.is_number() {
+                        None
+                    } else if schema.is_array() {
+                        Some(format!("{n} elements"))
+                    } else {
+                        Some(format!("{n} characters"))
+                    },
                 });
             }
         }
@@ -618,9 +717,25 @@ fn check_range<T: PartialOrd + FromStr + ToString + Display>(schema: SchemaType,
             if n > max {
                 return Err(SchemaError::RangeError {
                     s1: String::from(if schema.is_number() { "big" } else { "long" }),
-                    s2: String::from(if schema.is_number() { "is at most" } else { "has at most" }),
-                    s3: if schema.is_number() { max.to_string() } else if schema.is_array() { format!("{max} elements") } else { format!("{max} characters") },
-                    s4: if schema.is_number() { None } else if schema.is_array() { Some(format!("{n} elements")) } else { Some(format!("{n} characters")) },
+                    s2: String::from(if schema.is_number() {
+                        "is at most"
+                    } else {
+                        "has at most"
+                    }),
+                    s3: if schema.is_number() {
+                        max.to_string()
+                    } else if schema.is_array() {
+                        format!("{max} elements")
+                    } else {
+                        format!("{max} characters")
+                    },
+                    s4: if schema.is_number() {
+                        None
+                    } else if schema.is_array() {
+                        Some(format!("{n} elements"))
+                    } else {
+                        Some(format!("{n} characters"))
+                    },
                 });
             }
         }

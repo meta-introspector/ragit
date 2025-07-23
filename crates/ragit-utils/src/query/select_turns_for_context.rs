@@ -42,17 +42,16 @@ pub fn select_turns_for_context(history: &[QueryTurn], query: &str) -> Vec<Strin
                         last_turn.response.response.to_string(),
                         query.to_string(),
                     ]
-                },
+                }
                 // start a new context
                 Some(MultiTurnSchema {
-                    in_context: false,
-                    ..
+                    in_context: false, ..
                 }) => vec![
                     last_turn.query.to_string(),
                     last_turn.response.response.to_string(),
                     query.to_string(),
                 ],
             }
-        },
+        }
     }
 }

@@ -1,7 +1,7 @@
-use ragit_uid::Uid;
 pub use ragit_api::Error as ApiError;
-pub use ragit_pdl::JsonType;
 pub use ragit_fs::FileError;
+pub use ragit_pdl::JsonType;
+use ragit_uid::Uid;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ErrorKind {
@@ -36,16 +36,20 @@ impl ErrorKind {
         match self {
             ErrorKind::ParseIntError(_) => String::from("Cannot parse int."),
             ErrorKind::IntegerNotInRange { min, max, n } => match (min, max) {
-                (Some(min), Some(max)) => format!("N is supposed to be between {min} and {max}, but is {n}."),
+                (Some(min), Some(max)) => {
+                    format!("N is supposed to be between {min} and {max}, but is {n}.")
+                }
                 (Some(min), None) => format!("N is supposed to be at least {min}, but is {n}."),
                 (None, Some(max)) => format!("N is supposed to be at most {max}, but is {n}."),
                 (None, None) => unreachable!(),
             },
-            ErrorKind::SameFlagMultipleTimes(prev, next) => if prev == next {
-                format!("Flag `{next}` cannot be used multiple times.")
-            } else {
-                format!("Flag `{prev}` and `{next}` cannot be used together.")
-            },
+            ErrorKind::SameFlagMultipleTimes(prev, next) => {
+                if prev == next {
+                    format!("Flag `{next}` cannot be used multiple times.")
+                } else {
+                    format!("Flag `{prev}` and `{next}` cannot be used together.")
+                }
+            }
             ErrorKind::MissingArgument(arg, arg_type) => format!(
                 "A {} value is required for flag `{arg}`, but is missing.",
                 format!("{arg_type:?}").to_ascii_lowercase(),
@@ -79,20 +83,15 @@ impl std::fmt::Display for ErrorKind {
     }
 }
 
-
-    
-use std::path::PathBuf;
 use crate::cli_types::{ArgCount, ArgType};
+use std::path::PathBuf;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("internal error: {0}")]
     Internal(String),
     #[error("json type error: {expected}, got {got}")]
-    JsonTypeError {
-        expected: JsonType,
-        got: JsonType,
-    },
+    JsonTypeError { expected: JsonType, got: JsonType },
     #[error(transparent)]
     ReqwestError(#[from] reqwest::Error),
     #[error(transparent)]
@@ -122,7 +121,10 @@ pub enum Error {
     #[error("no such chunk: {0}")]
     NoSuchChunk(Uid),
     #[error("no such file: {path:?}, {uid:?}")]
-    NoSuchFile { path: Option<PathBuf>, uid: Option<Uid> },
+    NoSuchFile {
+        path: Option<PathBuf>,
+        uid: Option<Uid>,
+    },
     #[error("broken index: {0}")]
     BrokenIndex(String),
     #[error("invalid config key: {0}")]
@@ -221,9 +223,7 @@ impl Span {
 
             if arg.contains(" ") || arg.contains("\"") || arg.contains("'") || arg.contains("\n") {
                 rendered_args.push(format!("{:?}", arg));
-            }
-
-            else {
+            } else {
                 rendered_args.push(arg.to_string());
             }
         }
@@ -255,17 +255,21 @@ impl Span {
             match new_span {
                 Span::End => (joined_args.len() - 1, joined_args.len()),
                 _ => (
-                    rendered_args[..selected_index].iter().map(|arg| arg.len()).sum::<usize>() + selected_index,
-                    rendered_args[..(selected_index + 1)].iter().map(|arg| arg.len()).sum::<usize>() + selected_index,
+                    rendered_args[..selected_index]
+                        .iter()
+                        .map(|arg| arg.len())
+                        .sum::<usize>()
+                        + selected_index,
+                    rendered_args[..(selected_index + 1)]
+                        .iter()
+                        .map(|arg| arg.len())
+                        .sum::<usize>()
+                        + selected_index,
                 ),
             }
         };
 
-        Span::Rendered((
-            joined_args,
-            start,
-            end,
-        ))
+        Span::Rendered((joined_args, start, end))
     }
 
     pub fn unwrap_rendered(&self) -> (String, usize, usize) {

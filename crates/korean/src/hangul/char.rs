@@ -1,11 +1,4 @@
-use super::{
-    종성_REV,
-    종성S,
-    중성_REV,
-    중성S,
-    초성_REV,
-    초성S,
-};
+use super::{종성_REV, 종성S, 중성_REV, 중성S, 초성_REV, 초성S};
 
 #[derive(Copy, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct 한글 {
@@ -31,15 +24,16 @@ impl 한글 {
         한글 {
             초성: 초성S[초성],
             중성: 중성S[중성],
-            종성: if 종성 == 0 { None } else { Some(종성S[종성 - 1]) },
+            종성: if 종성 == 0 {
+                None
+            } else {
+                Some(종성S[종성 - 1])
+            },
         }
     }
 
     pub fn to_u16(&self) -> u16 {
-        44032
-        + 초성_rev(self.초성) * 588
-        + 중성_rev(self.중성) * 28
-        + 종성_rev(self.종성)
+        44032 + 초성_rev(self.초성) * 588 + 중성_rev(self.중성) * 28 + 종성_rev(self.종성)
     }
 }
 

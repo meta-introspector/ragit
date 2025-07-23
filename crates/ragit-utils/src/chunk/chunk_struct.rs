@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use serde::{Deserialize, Serialize};
-use ragit_uid::Uid;
 use crate::chunk::ChunkSource;
+use ragit_uid::Uid;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChunkBuildInfo {

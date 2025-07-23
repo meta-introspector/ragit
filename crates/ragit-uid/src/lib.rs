@@ -1,7 +1,7 @@
+use ragit_fs::{read_bytes, write_bytes, WriteMode};
+pub use ragit_types::{Uid, UidType, UidWriteMode};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-pub use ragit_types::{Uid, UidType, UidWriteMode};
-use ragit_fs::{read_bytes, write_bytes, WriteMode};
 
 #[derive(Error, Debug)]
 pub enum UidError {
@@ -20,11 +20,19 @@ pub fn load_from_file(path: &std::path::PathBuf) -> Result<Vec<Uid>, UidError> {
     Ok(serde_json::from_slice(&bytes)?)
 }
 
-pub fn save_to_file(path: &std::path::PathBuf, uids: &Vec<Uid>, write_mode: UidWriteMode) -> Result<(), UidError> {
+pub fn save_to_file(
+    path: &std::path::PathBuf,
+    uids: &Vec<Uid>,
+    write_mode: UidWriteMode,
+) -> Result<(), UidError> {
     let bytes = serde_json::to_vec_pretty(uids)?;
     match write_mode {
-        UidWriteMode::Naive => write_bytes(path.to_str().unwrap(), &bytes, WriteMode::AlwaysCreate)?,
-        UidWriteMode::Compact => write_bytes(path.to_str().unwrap(), &bytes, WriteMode::AlwaysCreate)?,
+        UidWriteMode::Naive => {
+            write_bytes(path.to_str().unwrap(), &bytes, WriteMode::AlwaysCreate)?
+        }
+        UidWriteMode::Compact => {
+            write_bytes(path.to_str().unwrap(), &bytes, WriteMode::AlwaysCreate)?
+        }
     }
     Ok(())
 }
@@ -33,8 +41,8 @@ pub fn save_to_file(path: &std::path::PathBuf, uids: &Vec<Uid>, write_mode: UidW
 mod tests {
     use super::*;
     use sha3::{Digest, Sha3_256};
-    use std::str::FromStr;
     use std::fmt;
+    use std::str::FromStr;
 
     // The Uid struct and its impls are now in ragit-types, so we need to re-implement
     // the test-specific parts or adjust the tests to use the Uid from ragit-types.
@@ -47,7 +55,7 @@ mod tests {
                 let mut padded = [0; 16];
                 padded[(16 - bytes.len())..].copy_from_slice(bytes);
                 Ok(u128::from_be_bytes(padded))
-            },
+            }
             16 => Ok(u128::from_be_bytes(bytes.try_into().unwrap())),
             _ => Err(UidError::DecodeError),
         }
@@ -55,7 +63,8 @@ mod tests {
 
     #[test]
     fn uid_from_str_test() {
-        let uid = Uid::from_str("0000000000000000000000000000000000000000000000000000000000000001").unwrap();
+        let uid = Uid::from_str("0000000000000000000000000000000000000000000000000000000000000001")
+            .unwrap();
         assert_eq!(uid.high, 0);
         assert_eq!(uid.low, 1);
     }
@@ -63,7 +72,10 @@ mod tests {
     #[test]
     fn uid_to_str_test() {
         let uid = Uid { high: 0, low: 1 };
-        assert_eq!(uid.to_string(), "0000000000000000000000000000000000000000000000000000000000000001");
+        assert_eq!(
+            uid.to_string(),
+            "0000000000000000000000000000000000000000000000000000000000000001"
+        );
     }
 
     #[test]
@@ -120,18 +132,27 @@ mod tests {
 
     #[test]
     fn uid_prefix_suffix_test() {
-        let uid = Uid { high: 0x1234567890abcdef1234567890abcdef, low: 0xfedcba0987654321fedcba0987654321 };
+        let uid = Uid {
+            high: 0x1234567890abcdef1234567890abcdef,
+            low: 0xfedcba0987654321fedcba0987654321,
+        };
         let prefix = uid.get_prefix();
         let suffix = uid.get_suffix();
         assert_eq!(prefix, "12");
-        assert_eq!(suffix, "34567890abcdef1234567890abcdeffedcba0987654321fedcba0987654321");
+        assert_eq!(
+            suffix,
+            "34567890abcdef1234567890abcdeffedcba0987654321fedcba0987654321"
+        );
         let uid2 = Uid::from_prefix_and_suffix(&prefix, &suffix).unwrap();
         assert_eq!(uid, uid2);
     }
 
     #[test]
     fn uid_abbrev_test() {
-        let uid = Uid { high: 0x1234567890abcdef1234567890abcdef, low: 0xfedcba0987654321fedcba0987654321 };
+        let uid = Uid {
+            high: 0x1234567890abcdef1234567890abcdef,
+            low: 0xfedcba0987654321fedcba0987654321,
+        };
         assert_eq!(uid.abbrev(8), "12345678");
     }
 

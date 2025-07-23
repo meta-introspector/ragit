@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use ragit_uid::Uid;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum MultiModalContent {

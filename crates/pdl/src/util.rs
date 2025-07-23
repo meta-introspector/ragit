@@ -1,5 +1,5 @@
-use base64::Engine;
 use crate::error::Error;
+use base64::Engine;
 
 pub fn encode_base64(bytes: &[u8]) -> String {
     base64::prelude::BASE64_STANDARD.encode(bytes)

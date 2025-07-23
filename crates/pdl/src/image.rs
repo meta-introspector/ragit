@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
 use crate::error::Error;
-use regex::Regex;
 use ragit_uid::Uid;
+use regex::Regex;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
@@ -54,9 +54,7 @@ impl ImageType {
 
         if let Some(ext) = ext_re.captures(path) {
             ImageType::from_extension(ext.get(1).unwrap().as_str())
-        }
-
-        else {
+        } else {
             Err(Error::InvalidImageType(path.to_string()))
         }
     }
@@ -81,7 +79,9 @@ impl TryFrom<ImageType> for image::ImageFormat {
             ImageType::Png => Ok(image::ImageFormat::Png),
             ImageType::Gif => Ok(image::ImageFormat::Gif),
             ImageType::Webp => Ok(image::ImageFormat::WebP),
-            ImageType::Svg => Err(Error::InvalidImageType(image_type.to_extension().to_string())),
+            ImageType::Svg => Err(Error::InvalidImageType(
+                image_type.to_extension().to_string(),
+            )),
         }
     }
 }

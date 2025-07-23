@@ -1,8 +1,11 @@
-use crate::model::ModelRaw;
 use super::model_qa_system_struct::ModelQASystem;
+use crate::model::ModelRaw;
 
 impl ModelQASystem {
     pub fn new(models: Vec<ModelRaw>, throttling_safety_margin: f64) -> Self {
-        ModelQASystem { models, throttling_safety_margin }
+        ModelQASystem {
+            models,
+            throttling_safety_margin,
+        }
     }
 }

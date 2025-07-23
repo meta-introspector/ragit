@@ -1,30 +1,23 @@
 use std::collections::HashMap;
 
 use ragit_api::Request;
-use ragit_fs::{
-    WriteMode,
-    join,
-    write_string,
-};
-use ragit_pdl::{
-    Pdl,
-    Schema,
-    into_context,
-    parse_pdl,
-};
+use ragit_fs::{WriteMode, join, write_string};
+use ragit_pdl::{Pdl, Schema, into_context, parse_pdl};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::Uid;
 use crate::prelude::*;
 use ragit_pdl::Prompt;
 use ragit_utils::query::QueryResponse;
-use crate::Uid;
 
-use ragit_utils::agent::action::{Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType};
+use ragit_utils::agent::action::{
+    Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType,
+};
 use ragit_utils::agent::file_tree::FileTree;
+use ragit_utils::chunk::Chunk;
 use ragit_utils::index::index_struct::Index;
 use ragit_utils::path_utils;
-use ragit_utils::chunk::Chunk;
 
 // `derive(Serialize) for AgentState` has 2 purposes.
 //
@@ -70,17 +63,11 @@ impl AgentState {
     pub fn get_schema(&self) -> Option<Schema> {
         if self.has_enough_information {
             self.response_schema.clone()
-        }
-
-        else if self.needed_information.is_none() {
+        } else if self.needed_information.is_none() {
             None
-        }
-
-        else if self.has_action_to_run() {
+        } else if self.has_action_to_run() {
             self.action_states.last().unwrap().get_schema()
-        }
-
-        else {
+        } else {
             None
         }
     }
@@ -93,38 +80,30 @@ impl AgentState {
     ) -> Result<(), Error> {
         if self.has_enough_information {
             self.response = Some(input.as_str().unwrap().to_string());
-        }
-
-        else if self.needed_information.is_none() {
+        } else if self.needed_information.is_none() {
             self.needed_information = Some(input.as_str().unwrap().to_string());
-            self.action_states.push(ActionState::new(self.actions.clone()));
-        }
-
-        else if self.has_action_to_run() {
+            self.action_states
+                .push(ActionState::new(self.actions.clone()));
+        } else if self.has_action_to_run() {
             let last_action = self.action_states.last_mut().unwrap();
             last_action.update(input, index, action_traces).await?;
 
             match last_action.r#continue.as_ref().map(|s| s.as_str()) {
                 Some("yes") => {
-                    self.action_states.push(ActionState::new(self.actions.clone()));
-                },
+                    self.action_states
+                        .push(ActionState::new(self.actions.clone()));
+                }
                 Some("no") => {
                     self.is_actions_complete = true;
-                },
+                }
                 Some(s) => panic!("something went wrong: {s:?}"),
-                _ => {},
+                _ => {}
             }
-        }
-
-        else if self.new_information.is_none() {
+        } else if self.new_information.is_none() {
             self.new_information = Some(input.as_str().unwrap().to_string());
-        }
-
-        else if self.new_context.is_none() {
+        } else if self.new_context.is_none() {
             self.new_context = Some(input.as_str().unwrap().to_string());
-        }
-
-        else {
+        } else {
             unreachable!()
         }
 
@@ -145,9 +124,7 @@ impl AgentState {
     fn has_action_to_run(&self) -> bool {
         if let Some(action) = self.action_states.last() {
             action.r#continue.as_ref().map(|s| s.as_str()) != Some("no")
-        }
-
-        else {
+        } else {
             true
         }
     }
@@ -188,15 +165,15 @@ impl AgentResponse {
                     for chunk_uid in chunk_uids.iter() {
                         chunks.insert(*chunk_uid, index.get_chunk_by_uid(*chunk_uid)?);
                     }
-                },
+                }
                 ActionResult::SimpleRag(rag) => {
                     for chunk in rag.retrieved_chunks.iter() {
                         chunks.insert(chunk.uid, chunk.clone());
                     }
-                },
+                }
                 ActionResult::ReadChunk(chunk) => {
                     chunks.insert(chunk.uid, chunk.clone());
-                },
+                }
 
                 // `ReadFileLong` and `Search` have chunks, but many of them are
                 // irrelevant. The AI will likely to choose relevant ones from them
@@ -211,12 +188,10 @@ impl AgentResponse {
                 | ActionResult::Search { .. }
                 | ActionResult::GetMeta { .. }
                 | ActionResult::NoSuchMeta { .. }
-                | ActionResult::GetSummary(_) => {},
+                | ActionResult::GetSummary(_) => {}
             }
         }
 
         Ok(chunks.into_values().collect())
     }
 }
-
-

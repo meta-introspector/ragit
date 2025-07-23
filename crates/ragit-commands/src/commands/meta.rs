@@ -74,7 +74,12 @@ pub fn meta_command_main(args: &[String]) -> Result<(), Error> {
             return Err(Error::CliError(CliError::new_message_with_span(format!("Unknown flag: `{flag}`. Valid flags are --get | --get-all | --set | --remove | --remove-all."), Span::Exact(2).render(args, 2))));
         }
         None => {
-            return Err(Error::CliError(CliError::new_message_with_span(String::from("Flag `--get | --get-all | --set | --remove | --remove-all` is missing."), Span::End.render(args, 2))));
+            return Err(Error::CliError(CliError::new_message_with_span(
+                String::from(
+                    "Flag `--get | --get-all | --set | --remove | --remove-all` is missing.",
+                ),
+                Span::End.render(args, 2),
+            )));
         }
     }
 

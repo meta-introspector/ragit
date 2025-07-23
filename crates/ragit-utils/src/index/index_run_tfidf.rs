@@ -1,9 +1,9 @@
-use ragit_uid::Uid;
 use crate::error::Error;
-use crate::query::Keywords;
 use crate::prelude::*;
+use crate::query::Keywords;
+use ragit_uid::Uid;
 
-use super::{TfidfResult, TfidfState, consume_processed_doc};
+use super::{consume_processed_doc, TfidfResult, TfidfState};
 use crate::index::index_struct::Index;
 
 impl Index {
@@ -20,25 +20,14 @@ impl Index {
         let ii_coeff = 50;
 
         if self.query_config.enable_ii && self.is_ii_built() {
-            for chunk_uid in self.get_search_candidates(
-                &tfidf_state.terms,
-                limit * ii_coeff,
-            )? {
+            for chunk_uid in self.get_search_candidates(&tfidf_state.terms, limit * ii_coeff)? {
                 let processed_doc = self.get_tfidf_by_chunk_uid(chunk_uid)?;
-                consume_processed_doc(
-                    processed_doc,
-                    &mut tfidf_state,
-                )?;
+                consume_processed_doc(processed_doc, &mut tfidf_state)?;
             }
-        }
-
-        else {
+        } else {
             for tfidf_file in &self.get_all_tfidf_files()? {
                 let processed_doc = super::tfidf::load_from_file(tfidf_file.to_str().unwrap())?;
-                consume_processed_doc(
-                    processed_doc,
-                    &mut tfidf_state,
-                )?;
+                consume_processed_doc(processed_doc, &mut tfidf_state)?;
             }
         }
 
@@ -55,10 +44,7 @@ impl Index {
 
         for chunk in chunks.iter() {
             let processed_doc = self.get_tfidf_by_chunk_uid(*chunk)?;
-            consume_processed_doc(
-                processed_doc,
-                &mut tfidf_state,
-            )?;
+            consume_processed_doc(processed_doc, &mut tfidf_state)?;
         }
 
         Ok(tfidf_state.get_top(limit))

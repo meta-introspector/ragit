@@ -1,13 +1,17 @@
-use crate::prelude::*;
 use crate::index::index_struct::Index;
-use std::collections::HashMap;
+use crate::prelude::*;
 use ragit_api::AuditRecord;
+use std::collections::HashMap;
 use std::path::PathBuf;
 
 impl Index {
-    pub fn audit(&self, since: Option<chrono::DateTime<chrono::Local>>) -> Result<HashMap<String, AuditRecord>> {
+    pub fn audit(
+        &self,
+        since: Option<chrono::DateTime<chrono::Local>>,
+    ) -> Result<HashMap<String, AuditRecord>> {
         let mut result = HashMap::new();
-        let audit_path = crate::path_utils::get_rag_path(&self.root_dir, &PathBuf::from("audit"))?.join("audit");
+        let audit_path =
+            crate::path_utils::get_rag_path(&self.root_dir, &PathBuf::from("audit"))?.join("audit");
         if !audit_path.exists() {
             return Ok(result);
         }

@@ -1,12 +1,12 @@
+use crate::cli_types::{ArgCount, ArgParser, ArgType};
 use crate::error::Error;
 use crate::index::index_struct::Index;
 use crate::index::load_mode::LoadMode;
+use chrono::Local;
 use ragit_api::{get_model_by_name, Model, ModelRaw, Request};
-use crate::cli_types::{ArgCount, ArgParser, ArgType};
 use ragit_fs::{create_dir, exists, join, read_string};
 use ragit_pdl::{self, render_pdl_schema};
 use serde_json::Value;
-use chrono::Local;
 use std::path::PathBuf;
 
 pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error> {
@@ -74,11 +74,20 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
             let now = Local::now();
 
             if !exists(&PathBuf::from(log_at)) {
-                create_dir(PathBuf::from(log_at).to_str().ok_or_else(|| Error::Internal(format!("Invalid path: {}", log_at)))?)?;
+                create_dir(
+                    PathBuf::from(log_at)
+                        .to_str()
+                        .ok_or_else(|| Error::Internal(format!("Invalid path: {}", log_at)))?,
+                )?;
             }
 
             (
-                Some(join(PathBuf::from(log_at).to_str().ok_or_else(|| Error::Internal(format!("Invalid path: {}", log_at)))?, &format!("{}.pdl", now.to_rfc3339()))?),
+                Some(join(
+                    PathBuf::from(log_at)
+                        .to_str()
+                        .ok_or_else(|| Error::Internal(format!("Invalid path: {}", log_at)))?,
+                    &format!("{}.pdl", now.to_rfc3339()),
+                )?),
                 Some(log_at.to_string()),
             )
         }
@@ -88,11 +97,8 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
         Some(schema) => Some(ragit_pdl::parse_schema(schema)?),
         None => None,
     };
-    let pdl = ragit_pdl::parse_pdl_from_file(
-        &pdl_at,
-        &tera::Context::from_value(context)?,
-        strict_mode,
-    )?;
+    let pdl =
+        ragit_pdl::parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
     let schema = match (pdl.schema, arg_schema) {
         (_, Some(schema)) => Some(schema),
         (Some(schema), _) => Some(schema),
@@ -121,7 +127,9 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error
 
     match schema {
         Some(schema) => {
-            let result = request.send_and_validate::<serde_json::Value>(serde_json::Value::Null).await?;
+            let result = request
+                .send_and_validate::<serde_json::Value>(serde_json::Value::Null)
+                .await?;
             render_pdl_schema(&schema, &result)?;
         }
         None => {
