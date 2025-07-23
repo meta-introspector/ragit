@@ -11,3 +11,13 @@ crates/server/*.json
 *.diff
 crates/server/**/blobs/
 /.env
+
+# Temporary files
+#diff.txt#
+#patch.txt#
+.#diff.txt
+.#patch.txt
+diff.txt
+patch.txt
+t_models'
+logs/
