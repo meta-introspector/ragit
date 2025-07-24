@@ -2,34 +2,30 @@ use anyhow::anyhow;
 use crate::prelude::*;
 
 impl Index {
-    pub async fn extract_keywords(&self, _query: &str) -> Result<Keywords> {
+    pub async fn extract_keywords(&self, _query: &str) -> Result<Keywords, ApiError> {
         Err(anyhow!("Not implemented"))
     }
 
-    pub async fn load_chunks_or_tfidf(
+    pub async fn load_chunks_from_uids(
         &self,
-        query: &str,
-        limit: usize,
-    ) -> Result<Vec<Chunk>, Error> {
-        if self.chunk_count > limit {
-            let keywords = self.extract_keywords(query).await?;
-            let tfidf_results = self.run_tfidf(keywords, limit)?;
-            let mut chunks = Vec::with_capacity(tfidf_results.len());
+        uids: &[Uid],
+    ) -> Result<Vec<Chunk>, ApiError> {
+        let mut chunks = Vec::with_capacity(uids.len());
 
-            for tfidf_result in tfidf_results.into_iter() {
-                let uid = tfidf_result.id;
-                chunks.push(self.get_chunk_by_uid(uid)?);
-            }
-
-            Ok(chunks)
-        } else {
-            let mut chunks = vec![];
-
-            for chunk_path in &self.get_all_chunk_files()? {
-                chunks.push(ragit_types::chunk::load_from_file(chunk_path)?);
-            }
-
-            Ok(chunks)
+        for uid in uids {
+            chunks.push(self.get_chunk_by_uid(*uid)?);
         }
+
+        Ok(chunks)
+    }
+
+    pub async fn load_all_chunks(&self) -> Result<Vec<Chunk>, ApiError> {
+        let mut chunks = vec![];
+
+        for chunk_path in &self.get_all_chunk_files()? {
+            chunks.push(ragit_types::chunk::load_from_file(chunk_path)?);
+        }
+
+        Ok(chunks)
     }
 }

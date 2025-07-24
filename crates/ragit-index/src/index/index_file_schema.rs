@@ -1,68 +1,53 @@
-
 use crate::prelude::*;
 
 impl Index {
-    pub fn get_file_schema(
-        &self,
-        path: Option<String>,
-        uid: Option<Uid>,
-    ) -> Result<FileSchema, Error> {
-        if let Some(uid) = uid {
-            for (path, uid_) in self.processed_files.iter() {
-                if uid == *uid_ {
-                    return self.get_file_schema_worker(path.display().to_string(), uid);
-                }
-            }
-        }
-
-        if let Some(path) = &path {
-            if let Some(uid) = self.processed_files.get(Path::new(path)) {
-                return self.get_file_schema_worker(path.to_string(), *uid);
-            }
-
-            if self.staged_files.contains(&PathBuf::from(path)) {
-                return Ok(FileSchema {
-                    path: path.to_string(),
-                    is_processed: false,
-                    ..FileSchema::dummy()
-                });
-            }
-        }
-
-        Err(Error::NoSuchFile {
-            path: path.map(|s| s.into()),
+    pub fn get_file_schema(&self, uid: Uid) -> Result<FileSchema, ApiError> {
+        let file_schema_path = get_uid_path(
+            &self.root_dir,
+            &Path::new(FILE_INDEX_DIR_NAME),
             uid,
-        })
+            None,
+        )?;
+
+        if !exists(&file_schema_path) {
+            return Err(ApiError::NoSuchFile {
+                file: file_schema_path.to_string_lossy().to_string(),
+                similar_files: vec![],
+            });
+        }
+
+        let s = read_string(&file_schema_path)?;
+        Ok(serde_json::from_str(&s)?)
     }
 
-    pub(crate) fn get_file_schema_worker(
+    pub fn get_file_schema_from_path(
         &self,
-        path: String,
-        uid: Uid,
-    ) -> Result<FileSchema, Error> {
-        let file_size = uid.get_data_size();
-        let chunk_uids = self.get_chunks_of_file(uid).unwrap_or(vec![]);
-        let mut chunks = Vec::with_capacity(chunk_uids.len());
+        file_path: &PathBuf,
+    ) -> Result<FileSchema, ApiError> {
+        let uid = self
+            .processed_files
+            .get(file_path)
+            .ok_or_else(|| ApiError::NoSuchFile { file: file_path.to_string_lossy().to_string(), similar_files: vec![] })?;
 
-        for chunk_uid in chunk_uids.iter() {
-            chunks.push(self.get_chunk_by_uid(*chunk_uid)?);
-        }
+        self.get_file_schema(*uid)
+    }
 
-        chunks.sort_by_key(|chunk| chunk.timestamp);
+    pub fn get_chunk_build_info(
+        &self,
+        file_path: &PathBuf,
+    ) -> Result<(Model, usize), ApiError> {
+        let file_schema = self.get_file_schema_from_path(file_path)?;
 
-        let (model, last_updated) = match chunks.last() {
-            Some(chunk) => (chunk.build_info.model.clone(), chunk.timestamp),
+        Ok(match file_schema.chunk_build_info {
+            Some(chunk_build_info) => (
+                self.models
+                    .iter()
+                    .find(|m| m.name == chunk_build_info.model)
+                    .ok_or_else(|| ApiError::InvalidTestModel(chunk_build_info.model.clone()))?
+                    .clone(),
+                chunk_build_info.chunk_size,
+            ),
             None => (ChunkBuildInfo::default().model, 0),
-        };
-
-        Ok(FileSchema {
-            path,
-            is_processed: true,
-            length: file_size as u64,
-            uid,
-            chunks: chunks.len(),
-            model,
-            last_updated: last_updated as u64,
         })
     }
 }

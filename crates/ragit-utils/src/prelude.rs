@@ -4,6 +4,7 @@ pub use crate::{
     error::Error,
     prompts::PROMPTS,
     query::{Keywords, MultiTurnSchema, QueryConfig},
+    cli_types::{ArgParser, ArgType, ArgCount, ParsedArgs},
 
 };
 pub use anyhow::{anyhow, Result};

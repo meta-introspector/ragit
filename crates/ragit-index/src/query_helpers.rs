@@ -87,7 +87,7 @@ lazy_static! {
     static ref UID_RE: Regex = Regex::new(r"^([0-9a-z]{1,64})$").unwrap();
 }
 
-pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, Error> {
+pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, ApiError> {
     if q.is_empty() {
         return Ok(UidQueryResult::empty());
     }
@@ -387,4 +387,3 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
         staged_files,
     })
 }
-

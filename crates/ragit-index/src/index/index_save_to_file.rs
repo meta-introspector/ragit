@@ -1,13 +1,13 @@
 use crate::prelude::*;
 
 impl Index {
-    pub fn save_to_file(&self, path: PathBuf) -> Result<(), Error> {
-        self.save_prompts()?;
+    pub fn save_to_file(&self, path: PathBuf) -> Result<(), ApiError> {
+        write_string(
+            &path,
+            &serde_json::to_string_pretty(self)?,
+            WriteMode::CreateOrTruncate,
+        )?;
 
-        Ok(write_bytes(
-            path.to_str().unwrap(),
-            &serde_json::to_vec_pretty(self)?,
-            WriteMode::Atomic,
-        )?)
+        Ok(())
     }
 }

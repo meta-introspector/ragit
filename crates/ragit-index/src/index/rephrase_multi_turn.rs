@@ -1,50 +1,35 @@
 use crate::prelude::*;
 
-impl Index {
-    pub async fn rephrase_multi_turn(&self, turns: Vec<String>) -> Result<MultiTurnSchema, Error> {
-        let turns_json = Value::Array(
-            turns
-                .iter()
-                .map(|turn| Value::String(turn.to_string()))
-                .collect(),
-        );
-        let turns_json = serde_json::to_string_pretty(&turns_json)?;
-        let mut tera_context = tera::Context::new();
-        tera_context.insert("turns", &turns_json);
+pub async fn rephrase_multi_turn(
+    index: &Index,
+    turns: Vec<String>,
+) -> Result<MultiTurnSchema, ApiError> {
+    let turns_json = Value::Array(
+        turns
+            .into_iter()
+            .map(|turn| Value::String(turn.to_string()))
+            .collect(),
+    );
 
-        let Pdl { messages, schema } = parse_pdl(
-            &self.get_prompt("multi_turn")?,
-            &tera_context,
-            "/", // TODO: `<|media|>` is not supported for this prompt
-            true,
-        )?;
+    let Pdl { messages, schema } = parse_pdl(
+        index.get_prompt("multi_turn")?,
+        &tera::Context::from_value(json!({
+            "turns": turns_json,
+        }))?,
+        ".",
+        true,
+    )?;
 
-        let request = Request {
-            messages,
-            frequency_penalty: None,
-            max_tokens: None,
-            temperature: None,
-            timeout: self.api_config.timeout,
-            max_retry: self.api_config.max_retry,
-            sleep_between_retries: self.api_config.sleep_between_retries,
-            dump_pdl_at: self
-                .api_config
-                .create_pdl_path(&self.root_dir, "rephrase_multi_turn")
-                .map(|p| p.to_str().unwrap().to_string()),
-            dump_json_at: self
-                .api_config
-                .dump_log_at(&self.root_dir)
-                .map(|p| p.to_str().unwrap().to_string()),
-            model: self.get_model_by_name(&self.api_config.model)?,
-            dump_api_usage_at: self
-                .api_config
-                .dump_api_usage_at(&self.root_dir, "rephrase_multi_turn"),
-            schema,
-            schema_max_try: 3,
-        };
+    let request = Request {
+        messages,
+        model: index.get_model_by_name(&index.api_config.model)?,
+        temperature: Some(0.0),
+        max_tokens: Some(index.query_config.max_output_tokens),
+        schema: Some(schema.clone()),
+        ..Request::default()
+    };
 
-        Ok(request
-            .send_and_validate::<MultiTurnSchema>(MultiTurnSchema::default())
-            .await?)
-    }
+    request
+        .send_and_validate::<MultiTurnSchema>(MultiTurnSchema::default())
+        .await
 }

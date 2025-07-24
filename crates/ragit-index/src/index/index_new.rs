@@ -1,18 +1,15 @@
 use crate::prelude::*;
-use super::BuildConfig;
 
 impl Index {
-    /// It works like git. `root_dir` is the root of the repo. And it creates dir `.ragit/`, like `.git/`.
-    /// It reads the files in the repo and creates index.
-    pub fn new(root_dir: PathBuf) -> Result<Self, Error> {
+    pub fn new(root_dir: PathBuf) -> Result<Self, ApiError> {
         let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
         let index_dir = join_paths(&root_dir, &PathBuf::from(INDEX_DIR_NAME))?;
 
         if exists(&index_dir) {
-            return Err(Error::IndexAlreadyExists(index_dir));
+            return Err(ApiError::IndexAlreadyExists(index_dir));
         }
 
-        create_dir_all(index_dir.to_str().unwrap())?;
+        create_dir_all(&index_dir)?;
 
         for dir in [
             CONFIG_DIR_NAME,
@@ -21,87 +18,26 @@ impl Index {
             FILE_INDEX_DIR_NAME,
             II_DIR_NAME,
         ] {
-            create_dir_all(
-                get_rag_path(&root_dir.to_path_buf(), &PathBuf::from(dir))?
-                    .to_str()
-                    .unwrap(),
-            )?;
+            create_dir_all(&get_rag_path(&root_dir.to_path_buf(), &PathBuf::from(dir))?)?;
         }
 
-        // Start with default configs
-        let mut build_config = BuildConfig::default();
         let mut query_config = QueryConfig::default();
         let api_config = ApiConfig::default();
 
-        // Create a temporary Index to use for loading configs from home
-        let temp_index = Index {
-            ragit_version: crate::VERSION.to_string(),
-            chunk_count: 0,
-            staged_files: vec![],
-            processed_files: HashMap::new(),
-            curr_processing_file: None,
-            build_config: build_config.clone(),
-            query_config: query_config.clone(),
-            api_config: ApiConfig::default(),
-            root_dir: root_dir.to_path_buf(),
-            repo_url: None,
-            ii_status: super::IIStatus::None,
-            uid: None,
-            summary: None,
-            prompts: PROMPTS.clone(),
-            models: vec![],
-        };
-
-        // Try to load build config from home directory and apply to defaults
-        if let Ok(Some(partial_build_config)) = temp_index.load_build_config_from_home() {
-            // Apply partial config to the default config
-            partial_build_config.apply_to(&mut build_config);
-        }
-
-        // Try to load query config from home directory and apply to defaults
-        if let Ok(Some(partial_query_config)) = temp_index.load_query_config_from_home() {
-            // Apply partial config to the default config
-            partial_query_config.apply_to(&mut query_config);
-        }
-
         let mut result = Index {
-            ragit_version: crate::VERSION.to_string(),
-            chunk_count: 0,
-            staged_files: vec![],
+            root_dir,
             processed_files: HashMap::new(),
-            curr_processing_file: None,
-            build_config,
+            staged_files: HashSet::new(),
+            ragit_version: VERSION.to_string(),
             query_config,
             api_config,
-            root_dir: root_dir.to_path_buf(),
-            repo_url: None,
-            ii_status: super::IIStatus::None,
-            uid: None,
-            summary: None,
             prompts: PROMPTS.clone(),
-            models: vec![],
+            models: Model::default_models(),
+            curr_processing_file: None,
+            summary: None,
+            uid: Uid::new(),
         };
 
-        // Load models first so we can choose an appropriate default model
-        result.load_or_init_models()?;
-
-        // Now update api_config with a valid model
-        result.api_config = result.get_default_api_config()?;
-        write_bytes(
-            result.get_build_config_path()?.to_str().unwrap(),
-            &serde_json::to_vec_pretty(&result.build_config)?,
-            WriteMode::AlwaysCreate,
-        )?;
-        write_bytes(
-            result.get_query_config_path()?.to_str().unwrap(),
-            &serde_json::to_vec_pretty(&result.query_config)?,
-            WriteMode::AlwaysCreate,
-        )?;
-        write_bytes(
-            result.get_api_config_path()?.to_str().unwrap(),
-            &serde_json::to_vec_pretty(&result.api_config)?,
-            WriteMode::AlwaysCreate,
-        )?;
         result.save_to_file(result.root_dir.join(INDEX_FILE_NAME))?;
 
         Ok(result)

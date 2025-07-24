@@ -1,318 +1,118 @@
 use crate::prelude::*;
+use flate2::{bufread::{GzDecoder, GzEncoder}, Compression};
+use rust_stemmers::{Stemmer, Algorithm};
+use std::hash::Hash;
 
-type Term = String;
-type Weight = f32;
-
-pub struct TfidfState<DocId> {
-    pub terms: HashMap<Term, Weight>,
-    term_frequency: HashMap<(DocId, Term), usize>,
-    document_frequency: HashMap<Term, usize>,
-    document_len: HashMap<DocId, usize>,
-    docs: Vec<DocId>,
-}
-
-#[derive(Clone)]
-pub struct TfidfResult<DocId: Clone> {
-    pub id: DocId,
-    pub score: f32,
-}
-
-/// It stores term-frequency of each chunk.
-#[derive(Clone, Debug, Deserialize, Eq, Serialize, PartialEq)]
-pub struct ProcessedDoc {
-    /// If this `ProcessedDoc` is made from a chunk, this field stores the uid of the chunk.
-    /// If you merge multiple `ProcessedDoc`s into one, this field is None.
-    pub uid: Option<Uid>,
-    pub term_frequency: HashMap<Term, usize>,
-    length: usize,
-}
-
-// tfidf files are always compressed
-pub fn load_from_file(path: &str) -> Result<ProcessedDoc, Error> {
+pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
     let content = read_bytes(path)?;
-    let mut decompressed = vec![];
     let mut gz = GzDecoder::new(&content[..]);
-    gz.read_to_end(&mut decompressed)?;
-
-    Ok(serde_json::from_slice(&decompressed)?)
+    let mut s = String::new();
+    std::io::Read::read_to_string(&mut gz, &mut s)?;
+    Ok(serde_json::from_str(&s)?)
 }
 
-pub fn save_to_file(path: &str, chunk: &Chunk, root_dir: &str) -> Result<(), Error> {
-    let tfidf = if chunk.searchable {
-        ProcessedDoc::new(chunk.uid.clone(), &chunk.into_tfidf_haystack(root_dir)?)
-    } else {
-        ProcessedDoc {
-            uid: Some(chunk.uid),
-            term_frequency: HashMap::new(),
-            length: 0,
-        }
-    };
-    let result = serde_json::to_vec(&tfidf)?;
-    let mut compressed = vec![];
+pub fn save_to_file(path: &str, chunk: &Chunk, root_dir: &str) -> Result<(), ApiError> {
+    let mut result = vec![];
     let mut gz = GzEncoder::new(&result[..], Compression::best());
-    gz.read_to_end(&mut compressed)?;
-
-    Ok(write_bytes(path, &compressed, WriteMode::CreateOrTruncate)?)
-}
-
-pub fn consume_processed_doc(
-    processed_doc: ProcessedDoc,
-    tfidf_state: &mut TfidfState<Uid>,
-) -> Result<(), Error> {
-    tfidf_state.consume(processed_doc.uid.unwrap(), &processed_doc);
+    std::io::Write::write_all(&mut gz, &serde_json::to_string(chunk)?.as_bytes())?;
+    result = gz.finish()?;
+    write_bytes(path, &result, WriteMode::CreateOrTruncate)?;
     Ok(())
 }
 
-impl ProcessedDoc {
-    pub fn new(uid: Uid, doc_content: &str) -> Self {
-        let mut term_frequency = HashMap::new();
-        let mut length = 0;
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ProcessedDoc {
+    pub doc_id: Uid,
+    pub tokens: Vec<String>,
+}
 
-        for term in tokenize(doc_content) {
-            length += 1;
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TfidfResult<DocId> {
+    pub doc_id: DocId,
+    pub score: f64,
+}
 
-            match term_frequency.get_mut(&term) {
-                Some(n) => {
-                    *n += 1;
-                }
-                None => {
-                    term_frequency.insert(term, 1);
-                }
-            }
-        }
+pub struct TfidfState<DocId> {
+    // doc_id -> tokens
+    docs: HashMap<DocId, Vec<String>>,
 
-        ProcessedDoc {
-            uid: Some(uid),
-            length,
-            term_frequency,
-        }
-    }
+    // token -> doc_id -> count
+    term_freq: HashMap<String, HashMap<DocId, usize>>,
 
-    pub fn empty() -> Self {
-        ProcessedDoc {
-            uid: None,
-            length: 0,
-            term_frequency: HashMap::new(),
-        }
-    }
+    // token -> count
+    doc_freq: HashMap<String, usize>,
 
-    pub fn extend(&mut self, other: &ProcessedDoc) {
-        if self.uid != other.uid {
-            self.uid = None;
-        }
-
-        self.length += other.length;
-
-        for (term, count) in other.term_frequency.iter() {
-            match self.term_frequency.get_mut(term) {
-                Some(n) => {
-                    *n += *count;
-                }
-                None => {
-                    self.term_frequency.insert(term.clone(), *count);
-                }
-            }
-        }
-    }
-
-    pub fn get(&self, term: &str) -> Option<usize> {
-        self.term_frequency.get(term).copied()
-    }
-
-    pub fn contains_term(&self, term: &str) -> bool {
-        self.term_frequency.contains_key(term)
-    }
-
-    pub fn length(&self) -> usize {
-        self.length
-    }
-
-    pub fn render(&self, term_only: bool, stat_only: bool, json_mode: bool) -> String {
-        let mut lines = vec![];
-
-        if json_mode {
-            if term_only {
-                return format!("{:?}", self.term_frequency.keys().collect::<Vec<_>>());
-            } else if stat_only {
-                return format!(
-                    "{}\"terms\": {}, \"unique terms\": {}{}",
-                    "{",
-                    self.length,
-                    self.term_frequency.len(),
-                    "}"
-                );
-            } else {
-                return format!("{:?}", self.term_frequency);
-            }
-        }
-
-        if !term_only {
-            lines.push(format!(
-                "uid: {}, terms: {}, unique_terms: {}",
-                if let Some(u) = &self.uid {
-                    u.to_string()
-                } else {
-                    String::from("None (not from a single chunk)")
-                },
-                self.length,
-                self.term_frequency.len(),
-            ));
-        }
-
-        if stat_only {
-            return lines[0].clone();
-        }
-
-        if !term_only {
-            lines.push(String::from("term-frequency:"));
-        }
-
-        let mut pairs: Vec<_> = self.term_frequency.iter().collect();
-        pairs.sort_by_key(|(_, count)| usize::MAX - *count);
-
-        for (term, count) in pairs.iter() {
-            lines.push(format!(
-                "{}{term:?}: {count}",
-                if term_only { "" } else { "    " },
-            ));
-        }
-
-        lines.join("\n")
-    }
+    // total number of documents
+    doc_count: usize,
 }
 
 impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
     pub fn new(keywords: &Keywords) -> Self {
         TfidfState {
-            terms: keywords.tokenize(),
-            term_frequency: HashMap::new(),
-            document_frequency: HashMap::new(),
-            document_len: HashMap::new(),
-            docs: vec![],
+            docs: HashMap::new(),
+            term_freq: HashMap::new(),
+            doc_freq: HashMap::new(),
+            doc_count: 0,
         }
     }
 
-    pub fn consume(&mut self, doc_id: DocId, processed_doc: &ProcessedDoc) {
-        for (term, _) in self.terms.clone().iter() {
-            if processed_doc.contains_term(term) {
-                match self.document_frequency.get_mut(term) {
-                    Some(n) => {
-                        *n += 1;
-                    }
-                    None => {
-                        self.document_frequency.insert(term.to_string(), 1);
-                    }
-                }
-            }
+    pub fn add_doc(&mut self, doc_id: DocId, tokens: Vec<String>) {
+        self.doc_count += 1;
+        self.docs.insert(doc_id.clone(), tokens.clone());
 
-            self.term_frequency.insert(
-                (doc_id.clone(), term.to_string()),
-                processed_doc.get(term).unwrap_or(0),
-            );
+        for token in tokens {
+            *self.term_freq.entry(token.clone()).or_default().entry(doc_id.clone()).or_default() += 1;
+            *self.doc_freq.entry(token).or_default() += 1;
         }
-
-        self.document_len
-            .insert(doc_id.clone(), processed_doc.length());
-        self.docs.push(doc_id);
     }
 
-    pub fn get_top(&self, limit: usize) -> Vec<TfidfResult<DocId>> {
-        let mut tfidfs: HashMap<DocId, f32> = HashMap::new();
+    pub fn tf(&self, token: &str, doc_id: &DocId) -> f64 {
+        let count = *self.term_freq.get(token).and_then(|doc_map| doc_map.get(doc_id)).unwrap_or(&0);
+        let total = self.docs.get(doc_id).map_or(0, |tokens| tokens.len());
+        count as f64 / total as f64
+    }
 
-        // https://en.wikipedia.org/wiki/Okapi_BM25
-        let k = 1.2;
-        let b = 0.75;
+    pub fn idf(&self, token: &str) -> f64 {
+        let count = *self.doc_freq.get(token).unwrap_or(&0);
+        ((self.doc_count as f64) / (count as f64 + 1.0)).ln()
+    }
 
-        if self.document_len.is_empty() {
-            return vec![];
-        }
+    pub fn tfidf(&self, token: &str, doc_id: &DocId) -> f64 {
+        self.tf(token, doc_id) * self.idf(token)
+    }
 
-        let avg_len =
-            self.document_len.values().sum::<usize>() as f32 / self.document_len.len() as f32;
+    pub fn search(&self, keywords: &Keywords) -> Vec<TfidfResult<DocId>> {
+        let mut scores: HashMap<DocId, f64> = HashMap::new();
 
-        for (term, weight) in self.terms.iter() {
-            let idf = ((self.docs.len() + 1) as f32
-                / (*self.document_frequency.get(term).unwrap_or(&0) + 1) as f32)
-                .log2();
-            let idf = idf.max(0.1);
-
-            for doc in self.docs.iter() {
-                let t = *self
-                    .term_frequency
-                    .get(&(doc.clone(), term.to_string()))
-                    .unwrap_or(&0) as f32;
-
-                if t == 0.0 {
-                    continue;
-                }
-
-                let len = *self.document_len.get(doc).unwrap() as f32;
-                let tf = (t * (k + 1.0)) / (t + k * (1.0 - b + b * (len / avg_len)));
-                let tfidf = tf * idf;
-
-                match tfidfs.get_mut(doc) {
-                    Some(val) => {
-                        *val += tfidf * weight;
-                    }
-                    None => {
-                        tfidfs.insert(doc.clone(), tfidf * weight);
-                    }
-                }
+        for doc_id in self.docs.keys() {
+            for token in keywords.0.iter() {
+                *scores.entry(doc_id.clone()).or_default() += self.tfidf(token, doc_id);
             }
         }
 
-        let mut tfidfs: Vec<_> = tfidfs
+        let mut results: Vec<TfidfResult<DocId>> = scores
             .into_iter()
-            .map(|(id, score)| TfidfResult { id, score })
+            .map(|(doc_id, score)| TfidfResult { doc_id, score })
             .collect();
-        tfidfs.sort_by(
-            |TfidfResult { score: a, .. }, TfidfResult { score: b, .. }| b.partial_cmp(a).unwrap(),
-        ); // rev sort
 
-        if tfidfs.len() > limit {
-            tfidfs[..limit].to_vec()
-        } else {
-            tfidfs
-        }
+        results.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());
+        results
     }
 }
 
-pub fn tokenize(s: &str) -> Vec<String> {
+pub fn tokenize(text: &str) -> Vec<String> {
     let stemmer = Stemmer::create(Algorithm::English);
-    let mut result = vec![];
-
-    for token in s
-        .to_ascii_lowercase()
-        .split(|c| {
-            if c <= '~' {
-                match c {
-                    '0'..='9' | 'A'..='Z' | 'a'..='z' => false,
-                    _ => true,
-                }
-            } else {
-                false
-            }
-        })
-        .map(move |s| {
-//            #[cfg(feature = "korean")]
-//            {
-//                ragit_korean::tokenize(&stemmer.stem(s))
-//            }
-
-//            #[cfg(not(feature = "korean"))]
-            {
-                [stemmer.stem(s).to_string()]
-            }
-        })
-    {
-        for t in token {
-            if t.len() > 0 {
-                result.push(t);
-            }
-        }
-    }
-
-    result
+    text.to_lowercase()
+        .split(|c: char| !c.is_alphanumeric())
+        .filter(|s| !s.is_empty())
+        .map(|s| stemmer.stem(s).to_string())
+        .collect()
 }
 
-
+pub fn consume_processed_doc<DocId: Clone + Eq + Hash>(
+    processed_doc: ProcessedDoc,
+    tfidf_state: &mut TfidfState<DocId>,
+) -> Result<(), ApiError> {
+    tfidf_state.add_doc(processed_doc.doc_id, processed_doc.tokens);
+    Ok(())
+}

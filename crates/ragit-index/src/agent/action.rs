@@ -1,11 +1,4 @@
 use crate::prelude::*;
-use crate::query_helpers::uid_query;
-use ragit_api::{Schema, ModelRaw, Model, Request, get_model_by_name};
-use ragit_types::Chunk;
-use ragit_types::chunk::rendered_chunk::RenderedChunk;
-use ragit_utils::query::Keywords;
-use crate::query_helpers::UidQueryConfig;
-use ragit_utils::string_utils::substr_edit_distance;
 use super::file_tree::FileTree;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize)]
@@ -44,7 +37,7 @@ impl Action {
 
     // If this action requires an argument, the instruction must be "Give me an argument. The argument must be...".
     // If it doesn't require an argument, an AI will always reply "okay" to the instruction (I'll push a fake turn).
-    pub(crate) fn get_instruction(&self, index: &Index) -> Result<String, Error> {
+    pub(crate) fn get_instruction(&self, index: &Index) -> Result<String, ApiError> {
         let s = match self {
             Action::ReadFile => String::from("Give me an exact path of a file that you want to read. Don't say anything other than the path of the file."),
             Action::ReadDir => String::from("Give me an exact path of a directory that you want to read. Don't say anything other than the path of the directory."),
@@ -97,7 +90,7 @@ impl Action {
         }.to_string()
     }
 
-    pub(crate) async fn run(&self, argument: &str, index: &Index) -> Result<ActionResult, Error> {
+    pub(crate) async fn run(&self, argument: &str, index: &Index) -> Result<ActionResult, ApiError> {
         let argument_path = PathBuf::from(ragit_fs::normalize(&argument)?);
 
         let r = match self {
@@ -201,7 +194,7 @@ impl Action {
                 if !Uid::is_valid_prefix(&argument) {
                     ActionResult::NoSuchChunk(argument.to_string())
                 } else {
-                    let query = uid_query(
+                    let query = uid_query_unit(
                         &index,
                         &[argument.to_string()],
                         UidQueryConfig::new().chunk_only(),
@@ -430,7 +423,8 @@ impl ActionResult {
                 ).collect::<Vec<_>>().join("\n\n"),
             ),
             ActionResult::NoSuchFile { file, similar_files } => format!(
-                "There's no such file: `{file}`{}",
+                "There's no such file: `{}`{}",
+                file,
                 if !similar_files.is_empty() {
                     format!("\nThere are files with a similar name:\n\n{}", similar_files.join("\n"))
                 } else {
@@ -439,7 +433,8 @@ impl ActionResult {
             ),
             ActionResult::ReadDir(file_tree) => file_tree.render(),
             ActionResult::NoSuchDir { dir, similar_dirs } => format!(
-                "There's no such dir: `{dir}`{}",
+                "There's no such dir: `{}`{}",
+                dir,
                 if !similar_dirs.is_empty() {
                     format!("\nThere are dirs with a similar name:\n\n{}", similar_dirs.join("\n"))
                 } else {
@@ -449,11 +444,11 @@ impl ActionResult {
             ActionResult::ReadChunk(chunk) => chunk.data.clone(),
             ActionResult::NoSuchChunk(query) => {
                 if !Uid::is_valid_prefix(&query) {
-                    format!("{query:?} is not a valid uid. A uid is a 9 ~ 64 characters long hexadecimal string that uniquely identifies a chunk.")
+                    format!("{:?} is not a valid uid. A uid is a 9 ~ 64 characters long hexadecimal string that uniquely identifies a chunk.", query)
                 }
 
                 else {
-                    format!("There's no chunk that has uid `{query}`.")
+                    format!("There's no chunk that has uid `{}`.", query)
                 }
             },
             ActionResult::ReadChunkAmbiguous { query, chunks } => {
@@ -467,37 +462,39 @@ impl ActionResult {
                         chunk.summary,
                     )
                 ).collect::<Vec<_>>().join("\n\n");
-                format!("There are multiple chunks whose uid starts with `{query}`. Please give me a longer uid so that I can uniquely identify the chunk.\n\n{chunks}")
+                format!("There are multiple chunks whose uid starts with `{}`. Please give me a longer uid so that I can uniquely identify the chunk.\n\n{}", query, chunks)
             },
             ActionResult::ReadChunkTooMany { query, chunk_uids } => {
                 // `Action::ReadChunk`'s default abbrev is 9.
                 if query.len() >= 9 {
-                    format!("I'm sorry, but you're very unlucky. There're {chunk_uids} chunks whose uid starts with `{query}`. I can't help it.")
+                    format!("I'm sorry, but you're very unlucky. There're {} chunks whose uid starts with `{}`. I can't help it.", chunk_uids, query)
                 }
 
                 else {
-                    format!("Your query `{query}` is too ambiguous. There are {chunk_uids} chunks whose uid starts with `{query}`. Please give me a longer uid so that I can uniquely identify the chunk.")
+                    format!("Your query `{}` is too ambiguous. There are {} chunks whose uid starts with `{}`. Please give me a longer uid so that I can uniquely identify the chunk.", query, chunk_uids, query)
                 }
             },
             ActionResult::Search { r#type, keyword, chunks } => {
                 if chunks.is_empty() {
                     match r#type {
-                        SearchType::Exact => format!("There's no file that contains the keyword `{keyword}`. Perhaps try tfidf search with the same keyword."),
-                        SearchType::Tfidf => format!("There's no file that matches keywords `{keyword}`.")
+                        SearchType::Exact => format!("There's no file that contains the keyword `{}`. Perhaps try tfidf search with the same keyword.", keyword),
+                        SearchType::Tfidf => format!("There's no file that matches keywords `{}`.", keyword)
                     }
                 }
 
                 else {
                     let header = format!(
-                        "This is a list of chunks that {} `{keyword}`.",
+                        "This is a list of chunks that {} `{}`.",
                         match r#type {
                             SearchType::Exact => "contains the keyword",
                             SearchType::Tfidf => "matches keywords",
                         },
+                        keyword,
                     );
 
                     format!(
-                        "{header}\n\n{}",
+                        "{}\n\n{}",
+                        header,
                         chunks.iter().enumerate().map(
                             |(index, chunk)| format!(
                                 "{}. {}\nuid: {}\nsummary: {}",
@@ -512,7 +509,8 @@ impl ActionResult {
             },
             ActionResult::GetMeta { value, .. } => value.clone(),
             ActionResult::NoSuchMeta { key, similar_keys } => format!(
-                "There's no such key in metadata: `{key}`{}",
+                "There's no such key in metadata: `{}`{}",
+                key,
                 if !similar_keys.is_empty() {
                     format!("\nThere are similar keys:\n\n{:?}", similar_keys)
                 } else {
@@ -593,7 +591,7 @@ impl ActionState {
         input: Value,
         index: &Index,
         action_traces: &mut Vec<ActionTrace>,
-    ) -> Result<(), Error> {
+    ) -> Result<(), ApiError> {
         if self.index.is_none() {
             // If `input.as_u64()` fails, that means the AI is so stupid
             // that it cannot choose a number even with pdl schema's help.
@@ -617,7 +615,7 @@ impl ActionState {
                 // will generate the argument.
                 else {
                     result_rendered =
-                        format!("{result_rendered}\n\n{}", action.get_instruction(index)?);
+                        format!("{}\n\n{}", result_rendered, action.get_instruction(index)?);
                 }
 
                 self.argument_turns.push(ArgumentTurn {
@@ -646,7 +644,7 @@ impl ActionState {
                 self.complete = true;
             } else {
                 result_rendered =
-                    format!("{result_rendered}\n\n{}", action.get_instruction(index)?);
+                    format!("{}\n\n{}", result_rendered, action.get_instruction(index)?);
             }
 
             self.argument_turns.push(ArgumentTurn {
