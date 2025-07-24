@@ -30,7 +30,7 @@ members = [
     "crates/ragit-prompt-management",
     "crates/ragit-tfidf",
     "crates/ragit-index-model-management",
-    "crates/ragit-agent-action",
+    "crates/ragit-agent-action", "crates/ragit-index-io",
 ]
 
 [dependencies]

@@ -5,36 +5,35 @@ edition = "2021"
 
 [dependencies]
 
-ragit-uid = { path = "../ragit-uid" }
-ragit-types = { path = "../ragit-types" }
-ragit-index-types = { path = "../ragit-index-types" }
-ragit-utils = { path = "../ragit-utils" }
 
+
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+flate2 = "1.0"
+image = "0.24"
+lazy_static = "1.4.0"
+ragit-api = { path = "../api" }
 ragit-config = { path = "../ragit-config" }
-ragit-readers = { path = "../ragit-readers" }
-ragit-pdl = { path = "../pdl" }
-ragit-tfidf = { path = "../ragit-tfidf" }
-
+ragit-error = { path = "../ragit-error" }
 ragit-fs = { path = "../fs" }
+ragit-index-io = { path = "../ragit-index-io" }
+
+#// causes a loop, depends on index ragit-index-model-management = { path = "../ragit-index-model-management" }
+# causes a loop ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }
+ragit-model-query-response = { path = "../ragit-model-query-response" }
+ragit-pdl = { path = "../pdl" }
+#LOOP ragit-prompt-management = { path = "../ragit-prompt-management" }
+ragit-readers = { path = "../ragit-readers" }
+ragit-tfidf = { path = "../ragit-tfidf" }
+ragit-uid = { path = "../ragit-uid" }
+ragit-utils = { path = "../ragit-utils" }
+regex = "1.5"
+rust-stemmers = "1.2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sha3 = "0.10.8"
-tokio = { version = "1.0", features = ["full"] }
-flate2 = "1.0"
-rust-stemmers = "1.2"
-tera = "1.19"
-chrono = { version = "0.4", features = ["serde"] }
-anyhow = "1.0"
-thiserror = "1.0"
 strum = { version = "0.25", features = ["derive"] }
+tera = "1.19"
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["full"] }
 url = "2.4"
-image = "0.24"
-lazy_static = "1.4.0"
-regex = "1.5"
-ragit-api = { path = "../api" }
-ragit-model-query-response = { path = "../ragit-model-query-response" }
-ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }
-ragit-error = { path = "../ragit-error" }
-ragit-index-chunk-methods = { path = "../ragit-index-chunk-methods" }
-ragit-index-model-management = { path = "../ragit-index-model-management" }
-ragit-prompt-management = { path = "../ragit-prompt-management" }

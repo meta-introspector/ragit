@@ -1,0 +1,17 @@
+[package]
+name = "ragit-index-io"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[dependencies]
+ragit-utils = { path = "../ragit-utils" }
+ragit-fs = { path = "../fs" }
+ragit-error = { path = "../ragit-error" }
+ragit-types = { path = "../ragit-types" }
+ragit-tfidf = { path = "../ragit-tfidf" }
+ragit-api = { path = "../api" }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+

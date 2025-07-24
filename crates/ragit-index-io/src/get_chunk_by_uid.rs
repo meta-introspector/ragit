@@ -1,6 +1,12 @@
-use crate::prelude::*;
-use crate::helpers::load_chunk_from_pathbuf;
+use ragit_index::Index;
+use ragit_index_io::helpers::load_chunk_from_pathbuf;
 use std::path::Path;
+use ragit_utils::ragit_path_utils::get_uid_path;
+use ragit_fs::exists;
+use ragit_error::ApiError;
+use ragit_types::uid::Uid;
+use ragit_types::chunk::chunk_struct::Chunk;
+use ragit_utils::constant::CHUNK_DIR_NAME;
 
 pub fn get_chunk_by_uid(index: &Index, uid: Uid) -> Result<Chunk, ApiError> {
     let chunk_at = get_uid_path(

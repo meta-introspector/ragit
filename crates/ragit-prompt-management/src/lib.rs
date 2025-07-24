@@ -1,4 +1,4 @@
-use ragit_index_types::Index;
+use ragit_index::Index;
 use anyhow::Result;
 use ragit_types::ApiError;
 use ragit_fs::{exists, write_string, WriteMode};

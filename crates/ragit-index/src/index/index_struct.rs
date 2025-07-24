@@ -1,1 +1,1 @@
-pub use ragit_index::Index;
+pub use ragit_index_io::index_struct::Index;
