@@ -1,4 +1,4 @@
-use ragit_model::ApiProvider;
+use ragit_model_provider::ApiProvider;
 use ragit_types::pdl_types::{Message, MessageContent};
 use ragit_core_utils::encode_base64;
 use serde_json::{Map, Value};

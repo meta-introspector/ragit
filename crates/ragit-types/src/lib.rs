@@ -24,6 +24,7 @@ pub enum JsonType {
     String,
     Array,
     Object,
+    U64,
 }
 
 impl From<&serde_json::Value> for JsonType {

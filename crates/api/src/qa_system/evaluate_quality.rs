@@ -20,7 +20,7 @@ pub fn evaluate_quality(
         .map(|m| m.to_string().len())
         .unwrap_or(0) as f64;
     let expected_length = 500.0;
-    let length_score = (1.0 - (response_length - expected_length).abs() / expected_length).max(0.0);
+        let length_score = (1.0 - (response_length as f64 - expected_length as f64).abs() / expected_length as f64).max(0.0);
     QualityScores {
         accuracy: expectations.accuracy * length_score,
         coherence: expectations.coherence * length_score,

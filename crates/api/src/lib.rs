@@ -18,14 +18,14 @@ mod tests;
 pub use crate::audit::AuditRecord;
 pub use crate::error::Error;
 pub use crate::message::message_contents_to_json_array;
-pub use ragit_types::model::{Model, ModelRaw, QualityExpectations, TestModel, get_model_by_name};
+pub use ragit_model::{Model, ModelRaw, QualityExpectations, TestModel, get_model_by_name};
 pub use crate::muse::muse_enum::MuseName;
 pub use crate::muse::muse_struct::Muse;
 pub use crate::qa_system::model_qa_result::ModelQAResult;
 pub use crate::qa_system::model_qa_system_struct::ModelQASystem;
 pub use crate::qa_system::quality_scores::QualityScores;
 pub use crate::request::Request;
-pub use crate::response::Response;
+pub use ragit_session_query::Response;
 pub struct FetchResult {
     pub fetched: usize,
     pub updated: usize,

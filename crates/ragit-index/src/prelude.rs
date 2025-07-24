@@ -11,3 +11,4 @@ pub use std::path::{Path, PathBuf};
 pub use std::ops::{Deref, DerefMut};
 pub use lazy_static::lazy_static;
 pub use regex::Regex;
+pub use serde::{Serialize, Deserialize};

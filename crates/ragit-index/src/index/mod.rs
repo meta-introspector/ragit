@@ -17,6 +17,8 @@ pub mod load_mode;
 pub mod model_management;
 pub mod muse_logic;
 pub mod prompt_management;
+pub mod index_file_schema;
+pub mod index_image_schema;
 
 pub mod raw_request;
 pub mod rephrase_multi_turn;

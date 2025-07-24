@@ -31,4 +31,5 @@ ragit-types = { path = "../ragit-types" }
 ragit-model = { path = "../ragit-model" }
 ragit-core-utils = { path = "../ragit-core-utils" }
 ragit-schema = { path = "../ragit-schema" }
+ragit-session-query = { path = "../ragit-session-query" }
 

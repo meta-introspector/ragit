@@ -3,14 +3,14 @@ use crate::message::{message_contents_to_json_array, message_to_json};
 use ragit_model::{Model, ModelRaw};
 use crate::rate_limit::RateLimiter;
 use crate::response::Response;
-use ragit_model::ApiProvider;
+use ragit_model_provider::ApiProvider;
 use crate::Error;
 use async_std::task;
 use chrono::Local;
 use ragit_fs::exists_str;
 use ragit_fs::{WriteMode, create_dir_all, join, write_log, write_string};
 use ragit_types::pdl_types::{Message, Role};
-use ragit_schema::Schema;
+
 use ragit_types::AuditRecordAt;
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
@@ -75,8 +75,8 @@ impl Request {
 
     /// It panics if its fields are not complete. If you're not sure, run `self.is_valid()` before sending a request.
     pub fn build_json_body(&self) -> Value {
-        match &self.model.api_provider {
-            ApiProvider::Google => {
+                match self.model.api_provider_name.as_str() {
+            "Google" => {
                 let mut result = Map::new();
                 let mut contents = vec![];
                 let mut system_prompt = vec![];
@@ -107,7 +107,7 @@ impl Request {
                 result.insert(String::from("contents"), contents.into());
                 result.into()
             }
-            ApiProvider::OpenAi { .. } | ApiProvider::Cohere => {
+            "OpenAi" | "Cohere" => {
                 let mut result = Map::new();
                 result.insert(String::from("model"), self.model.api_name.clone().into());
                 let mut messages = vec![];
@@ -132,7 +132,7 @@ impl Request {
 
                 result.into()
             }
-            ApiProvider::Anthropic => {
+            "Anthropic" => {
                 let mut result = Map::new();
                 result.insert(String::from("model"), self.model.api_name.clone().into());
                 let mut messages = vec![];
@@ -170,7 +170,7 @@ impl Request {
 
                 result.into()
             }
-            ApiProvider::Test(_) => Value::Null,
+            _ => Value::Null,
         }
     }
 
@@ -227,8 +227,8 @@ impl Request {
             );
         }
 
-        if let ApiProvider::Test(test_model) = &self.model.api_provider {
-            let response = test_model.get_dummy_response(&self.messages)?;
+                if self.model.api_provider_name == "Test" {
+                        let response = self.model.test_model.as_ref().unwrap().get_dummy_response(&self.messages)?;
 
             if let Some(key) = &self.dump_api_usage_at {
                 if let Err(e) = dump_api_usage(
@@ -287,13 +287,13 @@ impl Request {
                 .header(reqwest::header::CONTENT_TYPE, "application/json")
                 .body(body.clone());
 
-            match &self.model.api_provider {
-                ApiProvider::Anthropic => {
+                        match self.model.api_provider_name.as_str() {
+                                "Anthropic" => {
                     request = request
                         .header("x-api-key", api_key.clone())
                         .header("anthropic-version", "2023-06-01");
                 }
-                ApiProvider::Google => {}
+                "Google" => {}
                 _ if !api_key.is_empty() => {
                     request = request.bearer_auth(api_key.clone());
                 }
@@ -332,7 +332,7 @@ impl Request {
                                 }
                             }
 
-                            match Response::from_str(&text, &self.model.api_provider) {
+                                                        match Response::from_str(&text, &self.model.api_provider_name) {
                                 Ok(result) => {
                                     rate_limiter
                                         .record_usage(1, result.get_output_token_count() as u32);
@@ -443,7 +443,7 @@ impl Request {
                         "request.send().await",
                         &format!("request.send().await failed with {e:?}"),
                     );
-                    curr_error = Error::ReqwestError(e);
+                    curr_error = Error::ReqwestError(e.to_string());
                 }
             }
 
