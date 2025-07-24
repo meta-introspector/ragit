@@ -3,7 +3,6 @@ use ragit_types::ApiError as Error;
 use ragit_fs::join4;
 
 use crate::prelude::*;
-use ragit_types::TestModel;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 
