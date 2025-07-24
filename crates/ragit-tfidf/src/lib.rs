@@ -11,23 +11,10 @@ use anyhow::Result;
 
 pub mod processed_doc;
 pub use processed_doc::ProcessedDoc;
+pub mod io;
+pub use io::{load_from_file, save_to_file};
 
-pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
-    let content = read_bytes(path)?;
-    let mut gz = GzDecoder::new(&content[..]);
-    let mut s = String::new();
-    std::io::Read::read_to_string(&mut gz, &mut s)?;
-    Ok(serde_json::from_str(&s)?)
-}
 
-pub fn save_to_file(path: &str, chunk: &ragit_types::chunk::chunk_struct::Chunk, _root_dir: &str) -> Result<(), ApiError> {
-    //let mut result = vec![];
-    let mut gz = GzEncoder::new(Vec::new(), Compression::best());
-    std::io::Write::write_all(&mut gz, &serde_json::to_string(chunk)?.as_bytes())?;
-    let result = gz.finish().unwrap();
-    write_bytes(path, &result, WriteMode::CreateOrTruncate)?;
-    Ok(())
-}
 
 
 

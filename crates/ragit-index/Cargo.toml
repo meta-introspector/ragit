@@ -36,3 +36,5 @@ ragit-model-query-response = { path = "../ragit-model-query-response" }
 ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }
 ragit-error = { path = "../ragit-error" }
 ragit-index-chunk-methods = { path = "../ragit-index-chunk-methods" }
+ragit-index-model-management = { path = "../ragit-index-model-management" }
+ragit-prompt-management = { path = "../ragit-prompt-management" }

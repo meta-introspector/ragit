@@ -1,5 +1,9 @@
 use crate::prelude::*;
-use ragit_index_types::Index;
+use crate::index_struct::Index;
+use ragit_utils::ragit_path_utils::get_uid_path;
+use ragit_fs::{exists, read_string, read_bytes};
+use ragit_error::ApiError;
+use ragit_types::{ImageSchema, Uid};
 
 impl Index {
     pub fn get_image_schema(&self, uid: Uid, load_bytes: bool) -> Result<ImageSchema, ApiError> {
@@ -21,7 +25,7 @@ impl Index {
         let mut result: ImageSchema = serde_json::from_str(&s)?;
 
         if load_bytes {
-            result.bytes = Some(read_bytes(&result.image_path)?);
+            result.bytes = read_bytes(image_schema_path.to_str().unwrap())?;
         }
 
         Ok(result)

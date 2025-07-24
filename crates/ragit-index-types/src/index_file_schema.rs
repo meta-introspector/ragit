@@ -1,6 +1,7 @@
 use crate::prelude::*;
-use ragit_index_types::Index;
-use crate::path_utils::get_uid_path;
+use crate::index_struct::Index;
+
+
 impl Index {
     pub fn get_file_schema(&self, uid: Uid) -> Result<FileSchema, ApiError> {
         let file_schema_path = get_uid_path(
@@ -17,7 +18,7 @@ impl Index {
             });
         }
 
-        let s = read_string(&file_schema_path)?;
+        let s = read_string(file_schema_path.to_str().unwrap())?;
         Ok(serde_json::from_str(&s)?)
     }
 
@@ -44,11 +45,11 @@ impl Index {
                 self.models
                     .iter()
                     .find(|m| m.name == chunk_build_info.model)
-                    .ok_or_else(|| ApiError::ModelNotFound(chunk_build_info.model.clone()))?
+                    .ok_or_else(|| ApiError::InvalidModelName { name: chunk_build_info.model.clone(), candidates: vec![] })?
                     .clone(),
                 chunk_build_info.chunk_size,
             ),
-            None => (ChunkBuildInfo::default().model, 0),
+            None => (Model::default(), 0),
         })
     }
 }

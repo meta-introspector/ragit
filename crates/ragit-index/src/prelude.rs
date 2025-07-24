@@ -15,8 +15,11 @@ pub use crate::constant::INDEX_FILE_NAME;
 pub use crate::constant::MODEL_FILE_NAME;
 pub use crate::constant::PROMPT_DIR_NAME;
 pub use crate::constant::QUERY_CONFIG_FILE_NAME;
-pub use crate::index::*;
-pub use crate::index::query_logic::*;
+
+pub use ragit_index_query::{QueryResponse, QueryTurn, MultiTurnSchema, single_turn, query, answer_query_with_chunks, rephrase_multi_turn, raw_request};
+pub use ragit_prompt_management::get_prompt::get_prompt;
+pub use ragit_model::Model;
+pub use ragit_api::Schema;
 pub use crate::load_mode::LoadMode;
 pub use crate::path_utils::get_normalized_abs_pathbuf;
 pub use crate::path_utils::get_rag_path;
