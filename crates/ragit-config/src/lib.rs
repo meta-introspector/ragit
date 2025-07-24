@@ -3,6 +3,7 @@ use ragit_utils::error::Error;
 use ragit_utils::ragit_path_utils::join_paths;
 use ragit_fs::{exists, read_string};
 use std::path::PathBuf;
+use ragit_types::api_config::{ApiConfig};
 
 // This struct is used for loading partial configurations from ~/.config/ragit/build.json
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
@@ -122,7 +123,7 @@ pub struct PartialApiConfig {
 }
 
 impl PartialApiConfig {
-    pub fn apply_to(&self, config: &mut ragit_utils::api_config::ApiConfig) {
+    pub fn apply_to(&self, config: &mut ApiConfig) {
         if let Some(model) = &self.model {
             config.model = model.clone();
         }

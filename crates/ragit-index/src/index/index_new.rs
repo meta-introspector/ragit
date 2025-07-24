@@ -1,5 +1,5 @@
 use crate::prelude::*;
-
+use ragit_types::api_config::ApiConfig;
 impl Index {
     pub fn new(root_dir: PathBuf) -> Result<Self, ApiError> {
         let root_dir = get_normalized_abs_pathbuf(&root_dir)?;

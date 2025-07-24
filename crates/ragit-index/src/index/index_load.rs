@@ -1,5 +1,5 @@
 use crate::prelude::*;
-
+use ragit_types::api_config::ApiConfig;
 impl Index {
     pub fn load(root_dir: PathBuf, load_mode: LoadMode) -> Result<Self, ApiError> {
         if load_mode == LoadMode::Minimum {

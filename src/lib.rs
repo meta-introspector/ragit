@@ -28,7 +28,7 @@ pub use ragit_utils::chunk::{
 
 pub use ragit_utils::index::index_struct::Index;
 pub use ragit_utils::index::load_mode::LoadMode;
-pub use ragit_utils::index::{IIStatus, ProcessedDoc};
+
 
 pub use ragit_utils::api_config::ApiConfig;
 pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn};

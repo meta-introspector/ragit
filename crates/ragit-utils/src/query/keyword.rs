@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Default, Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct Keywords(Vec<String>);
+pub struct Keywords(pub Vec<String>);
 
 impl From<Vec<String>> for Keywords {
     fn from(keywords: Vec<String>) -> Self {

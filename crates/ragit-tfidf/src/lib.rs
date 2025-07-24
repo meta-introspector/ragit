@@ -3,7 +3,7 @@ use ragit_fs::{read_bytes, write_bytes, WriteMode};
 use flate2::{read::GzDecoder, write::GzEncoder, Compression};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::hash::Hash;
+//use std::hash::Hash;
 use rust_stemmers::{Stemmer, Algorithm};
 use ragit_types::uid::Uid;
 use ragit_utils::query::Keywords;
@@ -17,11 +17,11 @@ pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
     Ok(serde_json::from_str(&s)?)
 }
 
-pub fn save_to_file(path: &str, chunk: &ragit_types::chunk::chunk_struct::Chunk, root_dir: &str) -> Result<(), ApiError> {
-    let mut result = vec![];
+pub fn save_to_file(path: &str, chunk: &ragit_types::chunk::chunk_struct::Chunk, _root_dir: &str) -> Result<(), ApiError> {
+    //let mut result = vec![];
     let mut gz = GzEncoder::new(Vec::new(), Compression::best());
     std::io::Write::write_all(&mut gz, &serde_json::to_string(chunk)?.as_bytes())?;
-    result = gz.finish().unwrap();
+    let result = gz.finish().unwrap();
     write_bytes(path, &result, WriteMode::CreateOrTruncate)?;
     Ok(())
 }
@@ -53,7 +53,7 @@ pub struct TfidfState {
 }
 
 impl TfidfState {
-    pub fn new(keywords: &Keywords) -> Self {
+    pub fn new(_keywords: &Keywords) -> Self {
         TfidfState {
             docs: HashMap::new(),
             term_freq: HashMap::new(),

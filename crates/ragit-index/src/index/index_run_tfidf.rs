@@ -1,11 +1,15 @@
 use crate::prelude::*;
-
+use ragit_tfidf::TfidfResult;
+use ragit_tfidf::TfidfState;
+use ragit_tfidf::ProcessedDoc;
+use ragit_tfidf::consume_processed_doc;
 impl Index {
     pub fn run_tfidf(
         &self,
         keywords: Keywords,
         limit: usize,
-    ) -> Result<Vec<TfidfResult<Uid>>, ApiError> {
+	//<Uid>
+    ) -> Result<Vec<TfidfResult>, ApiError> {
         let mut tfidf_state = TfidfState::new(&keywords);
 
         // TODO: Implement get_all_processed_docs

@@ -1,6 +1,6 @@
 pub use ::anyhow::Result as AnyhowResult;
 pub use ::chrono::*;
-pub use crate::api_config::ApiConfig;
+//pub use crate::api_config::ApiConfig;
 pub use crate::bufread::GzDecoder;
 pub use crate::bufread::GzEncoder;
 pub use crate::cli_types::*;
@@ -38,7 +38,7 @@ pub use ragit_types::{ApiError, ImageSchema, FileSchema, Uid, TestModel, JsonTyp
 pub use ragit_types::Chunk;
 pub use ragit_types::ChunkBuildInfo;
 pub use ragit_types::chunk::rendered_chunk::RenderedChunk;
-pub use crate::index::tfidf::{ProcessedDoc, TfidfResult};
+
 pub use ragit_utils::query::Keywords;
 pub use ragit_utils::*;
 pub use ragit_utils::query::multi_turn_schema::MultiTurnSchema;

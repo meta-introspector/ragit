@@ -1,5 +1,5 @@
 use crate::prelude::*;
-
+use ragit_tfidf::load_from_file;
 impl Index {
     pub fn calculate_and_save_uid(&mut self) -> Result<Uid, ApiError> {
         let uid = self.calculate_uid(false)?;

@@ -12,6 +12,7 @@ ragit-utils = { path = "../ragit-utils" }
 ragit-config = { path = "../ragit-config" }
 ragit-readers = { path = "../ragit-readers" }
 ragit-pdl = { path = "../pdl" }
+ragit-tfidf = { path = "../ragit-tfidf" }
 
 ragit-fs = { path = "../fs" }
 serde = { version = "1.0", features = ["derive"] }
