@@ -1,5 +1,4 @@
-use ragit_types::ApiError as Error;
-use ragit_model::ApiProvider;
+use crate::prelude::*;
 
 pub trait IntoChatResponse {
     fn into_chat_response(&self) -> Result<Response, Error>;

@@ -1,5 +1,7 @@
+pub mod prelude;
 pub mod response;
-pub use response::Response;
+
+use prelude::*;
 
 pub fn select_turns_for_context(history: &[QueryTurn], query: &str) -> Vec<String> {
     match history.len() {
