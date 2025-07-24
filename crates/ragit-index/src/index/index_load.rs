@@ -15,7 +15,7 @@ impl Index {
             &result.root_dir.join(CONFIG_DIR_NAME).join(API_CONFIG_FILE_NAME).to_str().unwrap(),
         )?)?;
 
-        result.load_or_init_models()?;
+        ragit_index_model_management::load_or_init_models(&mut result)?;
         result.load_or_init_prompts()?;
 
         if load_mode == LoadMode::QuickCheck && result.curr_processing_file.is_some() {

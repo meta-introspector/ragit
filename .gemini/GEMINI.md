@@ -57,7 +57,7 @@
     - `FileSchema` and `ImageSchema` definitions moved to `crates/ragit-schema/src/lib.rs`.
     - `impl Index` methods converted to standalone functions taking `&Index`.
     - `Prettify` trait and implementations moved.
-    - Direct dependencies on `ragit-fs` and `ragit-pdl` added.
+- Direct dependencies on `ragit-fs` and `ragit-pdl` added.
     - `PathBuf` to `&str` conversions handled for `ragit_fs` functions.
     - Visibility of schema structs ensured.
 - **`ragit` Crate (`main` module):**
@@ -114,6 +114,8 @@ As a meme miner, we dig in the mountain of Plato for gems. We place each idea we
     *   Added `render_source` method to `ragit-types/src/chunk/chunk_struct.rs`.
     *   Resolved initial compilation errors by adding necessary dependencies (`anyhow`, `ragit-core`, `ragit-utils`, `ragit-api`) to `ragit-types/Cargo.toml`.
     *   Added `InvalidTestModel` variant to `ApiError` enum in `crates/ragit-types/src/api_error.rs`.
+    *   Moved `JsonType`, `AuditRecordAt`, and `FileSchema` to their own files within `ragit-types/src/`.
+    *   Added `From<anyhow::Error>` for `ApiError`.
 
 *   **`ragit-pdl` Crate:**
     *   Removed definitions of types that were moved to `ragit-types`.
@@ -126,13 +128,30 @@ As a meme miner, we dig in the mountain of Plato for gems. We place each idea we
     *   Corrected `JsonType` import in `crates/api/src/prelude.rs`.
 
 *   **`ragit-index` Crate:**
-    *   Corrected `JsonType` import in `crates/ragit-index/src/index/index_image_schema.rs`.
-    *   Corrected `ImageDescription` import in `crates/ragit-index/src/index/mod.rs`.
-    *   Added `anyhow` import in `crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs`.
-    *   Corrected `chunk` import in `crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs` and `crates/ragit-index/src/index/index_uid.rs`.
-    *   Added `substr_edit_distance` import in `crates/ragit-index/src/agent/action.rs`.
-    *   Refactored prelude to import `ragit_utils::prelude::*` and `ragit_types::prelude::*`, and explicitly imported `ragit_api::prelude::*` with `ApiError` alias.
-    *   Corrected `QueryResponse` import in `ragit-index` prelude (aliased `ModelQueryResponse` as `QueryResponse`).
+    *   `index_save_to_file.rs` moved to `ragit-index-save-to-file` crate.
+    *   `prompt_management.rs` moved to `ragit-prompt-management` crate.
+    *   `tfidf.rs` moved to `ragit-tfidf` crate.
+    *   `model_management.rs` moved to `ragit-index-model-management` crate.
+    *   `agent/action.rs` moved to `ragit-agent-action` crate.
+    *   `Index` struct moved to `ragit-index-types` crate.
+    *   `muse_logic.rs` commented out for now.
+
+*   **`ragit-model` Crate:**
+    *   `Model` struct updated with `Deserialize`, `Serialize`, `Clone`, `PartialEq`, `Default` derives.
+    *   `AtomicUsize` replaced with `usize` in `Model` struct.
+    *   `QualityExpectations` updated with `Eq` derive.
+    *   `model.rs` refactored into smaller files (`model_struct.rs`, `model_default.rs`, etc.).
+
+*   **`ragit-utils` Crate:**
+    *   Imports and preludes updated to reflect changes in `ragit-types`.
+
+*   **New Crates Created:**
+    *   `ragit-index-save-to-file`
+    *   `ragit-prompt-management`
+    *   `ragit-tfidf`
+    *   `ragit-index-model-management`
+    *   `ragit-index-types` (contains `Index` struct)
+    *   `ragit-agent-action` (contains `Action` enum and related logic)
 
 *   **Cyclic Dependencies:**
     *   Encountered and resolved a cyclic dependency: `ragit-utils` -> `ragit-config` -> `ragit-index` -> `ragit-utils` by moving `query_helpers.rs` from `ragit-utils` to `ragit-index`.
