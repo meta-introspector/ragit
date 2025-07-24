@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 use ragit_tfidf::TfidfResult;
 use ragit_tfidf::TfidfState;
 use ragit_tfidf::ProcessedDoc;

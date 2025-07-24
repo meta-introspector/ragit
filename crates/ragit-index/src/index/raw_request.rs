@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 
 pub async fn raw_request(
     index: &Index,

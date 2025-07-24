@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 
 impl Index {
     pub fn load_or_init(root_dir: PathBuf) -> Result<Self, ApiError> {

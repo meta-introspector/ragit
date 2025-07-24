@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 
 pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiError> {
     let parsed_args = ArgParser::new()

@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 
 impl Index {
     pub fn get_prompt(&self, prompt_name: &str) -> Result<String, ApiError> {

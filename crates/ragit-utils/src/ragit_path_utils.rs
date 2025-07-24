@@ -2,7 +2,7 @@ use crate::constant::{II_DIR_NAME, INDEX_DIR_NAME};
 use crate::error::Error;
 //use ragit_core_utils::path::{path_to_display, str_to_path_ref};
 pub use ragit_fs::{into_abs_path, join, join3, normalize};
-use ragit_uid::Uid;
+use ragit_types::uid::Uid;
 use std::path::{Path, PathBuf};
 
 pub fn join_paths(path: &Path, child: &Path) -> Result<PathBuf, Error> {

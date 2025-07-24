@@ -1,4 +1,6 @@
 use crate::prelude::*;
+use crate::helpers::load_chunk_from_pathbuf;
+use std::path::Path;
 
 pub fn get_chunk_by_uid(index: &Index, uid: Uid) -> Result<Chunk, ApiError> {
     let chunk_at = get_uid_path(
@@ -9,7 +11,7 @@ pub fn get_chunk_by_uid(index: &Index, uid: Uid) -> Result<Chunk, ApiError> {
     )?;
 
     if exists(&chunk_at) {
-        return Ok(load_uid_from_file(&chunk_at.to_string_lossy().into_owned())?);
+        return Ok(load_chunk_from_pathbuf(&chunk_at)?);
     }
 
     Err(ApiError::NoSuchChunk(uid.to_string()))

@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use std::path::Path;
 
 pub fn get_chunks_of_file(index: &Index, file_uid: Uid) -> Result<Vec<Uid>, ApiError> {
     let file_index_path = get_uid_path(
@@ -9,7 +10,7 @@ pub fn get_chunks_of_file(index: &Index, file_uid: Uid) -> Result<Vec<Uid>, ApiE
     )?;
 
     if exists(&file_index_path) {
-        return Ok(load_uid_from_file(&file_index_path.to_string_lossy().into_owned())?);
+        return Ok(load_uid_from_file(&file_index_path)?);
     }
 
     Err(ApiError::NoSuchFile { path: None, uid: Some(file_uid.to_string()) })

@@ -9,7 +9,7 @@ pub async fn load_chunks_or_tfidf(
 ) -> Result<Vec<Chunk>, ApiError> {
     let mut chunks = vec![];
 
-    for chunk_path in get_all_chunk_files(index)?.into_iter() {
+    for chunk_path in crate::get_all_chunk_files::get_all_chunk_files(index)?.into_iter() {
         chunks.push(helpers::load_chunk_from_pathbuf(&chunk_path)?);
     }
 

@@ -2,8 +2,7 @@ use std::path::PathBuf;
 
 use crate::error::Error;
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
-use ragit_uid::Uid;
-use ragit_uid::UidWriteMode;
+use ragit_types::uid::{Uid, UidWriteMode};
 
 pub fn load_from_file(path: &PathBuf) -> Result<Vec<Uid>, Error> {
     let bytes = read_bytes(path.to_str().unwrap())?;

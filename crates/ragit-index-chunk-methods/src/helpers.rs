@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use ragit_error::from_uid_error;
+
 
 pub fn load_chunk_from_pathbuf(path: &PathBuf) -> Result<Chunk, ApiError> {
     // This is a temporary shim. The actual conversion from Uid to Chunk needs to be defined.
@@ -12,9 +12,10 @@ pub fn load_chunk_from_pathbuf(path: &PathBuf) -> Result<Chunk, ApiError> {
         title: String::new(),
         summary: String::new(),
         uid: Uid::dummy(),
-        source: ragit_types::chunk::chunk_source::ChunkSource::File(path.clone()),
+        source: ragit_types::chunk::chunk_source::ChunkSource::File { path: path.to_string_lossy().into_owned(), index: 0, page: Some(0) },
         build_info: ragit_types::chunk::chunk_struct::ChunkBuildInfo::default(),
         timestamp: 0,
         searchable: true,
+        muse_summaries: std::collections::HashMap::new(),
     })
 }

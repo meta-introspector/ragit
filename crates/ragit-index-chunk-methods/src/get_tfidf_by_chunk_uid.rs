@@ -1,4 +1,6 @@
 use crate::prelude::*;
+use std::path::Path;
+use ragit_utils::path_utils::get_uid_path;
 
 pub fn get_tfidf_by_chunk_uid(
     index: &Index,

@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use std::path::Path;
 
 pub fn check_chunk_by_uid(index: &Index, uid: Uid) -> bool {
     if let Some(chunk_at) = get_uid_path(

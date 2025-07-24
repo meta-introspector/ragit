@@ -156,7 +156,7 @@ impl Tracker {
 
     pub fn load_from_file(path: &str) -> Result<Self, Error> {
         let content = read_string(path).map_err(Error::FileError)?;
-        let j: Value = serde_json::from_str(&content).map_err(Error::JsonSerdeError)?;
+        let j: Value = serde_json::from_str(&content).map_err(|e| Error::TypesApiError(ragit_types::ApiError::JsonSerdeError(e)))?;
         Tracker::try_from(&j)
     }
 

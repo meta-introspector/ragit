@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 use crate::path_utils::get_uid_path;
 impl Index {
     pub fn get_file_schema(&self, uid: Uid) -> Result<FileSchema, ApiError> {

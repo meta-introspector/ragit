@@ -1,9 +1,7 @@
 pub use ragit_types::ApiError as ApiError;
 pub use ragit_fs::FileError;
 pub use ragit_pdl::JsonType;
-use ragit_uid::Uid;
-//use ragit_types::uid::UidError;
-use ragit_types::uid::UidError;
+use ragit_types::uid::Uid;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ErrorKind {
@@ -146,11 +144,8 @@ pub enum Error {
     #[error(transparent)]
     ParseFloatError(#[from] std::num::ParseFloatError),
     #[error(transparent)]
-    UidError(#[from] ragit_uid::UidError),
-    #[error(transparent)]
     CliError(#[from] CliError),
-    #[error(transparent)]
-    UidErrorFromTypes(#[from] UidError),
+    
 }
 
 #[derive(Debug, thiserror::Error)]

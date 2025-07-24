@@ -181,7 +181,7 @@ impl Request {
 
             match state.schema.as_ref().unwrap().validate(&response) {
                 Ok(v) => {
-                    return Ok(serde_json::from_value::<T>(v).map_err(Error::JsonSerdeError)?);
+                    return Ok(serde_json::from_value::<T>(v).map_err(|e| Error::TypesApiError(ragit_types::ApiError::JsonSerdeError(e)))?);
                 }
                 Err(error_message) => {
                     messages.push(Message::simple_message(
@@ -268,7 +268,7 @@ impl Request {
             return Ok(Response::dummy(response));
         }
 
-        let body = serde_json::to_string(&body).map_err(Error::JsonSerdeError)?;
+        let body = serde_json::to_string(&body).map_err(|e| Error::TypesApiError(ragit_types::ApiError::JsonSerdeError(e)))?;
         let api_key = self.model.get_api_key()?;
         write_log(
             "chat_request::send",

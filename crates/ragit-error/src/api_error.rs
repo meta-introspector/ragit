@@ -35,6 +35,12 @@ pub enum ApiError {
     /// see <https://docs.rs/reqwest/latest/reqwest/struct.Error.html>
     #[error("reqwest error: {0}")]
     ReqwestError(String),
+    #[error(transparent)]
+    JsonSerdeError(#[from] serde_json::Error),
+    #[error(transparent)]
+    UidError(#[from] ragit_types::uid::UidError),
+    #[error(transparent)]
+    UtilsError(#[from] ragit_utils::error::Error),
 
     /// see <https://docs.rs/tera/latest/tera/struct.Error.html>
     #[error(transparent)]

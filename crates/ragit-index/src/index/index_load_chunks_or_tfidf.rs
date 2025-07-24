@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 use ragit_tfidf::load_from_file;
 impl Index {
     pub async fn extract_keywords(&self, _query: &str) -> Result<Keywords, ApiError> {

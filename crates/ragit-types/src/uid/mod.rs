@@ -13,9 +13,11 @@ pub enum UidError {
     #[error("Cannot decode u128 from bytes")]
     DecodeError,
     #[error(transparent)]
-    Io(#[from] std::io::Error), // Changed from ragit_fs::FileError
+    Io(#[from] std::io::Error),
     #[error(transparent)]
     Json(#[from] serde_json::Error),
+    #[error(transparent)]
+    File(#[from] ragit_fs::FileError),
 }
 
 fn u128_from_bytes(bytes: &[u8]) -> Result<u128, UidError> {

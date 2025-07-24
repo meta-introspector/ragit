@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 #[derive(Debug, Error)]
 pub enum ApiError {
-    #[error("json type error: expected {expected}, got {got}")]
+    #[error("json type error: {expected}, got {got}")]
     JsonTypeError { expected: JsonType, got: JsonType },
     #[error("json object invalid field: {0}")]
     JsonObjectInvalidField(String),
@@ -22,8 +22,6 @@ pub enum ApiError {
     FileError(#[from] FileError),
     #[error("api key not found: {env_var:?}")]
     ApiKeyNotFound { env_var: Option<String> },
-    #[error(transparent)]
-    StdIoError(#[from] std::io::Error),
     #[error("cannot read image: {0}")]
     CannotReadImage(String /* model name */),
 
@@ -39,9 +37,15 @@ pub enum ApiError {
     #[error(transparent)]
     JsonSerdeError(#[from] serde_json::Error),
 
+    #[error(transparent)]
+    UidError(#[from] crate::uid::UidError),
+
     /// see <https://docs.rs/tera/latest/tera/struct.Error.html>
     #[error(transparent)]
     TeraError(#[from] TeraError),
+    #[error(transparent)]
+    StdIoError(#[from] std::io::Error),
+    
 
     #[error("wrong schema: {0}")]
     WrongSchema(String),

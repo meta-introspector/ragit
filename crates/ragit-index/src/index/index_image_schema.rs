@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 
 impl Index {
     pub fn get_image_schema(&self, uid: Uid, load_bytes: bool) -> Result<ImageSchema, ApiError> {

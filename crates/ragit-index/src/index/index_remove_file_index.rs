@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::Index;
 
 impl Index {
     pub fn remove_file_index(&mut self, file_uid: Uid) -> Result<(), ApiError> {
