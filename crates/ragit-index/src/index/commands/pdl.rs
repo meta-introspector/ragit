@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_pdl::parse_schema;
 use std::result::Result::Ok;
 pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiError> {
     let parsed_args = ArgParser::new()

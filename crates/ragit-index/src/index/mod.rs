@@ -1,4 +1,4 @@
-pub use serde::*;
+pub use ::serde::*;
 pub mod commands;
 pub mod get_prompt;
 pub mod index_chunk_methods;

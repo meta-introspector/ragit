@@ -1,22 +1,14 @@
 use crate::prelude::*;
-//use crate::chunk::{Chunk, merge_and_convert_chunks};
-// use crate::error::Error;
-// use crate::Chunk;
-// use crate::index::index_struct::Index;
-// use ragit_api::Request;
-// use ragit_pdl::{
-//     Pdl,
-//     Schema,
-//     parse_pdl,
-//     render_pdl_schema,
-// };
-// use serde::{Deserialize, Serialize};
-// use serde_json::Value;
-// use tokio::task::JoinSet;
-
-// use super::load_mode::LoadMode;
-// use super::tfidf::tokenize;
-// use super::commands::summary::{Summary, SummaryMode};
+use ragit_types::chunk::chunk_struct::Chunk;
+//use ragit_pdl::{Pdl, parse_pdl, render_pdl_schema};
+//use ragit_pdl::*;
+//use ragit_schema::Schema;
+//use crate::chunk_methods::utils::merge_and_convert_chunks;
+use ragit_api::Request;
+use serde_json::Value;
+//use tokio::task::JoinSet;
+use anyhow::Error;
+pub use crate::index::retrieve_chunks::retrieve_chunks;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct QueryResponse {
@@ -38,8 +30,10 @@ impl QueryTurn {
 }
 
 impl Index {
-    /// It retrieves chunks that are related to `query`. If `super_rerank` is set, it calls `summaries_to_chunks` multiple times.
-    /// That takes longer time, but is likely to have a better result.
+    // The `retrieve_chunks` implementation is now in `crates/ragit-index/src/index/retrieve_chunks.rs`
+    // and is imported via `use crate::index::retrieve_chunks::retrieve_chunks;`
+    // Therefore, this block is commented out to avoid duplicate definitions.
+    /*
     pub async fn retrieve_chunks(&self, query: &str, super_rerank: bool) -> Result<Vec<Chunk>, Error> {
         if !self.query_config.enable_rag || self.chunk_count == 0 {
             return Ok(vec![]);
@@ -50,11 +44,7 @@ impl Index {
         let tfidf_limit = if super_rerank { max_summaries * 4 } else { max_summaries };
         let mut chunks = self.load_chunks_or_tfidf(query, tfidf_limit).await?;
 
-        // Let's say `max_summaries` is 10.
-        // If `chunks.len()` is 41, it reranks 5 times (9, 9, 9, 9, 5)
-        // If `chunks.len()` is 40, it reranks 4 times (10, 10, 10, 10).
-        // If `chunks.len()` is 39, it reranks 4 times (10, 10, 10, 9).
-        while chunks.len() > max_summaries {  // when `super_rerank` is set
+        while chunks.len() > max_summaries {
             let mut join_set = JoinSet::new();
             let mut new_chunks = vec![];
 
@@ -91,6 +81,7 @@ impl Index {
 
         Ok(chunks)
     }
+    */
 
     /// A simple version of `query`, in case you're asking only a single question.
     pub async fn single_turn(
@@ -108,7 +99,7 @@ impl Index {
         schema: Option<Schema>,
     ) -> Result<QueryResponse, Error> {
         // There's no need to rephrase the query if the rag pipeline is disabled.
-        let (multi_turn_schema, rephrased_query) = if history.is_empty() || !self.query_config.enable_rag || self.chunk_count == 0 {
+        let (multi_turn_schema, rephrased_query) = if history.is_empty() || !self.query_config.enable_rag || self.get_chunk_count() == 0 {
             (None, q.to_string())
         } else {
             let multi_turn_schema = self.rephrase_multi_turn(
@@ -122,7 +113,7 @@ impl Index {
 
             (Some(multi_turn_schema), rephrased_query)
         };
-        let chunks = self.retrieve_chunks(&rephrased_query, self.query_config.super_rerank).await?;
+        let chunks = retrieve_chunks(self, &rephrased_query, self.query_config.max_retrieval).await?;
 
         let response = if chunks.is_empty() {
             let mut history_turns = Vec::with_capacity(history.len() * 2);
@@ -193,14 +184,14 @@ impl Index {
         let request = Request {
             messages,
             frequency_penalty: None,
-            max_tokens: None,
+            max_tokens: None, // Removed max_output_tokens
             temperature: None,
             timeout: self.api_config.timeout,
             max_retry: self.api_config.max_retry,
             sleep_between_retries: self.api_config.sleep_between_retries,
             dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "rerank_summary").map(|p| p.to_str().unwrap().to_string()),
             dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
-            model: self.get_model_by_name(&self.api_config.model)?,
+            model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
             dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "rerank_summary"),
             schema,
             schema_max_try: 3,
@@ -246,7 +237,7 @@ impl Index {
             sleep_between_retries: self.api_config.sleep_between_retries,
             dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "answer_query_with_chunks").map(|p| p.to_str().unwrap().to_string()),
             dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
-            model: self.get_model_by_name(&self.api_config.model)?,
+            model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
             dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "answer_query_with_chunks"),
             schema_max_try: 3,
             ..Request::default()
@@ -282,14 +273,14 @@ impl Index {
         let request = Request {
             messages,
             frequency_penalty: None,
-            max_tokens: None,
+            max_tokens: None, // Removed max_output_tokens
             temperature: None,
             timeout: self.api_config.timeout,
             max_retry: self.api_config.max_retry,
             sleep_between_retries: self.api_config.sleep_between_retries,
             dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "rephrase_multi_turn").map(|p| p.to_str().unwrap().to_string()),
             dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
-            model: self.get_model_by_name(&self.api_config.model)?,
+            model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
             dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "rephrase_multi_turn"),
             schema,
             schema_max_try: 3,
@@ -322,7 +313,7 @@ impl Index {
             sleep_between_retries: self.api_config.sleep_between_retries,
             dump_pdl_at: self.api_config.create_pdl_path(&self.root_dir, "raw_request").map(|p| p.to_string_lossy().into_owned()),
             dump_json_at: self.api_config.dump_log_at(&self.root_dir).map(|p| p.to_str().unwrap().to_string()),
-            model: self.get_model_by_name(&self.api_config.model)?,
+            model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
             dump_api_usage_at: self.api_config.dump_api_usage_at(&self.root_dir, "raw_request"),
             schema_max_try: 3,
             ..Request::default()

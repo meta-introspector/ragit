@@ -1,5 +1,5 @@
 use crate::prelude::*;
-
+use crate::path_utils::get_uid_path;
 impl Index {
     pub fn get_file_schema(&self, uid: Uid) -> Result<FileSchema, ApiError> {
         let file_schema_path = get_uid_path(

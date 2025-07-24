@@ -2,7 +2,7 @@ use crate::prelude::*;
 //use crate::index::query_logic::*;
 use super::file_tree::FileTree;
 use std::result::Result::Ok;
-use crate::chunk::rendered_chunk::RenderedChunk;
+
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize)]
 pub enum Action {
     ReadFile,

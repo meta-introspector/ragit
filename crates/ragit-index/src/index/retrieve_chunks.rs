@@ -1,4 +1,4 @@
-use crate::prelude::*;
+pub use crate::prelude::*;
 
 impl Index {
     pub async fn retrieve_chunks(
