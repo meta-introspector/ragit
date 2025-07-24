@@ -1,20 +1,11 @@
-use ragit_utils::chunk::{self, Chunk, ChunkBuildInfo, RenderedChunk, merge_and_convert_chunks};
-use ragit_utils::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
-use ragit_utils::error::Error;
-use ragit_utils::index::tfidf;
-use ragit_utils::uid::{self, Uid};
-use ragit_fs::{exists, extension, is_dir, join3, read_dir, read_bytes, read_string};
-use serde_json::Value;
-use std::collections::HashSet;
-
-pub type Path = String;
+use crate::prelude::*;
 
 impl super::Index {
     pub(crate) async fn load_chunks_or_tfidf(
         &self,
         query: &str,
         limit: usize,
-    ) -> Result<Vec<Chunk>, Error> {
+    ) -> Result<Vec<Chunk>, ApiError> {
         if self.chunk_count > limit {
             let keywords = self.extract_keywords(query).await?;
             let tfidf_results = self.run_tfidf(
@@ -35,17 +26,17 @@ impl super::Index {
             let mut chunks = vec![];
 
             for chunk_path in self.get_all_chunk_files()? {
-                chunks.push(chunk::load_from_file(&chunk_path)?);
+                chunks.push(load_from_file(&chunk_path)?);
             }
 
             Ok(chunks)
         }
     }
 
-    pub fn get_all_chunk_files(&self) -> Result<Vec<Path>, Error> {
+    pub fn get_all_chunk_files(&self) -> Result<Vec<Path>, ApiError> {
         let mut result = vec![];
 
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME, &CHUNK_DIR_NAME)?, false)? {
+        for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, CHUNK_DIR_NAME)?, false)? {
             if !is_dir(&internal) {
                 continue;
             }
@@ -62,10 +53,10 @@ impl super::Index {
         Ok(result)
     }
 
-    pub fn get_all_tfidf_files(&self) -> Result<Vec<Path>, Error> {
+    pub fn get_all_tfidf_files(&self) -> Result<Vec<Path>, ApiError> {
         let mut result = vec![];
 
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME, &CHUNK_DIR_NAME)?, false)? {
+        for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, CHUNK_DIR_NAME)?, false)? {
             if !is_dir(&internal) {
                 continue;
             }
@@ -82,10 +73,10 @@ impl super::Index {
         Ok(result)
     }
 
-    pub fn get_all_image_files(&self) -> Result<Vec<Path>, Error> {
+    pub fn get_all_image_files(&self) -> Result<Vec<Path>, ApiError> {
         let mut result = vec![];
 
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME, &IMAGE_DIR_NAME)?, false)? {
+        for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, IMAGE_DIR_NAME)?, false)? {
             if !is_dir(&internal) {
                 continue;
             }
@@ -102,10 +93,10 @@ impl super::Index {
         Ok(result)
     }
 
-    pub(crate) fn get_all_file_indexes(&self) -> Result<Vec<Path>, Error> {
+    pub(crate) fn get_all_file_indexes(&self) -> Result<Vec<Path>, ApiError> {
         let mut result = vec![];
 
-        for internal in read_dir(&join3(&self.root_dir, &INDEX_DIR_NAME, &FILE_INDEX_DIR_NAME)?, false)? {
+        for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, FILE_INDEX_DIR_NAME)?, false)? {
             if !is_dir(&internal) {
                 continue;
             }
@@ -120,7 +111,7 @@ impl super::Index {
         Ok(result)
     }
 
-    pub fn get_chunk_by_uid(&self, uid: Uid) -> Result<Chunk, Error> {
+    pub fn get_chunk_by_uid(&self, uid: Uid) -> Result<Chunk, ApiError> {
         let chunk_at = self.get_uid_path(
             &self.root_dir,
             CHUNK_DIR_NAME,
@@ -129,10 +120,10 @@ impl super::Index {
         )?;
 
         if exists(&chunk_at) {
-            return Ok(chunk::load_from_file(&chunk_at)?);
+            return Ok(load_from_file(&chunk_at)?);
         }
 
-        Err(Error::NoSuchChunk(uid))
+        Err(ApiError::NoSuchChunk(uid))
     }
 
     pub fn check_chunk_by_uid(&self, uid: Uid) -> bool {
@@ -153,7 +144,7 @@ impl super::Index {
     pub fn get_tfidf_by_chunk_uid(
         &self,
         uid: Uid,
-    ) -> Result<ragit_types::ProcessedDoc, Error> {
+    ) -> Result<ProcessedDoc, ApiError> {
         let tfidf_at = self.get_uid_path(
             &self.root_dir,
             CHUNK_DIR_NAME,
@@ -165,15 +156,15 @@ impl super::Index {
             return Ok(tfidf::load_from_file(&tfidf_at)?);
         }
 
-        Err(Error::NoSuchChunk(uid))
+        Err(ApiError::NoSuchChunk(uid))
     }
 
     pub fn get_tfidf_by_file_uid(
         &self,
         uid: Uid,
-    ) -> Result<ragit_types::ProcessedDoc, Error> {
+    ) -> Result<ProcessedDoc, ApiError> {
         let chunk_uids = self.get_chunks_of_file(uid)?;
-        let mut result = ragit_types::ProcessedDoc::empty();
+        let mut result = ProcessedDoc::empty();
 
         for uid in chunk_uids.iter() {
             result.extend(&self.get_tfidf_by_chunk_uid(*uid)?);
@@ -183,7 +174,7 @@ impl super::Index {
         Ok(result)
     }
 
-    pub fn get_chunks_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
+    pub fn get_chunks_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, ApiError> {
         let file_index_path = self.get_uid_path(
             &self.root_dir,
             FILE_INDEX_DIR_NAME,
@@ -192,13 +183,13 @@ impl super::Index {
         )?;
 
         if exists(&file_index_path) {
-            return Ok(uid::load_from_file(&file_index_path)?);
+            return Ok(load_from_file(&file_index_path)?);
         }
 
-        Err(Error::NoSuchFile { path: None, uid: Some(file_uid) })
+        Err(ApiError::NoSuchFile { path: None, uid: Some(file_uid) })
     }
 
-    pub fn get_merged_chunk_of_file(&self, file_uid: Uid) -> Result<RenderedChunk, Error> {
+    pub fn get_merged_chunk_of_file(&self, file_uid: Uid) -> Result<RenderedChunk, ApiError> {
         let chunk_uids = self.get_chunks_of_file(file_uid)?;
         let mut chunks = Vec::with_capacity(chunk_uids.len());
 
@@ -213,11 +204,11 @@ impl super::Index {
         match chunks.len() {
             0 => todo!(),  // It's an empty file. Does ragit create a chunk for an empty file? I don't remember...
             1 => Ok(chunks[0].clone()),
-            _ => Err(Error::BrokenIndex(format!("Internal error: `get_merged_chunk_of_file({file_uid})` returned multiple chunks"))),
+            _ => Err(ApiError::BrokenIndex(format!("Internal error: `get_merged_chunk_of_file({file_uid})` returned multiple chunks"))),
         }
     }
 
-    pub fn get_images_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, Error> {
+    pub fn get_images_of_file(&self, file_uid: Uid) -> Result<Vec<Uid>, ApiError> {
         let chunk_uids = self.get_chunks_of_file(file_uid)?;
         let mut result = HashSet::new();
 
@@ -232,13 +223,13 @@ impl super::Index {
         Ok(result.into_iter().collect())
     }
 
-    pub fn get_image_bytes_by_uid(&self, uid: Uid) -> Result<Vec<u8>, Error> {
+    pub fn get_image_bytes_by_uid(&self, uid: Uid) -> Result<Vec<u8>, ApiError> {
         Ok(read_bytes(&self.get_uid_path(IMAGE_DIR_NAME, uid, Some("png"))?)?)
     }
 
-    pub fn get_image_description_by_uid(&self, uid: Uid) -> Result<ragit_types::ImageSchema, Error> {
+    pub fn get_image_description_by_uid(&self, uid: Uid) -> Result<ImageSchema, ApiError> {
         let j = read_string(&self.get_uid_path(IMAGE_DIR_NAME, uid, Some("json"))?)?;
-        let v = serde_json::from_str::<ragit_types::ImageSchema>(&j)?;
+        let v = serde_json::from_str::<ImageSchema>(&j)?;
         Ok(v)
     }
 }

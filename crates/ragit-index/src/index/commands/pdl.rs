@@ -1,5 +1,5 @@
 use crate::prelude::*;
-
+use std::result::Result::Ok;
 pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiError> {
     let parsed_args = ArgParser::new()
         .optional_arg_flag("--model", ArgType::String)
@@ -36,7 +36,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiEr
     let model = if let Some(model) = parsed_args.get_optional_arg_flag("--model") {
         get_model_by_name(&models, model)?
     } else {
-        match Index::load_config_from_home::<Value>("api.json") {
+        match Index::load_config_from_home_dir::<Value>("api.json") {
             Ok(Some(Value::Object(api_config))) => match api_config.get("model") {
                 Some(Value::String(model)) => get_model_by_name(&models, model)?,
                 _ => return Err(ApiError::ModelNotSelected),
@@ -49,7 +49,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiEr
         let s = read_string(&context_at)?;
         serde_json::from_str::<Value>(&s)?
     } else {
-        None => Value::Object(serde_json::Map::new()),
+        serde_json::Value::Null
     };
 
     let log_at = if let Some(log_at) = parsed_args.get_optional_arg_flag("--log") {
@@ -72,7 +72,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiEr
     };
 
     let schema = if let Some(schema) = parsed_args.get_optional_arg_flag("--schema") {
-        Some(ragit_api_prelude::parse_schema(schema)?)
+        Some(parse_schema(schema)?)
     } else {
         None
     };
@@ -81,10 +81,10 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiEr
 
     let strict_mode = true;
 
-    ragit_api_prelude::parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
+    parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
 
     if let Some(schema) = schema {
-        let result = ragit_api_prelude::render_pdl_schema(&schema, &Value::Null)?;
+        let result = render_pdl_schema(&schema, &Value::Null)?;
         println!("{}", result);
     }
 

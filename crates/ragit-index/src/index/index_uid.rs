@@ -4,7 +4,7 @@ impl Index {
     pub fn calculate_and_save_uid(&mut self) -> Result<Uid, ApiError> {
         let uid = self.calculate_uid(false)?;
         self.uid = uid;
-        self.save_to_file(self.root_dir.join(INDEX_FILE_NAME))?;
+        self.save_to_file(self.root_dir.join(INDEX_FILE_NAME).to_str().unwrap())?;
         Ok(uid)
     }
 
@@ -16,10 +16,10 @@ impl Index {
         let mut uids = vec![];
 
         for file in self.processed_files.keys() {
-            let file_index_path = get_uid_path(&self.root_dir, &Path::new(FILE_INDEX_DIR_NAME), Uid::new(), Some(file.to_str().unwrap()))?;
+            let file_index_path = get_uid_path(&self.root_dir, FILE_INDEX_DIR_NAME, Uid::new(), Some(file.to_str().unwrap()))?;
 
             if exists(&file_index_path) {
-                for uid in load_from_file(&PathBuf::from(file_index_path.to_str().unwrap()))? {
+                for uid in load_from_file(&file_index_path)? {
                     uids.push(uid);
                 }
             }
@@ -34,7 +34,7 @@ impl Index {
         self.uid = Uid::new();
 
         if save_to_file {
-            self.save_to_file(self.root_dir.join(INDEX_FILE_NAME))?;
+            self.save_to_file(self.root_dir.join(INDEX_FILE_NAME).to_str().unwrap())?;
         }
 
         Ok(())

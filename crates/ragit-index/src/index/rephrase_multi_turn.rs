@@ -22,7 +22,7 @@ pub async fn rephrase_multi_turn(
 
     let request = Request {
         messages,
-        model: index.get_model_by_name(&index.api_config.model)?,
+        model: index.api_config.model.clone(),
         temperature: Some(0.0),
         max_tokens: Some(index.query_config.max_output_tokens),
         schema: Some(schema.clone()),

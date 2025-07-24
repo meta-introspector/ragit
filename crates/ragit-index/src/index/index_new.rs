@@ -3,10 +3,10 @@ use crate::prelude::*;
 impl Index {
     pub fn new(root_dir: PathBuf) -> Result<Self, ApiError> {
         let root_dir = get_normalized_abs_pathbuf(&root_dir)?;
-        let index_dir = join_paths(&root_dir, &PathBuf::from(INDEX_DIR_NAME))?;
+        let index_dir = join_paths(&root_dir, INDEX_DIR_NAME)?;
 
         if exists(&index_dir) {
-            return Err(ApiError::IndexAlreadyExists(index_dir));
+            return Err(ApiError::IndexExists(index_dir));
         }
 
         create_dir_all(&index_dir)?;
@@ -18,7 +18,7 @@ impl Index {
             FILE_INDEX_DIR_NAME,
             II_DIR_NAME,
         ] {
-            create_dir_all(&get_rag_path(&root_dir.to_path_buf(), &PathBuf::from(dir))?)?;
+            create_dir_all(&get_rag_path(&root_dir.to_path_buf(), dir)?)?;
         }
 
         let mut query_config = QueryConfig::default();
@@ -38,7 +38,7 @@ impl Index {
             uid: Uid::new(),
         };
 
-        result.save_to_file(result.root_dir.join(INDEX_FILE_NAME))?;
+        result.save_to_file(result.root_dir.join(INDEX_FILE_NAME).to_str().unwrap())?;
 
         Ok(result)
     }

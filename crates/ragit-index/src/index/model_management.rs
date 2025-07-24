@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 impl Index {
     pub fn load_or_init_models(&mut self) -> Result<(), ApiError> {
-        let models_at = get_rag_path(&self.root_dir, &PathBuf::from(MODEL_FILE_NAME))?;
+        let models_at = get_rag_path(&self.root_dir, MODEL_FILE_NAME)?;
 
         if exists(&models_at) {
             let j = read_string(&models_at)?;
@@ -23,10 +23,10 @@ impl Index {
     }
 
     pub fn save_models(&self) -> Result<(), ApiError> {
-        let models_at = get_rag_path(&self.root_dir, &PathBuf::from(MODEL_FILE_NAME))?;
+        let models_at = get_rag_path(&self.root_dir, MODEL_FILE_NAME)?;
         let models: Vec<ModelRaw> = self.models.iter().map(|model| model.into()).collect();
         write_string(
-            &models_at,
+            &models_at.to_str().unwrap(),
             &serde_json::to_string_pretty(&models)?,
             WriteMode::CreateOrTruncate,
         )?;
@@ -38,8 +38,8 @@ impl Index {
         let mut result = vec![];
 
         if let Ok(env_content) = read_string(&join_paths(
-            &get_rag_path(&PathBuf::from("ragit"), &PathBuf::from(CONFIG_DIR_NAME))?,
-            &PathBuf::from("models.json"),
+            &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+            "models.json",
         )?) {
             if let Ok(models) = serde_json::from_str::<Vec<ModelRaw>>(&env_content) {
                 result.extend(models);
@@ -47,8 +47,8 @@ impl Index {
         }
 
         if let Ok(config_content) = read_string(&join_paths(
-            &get_rag_path(&PathBuf::from("ragit"), &PathBuf::from(CONFIG_DIR_NAME))?,
-            &PathBuf::from("models.json"),
+            &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+            "models.json",
         )?) {
             if let Ok(models) = serde_json::from_str::<Vec<ModelRaw>>(&config_content) {
                 result.extend(models);

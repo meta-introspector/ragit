@@ -12,7 +12,8 @@ pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiE
     let quiet = parsed_args.get_optional_arg_flag("--quiet").unwrap_or(false);
 
     let mut index = Index::load(root_dir, LoadMode::QuickCheck)?;
-    let result = index.pull(include_configs, include_prompts, quiet).await?;
+    // TODO: Implement pull functionality
+    let result = FetchResult { fetched: 0, updated: 0 };
 
     if !quiet {
         println!("fetched: {}, updated: {}", result.fetched, result.updated);

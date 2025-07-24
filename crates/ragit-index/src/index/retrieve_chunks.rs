@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use tokio::task::JoinSet;
 
 impl Index {
     pub async fn retrieve_chunks(
@@ -9,7 +8,7 @@ impl Index {
     ) -> Result<Vec<Chunk>, ApiError> {
         let tfidf_results = self.run_tfidf(&Keywords::from(vec![query.to_string()]), limit)?;
         let mut chunks = Vec::with_capacity(tfidf_results.len());
-        let mut join_set = JoinSet::new();
+        let mut join_set = tokio::task::JoinSet::new();
 
         for tfidf_result in tfidf_results {
             let index_clone = self.clone();

@@ -4,15 +4,15 @@ impl Index {
     pub fn get_image_schema(&self, uid: Uid, load_bytes: bool) -> Result<ImageSchema, ApiError> {
         let image_schema_path = get_uid_path(
             &self.root_dir,
-            &Path::new(IMAGE_DIR_NAME),
+            IMAGE_DIR_NAME,
             uid,
             None,
         )?;
 
         if !exists(&image_schema_path) {
-            return Err(ApiError::NoSuchFile {
-                file: image_schema_path.to_string_lossy().to_string(),
-                similar_files: vec![],
+            return Err(ApiError::FileNotFound {
+                path: image_schema_path.to_string_lossy().to_string(),
+                similar_paths: vec![],
             });
         }
 

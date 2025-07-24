@@ -1,7 +1,4 @@
 use crate::prelude::*;
-use flate2::{bufread::{GzDecoder, GzEncoder}, Compression};
-use rust_stemmers::{Stemmer, Algorithm};
-use std::hash::Hash;
 
 pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
     let content = read_bytes(path)?;
@@ -13,9 +10,9 @@ pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
 
 pub fn save_to_file(path: &str, chunk: &Chunk, root_dir: &str) -> Result<(), ApiError> {
     let mut result = vec![];
-    let mut gz = GzEncoder::new(&result[..], Compression::best());
+    let mut gz = GzEncoder::new(Vec::new(), Compression::best());
     std::io::Write::write_all(&mut gz, &serde_json::to_string(chunk)?.as_bytes())?;
-    result = gz.finish()?;
+    result = gz.finish().unwrap();
     write_bytes(path, &result, WriteMode::CreateOrTruncate)?;
     Ok(())
 }

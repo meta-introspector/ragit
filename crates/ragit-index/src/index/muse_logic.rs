@@ -10,7 +10,7 @@ impl Index {
         let prompt_name = format!("muse_{}", muse_name);
         let pdl = self
             .get_prompt(&prompt_name)
-            .ok_or_else(|| ApiError::PromptMissing(prompt_name.clone()))?;
+            .ok_or_else(|| ApiError::PromptNotFound(prompt_name.clone()))?;
 
         let mut context = Context::new();
         context.insert("text", text);

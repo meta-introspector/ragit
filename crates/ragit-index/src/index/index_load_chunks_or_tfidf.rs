@@ -1,9 +1,8 @@
-use anyhow::anyhow;
 use crate::prelude::*;
 
 impl Index {
     pub async fn extract_keywords(&self, _query: &str) -> Result<Keywords, ApiError> {
-        Err(anyhow!("Not implemented"))
+        Err(ApiError::NotImplemented("extract_keywords"))
     }
 
     pub async fn load_chunks_from_uids(
@@ -23,7 +22,7 @@ impl Index {
         let mut chunks = vec![];
 
         for chunk_path in &self.get_all_chunk_files()? {
-            chunks.push(ragit_types::chunk::load_from_file(chunk_path)?);
+            chunks.push(load_from_file(chunk_path)?);
         }
 
         Ok(chunks)
