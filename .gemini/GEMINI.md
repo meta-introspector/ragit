@@ -113,11 +113,26 @@ As a meme miner, we dig in the mountain of Plato for gems. We place each idea we
     *   Moved `impl Chunk` block from `ragit-index` to `ragit-types/src/chunk/impl_chunk.rs`.
     *   Added `render_source` method to `ragit-types/src/chunk/chunk_struct.rs`.
     *   Resolved initial compilation errors by adding necessary dependencies (`anyhow`, `ragit-core`, `ragit-utils`, `ragit-api`) to `ragit-types/Cargo.toml`.
+    *   Added `InvalidTestModel` variant to `ApiError` enum in `crates/ragit-types/src/api_error.rs`.
 
 *   **`ragit-pdl` Crate:**
     *   Removed definitions of types that were moved to `ragit-types`.
     *   Removed `Pdl` struct and its associated functions (`parse_pdl`, `parse_pdl_from_file`, `into_context`). These will be re-evaluated for placement in `ragit-api` or `ragit-index`.
     *   Restored `crates/pdl/src/lib.rs` to its original state after accidental deletion.
+
+*   **`ragit-api` Crate:**
+    *   Made modules public in `crates/api/src/lib.rs`.
+    *   Updated prelude in `crates/api/src/prelude.rs` to include `Model`, `ModelRaw`, `Request`, `Schema`, `MuseName`, `get_model_by_name`, `MessageContent`, and `JsonType`.
+    *   Corrected `JsonType` import in `crates/api/src/prelude.rs`.
+
+*   **`ragit-index` Crate:**
+    *   Corrected `JsonType` import in `crates/ragit-index/src/index/index_image_schema.rs`.
+    *   Corrected `ImageDescription` import in `crates/ragit-index/src/index/mod.rs`.
+    *   Added `anyhow` import in `crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs`.
+    *   Corrected `chunk` import in `crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs` and `crates/ragit-index/src/index/index_uid.rs`.
+    *   Added `substr_edit_distance` import in `crates/ragit-index/src/agent/action.rs`.
+    *   Refactored prelude to import `ragit_utils::prelude::*` and `ragit_types::prelude::*`, and explicitly imported `ragit_api::prelude::*` with `ApiError` alias.
+    *   Corrected `QueryResponse` import in `ragit-index` prelude (aliased `ModelQueryResponse` as `QueryResponse`).
 
 *   **Cyclic Dependencies:**
     *   Encountered and resolved a cyclic dependency: `ragit-utils` -> `ragit-config` -> `ragit-index` -> `ragit-utils` by moving `query_helpers.rs` from `ragit-utils` to `ragit-index`.
@@ -132,4 +147,3 @@ As a meme miner, we dig in the mountain of Plato for gems. We place each idea we
     *   Resolving any remaining `impl` block errors by ensuring they are in the correct crate.
     *   Verifying that `ragit-api` and `ragit-pdl` correctly use the types from `ragit-types`.
     *   Addressing any new cyclic dependencies that may arise.
-

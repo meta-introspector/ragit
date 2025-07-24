@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_utils::cli_types::ParsedArgs;
 
 pub async fn query_command(
     _args: Vec<String>,

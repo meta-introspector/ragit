@@ -32,5 +32,6 @@ ragit-model = { path = "../ragit-model" }
 ragit-core-utils = { path = "../ragit-core-utils" }
 ragit-schema = { path = "../ragit-schema" }
 ragit-session-query = { path = "../ragit-session-query" }
+ragit-pdl = { path = "../pdl" }
 ragit-model-provider = { path = "../ragit-model-provider" }
 

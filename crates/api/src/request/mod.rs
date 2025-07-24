@@ -69,7 +69,7 @@ impl Request {
     /// It panics if its fields are not complete. If you're not sure, run `self.is_valid()` before sending a request.
     pub fn build_json_body(&self) -> Value {
         let api_provider =
-            ApiProvider::parse(&self.model.api_provider_name, &self.model.api_url).unwrap();
+            ApiProvider::parse(&self.model.api_provider_name, &self.model.get_api_url().ok()).unwrap();
         match self.model.api_provider_name.as_str() {
             "Google" => {
                 let mut result = Map::new();
@@ -221,10 +221,15 @@ impl Request {
             );
         }
         let api_provider =
-            ApiProvider::parse(&self.model.api_provider_name, &self.model.api_url)?;
-        if self.model.api_provider_name == "Test" {
-            let response =
-                self.model.test_model.as_ref().unwrap().get_dummy_response(&self.messages)?;
+            ApiProvider::parse(&self.model.api_provider_name, &self.model.get_api_url().ok())?;
+        if self.model.is_test_model() {
+            let test_model = match self.model.name.as_str() {
+                "dummy" => TestModel::Dummy,
+                "stdin" => TestModel::Stdin,
+                "error" => TestModel::Error,
+                _ => return Err(Error::InvalidTestModel(self.model.name.clone())),
+            };
+            let response = test_model.get_dummy_response(&self.messages)?;
 
             if let Some(key) = &self.dump_api_usage_at {
                 if let Err(e) = dump_api_usage(

@@ -1,14 +1,34 @@
+// Import other preludes
+pub use ragit_types::prelude::*;
+pub use ragit_api::prelude::{self as ragit_api_prelude, Error as ApiError};
+
+// Index-specific items
 pub use crate::index::{Index, IIStatus, BuildConfig};
-pub use ragit_api::{Model, ModelRaw, Request, Schema, MuseName, get_model_by_name, MessageContent, JsonType, Pdl, parse_pdl, render_pdl_schema};
+
+// Reader-specific items
 pub use ragit_readers::ImageDescription;
-pub use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, ParsedArgs};
-pub use ragit_model_query_response::{ModelQueryResponse, QueryTurn};
-pub use ragit_types::pdl_types::{Message, MessageContent, Role};
-pub use ragit_types::{ApiError as Error, AuditRecordAt, FileSchema, JsonType, Uid};
+
+// Query response items
+pub use ragit_model_query_response::{ModelQueryResponse as QueryResponse, QueryTurn};
+
+// Filesystem items
 pub use ragit_fs::{exists, create_dir, create_dir_all, join, join3, join4, read_bytes, read_dir, read_string, remove_file, write_bytes, write_string, WriteMode, file_name, parent, extension, get_relative_path, set_extension};
+
+// Std library items
 pub use std::collections::{HashMap, HashSet};
-pub use std::path::{Path, PathBuf};
 pub use std::ops::{Deref, DerefMut};
+
+// Other crates
 pub use lazy_static::lazy_static;
 pub use regex::Regex;
-pub use serde::{Serialize, Deserialize};
+
+pub use anyhow::{anyhow, Result};
+pub use ragit_utils::{
+    api_config::{ApiConfig, PartialApiConfig},
+    constant::*,
+    error::Error,
+    prompts::PROMPTS,
+    query::{Keywords, MultiTurnSchema, QueryConfig},
+    path_utils::{get_ii_path, get_normalized_abs_pathbuf, get_rag_path, get_uid_path, join3_paths, join_paths},
+    cli_types::{ArgParser, ArgType, ArgCount, ParsedArgs}
+};

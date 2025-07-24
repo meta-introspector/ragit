@@ -20,7 +20,7 @@ impl Index {
                 let mut uids = vec![];
 
                 for chunk_path in self.get_all_chunk_files()?.iter() {
-                    let chunk = crate::chunk::load_from_file(chunk_path)?;
+                    let chunk = ragit_types::chunk::load_from_file(chunk_path)?;
                     uids.push(chunk.uid);
                 }
 

@@ -1,3 +1,4 @@
+use anyhow::anyhow;
 use crate::prelude::*;
 
 impl Index {
@@ -25,7 +26,7 @@ impl Index {
             let mut chunks = vec![];
 
             for chunk_path in &self.get_all_chunk_files()? {
-                chunks.push(crate::chunk::load_from_file(chunk_path)?);
+                chunks.push(ragit_types::chunk::load_from_file(chunk_path)?);
             }
 
             Ok(chunks)

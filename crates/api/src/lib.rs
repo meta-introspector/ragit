@@ -1,17 +1,17 @@
 pub mod prelude;
 
-use prelude::*;
-use ragit_fs::{read_string, write_string, WriteMode};
+pub use prelude::*;
+pub use ragit_fs::{read_string, write_string, WriteMode};
 
-mod api_provider;
+pub mod api_provider;
 pub mod audit;
-mod error;
-mod message;
+pub mod error;
+pub mod message;
 pub mod muse;
 pub mod qa_system;
-mod rate_limit;
-mod request;
-mod response;
+pub mod rate_limit;
+pub mod request;
+pub mod response;
 
 #[cfg(test)]
 mod tests;

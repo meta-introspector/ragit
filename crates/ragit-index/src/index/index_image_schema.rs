@@ -1,7 +1,7 @@
 
 use crate::prelude::*;
 use ragit_fs::{file_size, read_bytes, read_string, set_extension};
-use ragit_pdl::JsonType;
+use ragit_api::JsonType;
 use ragit_utils::constant::IMAGE_DIR_NAME;
 use serde_json::Value;
 use std::path::{Path, PathBuf};

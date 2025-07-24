@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::index::load_mode::LoadMode;
 
 pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

@@ -61,6 +61,8 @@ pub enum ApiError {
     UnsupportedMediaFormat { extension: Option<String> },
     #[error("test model")]
     TestModel,
+    #[error("invalid test model: {0}")]
+    InvalidTestModel(String),
     #[error("insufficient models")]
     InsufficientModels,
 }

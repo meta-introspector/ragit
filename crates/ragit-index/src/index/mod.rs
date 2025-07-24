@@ -25,7 +25,7 @@ pub mod rephrase_multi_turn;
 pub mod retrieve_chunks;
 pub mod summaries_to_chunks;
 
-pub use file::{FileReader, ImageDescription};
+pub use ragit_readers::{FileReader, ImageDescription};
 pub use tfidf::{consume_processed_doc, ProcessedDoc, TfidfResult, TfidfState};
 pub use crate::prelude::*;
 pub use ragit_config::BuildConfig;
