@@ -58,10 +58,10 @@ impl TryFrom<&Value> for AuditRecord {
         match &j {
             Value::Array(arr) => {
                 if arr.len() != 4 {
-                    return Err(Error::TypesApiError(ragit_types::ApiError::WrongSchema(format!(
+                    return Err(Error::WrongSchema(format!(
                         "expected an array of length 4, but got length {}",
                         arr.len()
-                    ))));
+                    )));
                 }
 
                 for r in arr.iter() {
@@ -70,10 +70,10 @@ impl TryFrom<&Value> for AuditRecord {
                             result.push(n);
                         }
                         None => {
-                            return Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
+                            return Err(Error::JsonTypeError {
                                 expected: JsonType::U64,
                                 got: r.into(),
-                            }));
+                            });
                         }
                     }
                 }
@@ -85,10 +85,10 @@ impl TryFrom<&Value> for AuditRecord {
                     output_cost: result[3],
                 })
             }
-            _ => Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
+            _ => Err(Error::JsonTypeError {
                 expected: JsonType::Array,
                 got: j.into(),
-            })),
+            }),
         }
     }
 }
@@ -410,10 +410,10 @@ impl TryFrom<&Value> for AuditRecordLegacy {
                             result.push(n);
                         }
                         None => {
-                            return Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
+                            return Err(Error::JsonTypeError {
                                 expected: JsonType::U64,
                                 got: r.into(),
-                            }));
+                            });
                         }
                     }
                 }
@@ -426,10 +426,10 @@ impl TryFrom<&Value> for AuditRecordLegacy {
                     output_weight: result[4],
                 })
             }
-            _ => Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
+            _ => Err(Error::JsonTypeError {
                 expected: JsonType::Array,
                 got: j.into(),
-            })),
+            }),
         }
     }
 }

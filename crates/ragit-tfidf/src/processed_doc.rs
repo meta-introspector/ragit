@@ -1,0 +1,21 @@
+use serde::{Deserialize, Serialize};
+use crate::Uid;
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ProcessedDoc {
+    pub doc_id: Uid,
+    pub tokens: Vec<String>,
+}
+
+impl ProcessedDoc {
+    pub fn empty() -> Self {
+        ProcessedDoc {
+            doc_id: Uid::dummy(),
+            tokens: Vec::new(),
+        }
+    }
+
+    pub fn extend(&mut self, other: &ProcessedDoc) {
+        self.tokens.extend(other.tokens.clone());
+    }
+}

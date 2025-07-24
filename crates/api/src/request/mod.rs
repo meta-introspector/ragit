@@ -207,7 +207,7 @@ impl Request {
     pub async fn send(&self) -> Result<Response, Error> {
         let started_at = Instant::now();
         let client = reqwest::Client::new();
-        let mut curr_error = Error::TypesApiError(ragit_types::ApiError::NoTry);
+        let mut curr_error = Error::NoTry;
 
         let mut rate_limiter = RateLimiter::new(&self.model, 0.9);
 
@@ -227,7 +227,7 @@ impl Request {
                 "dummy" => TestModel::Dummy,
                 "stdin" => TestModel::Stdin,
                 "error" => TestModel::Error,
-                _ => return Err(Error::TypesApiError(ragit_types::ApiError::InvalidTestModel(self.model.name.clone()))),
+                _ => return Err(Error::InvalidTestModel(self.model.name.clone())),
             };
             let response = test_model.get_dummy_response(&self.messages)?;
 
@@ -402,14 +402,14 @@ impl Request {
                                 "response.text()",
                                 &format!("response.text() failed with {e:?}"),
                             );
-                            curr_error = Error::TypesApiError(ragit_types::ApiError::ReqwestError(e.to_string()));
+                            curr_error = Error::ReqwestError(e.to_string());
                         }
                     },
                     status_code => {
-                        curr_error = Error::TypesApiError(ragit_types::ApiError::ServerError {
+                        curr_error = Error::ServerError {
                             status_code,
                             body: response.text().await.unwrap_or_default(),
-                        });
+                        };
 
                         if let Some(path) = &self.dump_pdl_at {
                             if let Err(e) = dump_pdl(
@@ -435,7 +435,7 @@ impl Request {
                         if !self.model.can_read_images
                             && self.messages.iter().any(|message| message.has_image())
                         {
-                            return Err(Error::TypesApiError(ragit_types::ApiError::CannotReadImage(self.model.name.clone())));
+                            return Err(Error::CannotReadImage(self.model.name.clone()));
                         }
                     }
                 },
@@ -444,7 +444,7 @@ impl Request {
                         "request.send().await",
                         &format!("request.send().await failed with {e:?}"),
                     );
-                    curr_error = Error::TypesApiError(ragit_types::ApiError::ReqwestError(e.to_string()));
+                    curr_error = Error::ReqwestError(e.to_string());
                 }
             }
 

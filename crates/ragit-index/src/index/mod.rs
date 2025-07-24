@@ -1,7 +1,6 @@
 pub use ::serde::*;
 pub mod commands;
 pub mod get_prompt;
-pub mod index_chunk_methods;
 use ragit_types::api_config::ApiConfig;
 // pub mod index_add_file_to_index;
 // pub mod index_add_staged_file;
@@ -30,17 +29,4 @@ pub use ragit_readers::*;
 pub use crate::prelude::*;
 pub use ragit_config::BuildConfig;
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct Index {
-    pub root_dir: PathBuf,
-    pub processed_files: HashMap<PathBuf, Uid>,
-    pub staged_files: HashSet<PathBuf>,
-    pub ragit_version: String,
-    pub query_config: QueryConfig,
-    pub api_config: ApiConfig,
-    pub prompts: HashMap<String, String>,
-    pub models: Vec<Model>,
-    pub curr_processing_file: Option<PathBuf>,
-    pub summary: Option<String>,
-    pub uid: Uid,
-}
+

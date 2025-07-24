@@ -1,3 +1,4 @@
+pub mod model;
 pub mod image;
 pub mod chunk;
 pub mod uid;

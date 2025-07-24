@@ -10,7 +10,7 @@ pub async fn process_single_qa_request(
     evaluate_quality: &dyn Fn(&Response, &Request, Option<&QualityExpectations>) -> QualityScores,
 ) -> Result<ModelQAResult, Error> {
     let mut qa_request = request.clone();
-    qa_request.model = Model::try_from(model_raw)?;
+    qa_request.model = Model::try_from(model_raw).map_err(Error::InvalidModelName)?;
 
     let mut rate_limiter =
         crate::rate_limit::RateLimiter::new(&qa_request.model, throttling_safety_margin);

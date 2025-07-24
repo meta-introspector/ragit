@@ -9,6 +9,9 @@ use ragit_types::uid::Uid;
 use ragit_utils::query::Keywords;
 use anyhow::Result;
 
+pub mod processed_doc;
+pub use processed_doc::ProcessedDoc;
+
 pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
     let content = read_bytes(path)?;
     let mut gz = GzDecoder::new(&content[..]);
@@ -26,11 +29,7 @@ pub fn save_to_file(path: &str, chunk: &ragit_types::chunk::chunk_struct::Chunk,
     Ok(())
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct ProcessedDoc {
-    pub doc_id: Uid,
-    pub tokens: Vec<String>,
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TfidfResult {

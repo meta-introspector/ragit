@@ -7,6 +7,7 @@ edition = "2021"
 
 ragit-uid = { path = "../ragit-uid" }
 ragit-types = { path = "../ragit-types" }
+ragit-index-types = { path = "../ragit-index-types" }
 ragit-utils = { path = "../ragit-utils" }
 
 ragit-config = { path = "../ragit-config" }
@@ -34,3 +35,4 @@ ragit-api = { path = "../api" }
 ragit-model-query-response = { path = "../ragit-model-query-response" }
 ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }
 ragit-error = { path = "../ragit-error" }
+ragit-index-chunk-methods = { path = "../ragit-index-chunk-methods" }

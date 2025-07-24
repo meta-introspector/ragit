@@ -7,8 +7,6 @@ pub mod api_provider;
 pub mod audit;
 pub mod error;
 pub mod message;
-pub mod muse;
-pub mod qa_system;
 pub mod rate_limit;
 pub mod request;
 pub mod response;
@@ -18,11 +16,6 @@ mod tests;
 
 pub use crate::audit::AuditRecord;
 pub use crate::message::message_contents_to_json_array;
-pub use crate::muse::muse_enum::MuseName;
-pub use crate::muse::muse_struct::Muse;
-pub use crate::qa_system::model_qa_result::ModelQAResult;
-pub use crate::qa_system::model_qa_system_struct::ModelQASystem;
-pub use crate::qa_system::quality_scores::QualityScores;
 
 pub struct FetchResult {
     pub fetched: usize,
