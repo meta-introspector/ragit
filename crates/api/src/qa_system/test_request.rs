@@ -12,7 +12,7 @@ impl ModelQASystem {
         let selected_models = get_selected_models(&self.models)?;
 
         if selected_models.len() < 2 {
-            return Err(Error::InsufficientModels);
+            return Err(Error::TypesApiError(ragit_types::ApiError::InsufficientModels));
         }
 
         let mut results = Vec::new();

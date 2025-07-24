@@ -1,0 +1,13 @@
+[package]
+name = "ragit-error"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "1.0"
+serde_json = "1.0"
+anyhow = "1.0"
+ragit-fs = { path = "../fs" }
+ragit-types = { path = "../ragit-types" }
+ragit-utils = { path = "../ragit-utils" }
+ragit-pdl = { path = "../pdl" }

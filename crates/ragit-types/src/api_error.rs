@@ -1,14 +1,7 @@
 use thiserror::Error;
-use crate::JsonType;
+pub use crate::JsonType;
 use ragit_fs::FileError;
-
-
-
-#[derive(Debug, Error)]
-pub enum TeraError {
-    #[error("dummy tera error")]
-    Dummy,
-}
+use std::path::PathBuf;
 
 #[derive(Debug, Error)]
 pub enum ApiError {
@@ -67,4 +60,26 @@ pub enum ApiError {
     InsufficientModels,
     #[error(transparent)]
     AnyhowError(#[from] anyhow::Error),
+
+    // New error variants
+    #[error("model not selected")]
+    ModelNotSelected,
+    #[error("prompt missing: {0}")]
+    PromptMissing(String),
+    #[error("no such chunk: {0}")]
+    NoSuchChunk(String),
+    #[error("broken index: {0}")]
+    BrokenIndex(String),
+    #[error("no such file: {path:?}, uid: {uid:?}")]
+    NoSuchFile { path: Option<String>, uid: Option<String> },
+    #[error("index already exists at {0}")]
+    IndexExists(PathBuf),
+    #[error("not implemented: {0}")]
+    NotImplemented(String),
+}
+
+#[derive(Debug, Error)]
+pub enum TeraError {
+    #[error("dummy tera error")]
+    Dummy,
 }

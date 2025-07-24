@@ -2,14 +2,14 @@ use crate::prelude::*;
 
 pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiError> {
     let parsed_args = ArgParser::new()
-        .optional_arg_flag("--include-configs", ArgType::Bool)
-        .optional_arg_flag("--include-prompts", ArgType::Bool)
-        .optional_arg_flag("--quiet", ArgType::Bool)
+        .optional_arg_flag("--include-configs", ArgType::String)
+        .optional_arg_flag("--include-prompts", ArgType::String)
+        .optional_arg_flag("--quiet", ArgType::String)
         .parse(args, 2)?;
 
-    let include_configs = parsed_args.get_optional_arg_flag("--include-configs").unwrap_or(false);
-    let include_prompts = parsed_args.get_optional_arg_flag("--include-prompts").unwrap_or(false);
-    let quiet = parsed_args.get_optional_arg_flag("--quiet").unwrap_or(false);
+    let include_configs = parsed_args.arg_flags.get("--include-configs").is_some();
+    let include_prompts = parsed_args.arg_flags.get("--include-prompts").is_some();
+    let quiet = parsed_args.arg_flags.get("--quiet").is_some();
 
     let mut index = Index::load(root_dir, LoadMode::QuickCheck)?;
     // TODO: Implement pull functionality

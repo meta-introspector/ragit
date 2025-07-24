@@ -3,7 +3,7 @@ pub mod archive;
 pub mod audit;
 pub mod build;
 pub mod merge;
-pub mod pdl;
+
 pub mod pull;
 pub mod push;
 pub mod qa_test;

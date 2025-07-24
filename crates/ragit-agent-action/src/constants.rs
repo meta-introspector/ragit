@@ -44,4 +44,4 @@ pub const RENDER_SIMPLE_RAG_REFERENCED_CHUNK: &str = "{} (uid: {})";
 pub const ARGUMENT_OKAY: &str = "okay";
 pub const YES: &str = "yes";
 pub const NO: &str = "no";
-pub const FORMAT_RESULT_RENDERED: &str = "{}\n\n{}";
+//pub const FORMAT_RESULT_RENDERED: &str = "{}\n\n{}";

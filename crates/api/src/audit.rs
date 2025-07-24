@@ -58,10 +58,10 @@ impl TryFrom<&Value> for AuditRecord {
         match &j {
             Value::Array(arr) => {
                 if arr.len() != 4 {
-                    return Err(Error::WrongSchema(format!(
+                    return Err(Error::TypesApiError(ragit_types::ApiError::WrongSchema(format!(
                         "expected an array of length 4, but got length {}",
                         arr.len()
-                    )));
+                    ))));
                 }
 
                 for r in arr.iter() {
@@ -70,10 +70,10 @@ impl TryFrom<&Value> for AuditRecord {
                             result.push(n);
                         }
                         None => {
-                            return Err(Error::JsonTypeError {
+                            return Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
                                 expected: JsonType::U64,
                                 got: r.into(),
-                            });
+                            }));
                         }
                     }
                 }
@@ -85,10 +85,10 @@ impl TryFrom<&Value> for AuditRecord {
                     output_cost: result[3],
                 })
             }
-            _ => Err(Error::JsonTypeError {
+            _ => Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
                 expected: JsonType::Array,
                 got: j.into(),
-            }),
+            })),
         }
     }
 }
@@ -155,17 +155,17 @@ impl Tracker {
     }
 
     pub fn load_from_file(path: &str) -> Result<Self, Error> {
-        let content = read_string(path)?;
-        let j: Value = serde_json::from_str(&content)?;
+        let content = read_string(path).map_err(Error::FileError)?;
+        let j: Value = serde_json::from_str(&content).map_err(Error::JsonSerdeError)?;
         Tracker::try_from(&j)
     }
 
     pub fn save_to_file(&self, path: &str) -> Result<(), Error> {
         Ok(write_string(
             path,
-            &serde_json::to_string_pretty(&Value::from(self))?,
+            &serde_json::to_string_pretty(&Value::from(self)).map_err(Error::JsonSerdeError)?,
             WriteMode::Atomic,
-        )?)
+        ).map_err(Error::FileError)?)
     }
 }
 
@@ -352,11 +352,11 @@ pub fn dump_pdl(
 
     if let Ok(parent_path_buf) = parent(Path::new(path)) {
         if !exists(&parent_path_buf) {
-            create_dir_all(parent_path_buf.to_str().unwrap())?;
+            create_dir_all(parent_path_buf.to_str().unwrap()).map_err(Error::FileError)?;
         }
     }
 
-    write_string(path, &markdown.join("\n"), WriteMode::CreateOrTruncate)?;
+    write_string(path, &markdown.join("\n"), WriteMode::CreateOrTruncate).map_err(Error::FileError)?;
 
     Ok(())
 }
@@ -398,10 +398,10 @@ impl TryFrom<&Value> for AuditRecordLegacy {
         match &j {
             Value::Array(arr) => {
                 if arr.len() != 5 {
-                    return Err(Error::WrongSchema(format!(
+                    return Err(Error::TypesApiError(ragit_types::ApiError::WrongSchema(format!(
                         "expected an array of length 5, but got length {}",
                         arr.len()
-                    )));
+                    ))));
                 }
 
                 for r in arr.iter() {
@@ -410,10 +410,10 @@ impl TryFrom<&Value> for AuditRecordLegacy {
                             result.push(n);
                         }
                         None => {
-                            return Err(Error::JsonTypeError {
+                            return Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
                                 expected: JsonType::U64,
                                 got: r.into(),
-                            });
+                            }));
                         }
                     }
                 }
@@ -426,10 +426,10 @@ impl TryFrom<&Value> for AuditRecordLegacy {
                     output_weight: result[4],
                 })
             }
-            _ => Err(Error::JsonTypeError {
+            _ => Err(Error::TypesApiError(ragit_types::ApiError::JsonTypeError {
                 expected: JsonType::Array,
                 got: j.into(),
-            }),
+            })),
         }
     }
 }

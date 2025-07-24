@@ -1,1 +1,1 @@
-pub use ragit_types::ApiError as Error;
+pub use ragit_error::ApiError as Error;

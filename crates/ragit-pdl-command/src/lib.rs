@@ -1,6 +1,12 @@
 use crate::prelude::*;
 use ragit_pdl::parse_schema;
 use std::result::Result::Ok;
+use ragit_index::Index;
+use ragit_api::{ApiError, Model, ModelRaw, get_model_by_name, render_pdl_schema};
+use ragit_utils::prelude::{ArgParser, ArgType, ArgCount, read_string, join};
+use serde_json::Value;
+use chrono::{Local, Datelike, Timelike};
+
 pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiError> {
     let parsed_args = ArgParser::new()
         .optional_arg_flag("--model", ArgType::String)
@@ -82,7 +88,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiEr
 
     let strict_mode = true;
 
-    parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
+    ragit_pdl::parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
 
     if let Some(schema) = schema {
         let result = render_pdl_schema(&schema, &Value::Null)?;
