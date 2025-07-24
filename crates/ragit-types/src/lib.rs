@@ -11,8 +11,6 @@ pub mod audit_record_at;
 pub use audit_record_at::AuditRecordAt;
 pub mod file_schema;
 pub use file_schema::FileSchema;
-pub mod index;
-pub use index::index_struct::Index;
 
 pub use crate::uid::Uid;
 pub use crate::image::ImageSchema;

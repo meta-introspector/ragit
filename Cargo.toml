@@ -26,6 +26,9 @@ members = [
     "crates/ragit-commands",
     "crates/ragit-core-utils",
     "crates/ragit-types", "crates/ragit-core", "crates/ragit-index", "crates/ragit-config", "crates/ragit-readers", "crates/ragit-query",
+    "crates/ragit-index-types",
+    "crates/ragit-prompt-management",
+    "crates/ragit-tfidf",
 ]
 
 [dependencies]

@@ -65,4 +65,6 @@ pub enum ApiError {
     InvalidTestModel(String),
     #[error("insufficient models")]
     InsufficientModels,
+    #[error(transparent)]
+    AnyhowError(#[from] anyhow::Error),
 }

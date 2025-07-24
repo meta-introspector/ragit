@@ -1,4 +1,13 @@
-use crate::prelude::*;
+use ragit_types::ApiError;
+use ragit_fs::{read_bytes, write_bytes, WriteMode};
+use flate2::{read::GzDecoder, write::GzEncoder, Compression};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::hash::Hash;
+use rust_stemmers::{Stemmer, Algorithm};
+use ragit_types::uid::Uid;
+use ragit_utils::query::Keywords;
+use anyhow::Result;
 
 pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
     let content = read_bytes(path)?;
@@ -8,7 +17,7 @@ pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
     Ok(serde_json::from_str(&s)?)
 }
 
-pub fn save_to_file(path: &str, chunk: &Chunk, root_dir: &str) -> Result<(), ApiError> {
+pub fn save_to_file(path: &str, chunk: &ragit_types::chunk::chunk_struct::Chunk, root_dir: &str) -> Result<(), ApiError> {
     let mut result = vec![];
     let mut gz = GzEncoder::new(Vec::new(), Compression::best());
     std::io::Write::write_all(&mut gz, &serde_json::to_string(chunk)?.as_bytes())?;
@@ -24,17 +33,17 @@ pub struct ProcessedDoc {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TfidfResult<DocId> {
-    pub doc_id: DocId,
+pub struct TfidfResult {
+    pub doc_id: Uid,
     pub score: f64,
 }
 
-pub struct TfidfState<DocId> {
+pub struct TfidfState {
     // doc_id -> tokens
-    docs: HashMap<DocId, Vec<String>>,
+    docs: HashMap<Uid, Vec<String>>,
 
     // token -> doc_id -> count
-    term_freq: HashMap<String, HashMap<DocId, usize>>,
+    term_freq: HashMap<String, HashMap<Uid, usize>>,
 
     // token -> count
     doc_freq: HashMap<String, usize>,
@@ -43,7 +52,7 @@ pub struct TfidfState<DocId> {
     doc_count: usize,
 }
 
-impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
+impl TfidfState {
     pub fn new(keywords: &Keywords) -> Self {
         TfidfState {
             docs: HashMap::new(),
@@ -53,7 +62,7 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
         }
     }
 
-    pub fn add_doc(&mut self, doc_id: DocId, tokens: Vec<String>) {
+    pub fn add_doc(&mut self, doc_id: Uid, tokens: Vec<String>) {
         self.doc_count += 1;
         self.docs.insert(doc_id.clone(), tokens.clone());
 
@@ -63,7 +72,7 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
         }
     }
 
-    pub fn tf(&self, token: &str, doc_id: &DocId) -> f64 {
+    pub fn tf(&self, token: &str, doc_id: &Uid) -> f64 {
         let count = *self.term_freq.get(token).and_then(|doc_map| doc_map.get(doc_id)).unwrap_or(&0);
         let total = self.docs.get(doc_id).map_or(0, |tokens| tokens.len());
         count as f64 / total as f64
@@ -74,12 +83,12 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
         ((self.doc_count as f64) / (count as f64 + 1.0)).ln()
     }
 
-    pub fn tfidf(&self, token: &str, doc_id: &DocId) -> f64 {
+    pub fn tfidf(&self, token: &str, doc_id: &Uid) -> f64 {
         self.tf(token, doc_id) * self.idf(token)
     }
 
-    pub fn search(&self, keywords: &Keywords) -> Vec<TfidfResult<DocId>> {
-        let mut scores: HashMap<DocId, f64> = HashMap::new();
+    pub fn search(&self, keywords: &Keywords) -> Vec<TfidfResult> {
+        let mut scores: HashMap<Uid, f64> = HashMap::new();
 
         for doc_id in self.docs.keys() {
             for token in keywords.0.iter() {
@@ -87,7 +96,7 @@ impl<DocId: Clone + Eq + Hash> TfidfState<DocId> {
             }
         }
 
-        let mut results: Vec<TfidfResult<DocId>> = scores
+        let mut results: Vec<TfidfResult> = scores
             .into_iter()
             .map(|(doc_id, score)| TfidfResult { doc_id, score })
             .collect();
@@ -106,9 +115,9 @@ pub fn tokenize(text: &str) -> Vec<String> {
         .collect()
 }
 
-pub fn consume_processed_doc<DocId: Clone + Eq + Hash>(
+pub fn consume_processed_doc(
     processed_doc: ProcessedDoc,
-    tfidf_state: &mut TfidfState<DocId>,
+    tfidf_state: &mut TfidfState,
 ) -> Result<(), ApiError> {
     tfidf_state.add_doc(processed_doc.doc_id, processed_doc.tokens);
     Ok(())

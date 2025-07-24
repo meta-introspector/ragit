@@ -2,16 +2,12 @@ use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 use ragit_types::uid::Uid;
-// These imports will need to be resolved later, as they are not in ragit-types
-// use ragit_types::api_error::ApiError;
-// use ragit_types::model::Model;
-// use ragit_types::query_config::QueryConfig;
-// use ragit_types::api_config::ApiConfig;
+use ragit_types::query::QueryConfig;
+use ragit_types::api_config::ApiConfig;
+use ragit_model::Model;
 
-// Placeholder for Model, QueryConfig, ApiConfig until their actual location is determined
-pub struct Model;
-pub struct QueryConfig;
-pub struct ApiConfig;
+// Model will be imported from ragit-model crate
+// pub struct Model;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Index {
