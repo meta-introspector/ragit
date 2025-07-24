@@ -1,0 +1,2713 @@
+   Compiling ragit-index v0.1.0 (/data/data/com.termux/files/home/storage/github/ragit/crates/ragit-index)
+error[E0599]: no method named `render` found for struct `ragit_types::Chunk` in the current scope
+   --> crates/ragit-index/src/agent/action.rs:111:80
+    |
+111 | ...                   let chunk = index.get_chunk_by_uid(chunk_uids[0])?.render(index)?;
+    |                                                                          ^^^^^^ method not found in `Chunk`
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/agent/action.rs:201:25
+    |
+199 |                     let query = uid_query_unit(
+    |                                 -------------- arguments to this function are incorrect
+200 |                         &index,
+201 |                         &[argument.to_string()],
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^ expected `&str`, found `&[String; 1]`
+    |
+    = note: expected reference `&str`
+               found reference `&[std::string::String; 1]`
+note: function defined here
+   --> crates/ragit-index/src/query_helpers.rs:90:8
+    |
+90  | pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, ApiError> {
+    |        ^^^^^^^^^^^^^^                -------
+
+error[E0599]: no method named `get_chunk_uids` found for struct `UidQueryResult` in the current scope
+   --> crates/ragit-index/src/agent/action.rs:204:44
+    |
+204 |                     let chunk_uids = query.get_chunk_uids();
+    |                                            ^^^^^^^^^^^^^^ method not found in `UidQueryResult`
+    |
+   ::: crates/ragit-index/src/query_helpers.rs:67:1
+    |
+67  | pub struct UidQueryResult {
+    | ------------------------- method `get_chunk_uids` not found for this struct
+
+error[E0609]: no field `id` on type `&TfidfResult`
+   --> crates/ragit-index/src/agent/action.rs:243:62
+    |
+243 |                         chunks.push(index.get_chunk_by_uid(c.id)?);
+    |                                                              ^^ unknown field
+    |
+    = note: available fields are: `doc_id`, `score`
+
+error[E0609]: no field `chunk_count` on type `&index::Index`
+   --> crates/ragit-index/src/agent/action.rs:262:67
+    |
+262 |                     if candidates.len() < limit || limit == index.chunk_count {
+    |                                                                   ^^^^^^^^^^^ unknown field
+    |
+    = note: available fields are: `root_dir`, `processed_files`, `staged_files`, `ragit_version`, `query_config` ... and 6 others
+
+error[E0609]: no field `chunk_count` on type `&index::Index`
+   --> crates/ragit-index/src/agent/action.rs:268:51
+    |
+268 |                     limit = (limit * 5).min(index.chunk_count);
+    |                                                   ^^^^^^^^^^^ unknown field
+    |
+    = note: available fields are: `root_dir`, `processed_files`, `staged_files`, `ragit_version`, `query_config` ... and 6 others
+
+error[E0599]: no method named `get_config_by_key` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/agent/action.rs:290:48
+    |
+290 |                     if let Some(value) = index.get_config_by_key(candidate.to_string())?.as_str() {
+    |                                                ^^^^^^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0599]: no method named `get_all_meta` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/agent/action.rs:301:38
+    |
+301 |                     for key in index.get_all_meta()?.keys() {
+    |                                      ^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0599]: no method named `get_summary` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/agent/action.rs:324:37
+    |
+324 |                 let summary = index.get_summary().unwrap();
+    |                                     ^^^^^^^^^^^ method not found in `&Index`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/commands/pdl.rs:12:24
+   |
+12 |         .parse(args, 2)?;
+   |          --------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |          |
+   |          this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:16:55
+   |
+16 |     let models = if let Some(models_at) = parsed_args.get_optional_arg_flag("--models") {
+   |                                                       ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/commands/pdl.rs:16:25
+   |
+16 |     let models = if let Some(models_at) = parsed_args.get_optional_arg_flag("--models") {
+   |                         ^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+note: required by a bound in `std::prelude::v1::Some`
+  --> /home/builder/.termux-build/rust/src/library/core/src/option.rs:597:5
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:37:50
+   |
+37 |     let model = if let Some(model) = parsed_args.get_optional_arg_flag("--model") {
+   |                                                  ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0599]: no function or associated item named `load_config_from_home_dir` found for struct `index::Index` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:40:22
+   |
+40 |         match Index::load_config_from_home_dir::<Value>("api.json") {
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Index`
+   |
+  ::: crates/ragit-index/src/index/mod.rs:35:1
+   |
+35 | pub struct Index {
+   | ---------------- function or associated item `load_config_from_home_dir` not found for this struct
+   |
+note: if you're trying to build a new `index::Index` consider using one of the following associated functions:
+      index_load::<impl index::Index>::load
+      index_load::<impl index::Index>::load_minimum
+      index_load_or_init::<impl index::Index>::load_or_init
+      index_new::<impl index::Index>::new
+  --> crates/ragit-index/src/index/index_load.rs:4:5
+   |
+4  |     pub fn load(root_dir: PathBuf, load_mode: LoadMode) -> Result<Self, ApiError> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+32 |     pub fn load_minimum(root_dir: PathBuf) -> Result<Self, ApiError> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: crates/ragit-index/src/index/index_load_or_init.rs:4:5
+   |
+4  |     pub fn load_or_init(root_dir: PathBuf) -> Result<Self, ApiError> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: crates/ragit-index/src/index/index_new.rs:4:5
+   |
+4  |     pub fn new(root_dir: PathBuf) -> Result<Self, ApiError> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no variant or associated item named `ModelNotSelected` found for enum `ragit_api::Error` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:43:43
+   |
+43 |                 _ => return Err(ApiError::ModelNotSelected),
+   |                                           ^^^^^^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0599]: no variant or associated item named `ModelNotSelected` found for enum `ragit_api::Error` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:45:39
+   |
+45 |             _ => return Err(ApiError::ModelNotSelected),
+   |                                       ^^^^^^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:49:57
+   |
+49 |     let context = if let Some(context_at) = parsed_args.get_optional_arg_flag("--context") {
+   |                                                         ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/commands/pdl.rs:49:26
+   |
+49 |     let context = if let Some(context_at) = parsed_args.get_optional_arg_flag("--context") {
+   |                          ^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+note: required by a bound in `std::prelude::v1::Some`
+  --> /home/builder/.termux-build/rust/src/library/core/src/option.rs:597:5
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:56:52
+   |
+56 |     let log_at = if let Some(log_at) = parsed_args.get_optional_arg_flag("--log") {
+   |                                                    ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/commands/pdl.rs:56:25
+   |
+56 |     let log_at = if let Some(log_at) = parsed_args.get_optional_arg_flag("--log") {
+   |                         ^^^^^^^^^^^^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+note: required by a bound in `std::prelude::v1::Some`
+  --> /home/builder/.termux-build/rust/src/library/core/src/option.rs:597:5
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pdl.rs:75:52
+   |
+75 |     let schema = if let Some(schema) = parsed_args.get_optional_arg_flag("--schema") {
+   |                                                    ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/commands/pdl.rs:76:34
+   |
+76 |         Some(parse_schema(schema)?)
+   |              --------------------^ the trait `From<ragit_pdl::SchemaParseError>` is not implemented for `ragit_api::Error`
+   |              |
+   |              this can't be annotated with `?` because it has type `Result<_, ragit_pdl::SchemaParseError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/commands/pdl.rs:81:47
+   |
+81 |     let pdl_at = parsed_args.get_args_exact(1)?[0].clone();
+   |                              -----------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |                              |
+   |                              this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/commands/pdl.rs:85:69
+   |
+85 |     parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
+   |                                   ----------------------------------^ the trait `From<tera::Error>` is not implemented for `ragit_api::Error`
+   |                                   |
+   |                                   this can't be annotated with `?` because it has type `Result<_, tera::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/commands/pdl.rs:85:84
+   |
+85 |     parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
+   |     -------------------------------------------------------------------------------^ the trait `From<ragit_pdl::Error>` is not implemented for `ragit_api::Error`
+   |     |
+   |     this can't be annotated with `?` because it has type `Result<_, ragit_pdl::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/commands/pdl.rs:88:62
+   |
+88 |         let result = render_pdl_schema(&schema, &Value::Null)?;
+   |                      ----------------------------------------^ the trait `From<ragit_pdl::Error>` is not implemented for `ragit_api::Error`
+   |                      |
+   |                      this can't be annotated with `?` because it has type `Result<_, ragit_pdl::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no variant or associated item named `Bool` found for enum `ragit_utils::prelude::ArgType` in the current scope
+ --> crates/ragit-index/src/index/commands/pull.rs:5:58
+  |
+5 |         .optional_arg_flag("--include-configs", ArgType::Bool)
+  |                                                          ^^^^ variant or associated item not found in `ArgType`
+
+error[E0599]: no variant or associated item named `Bool` found for enum `ragit_utils::prelude::ArgType` in the current scope
+ --> crates/ragit-index/src/index/commands/pull.rs:6:58
+  |
+6 |         .optional_arg_flag("--include-prompts", ArgType::Bool)
+  |                                                          ^^^^ variant or associated item not found in `ArgType`
+
+error[E0599]: no variant or associated item named `Bool` found for enum `ragit_utils::prelude::ArgType` in the current scope
+ --> crates/ragit-index/src/index/commands/pull.rs:7:48
+  |
+7 |         .optional_arg_flag("--quiet", ArgType::Bool)
+  |                                                ^^^^ variant or associated item not found in `ArgType`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+ --> crates/ragit-index/src/index/commands/pull.rs:8:24
+  |
+8 |         .parse(args, 2)?;
+  |          --------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+  |          |
+  |          this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+  |
+  = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+  = help: the following other types implement trait `From<T>`:
+            `ragit_api::Error` implements `From<anyhow::Error>`
+            `ragit_api::Error` implements `From<ragit_fs::FileError>`
+            `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+            `ragit_api::Error` implements `From<serde_json::Error>`
+            `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pull.rs:10:39
+   |
+10 |     let include_configs = parsed_args.get_optional_arg_flag("--include-configs").unwrap_or(false);
+   |                                       ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pull.rs:11:39
+   |
+11 |     let include_prompts = parsed_args.get_optional_arg_flag("--include-prompts").unwrap_or(false);
+   |                                       ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0599]: no method named `get_optional_arg_flag` found for struct `ParsedArgs` in the current scope
+  --> crates/ragit-index/src/index/commands/pull.rs:12:29
+   |
+12 |     let quiet = parsed_args.get_optional_arg_flag("--quiet").unwrap_or(false);
+   |                             ^^^^^^^^^^^^^^^^^^^^^ method not found in `ParsedArgs`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:48:44
+   |
+48 |                 chunks.push(load_from_file(&chunk_path.to_string_lossy().into_owned())?); // Convert PathBuf to String
+   |                             -------------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&PathBuf`, found `&String`
+   |                             |
+   |                             arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::PathBuf`
+              found reference `&std::string::String`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/uid/uid_io.rs:8:8
+   |
+8  | pub fn load_from_file(path: &PathBuf) -> Result<Vec<Uid>, Error> {
+   |        ^^^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:48:87
+   |
+48 |                 chunks.push(load_from_file(&chunk_path.to_string_lossy().into_owned())?); // Convert PathBuf to String
+   |                             ----------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |                             |
+   |                             this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:51:16
+   |
+48 |                 chunks.push(load_from_file(&chunk_path.to_string_lossy().into_owned())?); // Convert PathBuf to String
+   |                 ------      ----------------------------------------------------------- this argument has type `Vec<ragit_types::Uid>`...
+   |                 |
+   |                 ... which causes `chunks` to have type `Vec<Vec<ragit_types::Uid>>`
+...
+51 |             Ok(chunks)
+   |             -- ^^^^^^ expected `Vec<Chunk>`, found `Vec<Vec<Uid>>`
+   |             |
+   |             arguments to this enum variant are incorrect
+   |
+   = note: expected struct `Vec<ragit_types::Chunk>`
+              found struct `Vec<Vec<ragit_types::Uid>>`
+help: the type constructed contains `Vec<Vec<ragit_types::Uid>>` due to the type of the argument passed
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:51:13
+   |
+51 |             Ok(chunks)
+   |             ^^^------^
+   |                |
+   |                this argument influences the type of `Ok`
+note: tuple variant defined here
+  --> /home/builder/.termux-build/rust/src/library/core/src/result.rs:552:5
+
+error[E0599]: no method named `get_chunk_count` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/index/query_logic.rs:102:115
+    |
+102 |         let (multi_turn_schema, rephrased_query) = if history.is_empty() || !self.query_config.enable_rag || self.get_chunk_count() == 0 {
+    |                                                                                                                   ^^^^^^^^^^^^^^^
+    |
+help: there is a method `get_chunk_by_uid` with a similar name, but with different arguments
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:133:5
+    |
+133 |     pub fn get_chunk_by_uid(&self, uid: Uid) -> Result<Chunk, ApiError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0423]: expected function, found module `retrieve_chunks`
+   --> crates/ragit-index/src/index/query_logic.rs:116:22
+    |
+116 |         let chunks = retrieve_chunks(self, &rephrased_query, self.query_config.max_retrieval).await?;
+    |                      ^^^^^^^^^^^^^^^
+    |
+help: try calling `retrieve_chunks` as a method
+    |
+116 -         let chunks = retrieve_chunks(self, &rephrased_query, self.query_config.max_retrieval).await?;
+116 +         let chunks = self.retrieve_chunks(&rephrased_query, self.query_config.max_retrieval).await?;
+    |
+help: use the `.` operator to call the method `retrieve_chunks` on `&index::Index`
+    |
+116 -         let chunks = retrieve_chunks(self, &rephrased_query, self.query_config.max_retrieval).await?;
+116 +         let chunks = self.retrieve_chunks(&rephrased_query, self.query_config.max_retrieval).await?;
+    |
+
+error[E0599]: no method named `get_model_by_name` found for struct `ApiConfig` in the current scope
+   --> crates/ragit-index/src/index/query_logic.rs:194:36
+    |
+194 |             model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
+    |                                    ^^^^^^^^^^^^^^^^^ method not found in `ApiConfig`
+
+error[E0425]: cannot find function `merge_and_convert_chunks` in this scope
+   --> crates/ragit-index/src/index/query_logic.rs:214:22
+    |
+214 |         let chunks = merge_and_convert_chunks(self, chunks)?;
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^--------------
+    |                      |
+    |                      help: try calling `merge_and_convert_chunks` as a method: `self.merge_and_convert_chunks(chunks)`
+
+error[E0599]: no method named `get_model_by_name` found for struct `ApiConfig` in the current scope
+   --> crates/ragit-index/src/index/query_logic.rs:240:36
+    |
+240 |             model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
+    |                                    ^^^^^^^^^^^^^^^^^ method not found in `ApiConfig`
+
+error[E0599]: no method named `get_model_by_name` found for struct `ApiConfig` in the current scope
+   --> crates/ragit-index/src/index/query_logic.rs:283:36
+    |
+283 |             model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
+    |                                    ^^^^^^^^^^^^^^^^^ method not found in `ApiConfig`
+
+error[E0599]: no method named `get_model_by_name` found for struct `ApiConfig` in the current scope
+   --> crates/ragit-index/src/index/query_logic.rs:316:36
+    |
+316 |             model: self.api_config.get_model_by_name(&self.api_config.model)?, // Corrected method call
+    |                                    ^^^^^^^^^^^^^^^^^ method not found in `ApiConfig`
+
+error[E0599]: no variant or associated item named `NotImplemented` found for enum `ragit_api::Error` in the current scope
+ --> crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs:5:23
+  |
+5 |         Err(ApiError::NotImplemented("extract_keywords"))
+  |                       ^^^^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs:25:40
+   |
+25 |             chunks.push(load_from_file(chunk_path)?);
+   |                         -------------- ^^^^^^^^^^ expected `&str`, found `&PathBuf`
+   |                         |
+   |                         arguments to this function are incorrect
+   |
+   = note: expected reference `&str`
+              found reference `&std::path::PathBuf`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-tfidf/src/lib.rs:12:8
+   |
+12 | pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
+   |        ^^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs:28:12
+   |
+25 |             chunks.push(load_from_file(chunk_path)?);
+   |             ------      --------------------------- this argument has type `ragit_tfidf::ProcessedDoc`...
+   |             |
+   |             ... which causes `chunks` to have type `Vec<ragit_tfidf::ProcessedDoc>`
+...
+28 |         Ok(chunks)
+   |         -- ^^^^^^ expected `Vec<Chunk>`, found `Vec<ProcessedDoc>`
+   |         |
+   |         arguments to this enum variant are incorrect
+   |
+   = note: expected struct `Vec<ragit_types::Chunk>`
+              found struct `Vec<ragit_tfidf::ProcessedDoc>`
+help: the type constructed contains `Vec<ragit_tfidf::ProcessedDoc>` due to the type of the argument passed
+  --> crates/ragit-index/src/index/index_load_chunks_or_tfidf.rs:28:9
+   |
+28 |         Ok(chunks)
+   |         ^^^------^
+   |            |
+   |            this argument influences the type of `Ok`
+note: tuple variant defined here
+  --> /home/builder/.termux-build/rust/src/library/core/src/result.rs:552:5
+
+error[E0107]: struct takes 0 generic arguments but 1 generic argument was supplied
+  --> crates/ragit-index/src/index/index_run_tfidf.rs:27:21
+   |
+27 |     ) -> Result<Vec<TfidfResult<Uid>>, ApiError> {
+   |                     ^^^^^^^^^^^----- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: struct defined here, with 0 generic parameters
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-tfidf/src/lib.rs:36:12
+   |
+36 | pub struct TfidfResult {
+   |            ^^^^^^^^^^^
+
+error[E0308]: `?` operator has incompatible types
+  --> crates/ragit-index/src/index/raw_request.rs:10:9
+   |
+10 |         index.get_prompt(prompt_name)?,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&str`, found `String`
+   |
+   = note: `?` operator cannot convert from `std::string::String` to `&str`
+help: consider borrowing here
+   |
+10 |         &index.get_prompt(prompt_name)?,
+   |         +
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/raw_request.rs:11:44
+   |
+11 |         &tera::Context::from_value(context)?,
+   |          ----------------------------------^ the trait `From<tera::Error>` is not implemented for `ragit_api::Error`
+   |          |
+   |          this can't be annotated with `?` because it has type `Result<_, tera::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/raw_request.rs:14:6
+   |
+9  |       let Pdl { messages, .. } = parse_pdl(
+   |  ________________________________-
+10 | |         index.get_prompt(prompt_name)?,
+11 | |         &tera::Context::from_value(context)?,
+12 | |         ".",
+13 | |         true,
+14 | |     )?;
+   | |     -^ the trait `From<ragit_pdl::Error>` is not implemented for `ragit_api::Error`
+   | |_____|
+   |       this can't be annotated with `?` because it has type `Result<_, ragit_pdl::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/raw_request.rs:18:16
+   |
+18 |         model: index.api_config.model.clone(),
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Model`, found `String`
+
+error[E0609]: no field `max_output_tokens` on type `ragit_types::query::QueryConfig`
+  --> crates/ragit-index/src/index/raw_request.rs:20:45
+   |
+20 |         max_tokens: Some(index.query_config.max_output_tokens),
+   |                                             ^^^^^^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `enable_rag`, `enable_ii`, `max_summaries`, `max_retrieval`, `super_rerank`
+
+error[E0308]: `?` operator has incompatible types
+  --> crates/ragit-index/src/index/raw_request.rs:28:9
+   |
+8  | ) -> Result<String, ApiError> {
+   |      ------------------------ expected `std::result::Result<std::string::String, ragit_api::Error>` because of return type
+...
+28 |         render_pdl_schema(&schema, &result)?
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Result<String, Error>`, found `String`
+   |
+   = note: `?` operator cannot convert from `std::string::String` to `std::result::Result<std::string::String, ragit_api::Error>`
+   = note: expected enum `std::result::Result<std::string::String, ragit_api::Error>`
+            found struct `std::string::String`
+help: try wrapping the expression in `Ok`
+   |
+28 |         Ok(render_pdl_schema(&schema, &result)?)
+   |         +++                                    +
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/raw_request.rs:28:44
+   |
+28 |         render_pdl_schema(&schema, &result)?
+   |         -----------------------------------^ the trait `From<ragit_pdl::Error>` is not implemented for `ragit_api::Error`
+   |         |
+   |         this can't be annotated with `?` because it has type `Result<_, ragit_pdl::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/raw_request.rs:30:9
+   |
+8  | ) -> Result<String, ApiError> {
+   |      ------------------------ expected `std::result::Result<std::string::String, ragit_api::Error>` because of return type
+...
+30 |         result.to_string()
+   |         ^^^^^^^^^^^^^^^^^^ expected `Result<String, Error>`, found `String`
+   |
+   = note: expected enum `std::result::Result<std::string::String, ragit_api::Error>`
+            found struct `std::string::String`
+help: try wrapping the expression in `Ok`
+   |
+30 |         Ok(result.to_string())
+   |         +++                  +
+
+error[E0308]: `?` operator has incompatible types
+  --> crates/ragit-index/src/index/rephrase_multi_turn.rs:15:9
+   |
+15 |         index.get_prompt("multi_turn")?,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&str`, found `String`
+   |
+   = note: `?` operator cannot convert from `std::string::String` to `&str`
+help: consider borrowing here
+   |
+15 |         &index.get_prompt("multi_turn")?,
+   |         +
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/rephrase_multi_turn.rs:18:12
+   |
+16 |           &tera::Context::from_value(json!({
+   |  __________-
+17 | |             "turns": turns_json,
+18 | |         }))?,
+   | |           -^ the trait `From<tera::Error>` is not implemented for `ragit_api::Error`
+   | |___________|
+   |             this can't be annotated with `?` because it has type `Result<_, tera::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/rephrase_multi_turn.rs:21:6
+   |
+14 |       let Pdl { messages, schema } = parse_pdl(
+   |  ____________________________________-
+15 | |         index.get_prompt("multi_turn")?,
+16 | |         &tera::Context::from_value(json!({
+17 | |             "turns": turns_json,
+...  |
+20 | |         true,
+21 | |     )?;
+   | |     -^ the trait `From<ragit_pdl::Error>` is not implemented for `ragit_api::Error`
+   | |_____|
+   |       this can't be annotated with `?` because it has type `Result<_, ragit_pdl::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/rephrase_multi_turn.rs:25:16
+   |
+25 |         model: index.api_config.model.clone(),
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Model`, found `String`
+
+error[E0609]: no field `max_output_tokens` on type `ragit_types::query::QueryConfig`
+  --> crates/ragit-index/src/index/rephrase_multi_turn.rs:27:45
+   |
+27 |         max_tokens: Some(index.query_config.max_output_tokens),
+   |                                             ^^^^^^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `enable_rag`, `enable_ii`, `max_summaries`, `max_retrieval`, `super_rerank`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/rephrase_multi_turn.rs:28:22
+   |
+28 |         schema: Some(schema.clone()),
+   |                 ---- ^^^^^^^^^^^^^^ expected `Schema`, found `Option<Schema>`
+   |                 |
+   |                 arguments to this enum variant are incorrect
+   |
+   = note: expected struct `ragit_api::Schema`
+                found enum `std::option::Option<ragit_api::Schema>`
+help: the type constructed contains `std::option::Option<ragit_api::Schema>` due to the type of the argument passed
+  --> crates/ragit-index/src/index/rephrase_multi_turn.rs:28:17
+   |
+28 |         schema: Some(schema.clone()),
+   |                 ^^^^^--------------^
+   |                      |
+   |                      this argument influences the type of `Some`
+note: tuple variant defined here
+  --> /home/builder/.termux-build/rust/src/library/core/src/option.rs:597:5
+help: consider using `Option::expect` to unwrap the `std::option::Option<ragit_api::Schema>` value, panicking if the value is an `Option::None`
+   |
+28 |         schema: Some(schema.clone().expect("REASON")),
+   |                                    +++++++++++++++++
+
+error[E0308]: mismatched types
+ --> crates/ragit-index/src/index/retrieve_chunks.rs:9:44
+  |
+9 |         let tfidf_results = self.run_tfidf(&Keywords::from(vec![query.to_string()]), limit)?;
+  |                                  --------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Keywords`, found `&Keywords`
+  |                                  |
+  |                                  arguments to this method are incorrect
+  |
+note: method defined here
+ --> crates/ragit-index/src/index/index_run_tfidf.rs:7:12
+  |
+7 |     pub fn run_tfidf(
+  |            ^^^^^^^^^
+8 |         &self,
+9 |         keywords: Keywords,
+  |         ------------------
+help: consider removing the borrow
+  |
+9 -         let tfidf_results = self.run_tfidf(&Keywords::from(vec![query.to_string()]), limit)?;
+9 +         let tfidf_results = self.run_tfidf(Keywords::from(vec![query.to_string()]), limit)?;
+  |
+
+error[E0308]: `?` operator has incompatible types
+ --> crates/ragit-index/src/index/summaries_to_chunks.rs:9:9
+  |
+9 |         index.get_prompt("summarize_chunks")?,
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&str`, found `String`
+  |
+  = note: `?` operator cannot convert from `std::string::String` to `&str`
+help: consider borrowing here
+  |
+9 |         &index.get_prompt("summarize_chunks")?,
+  |         +
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/summaries_to_chunks.rs:13:12
+   |
+10 |           &tera::Context::from_value(json!({
+   |  __________-
+11 | |             "query": query,
+12 | |             "chunks": chunks.iter().map(|c| c.summary.clone()).collect::<Vec<_>>(),
+13 | |         }))?,
+   | |           -^ the trait `From<tera::Error>` is not implemented for `ragit_api::Error`
+   | |___________|
+   |             this can't be annotated with `?` because it has type `Result<_, tera::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/summaries_to_chunks.rs:16:6
+   |
+8  |       let Pdl { messages, schema } = parse_pdl(
+   |  ____________________________________-
+9  | |         index.get_prompt("summarize_chunks")?,
+10 | |         &tera::Context::from_value(json!({
+11 | |             "query": query,
+...  |
+15 | |         true,
+16 | |     )?;
+   | |     -^ the trait `From<ragit_pdl::Error>` is not implemented for `ragit_api::Error`
+   | |_____|
+   |       this can't be annotated with `?` because it has type `Result<_, ragit_pdl::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/summaries_to_chunks.rs:20:16
+   |
+20 |         model: index.api_config.model.clone(),
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Model`, found `String`
+
+error[E0609]: no field `max_output_tokens` on type `ragit_types::query::QueryConfig`
+  --> crates/ragit-index/src/index/summaries_to_chunks.rs:22:45
+   |
+22 |         max_tokens: Some(index.query_config.max_output_tokens),
+   |                                             ^^^^^^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `enable_rag`, `enable_ii`, `max_summaries`, `max_retrieval`, `super_rerank`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/summaries_to_chunks.rs:23:22
+   |
+23 |         schema: Some(schema.clone()),
+   |                 ---- ^^^^^^^^^^^^^^ expected `Schema`, found `Option<Schema>`
+   |                 |
+   |                 arguments to this enum variant are incorrect
+   |
+   = note: expected struct `ragit_api::Schema`
+                found enum `std::option::Option<ragit_api::Schema>`
+help: the type constructed contains `std::option::Option<ragit_api::Schema>` due to the type of the argument passed
+  --> crates/ragit-index/src/index/summaries_to_chunks.rs:23:17
+   |
+23 |         schema: Some(schema.clone()),
+   |                 ^^^^^--------------^
+   |                      |
+   |                      this argument influences the type of `Some`
+note: tuple variant defined here
+  --> /home/builder/.termux-build/rust/src/library/core/src/option.rs:597:5
+help: consider using `Option::expect` to unwrap the `std::option::Option<ragit_api::Schema>` value, panicking if the value is an `Option::None`
+   |
+23 |         schema: Some(schema.clone().expect("REASON")),
+   |                                    +++++++++++++++++
+
+error[E0599]: no method named `get_all_meta` found for reference `&index::Index` in the current scope
+  --> crates/ragit-index/src/agent/action.rs:51:23
+   |
+51 |                 index.get_all_meta()?.keys().collect::<Vec<_>>(),
+   |                       ^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0599]: no variant or associated item named `PromptMissing` found for enum `ragit_api::Error` in the current scope
+ --> crates/ragit-index/src/index/get_prompt.rs:7:35
+  |
+7 |             None => Err(ApiError::PromptMissing(prompt_name.to_string())),
+  |                                   ^^^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:58:41
+    |
+58  |         for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, CHUNK_DIR_NAME)?, false)? {
+    |                                   ----- ^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |                                   |
+    |                                   arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:287:8
+    |
+287 | pub fn join3(path1: &str, path2: &str, path3: &str) -> Result<String, FileError> {
+    |        ^^^^^
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:72:12
+   |
+65 |                     result.push(chunk_file); // Push PathBuf directly
+   |                     ------      ---------- this argument has type `std::string::String`...
+   |                     |
+   |                     ... which causes `result` to have type `Vec<std::string::String>`
+...
+72 |         Ok(result)
+   |         -- ^^^^^^ expected `Vec<PathBuf>`, found `Vec<String>`
+   |         |
+   |         arguments to this enum variant are incorrect
+   |
+   = note: expected struct `Vec<std::path::PathBuf>`
+              found struct `Vec<std::string::String>`
+help: the type constructed contains `Vec<std::string::String>` due to the type of the argument passed
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:72:9
+   |
+72 |         Ok(result)
+   |         ^^^------^
+   |            |
+   |            this argument influences the type of `Ok`
+note: tuple variant defined here
+  --> /home/builder/.termux-build/rust/src/library/core/src/result.rs:552:5
+help: call `Into::into` on this expression to convert `std::string::String` into `std::path::PathBuf`
+   |
+65 |                     result.push(chunk_file.into()); // Push PathBuf directly
+   |                                           +++++++
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:78:41
+    |
+78  |         for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, CHUNK_DIR_NAME)?, false)? {
+    |                                   ----- ^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |                                   |
+    |                                   arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:287:8
+    |
+287 | pub fn join3(path1: &str, path2: &str, path3: &str) -> Result<String, FileError> {
+    |        ^^^^^
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:92:12
+   |
+85 |                     result.push(tfidf_file); // Push PathBuf directly
+   |                     ------      ---------- this argument has type `std::string::String`...
+   |                     |
+   |                     ... which causes `result` to have type `Vec<std::string::String>`
+...
+92 |         Ok(result)
+   |         -- ^^^^^^ expected `Vec<PathBuf>`, found `Vec<String>`
+   |         |
+   |         arguments to this enum variant are incorrect
+   |
+   = note: expected struct `Vec<std::path::PathBuf>`
+              found struct `Vec<std::string::String>`
+help: the type constructed contains `Vec<std::string::String>` due to the type of the argument passed
+  --> crates/ragit-index/src/index/index_chunk_methods.rs:92:9
+   |
+92 |         Ok(result)
+   |         ^^^------^
+   |            |
+   |            this argument influences the type of `Ok`
+note: tuple variant defined here
+  --> /home/builder/.termux-build/rust/src/library/core/src/result.rs:552:5
+help: call `Into::into` on this expression to convert `std::string::String` into `std::path::PathBuf`
+   |
+85 |                     result.push(tfidf_file.into()); // Push PathBuf directly
+   |                                           +++++++
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:98:41
+    |
+98  |         for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, IMAGE_DIR_NAME)?, false)? {
+    |                                   ----- ^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |                                   |
+    |                                   arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:287:8
+    |
+287 | pub fn join3(path1: &str, path2: &str, path3: &str) -> Result<String, FileError> {
+    |        ^^^^^
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:112:12
+    |
+105 |                     result.push(image_file); // Push PathBuf directly
+    |                     ------      ---------- this argument has type `std::string::String`...
+    |                     |
+    |                     ... which causes `result` to have type `Vec<std::string::String>`
+...
+112 |         Ok(result)
+    |         -- ^^^^^^ expected `Vec<PathBuf>`, found `Vec<String>`
+    |         |
+    |         arguments to this enum variant are incorrect
+    |
+    = note: expected struct `Vec<std::path::PathBuf>`
+               found struct `Vec<std::string::String>`
+help: the type constructed contains `Vec<std::string::String>` due to the type of the argument passed
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:112:9
+    |
+112 |         Ok(result)
+    |         ^^^------^
+    |            |
+    |            this argument influences the type of `Ok`
+note: tuple variant defined here
+   --> /home/builder/.termux-build/rust/src/library/core/src/result.rs:552:5
+help: call `Into::into` on this expression to convert `std::string::String` into `std::path::PathBuf`
+    |
+105 |                     result.push(image_file.into()); // Push PathBuf directly
+    |                                           +++++++
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:118:41
+    |
+118 |         for internal in read_dir(&join3(&self.root_dir, INDEX_DIR_NAME, FILE_INDEX_DIR_NAME)?, false)? {
+    |                                   ----- ^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |                                   |
+    |                                   arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:287:8
+    |
+287 | pub fn join3(path1: &str, path2: &str, path3: &str) -> Result<String, FileError> {
+    |        ^^^^^
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:130:12
+    |
+124 |                 result.push(file_index); // Push PathBuf directly
+    |                 ------      ---------- this argument has type `std::string::String`...
+    |                 |
+    |                 ... which causes `result` to have type `Vec<std::string::String>`
+...
+130 |         Ok(result)
+    |         -- ^^^^^^ expected `Vec<PathBuf>`, found `Vec<String>`
+    |         |
+    |         arguments to this enum variant are incorrect
+    |
+    = note: expected struct `Vec<std::path::PathBuf>`
+               found struct `Vec<std::string::String>`
+help: the type constructed contains `Vec<std::string::String>` due to the type of the argument passed
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:130:9
+    |
+130 |         Ok(result)
+    |         ^^^------^
+    |            |
+    |            this argument influences the type of `Ok`
+note: tuple variant defined here
+   --> /home/builder/.termux-build/rust/src/library/core/src/result.rs:552:5
+help: call `Into::into` on this expression to convert `std::string::String` into `std::path::PathBuf`
+    |
+124 |                 result.push(file_index.into()); // Push PathBuf directly
+    |                                       +++++++
+
+error[E0599]: no method named `get_uid_path` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:134:29
+    |
+134 |         let chunk_at = self.get_uid_path(
+    |                        -----^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0308]: `?` operator has incompatible types
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:142:23
+    |
+142 |             return Ok(load_from_file(&chunk_at.to_string_lossy().into_owned())?); // Convert PathBuf to String
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Chunk`, found `Vec<Uid>`
+    |
+    = note: `?` operator cannot convert from `Vec<ragit_types::Uid>` to `ragit_types::Chunk`
+    = note: expected struct `ragit_types::Chunk`
+               found struct `Vec<ragit_types::Uid>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:142:79
+    |
+142 |             return Ok(load_from_file(&chunk_at.to_string_lossy().into_owned())?); // Convert PathBuf to String
+    |                       --------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+    |                       |
+    |                       this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `ragit_api::Error` implements `From<anyhow::Error>`
+              `ragit_api::Error` implements `From<ragit_fs::FileError>`
+              `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+              `ragit_api::Error` implements `From<serde_json::Error>`
+              `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no variant or associated item named `NoSuchChunk` found for enum `ragit_api::Error` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:145:23
+    |
+145 |         Err(ApiError::NoSuchChunk(uid))
+    |                       ^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0599]: no method named `get_uid_path` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:149:38
+    |
+149 |         if let Some(chunk_at) = self.get_uid_path( // Changed Ok to Some
+    |                                 -----^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0599]: no method named `get_uid_path` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:167:29
+    |
+167 |         let tfidf_at = self.get_uid_path(
+    |                        -----^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tfidf`
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:175:23
+    |
+175 |             return Ok(tfidf::load_from_file(&tfidf_at.to_string_lossy().into_owned())?); // Convert PathBuf to String
+    |                       ^^^^^ use of unresolved module or unlinked crate `tfidf`
+    |
+    = help: if you wanted to use a crate named `tfidf`, use `cargo add tfidf` to add it to your `Cargo.toml`
+
+error[E0599]: no variant or associated item named `NoSuchChunk` found for enum `ragit_api::Error` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:178:23
+    |
+178 |         Err(ApiError::NoSuchChunk(uid))
+    |                       ^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0599]: no function or associated item named `empty` found for struct `ragit_tfidf::ProcessedDoc` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:186:40
+    |
+186 |         let mut result = ProcessedDoc::empty();
+    |                                        ^^^^^ function or associated item not found in `ProcessedDoc`
+
+error[E0599]: no method named `get_uid_path` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:197:36
+    |
+197 |         let file_index_path = self.get_uid_path(
+    |                               -----^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:205:86
+    |
+205 |             return Ok(load_from_file(&file_index_path.to_string_lossy().into_owned())?); // Convert PathBuf to String
+    |                       ---------------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+    |                       |
+    |                       this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `ragit_api::Error` implements `From<anyhow::Error>`
+              `ragit_api::Error` implements `From<ragit_fs::FileError>`
+              `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+              `ragit_api::Error` implements `From<serde_json::Error>`
+              `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no variant named `NoSuchFile` found for enum `ragit_api::Error`
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:208:23
+    |
+208 |         Err(ApiError::NoSuchFile { path: None, uid: Some(file_uid) })
+    |                       ^^^^^^^^^^ variant not found in `ragit_api::Error`
+
+error[E0599]: no method named `sortable_string` found for reference `&ragit_types::Chunk` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:220:42
+    |
+220 |         chunks.sort_by_key(|chunk| chunk.sortable_string()); // Changed sort_by_by_key to sort_by_key
+    |                                          ^^^^^^^^^^^^^^^ method not found in `&Chunk`
+
+error[E0425]: cannot find function `merge_and_convert_chunks` in this scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:221:22
+    |
+221 |         let chunks = merge_and_convert_chunks(self, chunks)?;
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^--------------
+    |                      |
+    |                      help: try calling `merge_and_convert_chunks` as a method: `self.merge_and_convert_chunks(chunks)`
+
+error[E0599]: no variant or associated item named `BrokenIndex` found for enum `ragit_api::Error` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:226:32
+    |
+226 |             _ => Err(ApiError::BrokenIndex(format!("Internal error: `get_merged_chunk_of_file({file_uid})` returned multiple chunks"))),
+    |                                ^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0599]: no method named `get_uid_path` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:245:29
+    |
+245 |         Ok(read_bytes(&self.get_uid_path(IMAGE_DIR_NAME, uid, Some("png"))?.to_string_lossy().into_owned())?) // Convert PathBuf to String
+    |                             ^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0599]: no method named `get_uid_path` found for reference `&index::Index` in the current scope
+   --> crates/ragit-index/src/index/index_chunk_methods.rs:249:35
+    |
+249 | ...   let j = read_string(&self.get_uid_path(IMAGE_DIR_NAME, uid, Some("json"))?.to_string_lossy().into_owned())?; // Convert PathBuf to ...
+    |                                 ^^^^^^^^^^^^ method not found in `&Index`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_file_schema.rs:7:13
+   |
+5  |         let file_schema_path = get_uid_path(
+   |                                ------------ arguments to this function are incorrect
+6  |             &self.root_dir,
+7  |             FILE_INDEX_DIR_NAME,
+   |             ^^^^^^^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:31:8
+   |
+31 | pub fn get_uid_path(
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_file_schema.rs:10:10
+   |
+5  |           let file_schema_path = get_uid_path(
+   |  ________________________________-
+6  | |             &self.root_dir,
+7  | |             FILE_INDEX_DIR_NAME,
+8  | |             uid,
+9  | |             None,
+10 | |         )?;
+   | |         -^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   | |_________|
+   |           this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no variant named `FileNotFound` found for enum `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_file_schema.rs:13:34
+   |
+13 |             return Err(ApiError::FileNotFound {
+   |                                  ^^^^^^^^^^^^
+   |
+help: there is a variant with a similar name
+   |
+13 -             return Err(ApiError::FileNotFound {
+13 +             return Err(ApiError::ApiKeyNotFound {
+   |
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_file_schema.rs:19:29
+    |
+19  |         let s = read_string(&file_schema_path)?;
+    |                 ----------- ^^^^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |                 |
+    |                 arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:169:8
+    |
+169 | pub fn read_string(path: &str) -> Result<String, FileError> {
+    |        ^^^^^^^^^^^
+
+error[E0599]: no variant named `FileNotFound` found for enum `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_file_schema.rs:30:38
+   |
+30 |             .ok_or_else(|| ApiError::FileNotFound { path: file_path.to_string_lossy().to_string(), similar_paths: vec![] })?;
+   |                                      ^^^^^^^^^^^^
+   |
+help: there is a variant with a similar name
+   |
+30 -             .ok_or_else(|| ApiError::FileNotFound { path: file_path.to_string_lossy().to_string(), similar_paths: vec![] })?;
+30 +             .ok_or_else(|| ApiError::ApiKeyNotFound { path: file_path.to_string_lossy().to_string(), similar_paths: vec![] })?;
+   |
+
+error[E0609]: no field `chunk_build_info` on type `ragit_types::FileSchema`
+  --> crates/ragit-index/src/index/index_file_schema.rs:41:30
+   |
+41 |         Ok(match file_schema.chunk_build_info {
+   |                              ^^^^^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `path`, `is_processed`, `length`, `uid`, `chunks` ... and 2 others
+
+error[E0599]: no variant or associated item named `ModelNotFound` found for enum `ragit_api::Error` in the current scope
+  --> crates/ragit-index/src/index/index_file_schema.rs:46:46
+   |
+46 |                     .ok_or_else(|| ApiError::ModelNotFound(chunk_build_info.model.clone()))?
+   |                                              ^^^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_file_schema.rs:50:22
+   |
+50 |             None => (ChunkBuildInfo::default().model, 0),
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Model`, found `String`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_image_schema.rs:7:13
+   |
+5  |         let image_schema_path = get_uid_path(
+   |                                 ------------ arguments to this function are incorrect
+6  |             &self.root_dir,
+7  |             IMAGE_DIR_NAME,
+   |             ^^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:31:8
+   |
+31 | pub fn get_uid_path(
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_image_schema.rs:10:10
+   |
+5  |           let image_schema_path = get_uid_path(
+   |  _________________________________-
+6  | |             &self.root_dir,
+7  | |             IMAGE_DIR_NAME,
+8  | |             uid,
+9  | |             None,
+10 | |         )?;
+   | |         -^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   | |_________|
+   |           this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no variant named `FileNotFound` found for enum `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_image_schema.rs:13:34
+   |
+13 |             return Err(ApiError::FileNotFound {
+   |                                  ^^^^^^^^^^^^
+   |
+help: there is a variant with a similar name
+   |
+13 -             return Err(ApiError::FileNotFound {
+13 +             return Err(ApiError::ApiKeyNotFound {
+   |
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_image_schema.rs:19:29
+    |
+19  |         let s = read_string(&image_schema_path)?;
+    |                 ----------- ^^^^^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |                 |
+    |                 arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:169:8
+    |
+169 | pub fn read_string(path: &str) -> Result<String, FileError> {
+    |        ^^^^^^^^^^^
+
+error[E0609]: no field `image_path` on type `ragit_types::ImageSchema`
+  --> crates/ragit-index/src/index/index_image_schema.rs:23:52
+   |
+23 |             result.bytes = Some(read_bytes(&result.image_path)?);
+   |                                                    ^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `uid`, `extracted_text`, `explanation`, `size`, `bytes`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_image_schema.rs:23:28
+   |
+23 |             result.bytes = Some(read_bytes(&result.image_path)?);
+   |             ------------   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Vec<u8>`, found `Option<Vec<u8>>`
+   |             |
+   |             expected due to the type of this binding
+   |
+   = note: expected struct `Vec<_>`
+                found enum `std::option::Option<Vec<_>>`
+
+error[E0599]: no method named `load_or_init_prompts` found for struct `index::Index` in the current scope
+  --> crates/ragit-index/src/index/index_load.rs:19:16
+   |
+19 |         result.load_or_init_prompts()?;
+   |                ^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: crates/ragit-index/src/index/mod.rs:35:1
+   |
+35 | pub struct Index {
+   | ---------------- method `load_or_init_prompts` not found for this struct
+   |
+help: there is a method `load_or_init_models` with a similar name
+   |
+19 -         result.load_or_init_prompts()?;
+19 +         result.load_or_init_models()?;
+   |
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_load.rs:36:89
+   |
+36 |         result.uid = if exists(&get_rag_path(&root_dir, &PathBuf::from(INDEX_FILE_NAME))?) {
+   |                                 --------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |                                 |
+   |                                 this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_load.rs:37:82
+   |
+37 |             read_string(&get_rag_path(&root_dir, &PathBuf::from(INDEX_FILE_NAME))?.to_str().unwrap())?.parse()?;
+   |                          --------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |                          |
+   |                          this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_load.rs:36:92
+   |
+36 |           result.uid = if exists(&get_rag_path(&root_dir, &PathBuf::from(INDEX_FILE_NAME))?) {
+   |  ____________________________________________________________________________________________^
+37 | |             read_string(&get_rag_path(&root_dir, &PathBuf::from(INDEX_FILE_NAME))?.to_str().unwrap())?.parse()?;
+   | |                                                                                                                - help: remove this semicolon to return this value
+38 | |         } else {
+   | |_________^ expected `Uid`, found `()`
+
+error[E0599]: the function or associated item `new` exists for struct `Uid`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/index/index_load.rs:39:18
+    |
+39  |             Uid::new();
+    |                  ^^^ function or associated item cannot be called on `Uid` due to unsatisfied trait bounds
+    |
+   ::: /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:44:1
+    |
+44  | pub struct Uid {
+    | -------------- doesn't satisfy `ragit_types::Uid: FixedOutput`, `ragit_types::Uid: HashMarker`, `ragit_types::Uid: Update` or `ragit_types::Uid: sha3::Digest`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the following trait bounds were not satisfied:
+            `ragit_types::Uid: FixedOutput`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: Update`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: HashMarker`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: FixedOutput`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: std::default::Default`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: Update`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: HashMarker`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: FixedOutput`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: std::default::Default`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: Update`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: HashMarker`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_load.rs:38:16
+   |
+38 |           } else {
+   |  ________________^
+39 | |             Uid::new();
+40 | |         };
+   | |_________^ expected `Uid`, found `()`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_load_or_init.rs:5:47
+   |
+5  |         let index_dir = join_paths(&root_dir, INDEX_DIR_NAME)?;
+   |                         ----------            ^^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |                         |
+   |                         arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-core-utils/src/path_utils.rs:23:8
+   |
+23 | pub fn join_paths(base: &Path, child: &Path) -> PathBuf {
+   |        ^^^^^^^^^^
+
+error[E0277]: the `?` operator can only be applied to values that implement `Try`
+ --> crates/ragit-index/src/index/index_load_or_init.rs:5:25
+  |
+5 |         let index_dir = join_paths(&root_dir, INDEX_DIR_NAME)?;
+  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the `?` operator cannot be applied to type `std::path::PathBuf`
+  |
+  = help: the trait `Try` is not implemented for `std::path::PathBuf`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_new.rs:6:47
+   |
+6  |         let index_dir = join_paths(&root_dir, INDEX_DIR_NAME)?;
+   |                         ----------            ^^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |                         |
+   |                         arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-core-utils/src/path_utils.rs:23:8
+   |
+23 | pub fn join_paths(base: &Path, child: &Path) -> PathBuf {
+   |        ^^^^^^^^^^
+
+error[E0277]: the `?` operator can only be applied to values that implement `Try`
+ --> crates/ragit-index/src/index/index_new.rs:6:25
+  |
+6 |         let index_dir = join_paths(&root_dir, INDEX_DIR_NAME)?;
+  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the `?` operator cannot be applied to type `std::path::PathBuf`
+  |
+  = help: the trait `Try` is not implemented for `std::path::PathBuf`
+
+error[E0599]: no variant or associated item named `IndexExists` found for enum `ragit_api::Error` in the current scope
+ --> crates/ragit-index/src/index/index_new.rs:9:34
+  |
+9 |             return Err(ApiError::IndexExists(index_dir));
+  |                                  ^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_new.rs:12:24
+    |
+12  |         create_dir_all(&index_dir)?;
+    |         -------------- ^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |         |
+    |         arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:367:8
+    |
+367 | pub fn create_dir_all(path: &str) -> Result<(), FileError> {
+    |        ^^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_new.rs:21:67
+   |
+21 |             create_dir_all(&get_rag_path(&root_dir.to_path_buf(), dir)?)?;
+   |                             ------------                          ^^^ expected `&PathBuf`, found `&str`
+   |                             |
+   |                             arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::PathBuf`
+              found reference `&str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:22:8
+   |
+22 | pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, Error> {
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_new.rs:21:71
+   |
+21 |             create_dir_all(&get_rag_path(&root_dir.to_path_buf(), dir)?)?;
+   |                             ------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |                             |
+   |                             this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_new.rs:21:28
+    |
+21  |             create_dir_all(&get_rag_path(&root_dir.to_path_buf(), dir)?)?;
+    |             -------------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |             |
+    |             arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:367:8
+    |
+367 | pub fn create_dir_all(path: &str) -> Result<(), FileError> {
+    |        ^^^^^^^^^^^^^^
+
+error[E0599]: the function or associated item `new` exists for struct `Uid`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/index/index_new.rs:38:23
+    |
+38  |             uid: Uid::new(),
+    |                       ^^^ function or associated item cannot be called on `Uid` due to unsatisfied trait bounds
+    |
+   ::: /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:44:1
+    |
+44  | pub struct Uid {
+    | -------------- doesn't satisfy `ragit_types::Uid: FixedOutput`, `ragit_types::Uid: HashMarker`, `ragit_types::Uid: Update` or `ragit_types::Uid: sha3::Digest`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the following trait bounds were not satisfied:
+            `ragit_types::Uid: FixedOutput`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: Update`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: HashMarker`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: FixedOutput`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: std::default::Default`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: Update`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: HashMarker`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: FixedOutput`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: std::default::Default`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: Update`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: HashMarker`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+
+error[E0599]: no method named `save_to_file` found for struct `index::Index` in the current scope
+  --> crates/ragit-index/src/index/index_new.rs:41:16
+   |
+41 |         result.save_to_file(result.root_dir.join(INDEX_FILE_NAME).to_str().unwrap())?;
+   |                ^^^^^^^^^^^^ method not found in `Index`
+   |
+  ::: crates/ragit-index/src/index/mod.rs:35:1
+   |
+35 | pub struct Index {
+   | ---------------- method `save_to_file` not found for this struct
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_remove_file_index.rs:5:60
+   |
+5  |         let file_index_path = get_uid_path(&self.root_dir, FILE_INDEX_DIR_NAME, file_uid, None)?;
+   |                               ------------                 ^^^^^^^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |                               |
+   |                               arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:31:8
+   |
+31 | pub fn get_uid_path(
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+ --> crates/ragit-index/src/index/index_remove_file_index.rs:5:96
+  |
+5 |         let file_index_path = get_uid_path(&self.root_dir, FILE_INDEX_DIR_NAME, file_uid, None)?;
+  |                               -----------------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+  |                               |
+  |                               this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+  |
+  = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+  = help: the following other types implement trait `From<T>`:
+            `ragit_api::Error` implements `From<anyhow::Error>`
+            `ragit_api::Error` implements `From<ragit_fs::FileError>`
+            `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+            `ragit_api::Error` implements `From<serde_json::Error>`
+            `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no variant named `FileNotFound` found for enum `ragit_api::Error`
+ --> crates/ragit-index/src/index/index_remove_file_index.rs:8:34
+  |
+8 |             return Err(ApiError::FileNotFound {
+  |                                  ^^^^^^^^^^^^
+  |
+help: there is a variant with a similar name
+  |
+8 -             return Err(ApiError::FileNotFound {
+8 +             return Err(ApiError::ApiKeyNotFound {
+  |
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/index_remove_file_index.rs:14:21
+    |
+14  |         remove_file(&file_index_path)?;
+    |         ----------- ^^^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |         |
+    |         arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:450:8
+    |
+450 | pub fn remove_file(path: &str) -> Result<(), FileError> {
+    |        ^^^^^^^^^^^
+
+error[E0599]: no method named `save_to_file` found for mutable reference `&mut index::Index` in the current scope
+ --> crates/ragit-index/src/index/index_uid.rs:7:14
+  |
+7 |         self.save_to_file(self.root_dir.join(INDEX_FILE_NAME).to_str().unwrap())?;
+  |              ^^^^^^^^^^^^ method not found in `&mut Index`
+
+error[E0599]: the function or associated item `new` exists for struct `Uid`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/index/index_uid.rs:12:39
+    |
+12  |         if !force && self.uid != Uid::new() {
+    |                                       ^^^ function or associated item cannot be called on `Uid` due to unsatisfied trait bounds
+    |
+   ::: /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:44:1
+    |
+44  | pub struct Uid {
+    | -------------- doesn't satisfy `ragit_types::Uid: FixedOutput`, `ragit_types::Uid: HashMarker`, `ragit_types::Uid: Update` or `ragit_types::Uid: sha3::Digest`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the following trait bounds were not satisfied:
+            `ragit_types::Uid: FixedOutput`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: Update`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: HashMarker`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: FixedOutput`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: std::default::Default`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: Update`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: HashMarker`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: FixedOutput`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: std::default::Default`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: Update`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: HashMarker`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+
+error[E0599]: the function or associated item `new` exists for struct `Uid`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/index/index_uid.rs:19:90
+    |
+19  |             let file_index_path = get_uid_path(&self.root_dir, FILE_INDEX_DIR_NAME, Uid::new(), Some(file.to_str().unwrap()))?;
+    |                                                                                          ^^^ function or associated item cannot be called on `Uid` due to unsatisfied trait bounds
+    |
+   ::: /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:44:1
+    |
+44  | pub struct Uid {
+    | -------------- doesn't satisfy `ragit_types::Uid: FixedOutput`, `ragit_types::Uid: HashMarker`, `ragit_types::Uid: Update` or `ragit_types::Uid: sha3::Digest`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the following trait bounds were not satisfied:
+            `ragit_types::Uid: FixedOutput`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: Update`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: HashMarker`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: FixedOutput`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: std::default::Default`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: Update`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: HashMarker`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: FixedOutput`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: std::default::Default`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: Update`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: HashMarker`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_uid.rs:19:64
+   |
+19 |             let file_index_path = get_uid_path(&self.root_dir, FILE_INDEX_DIR_NAME, Uid::new(), Some(file.to_str().unwrap()))?;
+   |                                   ------------                 ^^^^^^^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |                                   |
+   |                                   arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:31:8
+   |
+31 | pub fn get_uid_path(
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/index_uid.rs:19:126
+   |
+19 |             let file_index_path = get_uid_path(&self.root_dir, FILE_INDEX_DIR_NAME, Uid::new(), Some(file.to_str().unwrap()))?;
+   |                                   -------------------------------------------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |                                   |
+   |                                   this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/index_uid.rs:22:43
+   |
+22 |                 for uid in load_from_file(&file_index_path)? {
+   |                            -------------- ^^^^^^^^^^^^^^^^ expected `&str`, found `&PathBuf`
+   |                            |
+   |                            arguments to this function are incorrect
+   |
+   = note: expected reference `&str`
+              found reference `&std::path::PathBuf`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-tfidf/src/lib.rs:12:8
+   |
+12 | pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
+   |        ^^^^^^^^^^^^^^
+
+error[E0277]: `ragit_tfidf::ProcessedDoc` is not an iterator
+  --> crates/ragit-index/src/index/index_uid.rs:22:28
+   |
+22 |                 for uid in load_from_file(&file_index_path)? {
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `ragit_tfidf::ProcessedDoc` is not an iterator
+   |
+   = help: the trait `Iterator` is not implemented for `ragit_tfidf::ProcessedDoc`
+   = note: required for `ragit_tfidf::ProcessedDoc` to implement `IntoIterator`
+
+error[E0599]: no function or associated item named `new_from_uids` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/index/index_uid.rs:30:17
+    |
+30  |         Ok(Uid::new_from_uids(&uids))
+    |                 ^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: there is an associated function `new_from_u128` with a similar name
+    |
+30  -         Ok(Uid::new_from_uids(&uids))
+30  +         Ok(Uid::new_from_u128(&uids))
+    |
+
+error[E0599]: the function or associated item `new` exists for struct `Uid`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/index/index_uid.rs:34:25
+    |
+34  |         self.uid = Uid::new();
+    |                         ^^^ function or associated item cannot be called on `Uid` due to unsatisfied trait bounds
+    |
+   ::: /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:44:1
+    |
+44  | pub struct Uid {
+    | -------------- doesn't satisfy `ragit_types::Uid: FixedOutput`, `ragit_types::Uid: HashMarker`, `ragit_types::Uid: Update` or `ragit_types::Uid: sha3::Digest`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the following trait bounds were not satisfied:
+            `ragit_types::Uid: FixedOutput`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: Update`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `ragit_types::Uid: HashMarker`
+            which is required by `ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: FixedOutput`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: std::default::Default`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: Update`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&ragit_types::Uid: HashMarker`
+            which is required by `&ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: FixedOutput`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: std::default::Default`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: Update`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+            `&mut ragit_types::Uid: HashMarker`
+            which is required by `&mut ragit_types::Uid: sha3::Digest`
+
+error[E0599]: no method named `save_to_file` found for mutable reference `&mut index::Index` in the current scope
+  --> crates/ragit-index/src/index/index_uid.rs:37:18
+   |
+37 |             self.save_to_file(self.root_dir.join(INDEX_FILE_NAME).to_str().unwrap())?;
+   |                  ^^^^^^^^^^^^ method not found in `&mut Index`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/model_management.rs:5:54
+   |
+5  |         let models_at = get_rag_path(&self.root_dir, MODEL_FILE_NAME)?;
+   |                         ------------                 ^^^^^^^^^^^^^^^ expected `&PathBuf`, found `&str`
+   |                         |
+   |                         arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::PathBuf`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:22:8
+   |
+22 | pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, Error> {
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+ --> crates/ragit-index/src/index/model_management.rs:5:70
+  |
+5 |         let models_at = get_rag_path(&self.root_dir, MODEL_FILE_NAME)?;
+  |                         ---------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+  |                         |
+  |                         this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+  |
+  = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+  = help: the following other types implement trait `From<T>`:
+            `ragit_api::Error` implements `From<anyhow::Error>`
+            `ragit_api::Error` implements `From<ragit_fs::FileError>`
+            `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+            `ragit_api::Error` implements `From<serde_json::Error>`
+            `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/index/model_management.rs:8:33
+    |
+8   |             let j = read_string(&models_at)?;
+    |                     ----------- ^^^^^^^^^^ expected `&str`, found `&PathBuf`
+    |                     |
+    |                     arguments to this function are incorrect
+    |
+    = note: expected reference `&str`
+               found reference `&std::path::PathBuf`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:169:8
+    |
+169 | pub fn read_string(path: &str) -> Result<String, FileError> {
+    |        ^^^^^^^^^^^
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/model_management.rs:26:54
+   |
+26 |         let models_at = get_rag_path(&self.root_dir, MODEL_FILE_NAME)?;
+   |                         ------------                 ^^^^^^^^^^^^^^^ expected `&PathBuf`, found `&str`
+   |                         |
+   |                         arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::PathBuf`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:22:8
+   |
+22 | pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, Error> {
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/model_management.rs:26:70
+   |
+26 |         let models_at = get_rag_path(&self.root_dir, MODEL_FILE_NAME)?;
+   |                         ---------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |                         |
+   |                         this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/model_management.rs:41:52
+   |
+41 |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+   |              ------------                          ^^^^^^^^^^^^^^^ expected `&PathBuf`, found `&str`
+   |              |
+   |              arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::PathBuf`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:22:8
+   |
+22 | pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, Error> {
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/model_management.rs:41:68
+   |
+41 |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+   |              ------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |              |
+   |              this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/model_management.rs:42:13
+   |
+40 |         if let Ok(env_content) = read_string(&join_paths(
+   |                                               ---------- arguments to this function are incorrect
+41 |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+42 |             "models.json",
+   |             ^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-core-utils/src/path_utils.rs:23:8
+   |
+23 | pub fn join_paths(base: &Path, child: &Path) -> PathBuf {
+   |        ^^^^^^^^^^
+
+error[E0277]: the `?` operator can only be applied to values that implement `Try`
+  --> crates/ragit-index/src/index/model_management.rs:40:47
+   |
+40 |           if let Ok(env_content) = read_string(&join_paths(
+   |  _______________________________________________^
+41 | |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+42 | |             "models.json",
+43 | |         )?) {
+   | |__________^ the `?` operator cannot be applied to type `std::path::PathBuf`
+   |
+   = help: the trait `Try` is not implemented for `std::path::PathBuf`
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/model_management.rs:40:47
+   |
+40 |           if let Ok(env_content) = read_string(&join_paths(
+   |  _______________________________________________^
+41 | |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+42 | |             "models.json",
+43 | |         )?) {
+   | |__________^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+   = note: all local variables must have a statically known size
+   = help: unsized locals are gated as an unstable feature
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/model_management.rs:43:10
+   |
+43 |         )?) {
+   |          ^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+note: required by a bound in `std::ops::ControlFlow::Break`
+  --> /home/builder/.termux-build/rust/src/library/core/src/ops/control_flow.rs:95:5
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/model_management.rs:40:47
+   |
+40 |           if let Ok(env_content) = read_string(&join_paths(
+   |  _______________________________________________^
+41 | |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+42 | |             "models.json",
+43 | |         )?) {
+   | |__________^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+note: required by a bound in `std::ops::ControlFlow::Continue`
+  --> /home/builder/.termux-build/rust/src/library/core/src/ops/control_flow.rs:91:5
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/model_management.rs:50:52
+   |
+50 |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+   |              ------------                          ^^^^^^^^^^^^^^^ expected `&PathBuf`, found `&str`
+   |              |
+   |              arguments to this function are incorrect
+   |
+   = note: expected reference `&std::path::PathBuf`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-utils/src/ragit_path_utils.rs:22:8
+   |
+22 | pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, Error> {
+   |        ^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/model_management.rs:50:68
+   |
+50 |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+   |              ------------------------------------------------------^ the trait `From<ragit_utils::prelude::Error>` is not implemented for `ragit_api::Error`
+   |              |
+   |              this can't be annotated with `?` because it has type `Result<_, ragit_utils::prelude::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0308]: mismatched types
+  --> crates/ragit-index/src/index/model_management.rs:51:13
+   |
+49 |         if let Ok(config_content) = read_string(&join_paths(
+   |                                                  ---------- arguments to this function are incorrect
+50 |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+51 |             "models.json",
+   |             ^^^^^^^^^^^^^ expected `&Path`, found `&str`
+   |
+   = note: expected reference `&std::path::Path`
+              found reference `&'static str`
+note: function defined here
+  --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-core-utils/src/path_utils.rs:23:8
+   |
+23 | pub fn join_paths(base: &Path, child: &Path) -> PathBuf {
+   |        ^^^^^^^^^^
+
+error[E0277]: the `?` operator can only be applied to values that implement `Try`
+  --> crates/ragit-index/src/index/model_management.rs:49:50
+   |
+49 |           if let Ok(config_content) = read_string(&join_paths(
+   |  __________________________________________________^
+50 | |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+51 | |             "models.json",
+52 | |         )?) {
+   | |__________^ the `?` operator cannot be applied to type `std::path::PathBuf`
+   |
+   = help: the trait `Try` is not implemented for `std::path::PathBuf`
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/model_management.rs:49:50
+   |
+49 |           if let Ok(config_content) = read_string(&join_paths(
+   |  __________________________________________________^
+50 | |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+51 | |             "models.json",
+52 | |         )?) {
+   | |__________^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+   = note: all local variables must have a statically known size
+   = help: unsized locals are gated as an unstable feature
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/model_management.rs:52:10
+   |
+52 |         )?) {
+   |          ^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+note: required by a bound in `std::ops::ControlFlow::Break`
+  --> /home/builder/.termux-build/rust/src/library/core/src/ops/control_flow.rs:95:5
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> crates/ragit-index/src/index/model_management.rs:49:50
+   |
+49 |           if let Ok(config_content) = read_string(&join_paths(
+   |  __________________________________________________^
+50 | |             &get_rag_path(&PathBuf::from("ragit"), CONFIG_DIR_NAME)?,
+51 | |             "models.json",
+52 | |         )?) {
+   | |__________^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+note: required by a bound in `std::ops::ControlFlow::Continue`
+  --> /home/builder/.termux-build/rust/src/library/core/src/ops/control_flow.rs:91:5
+
+error[E0599]: no variant or associated item named `iter` found for enum `ragit_api::MuseName` in the current scope
+   --> crates/ragit-index/src/index/muse_logic.rs:5:46
+    |
+5   |         let muses: Vec<MuseName> = MuseName::iter().collect();
+    |                                              ^^^^ variant or associated item not found in `MuseName`
+    |
+note: there are multiple different versions of crate `strum` in the dependency graph
+   --> /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/strum-0.27.2/src/lib.rs:100:1
+    |
+100 | pub trait IntoEnumIterator: Sized {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the trait that is needed
+...
+107 |     fn iter() -> Self::Iterator;
+    |     ---------------------------- the associated function is available for `ragit_api::MuseName` here
+    |
+   ::: crates/ragit-index/src/index/muse_logic.rs:1:5
+    |
+1   | use crate::prelude::*;
+    |     -------------- `IntoEnumIterator` imported here doesn't correspond to the right version of crate `strum`
+    |
+   ::: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/strum-0.25.0/src/lib.rs:98:1
+    |
+98  | pub trait IntoEnumIterator: Sized {
+    | --------------------------------- this is the trait that was imported
+
+error[E0599]: no method named `ok_or_else` found for enum `std::result::Result` in the current scope
+  --> crates/ragit-index/src/index/muse_logic.rs:13:14
+   |
+11 |           let pdl = self
+   |  ___________________-
+12 | |             .get_prompt(&prompt_name)
+13 | |             .ok_or_else(|| ApiError::PromptNotFound(prompt_name.clone()))?;
+   | |_____________-^^^^^^^^^^
+   |
+help: there is a method `or_else` with a similar name
+   |
+13 -             .ok_or_else(|| ApiError::PromptNotFound(prompt_name.clone()))?;
+13 +             .or_else(|| ApiError::PromptNotFound(prompt_name.clone()))?;
+   |
+
+error[E0599]: no variant or associated item named `PromptNotFound` found for enum `ragit_api::Error` in the current scope
+  --> crates/ragit-index/src/index/muse_logic.rs:13:38
+   |
+13 |             .ok_or_else(|| ApiError::PromptNotFound(prompt_name.clone()))?;
+   |                                      ^^^^^^^^^^^^^^ variant or associated item not found in `Error`
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+  --> crates/ragit-index/src/index/muse_logic.rs:18:71
+   |
+18 |         let Pdl { messages, .. } = parse_pdl(pdl, &context, ".", true)?;
+   |                                    -----------------------------------^ the trait `From<ragit_pdl::Error>` is not implemented for `ragit_api::Error`
+   |                                    |
+   |                                    this can't be annotated with `?` because it has type `Result<_, ragit_pdl::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `ragit_api::Error` implements `From<anyhow::Error>`
+             `ragit_api::Error` implements `From<ragit_fs::FileError>`
+             `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+             `ragit_api::Error` implements `From<serde_json::Error>`
+             `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:119:46
+    |
+119 | ...                   chunks.push(Uid::from_prefix_and_suffix(&chunk_prefix, &file_name(&chunk_file)?)?);
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:135:49
+    |
+135 | ...                   file_uids.push(Uid::from_prefix_and_suffix(&file_index_prefix, &file_name(&file_index)?)?);
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:155:46
+    |
+155 | ...                   images.push(Uid::from_prefix_and_suffix(&image_prefix, &file_name(&image_file)?)?);
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:174:38
+    |
+174 |                     chunks.push(Uid::from_prefix_and_suffix(q, &file_name(&chunk_file)?)?);
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:185:41
+    |
+185 |                     file_uids.push(Uid::from_prefix_and_suffix(q, &file_name(&file_index)?)?);
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:200:38
+    |
+200 |                     images.push(Uid::from_prefix_and_suffix(q, &file_name(&image_file)?)?);
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/query_helpers.rs:226:31
+    |
+226 |                     if exists(&chunk_at) {
+    |                        ------ ^^^^^^^^^ expected `&PathBuf`, found `&String`
+    |                        |
+    |                        arguments to this function are incorrect
+    |
+    = note: expected reference `&std::path::PathBuf`
+               found reference `&std::string::String`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:332:8
+    |
+332 | pub fn exists(path: &PathBuf) -> bool {
+    |        ^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+   --> crates/ragit-index/src/query_helpers.rs:227:53
+    |
+90  | pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, ApiError> {
+    |                                                                          -------------------------------- expected `ragit_api::Error` because of this
+...
+227 |                         chunks.push(q.parse::<Uid>()?);
+    |                                       --------------^ the trait `From<ragit_types::uid::UidError>` is not implemented for `ragit_api::Error`
+    |                                       |
+    |                                       this can't be annotated with `?` because it has type `Result<_, ragit_types::uid::UidError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `ragit_api::Error` implements `From<anyhow::Error>`
+              `ragit_api::Error` implements `From<ragit_fs::FileError>`
+              `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+              `ragit_api::Error` implements `From<serde_json::Error>`
+              `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:245:46
+    |
+245 | ...                   chunks.push(Uid::from_prefix_and_suffix(&prefix, &chunk_file)?);
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/query_helpers.rs:265:31
+    |
+265 |                     if exists(&file_index) {
+    |                        ------ ^^^^^^^^^^^ expected `&PathBuf`, found `&String`
+    |                        |
+    |                        arguments to this function are incorrect
+    |
+    = note: expected reference `&std::path::PathBuf`
+               found reference `&std::string::String`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:332:8
+    |
+332 | pub fn exists(path: &PathBuf) -> bool {
+    |        ^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+   --> crates/ragit-index/src/query_helpers.rs:266:56
+    |
+90  | pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, ApiError> {
+    |                                                                          -------------------------------- expected `ragit_api::Error` because of this
+...
+266 |                         file_uids.push(q.parse::<Uid>()?);
+    |                                          --------------^ the trait `From<ragit_types::uid::UidError>` is not implemented for `ragit_api::Error`
+    |                                          |
+    |                                          this can't be annotated with `?` because it has type `Result<_, ragit_types::uid::UidError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `ragit_api::Error` implements `From<anyhow::Error>`
+              `ragit_api::Error` implements `From<ragit_fs::FileError>`
+              `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+              `ragit_api::Error` implements `From<serde_json::Error>`
+              `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:280:49
+    |
+280 | ...                   file_uids.push(Uid::from_prefix_and_suffix(&prefix, &file_index)?);
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+   --> crates/ragit-index/src/query_helpers.rs:303:31
+    |
+303 |                     if exists(&image_at) {
+    |                        ------ ^^^^^^^^^ expected `&PathBuf`, found `&String`
+    |                        |
+    |                        arguments to this function are incorrect
+    |
+    = note: expected reference `&std::path::PathBuf`
+               found reference `&std::string::String`
+note: function defined here
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/fs/src/lib.rs:332:8
+    |
+332 | pub fn exists(path: &PathBuf) -> bool {
+    |        ^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `ragit_api::Error`
+   --> crates/ragit-index/src/query_helpers.rs:304:53
+    |
+90  | pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<UidQueryResult, ApiError> {
+    |                                                                          -------------------------------- expected `ragit_api::Error` because of this
+...
+304 |                         images.push(q.parse::<Uid>()?);
+    |                                       --------------^ the trait `From<ragit_types::uid::UidError>` is not implemented for `ragit_api::Error`
+    |                                       |
+    |                                       this can't be annotated with `?` because it has type `Result<_, ragit_types::uid::UidError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `ragit_api::Error` implements `From<anyhow::Error>`
+              `ragit_api::Error` implements `From<ragit_fs::FileError>`
+              `ragit_api::Error` implements `From<ragit_types::api_error::TeraError>`
+              `ragit_api::Error` implements `From<serde_json::Error>`
+              `ragit_api::Error` implements `From<std::io::Error>`
+
+error[E0599]: no function or associated item named `from_prefix_and_suffix` found for struct `ragit_types::Uid` in the current scope
+   --> crates/ragit-index/src/query_helpers.rs:322:46
+    |
+322 | ...                   images.push(Uid::from_prefix_and_suffix(&prefix, &image_file)?);
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^ function or associated item not found in `Uid`
+    |
+note: if you're trying to build a new `ragit_types::Uid` consider using one of the following associated functions:
+      ragit_types::Uid::decode_partial
+      ragit_types::Uid::decode
+      ragit_types::Uid::dummy
+      ragit_types::Uid::new_from_u128
+      and 5 others
+   --> /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-types/src/uid/mod.rs:77:5
+    |
+77  |     pub fn decode_partial(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+112 |     pub fn decode(bytes: &[u8]) -> Result<Self, UidError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+141 |     pub fn dummy() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+...
+145 |     pub fn new_from_u128(n: u128) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0425]: cannot find function `get_relative_path` in this scope
+   --> crates/ragit-index/src/query_helpers.rs:331:35
+    |
+331 |         if let Ok(mut rel_path) = get_relative_path(index.root_dir.to_str().unwrap(), q) {
+    |                                   ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: the method `to_string` exists for reference `&PathBuf`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/query_helpers.rs:353:46
+    |
+353 |                         file_paths.push(path.to_string());
+    |                                              ^^^^^^^^^
+    |
+    = note: the following trait bounds were not satisfied:
+            `std::path::PathBuf: std::fmt::Display`
+            which is required by `std::path::PathBuf: ToString`
+            `&std::path::PathBuf: std::fmt::Display`
+            which is required by `&std::path::PathBuf: ToString`
+            `std::path::Path: std::fmt::Display`
+            which is required by `std::path::Path: ToString`
+
+error[E0599]: the method `to_string` exists for reference `&PathBuf`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/query_helpers.rs:360:59
+    |
+360 | ...                   staged_files.push(staged_file.to_string());
+    |                                                     ^^^^^^^^^
+    |
+    = note: the following trait bounds were not satisfied:
+            `std::path::PathBuf: std::fmt::Display`
+            which is required by `std::path::PathBuf: ToString`
+            `&std::path::PathBuf: std::fmt::Display`
+            which is required by `&std::path::PathBuf: ToString`
+            `std::path::Path: std::fmt::Display`
+            which is required by `std::path::Path: ToString`
+
+error[E0599]: the method `to_string` exists for reference `&PathBuf`, but its trait bounds were not satisfied
+   --> crates/ragit-index/src/query_helpers.rs:370:35
+    |
+370 |         |(file, uid)| (*uid, file.to_string())
+    |                                   ^^^^^^^^^
+    |
+    = note: the following trait bounds were not satisfied:
+            `std::path::PathBuf: std::fmt::Display`
+            which is required by `std::path::PathBuf: ToString`
+            `&std::path::PathBuf: std::fmt::Display`
+            which is required by `&std::path::PathBuf: ToString`
+            `std::path::Path: std::fmt::Display`
+            which is required by `std::path::Path: ToString`
+
+warning: unused variable: `limit`
+  --> crates/ragit-index/src/index/index_run_tfidf.rs:10:9
+   |
+10 |         limit: usize,
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_limit`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: variable does not need to be mutable
+  --> crates/ragit-index/src/index/index_run_tfidf.rs:13:13
+   |
+13 |         let mut tfidf_state = TfidfState::new(&keywords);
+   |             ----^^^^^^^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+Some errors have detailed explanations: E0107, E0277, E0308, E0423, E0425, E0433, E0599, E0609.
+For more information about an error, try `rustc --explain E0107`.
+warning: `ragit-index` (lib) generated 2 warnings
+error: could not compile `ragit-index` (lib) due to 182 previous errors; 2 warnings emitted

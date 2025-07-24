@@ -1,0 +1,13 @@
+[package]
+name = "ragit-agent-action"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-types = { path = "../ragit-types" }
+ragit-index-types = { path = "../ragit-index-types" }
+ragit-utils = { path = "../ragit-utils" }
+ragit-api = { path = "../api" }
+ragit-tfidf = { path = "../ragit-tfidf" }
+anyhow = "1.0"
+serde_json = "1.0"
