@@ -31,3 +31,4 @@ lazy_static = "1.4.0"
 regex = "1.5"
 ragit-api = { path = "../api" }
 ragit-model-query-response = { path = "../ragit-model-query-response" }
+ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }

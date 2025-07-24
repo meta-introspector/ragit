@@ -1,4 +1,4 @@
-pub mod config;
+pub use ragit_types::query::QueryConfig;
 pub mod keyword;
 pub mod multi_turn_schema;
 

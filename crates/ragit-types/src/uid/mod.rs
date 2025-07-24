@@ -40,7 +40,7 @@ fn u128_from_bytes(bytes: &[u8]) -> Result<u128, UidError> {
 ///
 /// The first 192 bits (128 of `high` + 64 of `low`) are from the hash function, and
 /// the remaining bits are for metadata.
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Uid {
     pub(crate) high: u128,
     pub(crate) low: u128,
