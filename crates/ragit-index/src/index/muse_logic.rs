@@ -1,10 +1,4 @@
-use crate::error::Error;
-use ragit_api::MuseName;
-use ragit_pdl::{parse_pdl, Pdl};
-use strum::IntoEnumIterator;
-use tera::Context;
-
-use super::index_struct::Index;
+use crate::prelude::*;
 
 impl Index {
     pub fn select_muse(&self, index: usize) -> MuseName {

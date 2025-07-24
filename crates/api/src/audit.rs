@@ -1,7 +1,7 @@
 use crate::Error;
 use chrono::{DateTime, Datelike, Local, Utc};
 use ragit_fs::{WriteMode, create_dir_all, exists, parent, read_string, write_string};
-use ragit_pdl::{JsonType, Message};
+use ragit_types::{JsonType, pdl_types::Message};
 use ragit_types::AuditRecordAt;
 use serde_json::{Map, Value};
 use std::collections::HashMap;

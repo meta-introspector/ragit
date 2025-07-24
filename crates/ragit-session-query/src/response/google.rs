@@ -1,5 +1,5 @@
-use super::{IntoChatResponse, Response};
-use crate::error::Error;
+use crate::response::{IntoChatResponse, Response};
+use ragit_types::ApiError as Error;
 use serde::Deserialize;
 
 #[allow(dead_code)]

@@ -1,8 +1,4 @@
-// use crate::cli_types::ArgParser;
-// use crate::error::Error;
-// use crate::index::index_struct::Index;
-// use crate::index::load_mode::LoadMode;
-// use std::path::PathBuf;
+use crate::prelude::*;
 
 pub async fn pull_command(root_dir: PathBuf, args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

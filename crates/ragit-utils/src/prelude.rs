@@ -3,7 +3,8 @@ pub use crate::{
     constant::*,
     error::Error,
     prompts::PROMPTS,
-    query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn},
+    query::{Keywords, MultiTurnSchema, QueryConfig},
+
 };
 pub use anyhow::{anyhow, Result};
 pub use crate::path_utils::{get_ii_path, get_normalized_abs_pathbuf, get_rag_path, get_uid_path, join3_paths, join_paths};

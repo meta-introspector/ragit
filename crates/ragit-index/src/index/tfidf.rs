@@ -1,20 +1,4 @@
-// use crate::chunk::Chunk;
-// use crate::constant::IMAGE_DIR_NAME;
-// use crate::error::Error;
- use crate::prelude::*;
-// use crate::query::Keywords;
-// use flate2::read::{GzDecoder, GzEncoder};
-// use flate2::Compression;
-// use ragit_fs::{read_bytes, read_string, write_bytes, WriteMode};
-// use ragit_pdl::JsonType;
-// use ragit_uid::Uid;
-// use rust_stemmers::{Algorithm, Stemmer};
-// use serde::{Deserialize, Serialize};
-// use serde_json::Value;
-// use std::collections::HashMap;
-// use std::hash::Hash;
-// use std::io::Read;
-// use std::path::{Path, PathBuf};
+use crate::prelude::*;
 
 type Term = String;
 type Weight = f32;
@@ -331,51 +315,4 @@ pub fn tokenize(s: &str) -> Vec<String> {
     result
 }
 
-impl Chunk {
-    // very naive heuristic
-    // 1. `self.title` is very important, so it's included twice
-    // 2. `self.file` might have an information.
-    // 3. `self.summary` has constraints that are not in `self.data`.
-    //     - It has explanations on images
-    //     - It's always English
-    // 4. Images have to be replaced with its description.
-    pub fn into_tfidf_haystack(&self, root_dir: &str) -> Result<String, Error> {
-        let mut data = self.data.clone();
 
-        for image in &self.images {
-            let description_at = crate::path_utils::get_uid_path(
-                &PathBuf::from(root_dir),
-                &Path::new(IMAGE_DIR_NAME),
-                *image,
-                Some("json"),
-            )?;
-            let j = read_string(description_at.to_str().unwrap())?;
-
-            let rep_text = match serde_json::from_str::<Value>(&j)? {
-                Value::Object(obj) => match (obj.get("extracted_text"), obj.get("explanation")) {
-                    (Some(e1), Some(e2)) => format!("<img> {e1} {e2} </img>"),
-                    _ => {
-                        return Err(Error::BrokenIndex(format!("schema error at {image}.json")));
-                    }
-                },
-                j => {
-                    return Err(Error::JsonTypeError {
-                        expected: JsonType::Object,
-                        got: (&j).into(),
-                    });
-                }
-            };
-
-            data = data.replace(&format!("img_{image}"), &rep_text);
-        }
-
-        Ok(format!(
-            "{}\n{}\n{}\n{}\n{}",
-            self.render_source(),
-            self.title,
-            self.title,
-            self.summary,
-            data,
-        ))
-    }
-}

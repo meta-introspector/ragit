@@ -1,4 +1,5 @@
-use super::{MultiTurnSchema, QueryTurn};
+pub mod response;
+pub use response::Response;
 
 pub fn select_turns_for_context(history: &[QueryTurn], query: &str) -> Vec<String> {
     match history.len() {

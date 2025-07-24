@@ -1,10 +1,4 @@
-use crate::constant::FILE_INDEX_DIR_NAME;
-use crate::error::Error;
-use crate::path_utils::get_uid_path;
-use ragit_fs::{exists, remove_file};
-use ragit_uid::Uid;
-use std::path::Path;
-use crate::index::index_struct::Index;
+use crate::prelude::*;
 
 impl Index {
     pub fn remove_file_index(&mut self, file_uid: Uid) -> Result<(), Error> {

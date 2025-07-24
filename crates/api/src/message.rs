@@ -1,5 +1,6 @@
-use crate::api_provider::ApiProvider;
-use ragit_pdl::{Message, MessageContent, encode_base64};
+use ragit_model::ApiProvider;
+use ragit_types::pdl_types::{Message, MessageContent};
+use ragit_core_utils::encode_base64;
 use serde_json::{Map, Value};
 
 pub fn message_content_to_json(message: &MessageContent, api_provider: &ApiProvider) -> Value {

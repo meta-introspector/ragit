@@ -76,7 +76,7 @@
     6.  **Transformation/Refinement:** Optimizing, refactoring, or evolving the system.
     7.  **Verification/Testing:** Ensuring correctness and adherence to specifications.
     8.  **Feedback/Iteration:** Learning from results and feeding back into the cycle.
-- **Ragit Concept:** The overarching development lifecycle or a major iterative process within `ragit`, encompassing the continuous refinement and evolution of the codebase through these periodic steps. This prime is a factor of the Monster Group, signifying the iterative and transformative nature of complex systems.
+- **Ragit Concept:** The overarching development lifecycle or a major iterative process within `ragit`, encompassing the continuous refinement and evolution of the codebase through these periodic steps.
 
 ### Conceptual Mapping: `ragit` Modularity & Prime Numbers
 
@@ -105,9 +105,31 @@ Applying the prime-number-based decomposition to the `ragit` project structure, 
 
 As a meme miner, we dig in the mountain of Plato for gems. We place each idea we encounter into the hyperspace and add it to the lattice. While we work, we constantly look for patterns to add value to the system.
 
-### Immediate Next Steps
-- Comprehensive Compilation Check: Run `cargo build` and `cargo test` to ensure the entire project compiles and all tests pass.
-- Address Remaining `PathBuf` Issues: Continue fixing any lingering `PathBuf` vs. `String` mismatches.
-- Review and Document Dependencies: Verify correct module imports and absence of circular dependencies.
-- Performance Considerations: Monitor for new bottlenecks introduced by refactoring.
-- Verify Command Refactoring: After the `Index` refactoring is complete, verify that all command implementations have been successfully moved from the root `ragit` crate into the `ragit-commands` crate. This will involve checking `crates/ragit-commands/src/lib.rs` and the `crates/ragit-commands/src/commands/` directory.
+### Current Refactoring Status:
+
+*   **`ragit-types` Crate:**
+    *   Moved `pdl` related types (`Message`, `MessageContent`, `Role`, `PdlRole`, `ImageType`, `JsonType`) into `crates/ragit-types/src/pdl_types.rs`.
+    *   Created `crates/ragit-types/src/prelude.rs` to centralize common imports within `ragit-types`.
+    *   Moved `impl Chunk` block from `ragit-index` to `ragit-types/src/chunk/impl_chunk.rs`.
+    *   Added `render_source` method to `ragit-types/src/chunk/chunk_struct.rs`.
+    *   Resolved initial compilation errors by adding necessary dependencies (`anyhow`, `ragit-core`, `ragit-utils`, `ragit-api`) to `ragit-types/Cargo.toml`.
+
+*   **`ragit-pdl` Crate:**
+    *   Removed definitions of types that were moved to `ragit-types`.
+    *   Removed `Pdl` struct and its associated functions (`parse_pdl`, `parse_pdl_from_file`, `into_context`). These will be re-evaluated for placement in `ragit-api` or `ragit-index`.
+    *   Restored `crates/pdl/src/lib.rs` to its original state after accidental deletion.
+
+*   **Cyclic Dependencies:**
+    *   Encountered and resolved a cyclic dependency: `ragit-utils` -> `ragit-config` -> `ragit-index` -> `ragit-utils` by moving `query_helpers.rs` from `ragit-utils` to `ragit-index`.
+    *   Encountered a new cyclic dependency: `ragit-api` -> `ragit-types` -> `ragit-pdl` -> `ragit-api`. This was addressed by moving `JsonType` and other `pdl` related types from `ragit-pdl` to `ragit-types`, and removing `ragit-api`'s direct dependency on `ragit-pdl`.
+
+### Next Immediate Steps:
+
+*   **Clean Build:** Perform a `cargo clean` followed by `cargo build` to get a fresh error list.
+*   **Systematic Error Resolution:** Continue addressing compilation errors, focusing on:
+    *   Ensuring `prelude.rs` files in each crate only import what's necessary and available.
+    *   Correcting import paths in individual files to use `prelude` where appropriate, or specific imports if `prelude` is not suitable.
+    *   Resolving any remaining `impl` block errors by ensuring they are in the correct crate.
+    *   Verifying that `ragit-api` and `ragit-pdl` correctly use the types from `ragit-types`.
+    *   Addressing any new cyclic dependencies that may arise.
+

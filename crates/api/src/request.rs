@@ -1,14 +1,16 @@
 use crate::audit::{dump_api_usage, dump_pdl};
 use crate::message::{message_contents_to_json_array, message_to_json};
-use crate::model::{Model, ModelRaw};
+use ragit_model::{Model, ModelRaw};
 use crate::rate_limit::RateLimiter;
 use crate::response::Response;
-use crate::{ApiProvider, Error};
+use ragit_model::ApiProvider;
+use crate::Error;
 use async_std::task;
 use chrono::Local;
 use ragit_fs::exists_str;
 use ragit_fs::{WriteMode, create_dir_all, join, write_log, write_string};
-use ragit_pdl::{Message, Role, Schema};
+use ragit_types::pdl_types::{Message, Role};
+use ragit_schema::Schema;
 use ragit_types::AuditRecordAt;
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
@@ -399,13 +401,13 @@ impl Request {
                                 "response.text()",
                                 &format!("response.text() failed with {e:?}"),
                             );
-                            curr_error = Error::ReqwestError(e);
+                            curr_error = Error::ReqwestError(e.to_string());
                         }
                     },
                     status_code => {
                         curr_error = Error::ServerError {
                             status_code,
-                            body: response.text().await,
+                            body: response.text().await.unwrap_or_default(),
                         };
 
                         if let Some(path) = &self.dump_pdl_at {

@@ -1,10 +1,9 @@
 use crate::schema::SchemaParseError;
 use ragit_fs::FileError;
 use std::string::FromUtf8Error;
+use ragit_types::JsonType;
 
-mod json_type;
-
-pub use json_type::JsonType;
+// pub use json_type::JsonType;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -44,4 +43,10 @@ pub enum Error {
     FromUtf8Error(#[from] std::string::FromUtf8Error),
     #[error(transparent)]
     ImageError(#[from] ragit_types::image::image_struct::Error),
+}
+
+impl From<String> for Error {
+    fn from(s: String) -> Self {
+        Error::InvalidPdl(s)
+    }
 }

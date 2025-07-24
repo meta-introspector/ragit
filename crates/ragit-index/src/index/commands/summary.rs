@@ -1,6 +1,4 @@
 use crate::prelude::*;
-use serde::{Deserialize, Serialize};
-use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Serialize)]
 pub enum SummaryMode {

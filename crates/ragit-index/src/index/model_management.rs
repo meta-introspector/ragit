@@ -1,11 +1,4 @@
-use crate::constant::MODEL_FILE_NAME;
-use crate::error::Error;
-use crate::path_utils::{get_rag_path, join_paths};
-use ragit_api::{Model, ModelRaw};
-use ragit_fs::{exists, read_string, write_string, WriteMode};
-use std::path::PathBuf;
-
-use crate::index::index_struct::Index;
+use crate::prelude::*;
 
 impl Index {
     pub fn load_or_init_models(&mut self) -> Result<(), Error> {

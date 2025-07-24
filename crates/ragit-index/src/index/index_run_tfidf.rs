@@ -1,10 +1,4 @@
-use crate::error::Error;
 use crate::prelude::*;
-use crate::query::Keywords;
-use ragit_uid::Uid;
-
-use super::{consume_processed_doc, TfidfResult, TfidfState};
-use crate::index::index_struct::Index;
 
 impl Index {
     pub fn run_tfidf(

@@ -1,10 +1,4 @@
-use crate::constant::INDEX_FILE_NAME;
-use crate::error::Error;
-use crate::index::index_struct::Index;
-use ragit_fs::{file_name, parent};
-use ragit_uid::{load_from_file, Uid};
-use std::path::PathBuf;
-use std::str::FromStr;
+use crate::prelude::*;
 
 impl Index {
     pub fn calculate_and_save_uid(&mut self) -> Result<Uid, Error> {

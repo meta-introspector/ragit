@@ -1,10 +1,4 @@
-use crate::constant::INDEX_DIR_NAME;
-use crate::error::Error;
-use crate::path_utils::join_paths;
-use ragit_fs::exists;
-use std::path::PathBuf;
-
-use crate::index::{index_struct::Index, load_mode::LoadMode};
+use crate::prelude::*;
 
 impl Index {
     pub fn load_or_init(root_dir: PathBuf) -> Result<Self, Error> {

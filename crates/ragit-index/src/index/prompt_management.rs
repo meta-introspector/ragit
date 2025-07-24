@@ -1,11 +1,4 @@
-use crate::constant::PROMPT_DIR_NAME;
-use crate::error::Error;
-use crate::path_utils::{get_rag_path, join_paths};
-use crate::prompts::PROMPTS;
-use ragit_fs::{create_dir_all, read_string, set_extension, write_string, WriteMode};
-use std::path::PathBuf;
-
-use crate::index::index_struct::Index;
+use crate::prelude::*;
 
 impl Index {
     // `Index::load` calls this function. There's no need to call this again.

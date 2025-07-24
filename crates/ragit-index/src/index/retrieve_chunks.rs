@@ -1,7 +1,4 @@
-use crate::chunk::Chunk;
-use crate::error::Error;
-use crate::index::index_struct::Index;
-use tokio::task::JoinSet;
+use crate::prelude::*;
 
 impl Index {
     /// It retrieves chunks that are related to `query`. If `super_rerank` is set, it calls `summaries_to_chunks` multiple times.

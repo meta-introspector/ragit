@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::model::ModelRaw;
+use ragit_model::ModelRaw;
 use rand::seq::SliceRandom;
 
 pub fn get_selected_models(models: &[ModelRaw]) -> Result<Vec<ModelRaw>, Error> {

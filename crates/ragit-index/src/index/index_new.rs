@@ -1,17 +1,5 @@
+use crate::prelude::*;
 use super::BuildConfig;
-use crate::api_config::ApiConfig;
-use crate::constant::{
-    CHUNK_DIR_NAME, CONFIG_DIR_NAME, FILE_INDEX_DIR_NAME, II_DIR_NAME, IMAGE_DIR_NAME,
-    INDEX_DIR_NAME, INDEX_FILE_NAME,
-};
-use crate::error::Error;
-use crate::index::index_struct::Index;
-use crate::path_utils::{get_normalized_abs_pathbuf, get_rag_path, join_paths};
-use crate::prompts::PROMPTS;
-use crate::query::QueryConfig;
-use ragit_fs::{create_dir_all, exists, write_bytes, WriteMode};
-use std::collections::HashMap;
-use std::path::PathBuf;
 
 impl Index {
     /// It works like git. `root_dir` is the root of the repo. And it creates dir `.ragit/`, like `.git/`.

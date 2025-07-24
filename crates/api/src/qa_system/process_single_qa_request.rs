@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::model::{Model, ModelRaw, QualityExpectations};
+use ragit_model::{Model, ModelRaw, QualityExpectations};
 use crate::request::Request;
 use crate::response::Response;
 use std::time::Instant;

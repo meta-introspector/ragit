@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::model::{Model, ModelRaw, QualityExpectations};
+use ragit_model::{Model, ModelRaw, QualityExpectations};
 use serde::Deserialize;
 use std::fs;
 use std::time::{Duration, Instant};

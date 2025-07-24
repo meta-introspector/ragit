@@ -1,4 +1,4 @@
-use crate::model::ModelRaw;
+use ragit_model::ModelRaw;
 use crate::qa_system::model_qa_result::ModelQAResult;
 pub fn compare_results(models: &[ModelRaw], results: &[ModelQAResult]) -> String {
     let mut comparison = String::new();

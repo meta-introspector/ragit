@@ -1,5 +1,5 @@
-use crate::error::Error;
-use ragit_pdl::Message;
+use crate::ApiError as Error;
+use crate::pdl_types::Message;
 use std::io::{Read, Write, stdin, stdout};
 
 #[derive(Clone, Debug, PartialEq)]

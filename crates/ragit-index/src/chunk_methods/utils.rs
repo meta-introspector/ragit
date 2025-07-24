@@ -1,6 +1,4 @@
-use crate::chunk::{MultiModalContent, RenderedChunk};
 use crate::prelude::*;
-use ragit_uid::Uid;
 
 pub fn merge_and_convert_chunks(
     _index: &crate::index::index_struct::Index,

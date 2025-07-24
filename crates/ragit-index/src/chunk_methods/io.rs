@@ -1,7 +1,5 @@
-use ragit_types::chunk::chunk_struct::Chunk;
-//use ragit_index::error::Error;
+use crate::prelude::*;
 use std::io::Read;
-use std::path::PathBuf;
 
 pub fn load_from_file(path: &PathBuf) -> Result<Chunk, Error> {
     let content = ragit_fs::read_bytes(path.to_str().unwrap())?;

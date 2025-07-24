@@ -9,6 +9,9 @@ ragit-api = { path = "../api" }
 ragit-fs = { path = "../fs" }
 ragit-uid = { path = "../ragit-uid" }
 ragit-pdl = { path = "../pdl" }
+ragit-index = { path = "../ragit-index" }
+ragit-types = { path = "../ragit-types" }
+ragit-core-utils = { path = "../ragit-core-utils" }
 chrono = "0.4.40"
 serde = { version = "1.0.218", features = ["derive"] }
 serde_json = { version = "1.0.139", features = ["arbitrary_precision"] }

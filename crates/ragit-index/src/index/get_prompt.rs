@@ -1,7 +1,4 @@
-//use crate::error::Error;
 use crate::prelude::*;
-
-///use crate::index::index_struct::Index;
 
 impl Index {
     pub fn get_prompt(&self, prompt_name: &str) -> Result<String, Error> {

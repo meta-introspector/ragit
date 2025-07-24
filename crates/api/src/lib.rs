@@ -4,7 +4,7 @@ mod api_provider;
 pub mod audit;
 mod error;
 mod message;
-mod model;
+
 pub mod muse;
 pub mod qa_system;
 mod rate_limit;
@@ -14,11 +14,11 @@ mod response;
 #[cfg(test)]
 mod tests;
 
-pub use crate::api_provider::ApiProvider;
+
 pub use crate::audit::AuditRecord;
 pub use crate::error::Error;
 pub use crate::message::message_contents_to_json_array;
-pub use crate::model::{Model, ModelRaw, QualityExpectations, TestModel, get_model_by_name};
+pub use ragit_types::model::{Model, ModelRaw, QualityExpectations, TestModel, get_model_by_name};
 pub use crate::muse::muse_enum::MuseName;
 pub use crate::muse::muse_struct::Muse;
 pub use crate::qa_system::model_qa_result::ModelQAResult;
@@ -31,7 +31,8 @@ pub struct FetchResult {
     pub updated: usize,
 }
 
-pub use ragit_pdl::{ImageType, JsonType, Message, MessageContent, Role, Schema};
+pub use ragit_types::pdl_types::{ImageType, Message, MessageContent, Role};
+pub use ragit_types::JsonType;
 
 pub fn load_models(json_path: &str) -> Result<Vec<Model>, Error> {
     let models = read_string(json_path)?;

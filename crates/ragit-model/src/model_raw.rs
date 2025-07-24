@@ -1,6 +1,4 @@
-use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
 
@@ -146,70 +144,69 @@ impl PartialEq for ModelRaw {
     }
 }
 
-lazy_static! {
-    static ref DEFAULT_MODELS: HashMap<String, ModelRaw> = {
-        let models_dot_json = include_str!("../../models.json");
-        let models = serde_json::from_str::<Vec<ModelRaw>>(&models_dot_json).unwrap();
-        models
-            .into_iter()
-            .map(|model| (model.name.clone(), model))
-            .collect()
-    };
-}
-
 impl ModelRaw {
     pub fn llama_70b() -> Self {
-        DEFAULT_MODELS.get("llama3.3-70b-groq").unwrap().clone()
+        // DEFAULT_MODELS.get("llama3.3-70b-groq").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn llama_8b() -> Self {
-        DEFAULT_MODELS.get("llama3.1-8b-groq").unwrap().clone()
+        // DEFAULT_MODELS.get("llama3.1-8b-groq").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn gpt_4o() -> Self {
-        DEFAULT_MODELS.get("gpt-4o").unwrap().clone()
+        // DEFAULT_MODELS.get("gpt-4o").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn gpt_4o_mini() -> Self {
-        DEFAULT_MODELS.get("gpt-4o-mini").unwrap().clone()
+        // DEFAULT_MODELS.get("gpt-4o-mini").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn gemini_2_flash() -> Self {
-        DEFAULT_MODELS.get("gemini-2.0-flash").unwrap().clone()
+        // DEFAULT_MODELS.get("gemini-2.0-flash").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn sonnet() -> Self {
-        DEFAULT_MODELS.get("claude-3.7-sonnet").unwrap().clone()
+        // DEFAULT_MODELS.get("claude-3.7-sonnet").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn phi_4_14b() -> Self {
-        DEFAULT_MODELS.get("phi-4-14b-ollama").unwrap().clone()
+        // DEFAULT_MODELS.get("phi-4-14b-ollama").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn command_r() -> Self {
-        DEFAULT_MODELS.get("command-r").unwrap().clone()
+        // DEFAULT_MODELS.get("command-r").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn command_r_plus() -> Self {
-        DEFAULT_MODELS.get("command-r-plus").unwrap().clone()
+        // DEFAULT_MODELS.get("command-r-plus").unwrap().clone()
+        unimplemented!()
     }
 
     pub fn default_models() -> Vec<ModelRaw> {
-        let mut models: Vec<ModelRaw> =
-            DEFAULT_MODELS.values().map(|model| model.clone()).collect();
-        let _ = crate::rate_limit::merge_rate_limits(&mut models);
-        models
+        // let mut models: Vec<ModelRaw> =
+        //     DEFAULT_MODELS.values().map(|model| model.clone()).collect();
+        // let _ = crate::rate_limit::merge_rate_limits(&mut models);
+        // models
+        unimplemented!()
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{DEFAULT_MODELS, ModelRaw};
+    // use super::{DEFAULT_MODELS, ModelRaw};
 
     #[test]
     fn validate_models_dot_json() {
-        for model in DEFAULT_MODELS.values() {
-            // Model::try_from(model).unwrap();
-        }
+        // for model in DEFAULT_MODELS.values() {
+        // Model::try_from(model).unwrap();
+        // }
     }
 }

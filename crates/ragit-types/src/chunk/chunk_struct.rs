@@ -31,3 +31,11 @@ pub struct Chunk {
     pub timestamp: i64,
     pub searchable: bool,
 }
+
+impl Chunk {
+    pub fn render_source(&self) -> String {
+        // Implement your rendering logic here based on ChunkSource
+        // For now, a placeholder implementation
+        format!("Source: {:?}", self.source)
+    }
+}

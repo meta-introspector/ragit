@@ -1,4 +1,86 @@
 use crate::prelude::*;
+use lazy_static::lazy_static;
+use regex::Regex;
+
+#[derive(Clone, Debug, Default)]
+pub struct UidQueryConfig {
+    pub search_chunk: bool,
+    pub search_file_uid: bool,
+    pub search_image: bool,
+    pub search_file_path: bool,
+    pub search_staged_file: bool,
+}
+
+impl UidQueryConfig {
+    pub fn new() -> Self {
+        UidQueryConfig {
+            search_chunk: true,
+            search_file_uid: true,
+            search_image: true,
+            search_file_path: true,
+            search_staged_file: true,
+        }
+    }
+
+    pub fn chunk_only(mut self) -> Self {
+        self.search_file_uid = false;
+        self.search_image = false;
+        self.search_file_path = false;
+        self.search_staged_file = false;
+        self
+    }
+
+    pub fn file_uid_only(mut self) -> Self {
+        self.search_chunk = false;
+        self.search_image = false;
+        self.search_file_path = false;
+        self.search_staged_file = false;
+        self
+    }
+
+    pub fn image_only(mut self) -> Self {
+        self.search_chunk = false;
+        self.search_file_uid = false;
+        self.search_file_path = false;
+        self.search_staged_file = false;
+        self
+    }
+
+    pub fn file_path_only(mut self) -> Self {
+        self.search_chunk = false;
+        self.search_file_uid = false;
+        self.search_image = false;
+        self.search_staged_file = false;
+        self
+    }
+
+    pub fn staged_file_only(mut self) -> Self {
+        self.search_chunk = false;
+        self.search_file_uid = false;
+        self.search_image = false;
+        self.search_file_path = false;
+        self
+    }
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct UidQueryResult {
+    pub chunks: Vec<Uid>,
+    pub images: Vec<Uid>,
+    pub processed_files: Vec<(String, Uid)>,
+    pub staged_files: Vec<String>,
+}
+
+impl UidQueryResult {
+    pub fn empty() -> Self {
+        UidQueryResult {
+            chunks: vec![],
+            images: vec![],
+            processed_files: vec![],
+            staged_files: vec![],
+        }
+    }
+}
 
 lazy_static! {
     // full or prefix

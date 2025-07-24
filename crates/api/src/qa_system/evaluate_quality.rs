@@ -1,4 +1,4 @@
-use crate::model::QualityExpectations;
+use ragit_model::QualityExpectations;
 use crate::request::Request;
 use crate::response::Response;
 

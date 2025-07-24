@@ -1,4 +1,4 @@
-use crate::model::ModelRaw;
+use ragit_model::ModelRaw;
 
 pub struct ModelQASystem {
     pub models: Vec<ModelRaw>,
