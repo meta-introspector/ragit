@@ -15,11 +15,11 @@ pub use google::GoogleResponse;
 pub use openai::OpenAiResponse;
 
 pub struct Response {
-    messages: Vec<String>,
-    reasonings: Vec<Option<String>>,
-    output_tokens: usize,
-    prompt_tokens: usize,
-    total_tokens: usize,
+    pub messages: Vec<String>,
+    pub reasonings: Vec<Option<String>>,
+    pub output_tokens: usize,
+    pub prompt_tokens: usize,
+    pub total_tokens: usize,
 }
 
 impl Response {

@@ -1,7 +1,4 @@
-use ragit_model::QualityExpectations;
-use crate::request::Request;
-use crate::response::Response;
-
+use crate::prelude::*;
 use crate::qa_system::quality_scores::QualityScores;
 
 pub fn evaluate_quality(
@@ -19,8 +16,9 @@ pub fn evaluate_quality(
         .get_message(0)
         .map(|m| m.to_string().len())
         .unwrap_or(0) as f64;
-    let expected_length = 500.0;
-        let length_score = (1.0 - (response_length as f64 - expected_length as f64).abs() / expected_length as f64).max(0.0);
+    let expected_length = 500.0f64;
+    let length_score =
+        (1.0 - (response_length - expected_length).abs() / expected_length).max(0.0);
     QualityScores {
         accuracy: expectations.accuracy * length_score,
         coherence: expectations.coherence * length_score,

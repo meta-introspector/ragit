@@ -1,20 +1,15 @@
 use crate::audit::{dump_api_usage, dump_pdl};
 use crate::message::{message_contents_to_json_array, message_to_json};
-use ragit_model::{Model, ModelRaw};
+use crate::prelude::*;
 use crate::rate_limit::RateLimiter;
-use crate::response::Response;
-use ragit_model_provider::ApiProvider;
-use crate::Error;
 use async_std::task;
 use chrono::Local;
-use ragit_fs::exists_str;
-use ragit_fs::{WriteMode, create_dir_all, join, write_log, write_string};
-use ragit_types::pdl_types::{Message, Role};
-
+use ragit_fs::{create_dir_all, exists_str, join, write_log, write_string, WriteMode};
 use ragit_types::AuditRecordAt;
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 use std::time::{Duration, Instant};
+
 #[derive(Clone, Debug)]
 pub struct Request {
     pub messages: Vec<Message>,
@@ -52,30 +47,30 @@ pub struct Request {
 impl Request {
     pub fn is_valid(&self) -> bool {
         self.messages.len() > 1
-        && self.messages.len() & 1 == 0  // the last message must be user's
-        && self.messages[0].is_valid_system_prompt()  // I'm not sure whether all the models require the first message to be a system prompt. but it would be safer to guarantee that
-        && {
-            let mut flag = true;
+            && self.messages.len() & 1 == 0 // the last message must be user's
+            && self.messages[0].is_valid_system_prompt() // I'm not sure whether all the models require the first message to be a system prompt. but it would be safer to guarantee that
+            && {
+                let mut flag = true;
 
-            for (index, message) in self.messages[1..].iter().enumerate() {
-                if index & 1 == 0 && !message.is_user_prompt() {
-                    flag = false;
-                    break;
+                for (index, message) in self.messages[1..].iter().enumerate() {
+                    if index & 1 == 0 && !message.is_user_prompt() {
+                        flag = false;
+                        break;
+                    } else if index & 1 == 1 && !message.is_assistant_prompt() {
+                        flag = false;
+                        break;
+                    }
                 }
 
-                else if index & 1 == 1 && !message.is_assistant_prompt() {
-                    flag = false;
-                    break;
-                }
+                flag
             }
-
-            flag
-        }
     }
 
     /// It panics if its fields are not complete. If you're not sure, run `self.is_valid()` before sending a request.
     pub fn build_json_body(&self) -> Value {
-                match self.model.api_provider_name.as_str() {
+        let api_provider =
+            ApiProvider::parse(&self.model.api_provider_name, &self.model.api_url).unwrap();
+        match self.model.api_provider_name.as_str() {
             "Google" => {
                 let mut result = Map::new();
                 let mut contents = vec![];
@@ -83,15 +78,14 @@ impl Request {
 
                 for message in self.messages.iter() {
                     if message.role == Role::System {
-                        match message_contents_to_json_array(&message.content, &ApiProvider::Google)
-                        {
+                        match message_contents_to_json_array(&message.content, &api_provider) {
                             Value::Array(parts) => {
                                 system_prompt.push(parts);
                             }
                             _ => unreachable!(),
                         }
                     } else {
-                        contents.push(message_to_json(message, &self.model.api_provider));
+                        contents.push(message_to_json(message, &api_provider));
                     }
                 }
 
@@ -113,7 +107,7 @@ impl Request {
                 let mut messages = vec![];
 
                 for message in self.messages.iter() {
-                    messages.push(message_to_json(message, &self.model.api_provider));
+                    messages.push(message_to_json(message, &api_provider));
                 }
 
                 result.insert(String::from("messages"), messages.into());
@@ -142,7 +136,7 @@ impl Request {
                     if message.role == Role::System {
                         system_prompt.push(message.content[0].unwrap_str().to_string());
                     } else {
-                        messages.push(message_to_json(message, &ApiProvider::Anthropic));
+                        messages.push(message_to_json(message, &api_provider));
                     }
                 }
 
@@ -226,9 +220,11 @@ impl Request {
                 &format!("dump_json(\"request\", ..) failed with {e:?}"),
             );
         }
-
-                if self.model.api_provider_name == "Test" {
-                        let response = self.model.test_model.as_ref().unwrap().get_dummy_response(&self.messages)?;
+        let api_provider =
+            ApiProvider::parse(&self.model.api_provider_name, &self.model.api_url)?;
+        if self.model.api_provider_name == "Test" {
+            let response =
+                self.model.test_model.as_ref().unwrap().get_dummy_response(&self.messages)?;
 
             if let Some(key) = &self.dump_api_usage_at {
                 if let Err(e) = dump_api_usage(
@@ -287,8 +283,8 @@ impl Request {
                 .header(reqwest::header::CONTENT_TYPE, "application/json")
                 .body(body.clone());
 
-                        match self.model.api_provider_name.as_str() {
-                                "Anthropic" => {
+            match self.model.api_provider_name.as_str() {
+                "Anthropic" => {
                     request = request
                         .header("x-api-key", api_key.clone())
                         .header("anthropic-version", "2023-06-01");
@@ -332,7 +328,7 @@ impl Request {
                                 }
                             }
 
-                                                        match Response::from_str(&text, &self.model.api_provider_name) {
+                            match Response::from_str(&text, &api_provider) {
                                 Ok(result) => {
                                     rate_limiter
                                         .record_usage(1, result.get_output_token_count() as u32);
