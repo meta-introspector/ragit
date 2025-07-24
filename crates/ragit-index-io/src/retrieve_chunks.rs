@@ -2,7 +2,7 @@ use crate::index_struct::Index;
 use ragit_error::ApiError;
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_utils::query::Keywords;
-use ragit_index_io::get_chunk_by_uid;
+use crate::get_chunk_by_uid::get_chunk_by_uid;
 
 impl Index {
     pub async fn retrieve_chunks(

@@ -1,0 +1,11 @@
+
+[package]
+name = "ragit-agent"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+ragit-error = { path = "../ragit-error" }
+ragit-fs = { path = "../fs" }
+ragit-utils = { path = "../ragit-utils" }

@@ -10,7 +10,9 @@ ragit-fs = { path = "../fs" }
 ragit-error = { path = "../ragit-error" }
 ragit-types = { path = "../ragit-types" }
 ragit-tfidf = { path = "../ragit-tfidf" }
+ragit-pdl = { path = "../pdl" }
 ragit-api = { path = "../api" }
+ragit-config = { path = "../ragit-config" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1.0", features = ["full"] }

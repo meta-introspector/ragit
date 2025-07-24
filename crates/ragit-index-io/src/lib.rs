@@ -1,3 +1,4 @@
+pub mod helpers;
 pub mod get_tfidf_by_chunk_uid;
 pub mod get_chunk_by_uid;
 pub mod get_chunks_of_file;

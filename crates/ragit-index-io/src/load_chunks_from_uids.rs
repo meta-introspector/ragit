@@ -1,7 +1,7 @@
 use crate::index_struct::Index;
 use ragit_error::ApiError;
 use ragit_types::{Uid, Chunk};
-use ragit_index_io::get_chunk_by_uid;
+use crate::get_chunk_by_uid::get_chunk_by_uid;
 
 pub async fn load_chunks_from_uids(
     index: &Index,
