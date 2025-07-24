@@ -34,7 +34,29 @@ impl Response {
     }
 
     pub fn from_str(s: &str, api_provider: &ApiProvider) -> Result<Self, Error> {
-        api_provider.parse_chat_response(s)?.into_chat_response()
+        let json: serde_json::Value = api_provider.parse_chat_response(s)?;
+        match api_provider {
+            ApiProvider::OpenAi { .. } => {
+                let response: OpenAiResponse = serde_json::from_value(json)?;
+                response.into_chat_response()
+            }
+            ApiProvider::Google => {
+                let response: GoogleResponse = serde_json::from_value(json)?;
+                response.into_chat_response()
+            }
+            ApiProvider::Cohere => {
+                let response: CohereResponse = serde_json::from_value(json)?;
+                response.into_chat_response()
+            }
+            ApiProvider::Anthropic => {
+                let response: AnthropicResponse = serde_json::from_value(json)?;
+                response.into_chat_response()
+            }
+            ApiProvider::Test(test_model) => {
+                let response = test_model.get_dummy_response(&vec![])?;
+                Ok(response)
+            }
+        }
     }
 
     pub fn get_output_token_count(&self) -> usize {
