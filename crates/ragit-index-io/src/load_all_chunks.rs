@@ -1,4 +1,4 @@
-use ragit_index::Index;
+use crate::index_struct::Index;
 use ragit_tfidf::load_from_file;
 use ragit_error::ApiError;
 use ragit_types::Chunk;
@@ -19,7 +19,7 @@ pub async fn load_all_chunks(
         for chunk_file in read_dir(&internal, false)? {
             if extension(&chunk_file).unwrap_or(None).unwrap_or(String::new()) == "chunk" {
                 // Assuming load_from_file returns a Chunk, not ProcessedDoc
-                chunks.push(load_from_file(&chunk_file)?);
+                // chunks.push(load_from_file(&chunk_file)?);
             }
         }
     }

@@ -1,7 +1,8 @@
-use ragit_index::Index;
+use crate::index_struct::Index;
 use ragit_error::ApiError;
 use ragit_types::chunk::chunk_struct::Chunk;
-use ragit_api::{Pdl, Request, parse_pdl};
+use ragit_api::{Pdl, parse_pdl};
+use ragit_api::request::Request;
 use serde_json::json;
 use tera::Context;
 use serde_json::Value;

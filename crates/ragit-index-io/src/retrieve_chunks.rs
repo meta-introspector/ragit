@@ -1,7 +1,7 @@
-use ragit_index::Index;
+use crate::index_struct::Index;
 use ragit_error::ApiError;
 use ragit_types::chunk::chunk_struct::Chunk;
-use ragit_types::query::Keywords;
+use ragit_utils::query::Keywords;
 use ragit_index_io::get_chunk_by_uid;
 
 impl Index {

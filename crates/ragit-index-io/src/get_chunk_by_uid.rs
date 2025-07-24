@@ -1,5 +1,5 @@
-use ragit_index::Index;
-use ragit_index_io::helpers::load_chunk_from_pathbuf;
+use crate::index_struct::Index;
+use crate::helpers::load_chunk_from_pathbuf;
 use std::path::Path;
 use ragit_utils::ragit_path_utils::get_uid_path;
 use ragit_fs::exists;
