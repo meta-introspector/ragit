@@ -6,7 +6,7 @@ pub fn get_tfidf_by_chunk_uid(
 ) -> Result<ProcessedDoc, ApiError> {
     let tfidf_at = get_uid_path(
         &index.root_dir,
-        CHUNK_DIR_NAME,
+        Path::new(CHUNK_DIR_NAME),
         uid,
         Some("tfidf"),
     )?;

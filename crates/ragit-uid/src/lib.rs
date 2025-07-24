@@ -1,18 +1,5 @@
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
-pub use ragit_types::uid::{Uid, UidType, UidWriteMode};
-use thiserror::Error;
-
-#[derive(Error, Debug)]
-pub enum UidError {
-    #[error("Invalid UID: {0}")]
-    InvalidUid(String),
-    #[error("Cannot decode u128 from bytes")]
-    DecodeError,
-    #[error(transparent)]
-    Io(#[from] ragit_fs::FileError),
-    #[error(transparent)]
-    Json(#[from] serde_json::Error),
-}
+pub use ragit_types::uid::{Uid, UidError, UidType, UidWriteMode};
 
 pub fn load_from_file(path: &std::path::PathBuf) -> Result<Vec<Uid>, UidError> {
     let bytes = read_bytes(path.to_str().unwrap())?;

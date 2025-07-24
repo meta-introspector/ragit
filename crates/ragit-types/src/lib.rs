@@ -1,3 +1,5 @@
+pub mod pdl_error;
+pub use pdl_error::{PdlError, SchemaParseError};
 pub mod model;
 pub mod image;
 pub mod chunk;

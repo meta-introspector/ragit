@@ -1,11 +1,13 @@
 use crate::prelude::*;
+use crate::get_chunks_of_file;
+use crate::get_chunk_by_uid;
 
 pub fn get_merged_chunk_of_file(index: &Index, file_uid: Uid) -> Result<RenderedChunk, ApiError> {
-    let chunk_uids = index.get_chunks_of_file(file_uid)?;
+    let chunk_uids = get_chunks_of_file(index, file_uid)?;
     let mut chunks = Vec::with_capacity(chunk_uids.len());
 
     for chunk_uid in chunk_uids.iter() {
-        chunks.push(index.get_chunk_by_uid(*chunk_uid)?);
+        chunks.push(get_chunk_by_uid(index, *chunk_uid)?);
     }
 
     // FIXME: I don't think we have to sort this

@@ -3,7 +3,7 @@ use crate::prelude::*;
 pub fn get_chunks_of_file(index: &Index, file_uid: Uid) -> Result<Vec<Uid>, ApiError> {
     let file_index_path = get_uid_path(
         &index.root_dir,
-        FILE_INDEX_DIR_NAME,
+        Path::new(FILE_INDEX_DIR_NAME),
         file_uid,
         None,
     )?;

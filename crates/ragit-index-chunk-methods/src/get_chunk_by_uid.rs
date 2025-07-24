@@ -3,7 +3,7 @@ use crate::prelude::*;
 pub fn get_chunk_by_uid(index: &Index, uid: Uid) -> Result<Chunk, ApiError> {
     let chunk_at = get_uid_path(
         &index.root_dir,
-        CHUNK_DIR_NAME,
+        Path::new(CHUNK_DIR_NAME),
         uid,
         Some("chunk"),
     )?;
