@@ -1,65 +1,32 @@
-use std::path::PathBuf;
-use ragit_types::api_config::ApiConfig;
-use ragit_error::ApiError;
-use ragit_types::query::QueryConfig;
-use ragit_types::uid::Uid;
-use ragit_types::ii_status::IIStatus;
-use ragit_types::summary::{Summary, SummaryMode};
-use ragit_config::BuildConfig;
-use ragit_utils::version_info::VersionInfo;
+use crate::prelude::*;
 
-use ragit_api::Model;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use ragit_types::chunk::chunk_struct::Chunk;
-use ragit_tfidf::TfidfResult;
-use tokio::task::JoinSet;
-use ragit_index_io::get_chunk_by_uid::get_chunk_by_uid;
-use ragit_api::AuditRecord;
-use chrono::{DateTime, Utc};
-use serde_json::Value;
-use ragit_utils::constant::INDEX_FILE_NAME;
+/// 1. If you want to do something with chunks, use `LoadMode::QuickCheck`.
 
-/// This is a knowledge-base itself. I am trying my best to define a method
-/// for each command.
-// NOTE: all the `Path` are normalized relative paths
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub struct Index {
-    pub ragit_version: String,
-    pub chunk_count: usize,
-    pub staged_files: Vec<PathBuf>,
-    pub processed_files: HashMap<PathBuf, Uid>,
+/// 2. If you have nothing to do with chunks, use `LoadMode::OnlyJson`.
 
-    /// Previously, all the builds were in serial and this field tells
-    /// which file the index is building. When something goes wrong, ragit
-    /// reads this field and clean up garbages. Now, all the builds are in
-    /// parallel and there's no such thing like `curr_processing_file`. But
-    /// we still need to tell whether something went wrong while building
-    /// and this field does that. If it's `Some(_)`, something's wrong and
-    /// clean-up has to be done.
-    pub curr_processing_file: Option<PathBuf>,
+/// 3. If something's broken and you don't want it to crash, use `LoadMode::Minimum`. It can still crash, though.
 
-    /// The name of this field has to be `remote`. It's my mistake.
-    pub repo_url: Option<String>,
+/// 4. If you want to be very sure that nothing's broken and you don't care about init-time, use `LoadMode::Check`.
 
-    /// `ii` stands for `inverted-index`.
-    pub ii_status: IIStatus,
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum LoadMode {
+    /// It only loads `index.json`. It doesn't care whether config files prompt files, or chunk files are broken.
 
-    pub uid: Option<Uid>,
-    pub summary: Option<Summary>,
+    Minimum,
 
-    #[serde(skip)]
-    pub root_dir: PathBuf,
-    #[serde(skip)]
-    pub build_config: BuildConfig,
-    #[serde(skip)]
-    pub query_config: QueryConfig,
-    #[serde(skip)]
-    pub api_config: ApiConfig,
-    #[serde(skip)]
-    pub prompts: HashMap<String, String>,
-    #[serde(skip)]
-    pub models: Vec<Model>,
+    /// It loads json files, but doesn't care whether the chunk files are broken.
+
+    OnlyJson,
+
+    /// It checks and auto-recovers if `self.curr_processing_file` is not None. If the value is not None,
+
+    /// a previous build was interrupted and something could be broken.
+
+    QuickCheck,
+
+    /// It always checks and auto-recovers. You should be very careful, `check` and `auto-recover` are very expensive.
+
+    Check,
 }
 
 impl Index {
@@ -106,13 +73,13 @@ impl Index {
             processed_files: HashMap::new(),
             curr_processing_file: None,
             repo_url: None,
-            ii_status: IIStatus::default(),
+            ii_status: ragit_types::ii_status::IIStatus::default(),
             uid: None,
             summary: None,
             root_dir: PathBuf::from("."),
-            build_config: BuildConfig::default(),
-            query_config: QueryConfig::default(),
-            api_config: ApiConfig::default(),
+            build_config: ragit_types::build_config::BuildConfig::default(),
+            query_config: ragit_types::query_config::QueryConfig::default(),
+            api_config: ragit_types::api_config::ApiConfig::default(),
             prompts: HashMap::new(),
             models: vec![],
         }
@@ -368,4 +335,10 @@ pub enum LoadMode {
 
     /// It always checks and auto-recovers. You should be very careful, `check` and `auto-recover` are very expensive.
     Check,
+}
+
+pub fn load_index_from_path(path: &PathBuf) -> Result<Index, ApiError> {
+    let index_json = std::fs::read_to_string(path)?;
+    let index: Index = serde_json::from_str(&index_json)?;
+    Ok(index)
 }

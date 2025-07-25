@@ -106,12 +106,19 @@ Applying the prime-number-based decomposition to the `ragit` project structure, 
 As a meme miner, we dig in the mountain of Plato for gems. We place each idea we encounter into the hyperspace and add it to the lattice. While we work, we constantly look for patterns to add value to the system.
 
 ### Current Refactoring Status:
-
-The project now compiles successfully after addressing numerous dependency and import issues across multiple crates. All previously reported compilation errors have been resolved. For a detailed history of refactoring progress, please refer to `docs/refactoring_history.md`.
+- The `Index` struct definition has been moved to `crates/ragit-index-types/src/index_struct.rs`.
+- Cyclic dependency issues between `ragit-index-core` and `ragit-index-io` are being addressed by centralizing the `Index` struct.
+- `ragit-command-audit` and `ragit-command-config` are being updated to reflect the new `Index` struct location and resolve import issues.
 
 ### Next Immediate Steps:
-
-*   **Review and Update Documentation:** Review and update relevant documentation files (e.g., `architecture.md`, `index.md`, `uid_query.md`, `build.md`, `config.md`) to reflect the current project structure and resolved issues.
-*   **Document New Crates:** Create or update documentation for newly created or significantly refactored crates, detailing their purpose, API, and usage.
-
-**Important Note:** As per your preference, we will continue to avoid `cargo clean` and `cargo update` unless absolutely necessary due to long build times.
+1.  **Update `ragit-index-core`:**
+    *   Remove the `Index` struct definition.
+    *   Update `use` statements to import `Index` from `ragit-index-types`.
+    *   Re-add the `load_index_from_path` function, ensuring it uses the `Index` from `ragit-index-types`.
+2.  **Update `ragit-index-io`:**
+    *   Update `use` statements to import `Index` from `ragit-index-types`.
+    *   Ensure all functions correctly use the new `Index` struct.
+3.  **Update `ragit-command-audit` and `ragit-command-config`:**
+    *   Update `use` statements to import `Index` from `ragit-index-types`.
+    *   Resolve any remaining import or syntax errors.
+4.  **Build and Verify:** Run `cargo build --workspace` to ensure all changes are correctly integrated and the project compiles without errors.

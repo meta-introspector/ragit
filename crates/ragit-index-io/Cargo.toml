@@ -9,12 +9,13 @@ ragit-utils = { path = "../ragit-utils" }
 ragit-fs = { path = "../fs" }
 ragit-error = { path = "../ragit-error" }
 ragit-types = { path = "../ragit-types" }
+ragit-index-types = { path = "../ragit-index-types" }
 ragit-tfidf = { path = "../ragit-tfidf" }
 ragit-pdl = { path = "../pdl" }
 ragit-api = { path = "../api" }
 ragit-prompt-management = { path = "../ragit-prompt-management" }
 ragit-config = { path = "../ragit-config" }
-ragit-index-core = { path = "../ragit-index-core" }
+ragit-index-types = { path = "../ragit-index-types" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1.0", features = ["full"] }

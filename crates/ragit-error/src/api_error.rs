@@ -25,8 +25,10 @@ pub enum ApiError {
     ApiKeyNotFound { env_var: Option<String> },
     #[error(transparent)]
     StdIoError(#[from] std::io::Error),
-    #[error("cannot read image: {0}")]
+    #[error("cannot read image: {0}") ]
     CannotReadImage(String /* model name */),
+    #[error("invalid config key: {0}")]
+    InvalidConfigKey(String),
 
     /// If you see this error, there must be a bug in this library
     #[error("no try")]
@@ -62,6 +64,12 @@ pub enum ApiError {
     InsufficientModels,
     #[error(transparent)]
     AnyhowError(#[from] anyhow::Error),
+    #[error(transparent)]
+    ParseIntError(#[from] std::num::ParseIntError),
+    #[error(transparent)]
+    ParseBoolError(#[from] std::str::ParseBoolError),
+    #[error(transparent)]
+    ParseFloatError(#[from] std::num::ParseFloatError),
 
     // New error variants
     #[error("model not selected")]

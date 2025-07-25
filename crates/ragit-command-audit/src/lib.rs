@@ -116,7 +116,7 @@ fn print_single_category(
                 ", "
             } else {
                 ""
-            },
+            }
             if args.show_costs {
                 format!(
                     ", \"total cost\": {:.03}, \"input cost\": {:.03}, \"output cost\": {:.03}",
@@ -126,7 +126,7 @@ fn print_single_category(
                 )
             } else {
                 String::new()
-            },
+            }
         );
     } else {
         println!("category: {category}");
@@ -155,8 +155,7 @@ fn print_single_category(
                 );
             }
         }
-    }
-    Ok(())
+        Ok(())
 }
 
 fn print_all_categories(args: &AuditArgs, result: &HashMap<String, Audit>) -> Result<(), anyhow::Error> {
