@@ -1,12 +1,10 @@
-# Refactoring Progress Summary
+# Ragit Refactoring History
 
-We've been systematically addressing compilation errors in the `ragit` project, primarily focusing on modularity and type consistency.
+This document chronicles the detailed refactoring progress and specific issues addressed during the development of the Ragit project.
 
-**Key Issues Addressed:**
-*   **Orphan Rule Violations:** The main source of errors was `impl Index` blocks being defined in `ragit-index` instead of `ragit-index-types`. We've started moving these `impl` blocks to their correct crate (`ragit-index-types`) and adjusting imports accordingly.
-*   **`Uid` related errors:** Corrected issues related to `Uid::new()` by replacing it with `Uid::dummy()` or other appropriate constructors, and addressed missing `from_prefix_and_suffix` implementations.
-*   **Type Mismatches:** Fixed several type mismatches, particularly between `PathBuf` and `&str`, and `Vec<Uid>` and `Chunk`.
-*   **`ApiError` and `TeraError`:** Resolved conflicting `From` implementations for `ApiError` and `TeraError` by ensuring correct imports and removing redundant error variants.
+## Previous Refactoring Status (as of July 25, 2025)
+
+We've been systematically addressing compilation errors in the `ragit` project, primarily focusing on modularity and type consistency. Key issues addressed include orphan rule violations (moving `impl Index` blocks), `Uid` related errors, and type mismatches.
 
 ### Recent Progress:
 *   **`ragit` Crate:**
@@ -26,10 +24,22 @@ We've been systematically addressing compilation errors in the `ragit` project, 
 *   **`ragit-server` Crate:**
     *   Corrected relative paths for `ragit-api`, `ragit-cli`, and `ragit-fs` in `crates/server/Cargo.toml`.
 
-**Current Status:**
+### Next Immediate Steps (from previous session):
+
+*   **Clean Build:** Perform a `cargo clean` followed by `cargo build` to get a fresh error list.
+*   **Systematic Error Resolution:** Continue addressing compilation errors, focusing on:
+    *   Ensuring `prelude.rs` files in each crate only import what's necessary and available.
+    *   Correcting import paths in individual files to use `prelude` where appropriate, or specific imports if `prelude` is not suitable.
+    *   Resolving any remaining `impl` block errors by ensuring they are in the correct crate.
+    *   Verifying that `ragit-api` and `ragit-pdl` correctly use the types from `ragit-types`.
+    *   Addressing any new cyclic dependencies that may arise.
+    *   Addressing the `main` function not found error in `crates/ragit-commands/src/main.rs` by ensuring it has a proper `main` function and all command functions are correctly called.
+
+## Current Refactoring Status (as of July 25, 2025 - Post-Commit)
+
 The project now compiles successfully after addressing numerous dependency and import issues across multiple crates. All previously reported compilation errors have been resolved.
 
-**Next Steps:**
+### Next Steps:
 1.  **Review and Update Documentation:** Review and update relevant documentation files (e.g., `architecture.md`, `index.md`, `uid_query.md`, `build.md`, `config.md`) to reflect the current project structure and resolved issues.
 2.  **Document New Crates:** Create or update documentation for newly created or significantly refactored crates, detailing their purpose, API, and usage.
 

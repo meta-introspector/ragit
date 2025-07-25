@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 ragit-utils = { path = "../ragit-utils" }
-ragit-api = { path = "../../api" }
+ragit-api = { path = "../api" }
 ragit-types = { path = "../ragit-types" }
 anyhow = "1.0"
 async-trait = "0.1"
