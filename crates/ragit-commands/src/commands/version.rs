@@ -9,7 +9,7 @@ pub fn version_command_main(args: &[String]) -> Result<(), Error> {
     }
 
     println!("ragit version {}", env!("CARGO_PKG_VERSION"));
-    println!("build options: {:?}", get_build_options());
+    // println!("build options: {:?}", get_build_options());
 
     Ok(())
 }

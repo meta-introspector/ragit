@@ -1,26 +1,16 @@
 use std::path::PathBuf;
-// use ragit_types::api_config::ApiConfig;
-// use ragit_error::ApiError;
-// use ragit_types::query::QueryConfig;
-// use ragit_types::uid::Uid;
-// use ragit_types::ii::IIStatus;
-// use ragit_types::summary::Summary;
-// use ragit_config::BuildConfig;
-// use ragit_utils::version::VersionInfo;
-// use ragit_types::summary::SummaryMode;
-
-
 use ragit_types::api_config::ApiConfig;
 use ragit_error::ApiError;
 use ragit_types::query::QueryConfig;
+use ragit_types::uid::Uid;
+use ragit_types::ii_status::IIStatus;
+use ragit_types::summary::{Summary, SummaryMode};
+use ragit_config::BuildConfig;
+use ragit_utils::version_info::VersionInfo;
 
 use ragit_api::Model;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
-
-
-
 
 
 /// This is a knowledge-base itself. I am trying my best to define a method
@@ -67,7 +57,7 @@ pub struct Index {
 
 impl Index {
     pub fn get_summary(&self) -> Option<&str> {
-        self.summary.as_deref()
+        self.summary.as_ref().map(|s| s.content.as_str())
     }
 
     pub fn get_ragit_version_info(&self) -> VersionInfo {
@@ -91,8 +81,8 @@ impl Index {
         eprintln!("Generating summary with mode: {:?}", mode);
         // In a real scenario, this would involve LLM calls to generate the summary.
         // For now, let's return a dummy summary.
-        self.summary = Some(String::from("This is a generated summary."));
-        Ok(self.summary.clone())
+        self.summary = Some(Summary { content: String::from("This is a generated summary.") });
+        Ok(self.summary.clone().map(|s| s.content))
     }
 
     pub fn get_all_meta(&self) -> Result<HashMap<String, String>, ApiError> {

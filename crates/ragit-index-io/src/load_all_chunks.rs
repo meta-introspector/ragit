@@ -10,7 +10,7 @@ use ragit_fs::{is_dir, extension};
 pub async fn load_all_chunks(
     index: &Index,
 ) -> Result<Vec<Chunk>, ApiError> {
-    let mut chunks = vec![];
+    let chunks = vec![];
 
     for internal in read_dir(&join3(&index.root_dir.to_string_lossy(), INDEX_DIR_NAME, CHUNK_DIR_NAME)?, false)? {
         if !is_dir(&internal) {

@@ -32,6 +32,8 @@ members = [
     "crates/ragit-index-model-management",
     "crates/ragit-agent-action", "crates/ragit-index-io",
     "crates/ragit-agent",
+    "crates/ragit-index-query",
+    "crates/ragit-config-commands",
 ]
 
 [dependencies]

@@ -2,7 +2,7 @@ use thiserror::Error;
 use ragit_fs::FileError;
 use std::path::PathBuf;
 use ragit_types::JsonType;
-use ragit_types::api_error::TeraError as TypesTeraError;
+
 
 #[derive(Debug, Error)]
 pub enum ApiError {
@@ -43,8 +43,7 @@ pub enum ApiError {
     UtilsError(#[from] ragit_utils::error::Error),
 
     /// see <https://docs.rs/tera/latest/tera/struct.Error.html>
-    #[error(transparent)]
-    TeraError(#[from] TypesTeraError),
+    
 
     #[error("wrong schema: {0}")]
     WrongSchema(String),
@@ -81,6 +80,10 @@ pub enum ApiError {
     NotImplemented(String),
     #[error(transparent)]
     TypesApiError(#[from] ragit_types::api_error::ApiError),
+    #[error(transparent)]
+    PdlError(#[from] ragit_pdl::Error),
+    #[error(transparent)]
+    TeraError(#[from] tera::Error),
 }
 
 #[derive(Debug, Error)]

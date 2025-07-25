@@ -110,6 +110,7 @@ pub enum Error {
     FromUtf8Error,
     #[error(transparent)]
     ApiError(#[from] ApiError),
+    
     #[error(transparent)]
     PdlError(#[from] ragit_pdl::Error),
     #[error(transparent)]

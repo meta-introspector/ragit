@@ -11,3 +11,4 @@ ragit-fs = { path = "../fs" }
 ragit-types = { path = "../ragit-types" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-pdl = { path = "../pdl" }
+tera = "1.19"

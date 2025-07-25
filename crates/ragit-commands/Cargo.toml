@@ -10,7 +10,11 @@ ragit-fs = { path = "../fs" }
 ragit-uid = { path = "../ragit-uid" }
 ragit-pdl = { path = "../pdl" }
 ragit-index = { path = "../ragit-index" }
+ragit-index-io = { path = "../ragit-index-io" }
+ragit-index-query = { path = "../ragit-index-query" }
+
 ragit-types = { path = "../ragit-types" }
+ragit-error = { path = "../ragit-error" }
 ragit-core-utils = { path = "../ragit-core-utils" }
 chrono = "0.4.40"
 serde = { version = "1.0.218", features = ["derive"] }

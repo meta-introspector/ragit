@@ -14,4 +14,5 @@ pub mod index;
 pub mod chunk;
 pub mod path_utils;
 
+pub mod version_info;
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

@@ -18,9 +18,9 @@ pub async fn ls_command_main(args: &[String]) -> Result<(), Error> {
     let command = parsed_args.get_args().get(0).map(|arg| arg.as_str());
 
     match command {
-        Some("chunks") => ls_chunks_command_main(args),
-        Some("files") => ls_files_command_main(args),
-        Some("images") => ls_images_command_main(args),
+        Some("chunks") => ls_chunks_command_main(args).await?,
+        Some("files") => ls_files_command_main(args).await?,
+        Some("images") => ls_images_command_main(args).await?,
         Some("models") => ls_models_command_main(args).await?,
         Some("terms") => ls_terms_command_main(args).await?,
         _ => {
@@ -30,6 +30,3 @@ pub async fn ls_command_main(args: &[String]) -> Result<(), Error> {
 
     Ok(())
 }
-
-
-

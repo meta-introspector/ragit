@@ -1,7 +1,7 @@
 use ragit::prelude::*;
 use ragit_commands::{
     add_command_main, archive_command_main, audit_command_main, build_command_main,
-    cat_file_command_main, check_command_main, clone_command_main, config_command_main,
+    cat_file_command_main, check_command_main, clone_command_main,
     extract_keywords_command_main, gc_command_main, help_command_main, ii_build_command_main,
     ii_reset_command_main, ii_status_command_main, init_command_main, ls_chunks_command_main,
     ls_files_command_main, ls_images_command_main, ls_models_command_main, ls_terms_command_main,
@@ -10,6 +10,7 @@ use ragit_commands::{
     qa_test_command_main, qa_tune_command_main, query_command_main, remove_command_main,
     status_command_main, summary_command_main, version_command_main,
 };
+use ragit_config_commands::run as config_command_main;
 
 use async_recursion::async_recursion;
 

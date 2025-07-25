@@ -18,6 +18,8 @@ pub use file_schema::FileSchema;
 pub use crate::uid::Uid;
 pub use crate::image::ImageSchema;
 pub use crate::chunk::chunk_struct::{Chunk, ChunkBuildInfo};
+pub mod ii_status;
+pub mod summary;
 pub mod response;
 pub mod test_model;
 pub use test_model::TestModel;

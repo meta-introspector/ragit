@@ -1,0 +1,15 @@
+[package]
+name = "ragit-config-commands"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-utils = { path = "../ragit-utils" }
+ragit-api = { path = "../api" }
+ragit-fs = { path = "../fs" }
+ragit-types = { path = "../ragit-types" }
+ragit-error = { path = "../ragit-error" }
+ragit-index-io = { path = "../ragit-index-io" }
+ragit-index = { path = "../ragit-index" }
+serde_json = "1.0"
+chrono = "0.4"

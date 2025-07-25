@@ -1,8 +1,9 @@
-use crate::prelude::*;
-use ragit_index_types::Index;
+use std::collections::HashMap;
+use std::path::PathBuf;
+use ragit_error::ApiError;
 
-pub fn get_prompt(index: &Index, prompt_name: &str) -> Result<String, ApiError> {
-    match index.prompts.get(prompt_name) {
+pub fn get_prompt(prompts: &HashMap<String, String>, root_dir: &PathBuf, prompt_name: &str) -> Result<String, ApiError> {
+    match prompts.get(prompt_name) {
         Some(prompt) => Ok(prompt.to_string()),
         None => Err(ApiError::PromptMissing(prompt_name.to_string())),
     }

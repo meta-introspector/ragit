@@ -1,6 +1,20 @@
 use crate::prelude::*;
+use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
+use ragit_utils::doc_utils::get_doc_content;
+use ragit_index_io::index_struct::Index;
+use ragit_index::LoadMode;
+use ragit_utils::project_root::find_root;
+use ragit_utils::uid::uid_query;
+use ragit_utils::uid::UidQueryConfig;
+use ragit_utils::error::{Error, CliError};
+use std::path::PathBuf;
+use serde_json::Value;
+use std::collections::HashMap;
+use ragit_types::uid::Uid;
+use ragit_types::file_schema::FileSchema;
+use ragit_schema::get_file_schema;
 
-pub fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--name-only", "--uid-only", "--stat-only"])
         .optional_flag(&["--staged", "--processed"])

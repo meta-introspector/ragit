@@ -6,6 +6,7 @@ use ragit_api::request::Request;
 use serde_json::json;
 use tera::Context;
 use serde_json::Value;
+use ragit_prompt_management::get_prompt::get_prompt;
 
 pub async fn summaries_to_chunks(
     index: &Index,
@@ -13,7 +14,7 @@ pub async fn summaries_to_chunks(
     chunks: Vec<Chunk>,
 ) -> Result<Vec<Chunk>, ApiError> {
     let Pdl { messages, schema } = parse_pdl(
-        index.get_prompt("summarize_chunks")?,
+        &get_prompt(&index.prompts, &index.root_dir, "summarize_chunks")?,
         &tera::Context::from_value(json!({
             "query": query,
             "chunks": chunks.iter().map(|c| c.summary.clone()).collect::<Vec<_>>(),
@@ -24,10 +25,10 @@ pub async fn summaries_to_chunks(
 
     let request = Request {
         messages,
-        model: index.api_config.model.clone(),
+        model: ragit_api::get_model_by_name(&index.models, &index.api_config.model.clone())?,
         temperature: Some(0.0),
-        max_tokens: Some(index.query_config.max_output_tokens),
-        schema: Some(schema.clone()),
+        // max_tokens: Some(index.query_config.max_output_tokens),
+        schema: schema.clone(),
         ..Request::default()
     };
 

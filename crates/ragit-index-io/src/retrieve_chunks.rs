@@ -2,6 +2,7 @@ use crate::index_struct::Index;
 use ragit_error::ApiError;
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_utils::query::Keywords;
+use ragit_tfidf::TfidfResult;
 use crate::get_chunk_by_uid::get_chunk_by_uid;
 
 impl Index {
@@ -13,7 +14,7 @@ impl Index {
         // Assuming run_tfidf will be moved to ragit-tfidf or ragit-index-tfidf
         // For now, we'll use a placeholder.
         // TODO: Call run_tfidf from ragit-tfidf or ragit-index-tfidf
-        let tfidf_results = Vec::new(); // Placeholder
+        let tfidf_results: Vec<TfidfResult> = Vec::new(); // Placeholder
         let mut chunks = Vec::with_capacity(tfidf_results.len());
         let mut join_set = tokio::task::JoinSet::new();
 
