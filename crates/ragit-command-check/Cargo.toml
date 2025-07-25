@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ragit-utils = { path = "../ragit-error" }
-ragit-api = { path = "../../api" }
-ragit-types = { path = "../../ragit-types" }
+ragit-utils = { path = "../ragit-utils" }
+ragit-api = { path = "../api" }
+ragit-types = { path = "../ragit-types" }
 anyhow = "1.0"
 async-trait = "0.1"
 clap = { version = "4.0", features = ["derive"] }
