@@ -1,6 +1,5 @@
-//pub use ragit_index_types::Index;
-pub use crate::index_struct::*;
-pub use crate::index_struct::Index;
+pub use ragit_index_types::index_struct::Index;
+
 pub use ragit_error::ApiError;
 pub use std::path::PathBuf;
 pub use ragit_types::uid::Uid;

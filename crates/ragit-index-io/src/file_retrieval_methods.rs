@@ -5,7 +5,8 @@ use ragit_error::ApiError;
 use ragit_utils::ragit_path_utils::join3_paths;
 use ragit_fs::{extension, is_dir, read_dir};
 use std::path::PathBuf;
-use crate::index_struct::Index;
+//use ragit_index_types::Index;
+use crate::prelude::Index;
 
 pub fn get_files_from_index_subdir(
     index: &Index,

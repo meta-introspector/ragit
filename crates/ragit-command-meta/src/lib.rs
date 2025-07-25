@@ -1,6 +1,9 @@
 use ragit_utils::prelude::*;
 //use ragit_cli::prelude::*;
-use ragit_index_io::index_struct::load_index_from_path;
+//use ragit_index_io::index_struct::load_index_from_path;
+use crate::prelude::Index;
+use crate::prelude::load_index_from_path;
+
 //use ragit_index_io::index_struct::{Index, load_index_from_path};
 use ragit_utils::project_root::find_root;
 use ragit_utils::cli_types::{CliError, Span};

@@ -7,7 +7,7 @@ pub mod summaries_to_chunks;
 pub mod load_all_chunks;
 pub mod load_chunks_from_uids;
 pub mod extract_keywords;
-pub mod retrieve_chunks;
+
 pub mod file_retrieval_methods;
 
 

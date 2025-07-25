@@ -1,7 +1,8 @@
 use anyhow::anyhow;
 use ragit_types::{Uid, chunk::{RenderedChunk, MultiModalContent}};
 //use ragit_index_core::Index;
-use crate::index_struct::Index;
+//use ragit_index_types::Index;
+use crate::prelude::Index;
 pub fn merge_and_convert_chunks(
     _index: &Index,
     _chunks: Vec<RenderedChunk>,

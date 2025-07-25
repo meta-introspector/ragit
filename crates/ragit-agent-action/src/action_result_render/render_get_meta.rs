@@ -1,7 +1,3 @@
-use crate::action_result_enum::ActionResult;
-
-impl ActionResult {
-    pub fn render_get_meta(value: &String) -> String {
-        value.clone()
-    }
+pub fn render_get_meta(key: &str, value: &str) -> String {
+    format!("key: {}\nvalue: {}", key, value)
 }

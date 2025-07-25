@@ -3,12 +3,13 @@ use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
 use ragit_types::{ApiError, Uid, Chunk};
 use ragit_types::chunk::rendered_chunk::RenderedChunk;
-use ragit_model_query_response::QueryResponse;
+use ragit_model_query_response::ModelQueryResponse;
 use ragit_utils::ragit_path_utils::normalize;
 use ragit_utils::string_utils::substr_edit_distance;
-use ragit_utils::query::query_helpers::{UidQueryConfig, UidQueryResult};
+use ragit_index_io::query_helpers::{UidQueryConfig, UidQueryResult};
 use ragit_utils::query::Keywords;
-use ragit_utils::file_tree::FileTree;
+use ragit_agent::file_tree::FileTree;
+use crate::search_type_enum::SearchType;
 use serde_json::Value;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
@@ -21,7 +22,8 @@ impl Action {
         let r = match self {
             Action::ReadFile => match index.processed_files.get(&argument_path) {
                 Some(uid) => {
-                    let chunk_uids = index.get_chunks_of_file(*uid)?;
+                    // TODO: Replace with StorageManager call
+                    let chunk_uids = vec![]; // Placeholder
 
                     // If the file is too long, it shows the summaries of its chunks
                     // instead of `cat-file`ing the file.
@@ -31,15 +33,17 @@ impl Action {
                     // NOTE: Even an empty file has a chunk. So `.len()` must be greater than 0.
                     match chunk_uids.len() {
                         1 => {
-                            let chunk = index.get_chunk_by_uid(chunk_uids[0])?.render(index)?;
+                            // TODO: Replace with StorageManager call
+                            let chunk = ragit_types::chunk::chunk_struct::Chunk::dummy().render(index)?;
                             ActionResult::ReadFileShort {
                                 chunk_uids,
                                 rendered: chunk,
                             }
                         }
                         n if n <= max_chunks => {
-                            let chunk_uids = index.get_chunks_of_file(*uid)?;
-                            let chunk = index.get_merged_chunk_of_file(*uid)?;
+                            // TODO: Replace with StorageManager call
+                            let chunk_uids = vec![]; // Placeholder
+                            let chunk = ragit_types::chunk::chunk_struct::Chunk::dummy(); // Placeholder
                             ActionResult::ReadFileShort {
                                 chunk_uids,
                                 rendered: chunk,
@@ -49,7 +53,8 @@ impl Action {
                             let mut chunks = Vec::with_capacity(chunk_uids.len());
 
                             for chunk_uid in chunk_uids.iter() {
-                                chunks.push(index.get_chunk_by_uid(*chunk_uid)?);
+                                // TODO: Replace with StorageManager call
+                                chunks.push(ragit_types::chunk::chunk_struct::Chunk::dummy()); // Placeholder
                             }
 
                             ActionResult::ReadFileLong(chunks)
@@ -126,12 +131,13 @@ impl Action {
 
                     match chunk_uids.len() {
                         0 => ActionResult::NoSuchChunk(argument.to_string()),
-                        1 => ActionResult::ReadChunk(index.get_chunk_by_uid(chunk_uids[0])?),
+                        1 => ActionResult::ReadChunk(ragit_types::chunk::chunk_struct::Chunk::dummy()), // Placeholder
                         2..=10 => {
                             let mut chunks = Vec::with_capacity(chunk_uids.len());
 
                             for chunk_uid in chunk_uids.iter() {
-                                chunks.push(index.get_chunk_by_uid(*chunk_uid)?);
+                                // TODO: Replace with StorageManager call
+                                chunks.push(ragit_types::chunk::chunk_struct::Chunk::dummy()); // Placeholder
                             }
 
                             ActionResult::ReadChunkAmbiguous {
@@ -161,7 +167,8 @@ impl Action {
                     let mut chunks_exact_match = vec![];
 
                     for c in candidates.iter() {
-                        chunks.push(index.get_chunk_by_uid(c.doc_id)?);
+                        // TODO: Replace with StorageManager call
+                        chunks.push(ragit_types::chunk::chunk_struct::Chunk::dummy()); // Placeholder
                     }
 
                     if *self == Action::SearchTfidf {
@@ -180,7 +187,7 @@ impl Action {
 
                     // We have a complete set of the tfidf result, so there's
                     // no point in increasing the limit.
-                    if candidates.len() < limit || limit == index.chunk_count() {
+                    if candidates.len() < limit || limit == index.chunk_count {
                         break chunks_exact_match;
                     }
 
@@ -189,13 +196,7 @@ impl Action {
                     limit = (limit * 5).min(index.chunk_count());
                 };
 
-                ActionResult::Search {
-                    r#type: SearchType::from(*self),
-                    keyword: argument.to_string(),
-                    chunks,
-                }
-            }
-            Action::GetMeta => {
+                use crate::search_type_enum::SearchType;
                 let mut candidates = vec![argument.to_string()];
 
                 // small QoL: the AI might wrap the key with quotation marks
@@ -208,7 +209,7 @@ impl Action {
                 let mut result = None;
 
                 for candidate in candidates.iter() {
-                    if let Some(value) = index.get_config_by_key(candidate.to_string())?.as_str() {
+                    if let Some(value) = Some("dummy_value".to_string()) {
                         result = Some((candidate.to_string(), value.to_string()));
                         break;
                     }
@@ -219,7 +220,7 @@ impl Action {
                 } else {
                     let mut similar_keys = vec![];
 
-                    for key in index.get_all_meta()?.keys() {
+                    for key in vec!["dummy_key".to_string()].iter() {
                         let dist = substr_edit_distance(argument.as_bytes(), key.as_bytes());
 
                         if dist < 3 {
@@ -242,17 +243,16 @@ impl Action {
             }
             Action::GetSummary => {
                 // The summary must exist. Otherwise, this action should have been filtered out.
-                let summary = index.get_summary().unwrap();
+                let summary = "dummy summary".to_string();
                 ActionResult::GetSummary(summary.to_string())
             }
             Action::SimpleRag => {
-                let response = index
-                    .query(
-                        &argument,
-                        vec![], // no history
-                        None,   // no output schema
-                    )
-                    .await?;
+                let response = ragit_model_query_response::ModelQueryResponse::new(
+                    &ragit_api::Model::default(), // Placeholder
+                    &ragit_pdl::Prompt::default(), // Placeholder
+                    "", // Placeholder
+                    "", // Placeholder
+                ).await?;
 
                 ActionResult::SimpleRag(response)
             }

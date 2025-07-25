@@ -1,7 +1,8 @@
 use std::error::Error;
 use lazy_static::lazy_static;
 use regex::Regex;
-use ragit_index_io::index_struct::Index;
+//use ragit_index_io::index_struct::Index;
+use crate::prelude::Index;
 use ragit_uid::Uid;
 
 //use ragit_index::Index;

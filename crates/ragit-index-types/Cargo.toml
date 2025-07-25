@@ -10,3 +10,5 @@ ragit-types = { path = "../ragit-types" }
 ragit-model = { path = "../ragit-model" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-error = { path = "../ragit-error" }
+ragit-config = { path = "../ragit-config" }
+ragit-api = { path = "../api" }
