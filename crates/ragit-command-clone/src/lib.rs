@@ -1,8 +1,11 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
+use ragit_utils::doc_utils::get_doc_content;
+use std::path::PathBuf;
+use ragit_index_core::Index;
 
-pub async fn clone_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn clone_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_arg_flag(
             "--depth",
@@ -25,7 +28,7 @@ pub async fn clone_command_main(args: &[String]) -> Result<(), Error> {
         .get("--depth")
         .map(|s| s.parse::<usize>().unwrap());
 
-    let mut index = Index::new(PathBuf::from("."))?;
+    let mut index = Index::dummy();
     index.clone(url, depth).await?;
 
     Ok(())

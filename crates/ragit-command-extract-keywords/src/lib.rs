@@ -1,8 +1,13 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::Index;
+use ragit_utils::project_root::find_root;
+use ragit_utils::doc_utils::get_doc_content;
+use serde_json::Value;
 
-pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--full-schema"])
         .optional_flag(&["--json"])
@@ -15,7 +20,7 @@ pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error>
         return Ok(());
     }
 
-    let index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+    let index = load_index_from_path(&find_root()?)?;
     let full_schema = parsed_args.get_flag(0).is_some();
     let json_mode = parsed_args.get_flag(1).is_some();
     let query = &parsed_args.get_args_exact(1)?[0];
@@ -56,7 +61,7 @@ pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error>
         }
 
         if json_mode {
-            println!("{keywords:?}");
+            println!("{:?}", keywords);
         } else {
             println!("{}", keywords.join("\n"));
         }

@@ -2,7 +2,6 @@ use ragit_types::ApiError;
 use crate::processed_doc::ProcessedDoc;
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
 use flate2::{read::GzDecoder, write::GzEncoder, Compression};
-use serde::{Deserialize, Serialize};
 use ragit_types::chunk::chunk_struct::Chunk;
 use anyhow::Result;
 

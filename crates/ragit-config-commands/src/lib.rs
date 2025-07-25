@@ -1,18 +1,18 @@
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, Span};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::Index;
 use ragit_utils::project_root::find_root;
-use ragit_utils::error::{Error, CliError};
+use ragit_utils::error::{CliError};
 use std::path::PathBuf;
 use serde_json::Value;
 use std::collections::HashMap;
 use ragit_api::list_models;
 use ragit_api::get_model_by_name;
-use ragit_error::ApiError;
+use ragit_api::ApiError;
 
-pub async fn run(args: &[String]) -> Result<(), Error> {
-    let mut index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+pub async fn run(args: &[String]) -> Result<(), anyhow::Error> {
+    let mut index = load_index_from_path(&find_root()?)?;
 
     match args.get(2).map(|s| s.as_str()) {
         Some("--get") => {
@@ -97,13 +97,13 @@ pub async fn run(args: &[String]) -> Result<(), Error> {
             }
         }
         Some(flag) => {
-            return Err(Error::CliError(CliError::new_message_with_span(
+            return Err(anyhow::anyhow!(CliError::new_message_with_span(
                 format!("Unknown flag: `{flag}`. Valid flags are --get | --get-all | --set."),
                 Span::End.render(args, 2),
             )));
         }
         None => {
-            return Err(Error::CliError(CliError::new_message_with_span(
+            return Err(anyhow::anyhow!(CliError::new_message_with_span(
                 String::from("Flag `--get | --get-all | --set` is missing."),
                 Span::End.render(args, 2),
             )));

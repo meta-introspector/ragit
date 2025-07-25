@@ -3,8 +3,12 @@ use ragit_api::prelude::*;
 use ragit_types::prelude::*;
 use serde_json::Value;
 use serde_json::Map;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::Index;
+use ragit_utils::project_root::find_root;
+use ragit_utils::cli_types::{CliError, Span};
 
-pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn model_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     match args.get(2).map(|s| s.as_str()) {
         Some("--search") => {
             let parsed_args = ArgParser::new()
@@ -79,7 +83,8 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
                         )?,
                     );
                 }
-            } else {
+            }
+            else {
                 for model in models.iter() {
                     if name_only {
                         println!("{}", model.name);
@@ -116,7 +121,7 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
                 .args(ArgType::String, ArgCount::Leq(1))
                 .parse(args, 3)?;
 
-            let mut index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+            let mut index = load_index_from_path(&find_root()?)?;
             let all = parsed_args.get_flag(0).is_some();
             let existing_only = parsed_args.get_flag(1).is_some();
             let quiet = parsed_args.get_flag(2).is_some();
@@ -125,7 +130,7 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
 
             let result = if let Some(model_name) = model_name {
                 if all {
-                    return Err(Error::CliError(CliError::new_message(
+                    return Err(anyhow::anyhow!(CliError::new_message(
                         "You cannot use `--all` option with a model name.".to_string(),
                     )));
                 }
@@ -136,7 +141,7 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
             } else if all {
                 index.fetch_all_remote_models(existing_only, remote).await?
             } else {
-                return Err(Error::CliError(CliError::new_message_with_span(
+                return Err(anyhow::anyhow!(CliError::new_message_with_span(
                     "Please specify which model to fetch.".to_string(),
                     Span::End.render(args, 2),
                 )));
@@ -156,13 +161,13 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
                 .args(ArgType::String, ArgCount::Leq(1))
                 .parse(args, 3)?;
 
-            let mut index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+            let mut index = load_index_from_path(&find_root()?)?;
             let all = parsed_args.get_flag(0).is_some();
             let model_name = parsed_args.get_args().get(0).map(|model| model.to_string());
 
             if let Some(model_name) = model_name {
                 if all {
-                    return Err(Error::CliError(CliError::new_message(
+                    return Err(anyhow::anyhow!(CliError::new_message(
                         "You cannot use `--all` option with a model name.".to_string(),
                     )));
                 }
@@ -173,13 +178,13 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
             }
         }
         Some(flag) => {
-            return Err(Error::CliError(CliError::new_message_with_span(
+            return Err(anyhow::anyhow!(CliError::new_message_with_span(
                 format!("Unknown flag: `{flag}`. Valid flags are --search | --update | --remove."),
                 Span::End,
             )));
         }
         None => {
-            return Err(Error::CliError(CliError::new_message_with_span(
+            return Err(anyhow::anyhow!(CliError::new_message_with_span(
                 String::from("Flag `--search | --update | --remove` is missing."),
                 Span::End,
             )));

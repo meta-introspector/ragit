@@ -1,8 +1,15 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::{Index, LoadMode};
+use ragit_utils::project_root::find_root;
+use ragit_utils::doc_utils::get_doc_content;
+use ragit_utils::cli_types::{CliError, Span};
+use ragit_types::add_mode::AddMode;
+use std::path::PathBuf;
 
-pub async fn add_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn add_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--reject", "--force"])
         .optional_flag(&["--all"])
@@ -17,9 +24,8 @@ pub async fn add_command_main(args: &[String]) -> Result<(), Error> {
     }
 
     let root_dir = find_root()?;
-    let mut index = Index::load(
-        PathBuf::from(root_dir.to_string_lossy().into_owned()),
-        LoadMode::QuickCheck,
+    let mut index = load_index_from_path(
+        &PathBuf::from(root_dir.to_string_lossy().into_owned()),
     )?;
     let add_mode = parsed_args
         .get_flag(0)
@@ -32,14 +38,14 @@ pub async fn add_command_main(args: &[String]) -> Result<(), Error> {
 
     if all {
         if !files.is_empty() {
-            return Err(Error::CliError(CliError::new_message(
+            return Err(anyhow::anyhow!(CliError::new_message(
                 "You cannot use `--all` option with paths.".to_string(),
             )));
         }
 
         files.push(root_dir.to_string_lossy().into_owned());
     } else if files.is_empty() {
-        return Err(Error::CliError(CliError::new_message_with_span(
+        return Err(anyhow::anyhow!(CliError::new_message_with_span(
             "Please specify which files to add.".to_string(),
             Span::End.render(args, 2),
         )));

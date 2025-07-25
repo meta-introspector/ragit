@@ -1,9 +1,11 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
-use ragit_model_query_response::ModelQASystem;
+use ragit_qa_system::ModelQASystem;
+use ragit_index_core::Index;
+use ragit_api::{ApiConfig, Request, Message, Role, Model};
 
-pub async fn qa_test_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn qa_test_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .args(ArgType::Query, ArgCount::Any)
         .parse(args, 2)?;

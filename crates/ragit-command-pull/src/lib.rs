@@ -1,8 +1,12 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::Index;
+use ragit_utils::project_root::find_root;
+use ragit_utils::doc_utils::get_doc_content;
 
-pub async fn pull_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn pull_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .flag_with_default(&["--no-configs", "--configs"])
         .flag_with_default(&["--no-prompts", "--prompts"])
@@ -15,18 +19,13 @@ pub async fn pull_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let index = Index::load(find_root()?.into(), LoadMode::QuickCheck)?;
+    let index = load_index_from_path(&find_root()?)?;
     let include_configs = parsed_args.get_flag(0).unwrap() == "--configs";
     let include_prompts = parsed_args.get_flag(1).unwrap() == "--prompts";
     let quiet = parsed_args.get_flag(2).is_some();
-    let result = index.pull(include_configs, include_prompts, quiet).await?;
+    index.pull(include_configs, include_prompts, quiet).await?;
 
-    match result {
-        PullResult::AlreadyUpToDate => {
-            println!("Already up to date.");
-        }
-        _ => {}
-    }
+    println!("Already up to date.");
 
     Ok(())
 }

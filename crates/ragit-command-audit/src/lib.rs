@@ -2,11 +2,18 @@ use ragit_utils::prelude::*;
 use ragit_api::AuditRecord as Audit;
 use ragit_types::prelude::*;
 use std::collections::HashMap;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::Index;
+use ragit_utils::project_root::find_root;
+use ragit_utils::doc_utils::get_doc_content;
+use ragit_utils::cli_types::CliError;
+use chrono::{Local, Days};
+use serde_json::Value;
 
-pub async fn audit_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), Error> {
+pub async fn audit_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), anyhow::Error> {
     let audit_args = AuditArgs::parse(&args)?;
 
-    let index = Index::load(find_root()?, LoadMode::Minimum)?;
+    let index = load_index_from_path(&find_root()?)?;
     let mut result = index.audit(if audit_args.this_week {
         Some(audit_args.since)
     } else {
@@ -35,7 +42,7 @@ pub struct AuditArgs {
 }
 
 impl AuditArgs {
-    pub fn parse(args: &[String]) -> Result<Self, Error> {
+    pub fn parse(args: &[String]) -> Result<Self, anyhow::Error> {
         let parsed_args = ArgParser::new()
             .optional_flag(&["--this-week"])
             .optional_flag(&["--only-tokens", "--only-costs"])
@@ -69,7 +76,7 @@ impl AuditArgs {
     }
 }
 
-pub fn print_audit_results(args: &AuditArgs, result: &HashMap<String, Audit>) -> Result<(), Error> {
+pub fn print_audit_results(args: &AuditArgs, result: &HashMap<String, Audit>) -> Result<(), anyhow::Error> {
     if let Some(category) = &args.category {
         print_single_category(args, result, category)?;
     } else {
@@ -82,11 +89,11 @@ fn print_single_category(
     args: &AuditArgs,
     result: &HashMap<String, Audit>,
     category: &str,
-) -> Result<(), Error> {
+) -> Result<(), anyhow::Error> {
     let audit = match result.get(category) {
         Some(r) => *r,
         None => {
-            return Err(Error::CliError(ragit_utils::error::CliError::new_message(
+            return Err(anyhow::anyhow!(CliError::new_message(
                 format!("`{category}` is an invalid category."),
             )));
         }
@@ -94,10 +101,10 @@ fn print_single_category(
 
     if args.json_mode {
         println!(
-            "{{ \"category\": {category:?}, {}{} }}",
+            "{{ \"category\": {category:?}{}{} }}",
             if args.show_tokens {
                 format!(
-                    "\"total tokens\": {}, \"input tokens\": {}, \"output tokens\": {}",
+                    ", \"total tokens\": {}, \"input tokens\": {}, \"output tokens\": {}",
                     audit.input_tokens + audit.output_tokens,
                     audit.input_tokens,
                     audit.output_tokens
@@ -112,7 +119,7 @@ fn print_single_category(
             },
             if args.show_costs {
                 format!(
-                    "\"total cost\": {:.03}, \"input cost\": {:.03}, \"output cost\": {:.03}",
+                    ", \"total cost\": {:.03}, \"input cost\": {:.03}, \"output cost\": {:.03}",
                     (audit.input_cost + audit.output_cost) as f64 / 1_000_000.0,
                     audit.input_cost as f64 / 1_000_000.0,
                     audit.output_cost as f64 / 1_000_000.0
@@ -140,18 +147,19 @@ fn print_single_category(
             );
             println!(
                 "    input cost:  {:.03}$",
-                audit.input_cost as f64 / 1_000_000.0
-            );
-            println!(
-                "    output cost: {:.03}$",
-                audit.output_cost as f64 / 1_000_000.0
-            );
+                    audit.input_cost as f64 / 1_000_000.0
+                );
+                println!(
+                    "    output cost: {:.03}$",
+                    audit.output_cost as f64 / 1_000_000.0
+                );
+            }
         }
     }
     Ok(())
 }
 
-fn print_all_categories(args: &AuditArgs, result: &HashMap<String, Audit>) -> Result<(), Error> {
+fn print_all_categories(args: &AuditArgs, result: &HashMap<String, Audit>) -> Result<(), anyhow::Error> {
     let mut sorted_categories = result
         .keys()
         .map(|category| category.to_string())
@@ -164,10 +172,10 @@ fn print_all_categories(args: &AuditArgs, result: &HashMap<String, Audit>) -> Re
     sorted_categories.insert(0, String::from("total"));
 
     if args.json_mode {
-        let mut map = serde_json::Map::new();
+        let mut map = serde_json::Map::<String, Value>::new();
 
         for category in sorted_categories.iter() {
-            let mut entry = serde_json::Map::new();
+            let mut entry = serde_json::Map::<String, Value>::new();
             let audit = result.get(category).unwrap();
 
             if args.show_tokens {

@@ -3,15 +3,16 @@ use ragit_api::prelude::*;
 use ragit_types::prelude::*;
 use ragit_fs::create_dir;
 use ragit_fs::read_string;
-use ragit_index::LoadMode;
-use ragit_index::index_struct::Index;
+use ragit_index_io::index_struct::{Index, load_index_from_path};
 use ragit_pdl::parse_pdl_from_file;
 use ragit_schema::{parse_schema, render_pdl_schema};
 use tera::Context;
 use chrono::Local;
 use serde_json::{Value, Map};
+use ragit_utils::project_root::find_root;
+use ragit_utils::ragit_path_utils::{str_to_pathbuf, join};
 
-pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .flag_with_default(&["--strict", "--no-strict"])
         .optional_arg_flag("--model", ArgType::String)
@@ -27,7 +28,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let index = find_root().map(|root_dir| Index::load(root_dir.into(), LoadMode::OnlyJson));
+    let index_result = find_root().map(|root_dir| load_index_from_path(&root_dir));
     let pdl_at = parsed_args.get_args_exact(1)?[0].clone();
     let strict_mode = parsed_args.get_flag(0).unwrap() == "--strict";
     let models = match parsed_args.arg_flags.get("--models") {
@@ -42,10 +43,10 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
 
             models
         }
-        None => match &index {
+        None => match &index_result {
             Ok(Ok(index)) => index.models.clone(),
             _ => {
-                let models_raw = Index::get_initial_models()?;
+                let models_raw = ModelRaw::default_models();
                 let mut models = Vec::with_capacity(models_raw.len());
 
                 for model_raw in models_raw.iter() {
@@ -58,14 +59,14 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
     };
     let model = match parsed_args.arg_flags.get("--model") {
         Some(model) => get_model_by_name(&models, model)?,
-        None => match &index {
+        None => match &index_result {
             Ok(Ok(index)) => get_model_by_name(&models, &index.api_config.model)?,
-            _ => match Index::load_config_from_home::<Value>("api.json") {
+            _ => match ragit_api::load_config_from_home_dir::<Value>("api.json") {
                 Ok(Some(Value::Object(api_config))) => match api_config.get("model") {
                     Some(Value::String(model)) => get_model_by_name(&models, model)?,
-                    _ => return Err(Error::ModelNotSelected),
+                    _ => return Err(anyhow::anyhow!(ApiError::ModelNotSelected)),
                 },
-                _ => return Err(Error::ModelNotSelected),
+                _ => return Err(anyhow::anyhow!(ApiError::ModelNotSelected)),
             },
         },
     };
@@ -80,7 +81,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         Some(log_at) => {
             let now = Local::now();
 
-            if !exists(&str_to_pathbuf(log_at)) {
+            if !ragit_fs::exists(&str_to_pathbuf(log_at)) {
                 create_dir(log_at)?;
             }
 
@@ -104,7 +105,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         (Some(schema), _) => Some(schema),
         _ => None,
     };
-    let dump_api_usage_at = match &index {
+    let dump_api_usage_at = match &index_result {
         Ok(Ok(index)) => index.api_config.dump_api_usage_at(&index.root_dir, "pdl"),
         _ => None,
     };

@@ -7,6 +7,7 @@ edition = "2021"
 ragit-utils = { path = "../ragit-utils" }
 ragit-api = { path = "../api" }
 ragit-types = { path = "../ragit-types" }
+ragit-index-io = { path = "../ragit-index-io" }
 anyhow = "1.0"
 async-trait = "0.1"
 clap = { version = "4.0", features = ["derive"] }

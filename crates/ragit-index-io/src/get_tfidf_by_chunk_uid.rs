@@ -1,4 +1,4 @@
-use crate::index_struct::Index;
+use ragit_index_core::Index;
 use std::path::Path;
 use ragit_utils::path_utils::get_uid_path;
 use ragit_fs::exists;

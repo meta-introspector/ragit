@@ -1,5 +1,4 @@
-use crate::index_struct::Index;
-use ragit_tfidf::load_from_file;
+use ragit_index_core::Index;
 use ragit_error::ApiError;
 use ragit_types::Chunk;
 use ragit_fs::read_dir;

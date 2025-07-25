@@ -1,7 +1,8 @@
 use ragit_utils::prelude::*;
-use ragit_cli::prelude::*;
+use ragit_cli::{ArgParser, ArgType, ArgCount, ParsedArgs};
+use ragit_utils::doc_utils::get_doc_content;
 
-pub async fn help_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn help_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .args(ArgType::Command, ArgCount::Leq(1))
         .parse(args, 2)?;

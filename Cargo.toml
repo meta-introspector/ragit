@@ -13,7 +13,7 @@ path = "crates/ragit-commands/src/main.rs"
 
 [workspace]
 members = [
-    "crates/api",
+#    "crates/api",
     "crates/cli",
     "crates/fs",
     "crates/ignore",
@@ -33,31 +33,47 @@ members = [
     "crates/ragit-agent-action", "crates/ragit-index-io",
     "crates/ragit-agent",
     "crates/ragit-index-query",
-    "crates/ragit-config-commands", "crates/ragit-command-meta", "crates/ragit-legacy-agent", "crates/ragit-legacy-api-config", "crates/ragit-legacy-chunk", "crates/ragit-legacy-error", "crates/ragit-legacy-log-qa-results", "crates/ragit-legacy-uid", "crates/ragit-command-status", "crates/ragit-command-remove", "crates/ragit-command-migrate", "crates/ragit-command-summary", "crates/ragit-command-query", "crates/ragit-command-help",
+    "crates/ragit-config-commands",
+    # "crates/ragit-command-meta", # Disabled for now
+    "crates/ragit-legacy-agent",
+    "crates/ragit-legacy-api-config",
+    "crates/ragit-legacy-chunk",
+    "crates/ragit-legacy-error",
+    "crates/ragit-legacy-log-qa-results",
+    "crates/ragit-legacy-uid",
+    # "crates/ragit-command-status", # Disabled for now
+    # "crates/ragit-command-remove", # Disabled for now
+    # "crates/ragit-command-migrate", # Disabled for now
+    # "crates/ragit-command-summary", # Disabled for now
+    # "crates/ragit-command-query", # Disabled for now
+    # "crates/ragit-command-help", # Disabled for now
     "crates/ragit-command-add",
-    "crates/ragit-command-archive",
-    "crates/ragit-command-audit",
+    # "crates/ragit-command-archive", # Disabled for now
+    # "crates/ragit-command-audit", # Disabled for now
+    # "crates/ragit-command-qa-test", # Disabled for now
+    # "crates/ragit-command-qa-tune", # Disabled for now
     "crates/ragit-command-build",
-    "crates/ragit-command-cat-file",
-    "crates/ragit-command-check",
-    "crates/ragit-command-clone",
-    "crates/ragit-command-config",
-    "crates/ragit-command-extract-keywords",
-    "crates/ragit-command-gc",
-    "crates/ragit-command-ii-build",
-    "crates/ragit-command-ii-reset",
-    "crates/ragit-command-ii-status",
-    "crates/ragit-command-init",
-    "crates/ragit-command-ls",
-    "crates/ragit-command-merge",
-    "crates/ragit-command-model",
-    "crates/ragit-command-muse-summarize",
-    "crates/ragit-command-pdl",
-    "crates/ragit-command-pull",
-    "crates/ragit-command-push",
-    "crates/ragit-command-qa-test",
-    "crates/ragit-command-qa-tune",
-    "crates/ragit-command-version",
+    # "crates/ragit-command-cat-file", # Disabled for now
+    # "crates/ragit-command-check", # Disabled for now
+    # "crates/ragit-command-clone", # Disabled for now
+    # "crates/ragit-command-config", # Disabled for now
+    # "crates/ragit-command-extract-keywords", # Disabled for now
+    # "crates/ragit-command-gc", # Disabled for now
+    # "crates/ragit-command-ii-build", # Disabled for now
+    # "crates/ragit-command-ii-reset", # Disabled for now
+    # "crates/ragit-command-ii-status", # Disabled for now
+    # "crates/ragit-command-init", # Disabled for now
+    # "crates/ragit-command-ls", # Disabled for now
+    # "crates/ragit-command-merge", # Disabled for now
+    # "crates/ragit-command-model", # Disabled for now
+    # "crates/ragit-command-muse-summarize", # Disabled for now
+    # "crates/ragit-command-pdl", # Disabled for now
+    # "crates/ragit-command-pull", # Disabled for now
+    # "crates/ragit-command-push", # Disabled for now
+    # "crates/ragit-command-qa-test", # Disabled for now
+    # "crates/ragit-command-qa-tune", # Disabled for now
+    # "crates/ragit-command-version", # Disabled for now
+    "crates/ragit-index-core",
 ]
 exclude = [
     "crates/ragit-legacy-agent",
@@ -66,6 +82,8 @@ exclude = [
     "crates/ragit-legacy-error",
     "crates/ragit-legacy-log-qa-results",
     "crates/ragit-legacy-uid",
+    "crates/ragit-qa-system",
+    "crates/ragit-model-query-response",
 ]
 
 [dependencies]

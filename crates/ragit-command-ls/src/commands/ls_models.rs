@@ -1,10 +1,9 @@
 use crate::prelude::*;
-use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
+use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::{Index, LoadMode};
 use ragit_utils::project_root::find_root;
-use ragit_utils::error::{Error, CliError};
 use std::path::PathBuf;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -12,7 +11,7 @@ use ragit_api::get_model_by_name;
 use ragit_api::list_models;
 use ragit_error::ApiError;
 
-pub async fn ls_models_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn ls_models_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--name-only", "--stat-only"])
         .optional_flag(&["--selected"])
@@ -32,7 +31,7 @@ pub async fn ls_models_command_main(args: &[String]) -> Result<(), Error> {
     let selected_only = parsed_args.get_flag(1).is_some();
     let json_mode = parsed_args.get_flag(2).is_some();
     let args = parsed_args.get_args();
-    let index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+    let index = load_index_from_path(&find_root()?)?;
     let mut models = list_models(
         &find_root()?.join("models.json"),
         &|_| true,  // no filter
@@ -41,7 +40,7 @@ pub async fn ls_models_command_main(args: &[String]) -> Result<(), Error> {
     )?;
     if selected_only {
         if !args.is_empty() {
-            return Err(Error::CliError(CliError::new_message("You cannot use `--selected` option with a model name.".to_string())));
+            return Err(anyhow::anyhow!(CliError::new_message("You cannot use `--selected` option with a model name.".to_string())));
         }
         models = match get_model_by_name(&models, &index.api_config.model) {
             Ok(model) => vec![model.clone()],

@@ -1,10 +1,11 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
-use ragit_model_query_response::ModelQAResult;
+use ragit_qa_system::ModelQAResult;
 use ragit_fs::{read_string, write_string, WriteMode};
+use ragit_utils::cli_types::CliError;
 
-pub async fn qa_tune_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn qa_tune_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .args(ArgType::String, ArgCount::Exact(1))
         .args(ArgType::String, ArgCount::Exact(1))
@@ -21,7 +22,7 @@ pub async fn qa_tune_command_main(args: &[String]) -> Result<(), Error> {
     let user_score = parsed_args.get_args_exact(3)?[0]
         .parse::<f64>()
         .map_err(|e| {
-            Error::CliError(CliError::new_message(format!(
+            anyhow::anyhow!(CliError::new_message(format!(
                 "Invalid float for user_score: {}",
                 e
             )))

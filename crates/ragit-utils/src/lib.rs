@@ -9,7 +9,6 @@ pub mod cli_types;
 pub mod doc_utils;
 pub mod project_root;
 pub mod ragit_path_utils;
-pub mod uid;
 pub mod index;
 pub mod chunk;
 pub mod path_utils;

@@ -1,15 +1,19 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::{Index, LoadMode};
+use ragit_utils::project_root::find_root;
+use ragit_utils::doc_utils::get_doc_content;
+use ragit_utils::cli_types::CliError;
 
-pub async fn archive_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), Error> {
+pub async fn archive_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), anyhow::Error> {
     let command = args.get(2).map(|arg| arg.as_str());
 
     match command {
         Some("create") => {
-            let _index = Index::load(
-                find_root()?.to_string_lossy().into_owned().into(),
-                LoadMode::QuickCheck,
+            let _index = load_index_from_path(
+                &find_root()?.to_string_lossy().into_owned().into(),
             )?;
             let parsed_args = ArgParser::new()
                 .arg_flag_with_default(
@@ -68,7 +72,7 @@ pub async fn archive_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> R
             println!("extract command is not implemented yet");
         }
         _ => {
-            return Err(Error::CliError(CliError::new_message(
+            return Err(anyhow::anyhow!(CliError::new_message(
                 "Unknown archive command.".to_string(),
             )));
         }

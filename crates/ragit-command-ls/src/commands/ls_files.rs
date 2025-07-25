@@ -1,12 +1,10 @@
 use crate::prelude::*;
-use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
+use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::{Index, LoadMode};
 use ragit_utils::project_root::find_root;
-use ragit_utils::uid::uid_query;
-use ragit_utils::uid::UidQueryConfig;
-use ragit_utils::error::{Error, CliError};
+use ragit_query::query_helpers::{uid_query, UidQueryConfig};
 use std::path::PathBuf;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -14,7 +12,7 @@ use ragit_types::uid::Uid;
 use ragit_types::file_schema::FileSchema;
 use ragit_schema::get_file_schema;
 
-pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn ls_files_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--name-only", "--uid-only", "--stat-only"])
         .optional_flag(&["--staged", "--processed"])
@@ -35,7 +33,7 @@ pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
     let staged = parsed_args.get_flag(1).unwrap_or_else(|| "--staged".to_string()) == "--staged";
     let processed = parsed_args.get_flag(1).unwrap_or_else(|| "--processed".to_string()) == "--processed";
     let json_mode = parsed_args.get_flag(2).is_some();
-    let index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+    let index = load_index_from_path(&find_root()?)?;
     let args = parsed_args.get_args();
 
     let files = if args.is_empty() {
@@ -79,7 +77,7 @@ pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
             for (path, uid) in query.get_processed_files() {
                 processed_files_len += 1;
                 files.push(ragit_schema::get_file_schema(&index, Some(path), Some(uid))?);
-            }
+            n            }
         }
 
         if staged {
@@ -90,7 +88,7 @@ pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
         }
 
         if files.is_empty() {
-            return Err(Error::CliError(CliError::new_message(format!("There's no file that matches `{}`.", args.join(" ")))));
+            return Err(anyhow::anyhow!(CliError::new_message(format!("There's no file that matches `{}`.", args.join(" ")))));
         }
 
         if !uid_only && !name_only {
@@ -135,7 +133,8 @@ pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
                 serde_json::to_string_pretty(&files.prettify()?)?,
             );
         }
-    } else {
+    }
+    else {
         for file in files.iter() {
             if name_only {
                 println!("{}", file.path);

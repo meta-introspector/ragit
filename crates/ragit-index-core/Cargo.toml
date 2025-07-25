@@ -1,0 +1,32 @@
+[package]
+name = "ragit-index-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-types = { path = "../ragit-types" }
+ragit-error = { path = "../ragit-error" }
+ragit-config = { path = "../ragit-config" }
+ragit-api = { path = "../api" }
+ragit-fs = { path = "../fs" } # For PathBuf operations in Index struct
+ragit-uid = { path = "../ragit-uid" } # For Uid in Index struct
+ragit-tfidf = { path = "../ragit-tfidf" } # For ProcessedDoc in Index methods
+ragit-pdl = { path = "../pdl" } # For Pdl in Index methods
+ragit-readers = { path = "../ragit-readers" } # For readers in Index methods
+ragit-utils = { path = "../ragit-utils" }
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }
+url = "2.4"
+image = "0.24"
+flate2 = "1.0"
+lazy_static = "1.4.0"
+regex = "1.5"
+rust-stemmers = "1.2"
+sha3 = "0.10.8"
+strum = { version = "0.25", features = ["derive"] }
+tera = "1.19"
+thiserror = "1.0"
+anyhow = "1.0"

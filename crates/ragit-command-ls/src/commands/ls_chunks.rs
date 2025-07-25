@@ -1,12 +1,10 @@
 use crate::prelude::*;
-use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
+use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
+use ragit_index_io::load_index_from_path;
+use ragit_index_core::{Index, LoadMode};
 use ragit_utils::project_root::find_root;
-use ragit_utils::uid::uid_query;
-use ragit_utils::uid::UidQueryConfig;
-use ragit_utils::error::{Error, CliError};
+use ragit_query::query_helpers::{uid_query, UidQueryConfig};
 use std::path::PathBuf;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -14,7 +12,7 @@ use ragit_types::uid::Uid;
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_error::ApiError;
 
-pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_flag(&["--uid-only", "--stat-only"])
         .optional_flag(&["--json"])
@@ -30,7 +28,7 @@ pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), Error> {
     let uid_only = parsed_args.get_flag(0).unwrap_or_default() == "--uid-only";
     let stat_only = parsed_args.get_flag(0).unwrap_or_default() == "--stat-only";
     let json_mode = parsed_args.get_flag(1).is_some();
-    let index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
+    let index = load_index_from_path(&find_root()?)?;
     let args = parsed_args.get_args();
     let chunks = if args.is_empty() {
         if !uid_only {
@@ -65,7 +63,7 @@ pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), Error> {
             }
         }
         if chunks.is_empty() {
-            return Err(Error::CliError(CliError::new_message(format!("There's no chunk/file that matches `{}`.", args.join(" ")))));
+            return Err(anyhow::anyhow!(CliError::new_message(format!("There's no chunk/file that matches `{}`.", args.join(" ")))));
         }
         chunks
     };

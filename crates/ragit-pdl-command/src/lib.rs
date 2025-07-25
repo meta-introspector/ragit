@@ -1,13 +1,13 @@
 use crate::prelude::*;
 use ragit_pdl::parse_schema;
 use std::result::Result::Ok;
-use ragit_index::Index;
 use ragit_api::{ApiError, Model, ModelRaw, get_model_by_name, render_pdl_schema};
 use ragit_utils::prelude::{ArgParser, ArgType, ArgCount, read_string, join};
 use serde_json::Value;
 use chrono::{Local, Datelike, Timelike};
+use ragit_index_io::index_struct::{Index, load_index_from_path};
 
-pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiError> {
+pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_arg_flag("--model", ArgType::String)
         .optional_arg_flag("--models", ArgType::Path)
@@ -17,7 +17,7 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiEr
         .args(ArgType::Path, ArgCount::Exact(1))
         .parse(args, 2)?;
 
-    let index = Index::load(root_dir.clone(), LoadMode::OnlyJson)?;
+    let index = load_index_from_path(&root_dir)?;
 
     let models = if let Some(models_at) = parsed_args.get_optional_arg_flag("--models") {
         let m = read_string(&models_at)?;
@@ -46,9 +46,9 @@ pub async fn pdl_command(root_dir: PathBuf, args: &[String]) -> Result<(), ApiEr
         match Index::load_config_from_home_dir::<Value>("api.json") {
             Ok(Some(Value::Object(api_config))) => match api_config.get("model") {
                 Some(Value::String(model)) => get_model_by_name(&models, model)?,
-                _ => return Err(ApiError::ModelNotSelected),
+                _ => return Err(anyhow::anyhow!(ApiError::ModelNotSelected)),
             },
-            _ => return Err(ApiError::ModelNotSelected),
+            _ => return Err(anyhow::anyhow!(ApiError::ModelNotSelected)),
         }
     };
 

@@ -1,4 +1,4 @@
-use crate::index_struct::Index;
+use ragit_index_core::Index;
 use ragit_error::ApiError;
 use ragit_types::{Uid, Chunk};
 use crate::get_chunk_by_uid::get_chunk_by_uid;

@@ -10,6 +10,6 @@ ragit-fs = { path = "../fs" }
 ragit-types = { path = "../ragit-types" }
 ragit-error = { path = "../ragit-error" }
 ragit-index-io = { path = "../ragit-index-io" }
-ragit-index = { path = "../ragit-index" }
+ragit-index-core = { path = "../ragit-index-core" }
 serde_json = "1.0"
 chrono = "0.4"

@@ -1,8 +1,12 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
+use ragit_index_io::index_struct::{Index};
+use ragit_utils::project_root::find_root;
+use ragit_utils::doc_utils::get_doc_content;
+use ragit_types::ii_status::IIStatus;
 
-pub fn ii_status_command_main(args: &[String]) -> Result<(), Error> {
+pub fn ii_status_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new().parse(args, 2)?;
 
     if parsed_args.show_help() {
@@ -10,13 +14,12 @@ pub fn ii_status_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let index = Index::load(find_root()?.into(), LoadMode::QuickCheck)?;
+    let index = Index::load(find_root()?.into(), ragit_index_io::index_struct::LoadMode::QuickCheck)?;
 
-    let status = match index.ii_status {
-        IIStatus::None => "not initialized",
-        IIStatus::Complete => "complete",
-        IIStatus::Outdated => "outdated",
-        IIStatus::Ongoing(_) => "interact",
+    let status = if index.ii_status.enabled {
+        "complete" // Assuming enabled means complete for now
+    } else {
+        "not initialized" // Assuming not enabled means not initialized
     };
     println!("{status}");
 

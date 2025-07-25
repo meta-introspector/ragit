@@ -1,4 +1,3 @@
-use crate::prelude::*;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::collections::{HashMap, HashSet};
@@ -6,7 +5,7 @@ use std::path::PathBuf;
 
 use ragit_types::Uid;
 use ragit_error::ApiError;
-use ragit_index_io::index_struct::Index;
+use ragit_index_core::Index;
 use ragit_fs::{read_dir, join3, file_name, extension, join, set_extension, exists, join4, get_relative_path};
 
 #[derive(Clone, Debug, Default)]
@@ -112,8 +111,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_chunk {
                 for chunk_dir in read_dir(&join3(
                     index.root_dir.to_str().unwrap(),
-                    INDEX_DIR_NAME,
-                    CHUNK_DIR_NAME,
+                    ragit_utils::constant::INDEX_DIR_NAME,
+                    ragit_utils::constant::CHUNK_DIR_NAME,
                 )?, false).unwrap_or(vec![]) {
                     let chunk_prefix = file_name(&chunk_dir)?;
 
@@ -132,8 +131,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_file_uid {
                 for file_index_dir in read_dir(&join3(
                     index.root_dir.to_str().unwrap(),
-                    INDEX_DIR_NAME,
-                    FILE_INDEX_DIR_NAME,
+                    ragit_utils::constant::INDEX_DIR_NAME,
+                    ragit_utils::constant::FILE_INDEX_DIR_NAME,
                 )?, false).unwrap_or(vec![]) {
                     let file_index_prefix = file_name(&file_index_dir)?;
 
@@ -148,8 +147,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_image {
                 for image_dir in read_dir(&join3(
                     index.root_dir.to_str().unwrap(),
-                    INDEX_DIR_NAME,
-                    IMAGE_DIR_NAME,
+                    ragit_utils::constant::INDEX_DIR_NAME,
+                    ragit_utils::constant::IMAGE_DIR_NAME,
                 )?, false).unwrap_or(vec![]) {
                     let image_prefix = file_name(&image_dir)?;
 
@@ -170,8 +169,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_chunk {
                 for chunk_file in read_dir(&join4(
                     index.root_dir.to_str().unwrap(),
-                    INDEX_DIR_NAME,
-                    CHUNK_DIR_NAME,
+                    ragit_utils::constant::INDEX_DIR_NAME,
+                    ragit_utils::constant::CHUNK_DIR_NAME,
                     q,
                 )?, false).unwrap_or(vec![]) {
                     if extension(&chunk_file)?.unwrap_or(String::new()) != "chunk" {
@@ -185,8 +184,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_file_uid {
                 for file_index in read_dir(&join4(
                     index.root_dir.to_str().unwrap(),
-                    INDEX_DIR_NAME,
-                    FILE_INDEX_DIR_NAME,
+                    ragit_utils::constant::INDEX_DIR_NAME,
+                    ragit_utils::constant::FILE_INDEX_DIR_NAME,
                     q,
                 )?, false).unwrap_or(vec![]) {
                     file_uids.push(format!("{}{}", q, &file_name(&file_index)?).parse::<Uid>()?);
@@ -196,8 +195,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
             if config.search_image {
                 for image_file in read_dir(&join4(
                     index.root_dir.to_str().unwrap(),
-                    INDEX_DIR_NAME,
-                    IMAGE_DIR_NAME,
+                    ragit_utils::constant::INDEX_DIR_NAME,
+                    ragit_utils::constant::IMAGE_DIR_NAME,
                     q,
                 )?, false).unwrap_or(vec![]) {
                     if extension(&image_file)?.unwrap_or(String::new()) != "png" {
@@ -218,8 +217,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                     let chunk_at = join(
                         &join3(
                             index.root_dir.to_str().unwrap(),
-                            INDEX_DIR_NAME,
-                            CHUNK_DIR_NAME,
+                            ragit_utils::constant::INDEX_DIR_NAME,
+                            ragit_utils::constant::CHUNK_DIR_NAME,
                         )?,
                         &join(
                             &prefix,
@@ -238,8 +237,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                 else {
                     for chunk_file in read_dir(&join4(
                         index.root_dir.to_str().unwrap(),
-                        INDEX_DIR_NAME,
-                        CHUNK_DIR_NAME,
+                        ragit_utils::constant::INDEX_DIR_NAME,
+                        ragit_utils::constant::CHUNK_DIR_NAME,
                         &prefix,
                     )?, false).unwrap_or(vec![]) {
                         if extension(&chunk_file)?.unwrap_or(String::new()) != "chunk" {
@@ -260,8 +259,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                     let file_index = join(
                         &join3(
                             index.root_dir.to_str().unwrap(),
-                            INDEX_DIR_NAME,
-                            FILE_INDEX_DIR_NAME,
+                            ragit_utils::constant::INDEX_DIR_NAME,
+                            ragit_utils::constant::FILE_INDEX_DIR_NAME,
                         )?,
                         &join(
                             &prefix,
@@ -277,8 +276,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                 else {
                     for file_index in read_dir(&join4(
                         index.root_dir.to_str().unwrap(),
-                        INDEX_DIR_NAME,
-                        FILE_INDEX_DIR_NAME,
+                        ragit_utils::constant::INDEX_DIR_NAME,
+                        ragit_utils::constant::FILE_INDEX_DIR_NAME,
                         &prefix,
                     )?, false).unwrap_or(vec![]) {
                         let file_index = file_name(&file_index)?;
@@ -295,8 +294,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                     let image_at = join(
                         &join3(
                             index.root_dir.to_str().unwrap(),
-                            INDEX_DIR_NAME,
-                            IMAGE_DIR_NAME,
+                            ragit_utils::constant::INDEX_DIR_NAME,
+                            ragit_utils::constant::IMAGE_DIR_NAME,
                         )?,
                         &join(
                             &prefix,
@@ -315,8 +314,8 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                 else {
                     for image_file in read_dir(&join4(
                         index.root_dir.to_str().unwrap(),
-                        INDEX_DIR_NAME,
-                        IMAGE_DIR_NAME,
+                        ragit_utils::constant::INDEX_DIR_NAME,
+                        ragit_utils::constant::IMAGE_DIR_NAME,
                         &prefix,
                     )?, false).unwrap_or(vec![]) {
                         if extension(&image_file)?.unwrap_or(String::new()) != "png" {

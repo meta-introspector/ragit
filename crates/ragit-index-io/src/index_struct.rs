@@ -92,3 +92,9 @@ impl Index {
     }
 
 }
+
+pub fn load_index_from_path(path: &PathBuf) -> Result<Index, ApiError> {
+    let index_json = std::fs::read_to_string(path)?;
+    let index: Index = serde_json::from_str(&index_json)?;
+    Ok(index)
+}
