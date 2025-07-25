@@ -289,7 +289,8 @@ async fn get_meta_(user: String, repo: String, api_key: Option<String>) -> RawRe
     )))
 }
 
-pub async fn get_meta_by_key(
+pub async fn
+    get_meta_by_key(
     user: String,
     repo: String,
     key: String,

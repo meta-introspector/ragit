@@ -1,10 +1,11 @@
-use ragit_index_types::Index;
+//use ragit_index_types::Index;
+
 use ragit_utils::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
 use ragit_error::ApiError;
 use ragit_utils::ragit_path_utils::join3_paths;
 use ragit_fs::{extension, is_dir, read_dir};
 use std::path::PathBuf;
-
+use crate::index_struct::Index;
 
 pub fn get_files_from_index_subdir(
     index: &Index,

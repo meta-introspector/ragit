@@ -1,4 +1,6 @@
-pub use ragit_index_types::Index;
+//pub use ragit_index_types::Index;
+pub use crate::index_struct::*;
+pub use crate::index_struct::Index;
 pub use ragit_error::ApiError;
 pub use std::path::PathBuf;
 pub use ragit_types::uid::Uid;
@@ -18,4 +20,4 @@ pub use ragit_prompt_management::get_prompt::get_prompt;
 pub use ragit_utils::constant::{IMAGE_DIR_NAME, INDEX_DIR_NAME};
 pub use ragit_utils::ragit_path_utils::join3_paths;
 pub use ragit_fs::{extension, is_dir, read_dir};
-pub use ragit_utils::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
+//pub use ragit_utils::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};

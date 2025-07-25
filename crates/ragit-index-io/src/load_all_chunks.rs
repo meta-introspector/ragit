@@ -1,12 +1,12 @@
 
-use ragit_index_types::Index;
+//use ragit_index_types::Index;
 use ragit_error::ApiError;
 use ragit_types::Chunk;
 use ragit_fs::read_dir;
 use ragit_utils::constant::{INDEX_DIR_NAME, CHUNK_DIR_NAME};
 use ragit_utils::ragit_path_utils::join3;
 use ragit_fs::{is_dir, extension};
-
+use crate::index_struct::Index;
 pub async fn load_all_chunks(
     index: &Index,
 ) -> Result<Vec<Chunk>, ApiError> {

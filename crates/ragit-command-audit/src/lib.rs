@@ -2,14 +2,15 @@ use ragit_utils::prelude::*;
 use ragit_api::AuditRecord as Audit;
 use ragit_types::prelude::*;
 use std::collections::HashMap;
-use ragit_index_io::load_index_from_path;
-use ragit_index_core::Index;
+//use ragit_index_io::load_index_from_path;
+//use ragit_index_core::Index;
+use ragit_index_io::index_struct::Index;
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_utils::cli_types::CliError;
 use chrono::{Local, Days};
 use serde_json::Value;
-
+use ragit_index_io::index_struct::load_index_from_path;
 pub async fn audit_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), anyhow::Error> {
     let audit_args = AuditArgs::parse(&args)?;
 

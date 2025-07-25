@@ -1,10 +1,11 @@
+use std::error::Error;
 use lazy_static::lazy_static;
 use regex::Regex;
-
+use ragit_index_io::index_struct::Index;
 use ragit_uid::Uid;
 
-use ragit_index::Index;
-use ragit_index::error::Error;
+//use ragit_index::Index;
+//use ragit_index::error::Error;
 // pub use ragit_index::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME};
 // pub use ragit_fs::{read_dir, file_name, extension, is_dir, join3, join4, exists, get_relative_path};
 

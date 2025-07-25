@@ -13,3 +13,4 @@ ragit-index-io = { path = "../ragit-index-io" }
 ragit-index-core = { path = "../ragit-index-core" }
 serde_json = "1.0"
 chrono = "0.4"
+anyhow = "*"

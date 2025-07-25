@@ -1,5 +1,5 @@
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
-use ragit_types::uid::{Uid, UidError, UidWriteMode};
+pub use ragit_types::uid::{Uid, UidError, UidWriteMode};
 
 pub fn load_from_file(path: &std::path::PathBuf) -> Result<Vec<Uid>, UidError> {
     let bytes = read_bytes(path.to_str().unwrap())?;

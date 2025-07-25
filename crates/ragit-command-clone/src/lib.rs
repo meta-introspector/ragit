@@ -3,8 +3,8 @@ use ragit_api::prelude::*;
 use ragit_types::prelude::*;
 use ragit_utils::doc_utils::get_doc_content;
 use std::path::PathBuf;
-use ragit_index_core::Index;
-
+//use ragit_index_core::Index;
+use ragit_index_io::index_struct::Index;
 pub async fn clone_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .optional_arg_flag(

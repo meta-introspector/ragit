@@ -1,8 +1,8 @@
 
-use ragit_index_types::Index;
+//use ragit_index_types::Index;
 use ragit_error::ApiError;
 use ragit_utils::query::Keywords;
-
+use crate::index_struct::Index;
 pub async fn extract_keywords(
     _index: &Index,
     _query: &str,

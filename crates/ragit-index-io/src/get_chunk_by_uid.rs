@@ -1,5 +1,5 @@
 
-use ragit_index_types::Index;
+use crate::prelude::*;
 use crate::helpers::load_chunk_from_pathbuf;
 use std::path::Path;
 use ragit_utils::ragit_path_utils::get_uid_path;

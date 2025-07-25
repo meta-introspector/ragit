@@ -1,4 +1,5 @@
 pub mod helpers;
+pub mod prelude;
 pub mod get_tfidf_by_chunk_uid;
 pub mod get_chunk_by_uid;
 pub mod get_chunks_of_file;
@@ -8,6 +9,9 @@ pub mod load_chunks_from_uids;
 pub mod extract_keywords;
 pub mod retrieve_chunks;
 pub mod file_retrieval_methods;
+pub mod index_struct;
 
+pub mod utils;
+pub mod query_helpers;
 use ragit_error::ApiError;
 use std::path::PathBuf;

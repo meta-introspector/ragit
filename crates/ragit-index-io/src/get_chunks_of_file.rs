@@ -1,5 +1,7 @@
 
-use ragit_index_types::Index;
+use crate::prelude::*;
+use crate::index_struct::Index;
+//use ragit_index_types::Index;
 use std::path::PathBuf;
 use std::path::Path;
 use ragit_utils::ragit_path_utils::get_uid_path;

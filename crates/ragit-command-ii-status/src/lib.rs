@@ -14,7 +14,7 @@ pub fn ii_status_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let index = Index::load(find_root()?.into(), ragit_index_io::index_struct::LoadMode::QuickCheck)?;
+    let index = Index::load(find_root()?.into(), LoadMode::QuickCheck)?;
 
     let status = if index.ii_status.enabled {
         "complete" // Assuming enabled means complete for now

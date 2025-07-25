@@ -1,6 +1,7 @@
 use ragit_utils::prelude::*;
-use ragit_cli::prelude::*;
-use ragit_index_io::index_struct::{Index, load_index_from_path};
+//use ragit_cli::prelude::*;
+use ragit_index_io::index_struct::load_index_from_path;
+//use ragit_index_io::index_struct::{Index, load_index_from_path};
 use ragit_utils::project_root::find_root;
 use ragit_utils::cli_types::{CliError, Span};
 use serde_json::Value;
@@ -20,6 +21,7 @@ pub fn meta_command_main(args: &[String]) -> Result<(), anyhow::Error> {
             let key = args[0].to_string();
             let json_mode = parsed_args.get_flag(0).is_some();
 
+	    // get_meta_by_key defined in ragit/crates/server/src/methods/repo_fs.rs
             let value = index.get_meta_by_key(key)?;
             if json_mode {
                 println!("{value:?}");

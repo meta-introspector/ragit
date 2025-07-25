@@ -14,7 +14,6 @@ ragit-pdl = { path = "../pdl" } # For Pdl in Index methods
 ragit-readers = { path = "../ragit-readers" } # For readers in Index methods
 ragit-utils = { path = "../ragit-utils" }
 ragit-index-types = { path = "../ragit-index-types" }
-ragit-index-types = { path = "../ragit-index-types" }
 
 
 serde = { version = "1.0", features = ["derive"] }

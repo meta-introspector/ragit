@@ -1,7 +1,7 @@
-pub use ragit_types::Index;
+//pub use ragit_types::Index;
 pub use ragit_types::api_config::ApiConfig;
-pub use ragit_types::build_config::BuildConfig;
-pub use ragit_types::query_config::QueryConfig;
+//pub use ragit_types::build_config::BuildConfig;
+//pub use ragit_types::query_config::QueryConfig;
 pub use ragit_types::model::Model;
 pub use ragit_types::summary::{Summary, SummaryMode};
 pub use ragit_types::uid::Uid;
@@ -18,4 +18,4 @@ pub use ragit_error::ApiError;
 pub use ragit_utils::version_info::VersionInfo;
 pub use tokio::task::JoinSet;
 pub use ragit_tfidf::TfidfResult;
-pub use ragit_index_io::get_chunk_by_uid::get_chunk_by_uid;
+//pub use ragit_index_io::get_chunk_by_uid::get_chunk_by_uid;
