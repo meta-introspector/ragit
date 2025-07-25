@@ -7,7 +7,6 @@ pub struct Summary {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum SummaryMode {
-    // Placeholder for summary modes
-    Concise,
-    Detailed,
+    Simple,
+    Rerank,
 }

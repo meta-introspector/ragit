@@ -1,15 +1,31 @@
 use ragit::prelude::*;
 use ragit_commands::{
-    add_command_main, archive_command_main, audit_command_main, build_command_main,
-    cat_file_command_main, check_command_main, clone_command_main,
-    extract_keywords_command_main, gc_command_main, help_command_main, ii_build_command_main,
-    ii_reset_command_main, ii_status_command_main, init_command_main, ls_chunks_command_main,
-    ls_files_command_main, ls_images_command_main, ls_models_command_main, ls_terms_command_main,
-    merge_command_main, meta_command_main, migrate_command_main, model_command_main,
-    muse_summarize_command_main, pdl_command_main, pull_command_main, push_command_main,
-    qa_test_command_main, qa_tune_command_main, query_command_main, remove_command_main,
-    status_command_main, summary_command_main, version_command_main,
+    help_command_main, meta_command_main, migrate_command_main, query_command_main, remove_command_main,
+    status_command_main, summary_command_main,
 };
+use ragit_command_add::add_command_main;
+use ragit_command_archive::archive_command_main;
+use ragit_command_audit::audit_command_main;
+use ragit_command_build::build_command_main;
+use ragit_command_cat_file::cat_file_command_main;
+use ragit_command_check::check_command_main;
+use ragit_command_clone::clone_command_main;
+use ragit_command_extract_keywords::extract_keywords_command_main;
+use ragit_command_gc::gc_command_main;
+use ragit_command_ii_build::ii_build_command_main;
+use ragit_command_ii_reset::ii_reset_command_main;
+use ragit_command_ii_status::ii_status_command_main;
+use ragit_command_init::init_command_main;
+use ragit_command_ls::ls_command_main;
+use ragit_command_merge::merge_command_main;
+use ragit_command_model::model_command_main;
+use ragit_command_muse_summarize::muse_summarize_command_main;
+use ragit_command_pdl::pdl_command_main;
+use ragit_command_pull::pull_command_main;
+use ragit_command_push::push_command_main;
+use ragit_command_qa_test::qa_test_command_main;
+use ragit_command_qa_tune::qa_tune_command_main;
+use ragit_command_version::version_command_main;
 use ragit_config_commands::run as config_command_main;
 
 use async_recursion::async_recursion;
@@ -37,7 +53,19 @@ pub async fn run(args: Vec<String>) -> Result<(), Error> {
         Some("extract-keywords") => extract_keywords_command_main(&args).await?,
         Some("gc") => gc_command_main(&args).await?,
         Some("help") => help_command_main(&args).await?,
-        Some("ii") => ii_command_main(&args).await?,
+        Some("ii") => {
+            let subcommand = args.get(2).map(|arg| arg.as_str());
+            match subcommand {
+                Some("build") => ii_build_command_main(&args).await?,
+                Some("reset") => ii_reset_command_main(&args).await?,
+                Some("status") => ii_status_command_main(&args).await?,
+                _ => {
+                    return Err(Error::CliError(ragit_utils::error::CliError::new_message(
+                        "Unknown ii subcommand. Use 'rag ii help' for more information.".to_string(),
+                    )));
+                }
+            }
+        },
         Some("init") => init_command_main(&args).await?,
         Some("ls") => ls_command_main(&args).await?,
         Some("merge") => merge_command_main(&args).await?,
