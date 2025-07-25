@@ -39,7 +39,7 @@ members = [
     "crates/ragit-legacy-api-config",
     "crates/ragit-legacy-chunk",
     "crates/ragit-legacy-error",
-    "crates/ragit-legacy-log-qa-results",
+#    "crates/ragit-legacy-log-qa-results",
     "crates/ragit-legacy-uid",
     # "crates/ragit-command-status", # Disabled for now
     # "crates/ragit-command-remove", # Disabled for now
@@ -51,7 +51,7 @@ members = [
     # "crates/ragit-command-archive", # Disabled for now
     # "crates/ragit-command-audit", # Disabled for now
     # "crates/ragit-command-qa-test", # Disabled for now
-    # "crates/ragit-command-qa-tune", # Disabled for now
+
     "crates/ragit-command-build",
     # "crates/ragit-command-cat-file", # Disabled for now
     # "crates/ragit-command-check", # Disabled for now
@@ -71,7 +71,6 @@ members = [
     # "crates/ragit-command-pull", # Disabled for now
     # "crates/ragit-command-push", # Disabled for now
     # "crates/ragit-command-qa-test", # Disabled for now
-    # "crates/ragit-command-qa-tune", # Disabled for now
     # "crates/ragit-command-version", # Disabled for now
     "crates/ragit-index-core",
 ]
@@ -84,6 +83,27 @@ exclude = [
     "crates/ragit-legacy-uid",
     "crates/ragit-qa-system",
     "crates/ragit-model-query-response",
+     "crates/ragit-command-cat-file", # Disabled for now
+     "crates/ragit-command-check", # Disabled for now
+     "crates/ragit-command-clone", # Disabled for now
+     "crates/ragit-command-config", # Disabled for now
+     "crates/ragit-command-extract-keywords", # Disabled for now
+     "crates/ragit-command-gc", # Disabled for now
+     "crates/ragit-command-ii-build", # Disabled for now
+     "crates/ragit-command-ii-reset", # Disabled for now
+     "crates/ragit-command-ii-status", # Disabled for now
+     "crates/ragit-command-init", # Disabled for now
+     "crates/ragit-command-ls", # Disabled for now
+     "crates/ragit-command-merge", # Disabled for now
+     "crates/ragit-command-model", # Disabled for now
+     "crates/ragit-command-muse-summarize", # Disabled for now
+     "crates/ragit-command-pdl", # Disabled for now
+     "crates/ragit-command-pull", # Disabled for now
+     "crates/ragit-command-push", # Disabled for now
+     "crates/ragit-command-qa-test", # Disabled for now
+     "crates/ragit-command-qa-tune", # Disabled for now
+     "crates/ragit-command-version", # Disabled for now
+
 ]
 
 [dependencies]

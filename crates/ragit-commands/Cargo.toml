@@ -30,12 +30,12 @@ ragit-command-init = { path = "../../crates/ragit-command-init" }
 ragit-command-ls = { path = "../../crates/ragit-command-ls" }
 ragit-command-merge = { path = "../../crates/ragit-command-merge" }
 ragit-command-model = { path = "../../crates/ragit-command-model" }
-ragit-command-muse-summarize = { path = "../../crates/ragit-command-muse-summarize" }
+#ragit-command-muse-summarize = { path = "../../crates/ragit-command-muse-summarize" }
 ragit-command-pdl = { path = "../../crates/ragit-command-pdl" }
 ragit-command-pull = { path = "../../crates/ragit-command-pull" }
 ragit-command-push = { path = "../../crates/ragit-command-push" }
-ragit-command-qa-test = { path = "../../crates/ragit-command-qa-test" }
-ragit-command-qa-tune = { path = "../../crates/ragit-command-qa-tune" }
+#ragit-command-qa-test = { path = "../../crates/ragit-command-qa-test" }
+#ragit-command-qa-tune = { path = "../../crates/ragit-command-qa-tune" }
 ragit-command-version = { path = "../../crates/ragit-command-version" }
 ragit-command-status = { path = "../../crates/ragit-command-status" }
 ragit-command-remove = { path = "../../crates/ragit-command-remove" }
