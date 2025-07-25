@@ -5,8 +5,7 @@ use std::collections::HashMap;
 //use ragit_index_io::load_index_from_path;
 //use ragit_index_core::Index;
 //use ragit_index_types::Index;
-use crate::prelude::Index;
-use crate::prelude::load_index_from_path;
+
 
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
@@ -120,7 +119,6 @@ fn print_single_category(
                 ", "
             } else {
                 ""
-            }
             if args.show_costs {
                 format!(
                     ", \"total cost\": {:.03}, \"input cost\": {:.03}, \"output cost\": {:.03}",

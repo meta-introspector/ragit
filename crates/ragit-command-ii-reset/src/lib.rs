@@ -1,11 +1,9 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
-//use ragit_index::Index;
-use crate::prelude::Index;
-use crate::prelude::load_index_from_path;
+use ragit_index_core::Index;
+use ragit_index_core::load_index_from_path;
 
-use ragit_index_core::LoadMode;
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
 
@@ -17,7 +15,7 @@ pub fn ii_reset_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let mut index = Index::load(find_root()?.into(), LoadMode::QuickCheck)?;
+    let mut index = load_index_from_path(&find_root()?)?;
     index.reset_ii()?;
     Ok(())
 }

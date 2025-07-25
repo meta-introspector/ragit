@@ -32,10 +32,39 @@ pub struct Chunk {
     pub searchable: bool,
 }
 
+use crate::prelude::*;
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Chunk {
+    pub uid: Uid,
+    pub file_uid: Uid,
+    pub chunk_hash: String,
+    pub content: String,
+    pub keywords: Keywords,
+    pub summary: Option<String>,
+    pub title: Option<String>,
+    pub chunk_num: usize,
+    pub total_chunks: usize,
+    pub extra_info: ChunkExtraInfo,
+}
+
 impl Chunk {
     pub fn render_source(&self) -> String {
-        // Implement your rendering logic here based on ChunkSource
-        // For now, a placeholder implementation
-        format!("Source: {:?}", self.source)
+        self.extra_info.render_source()
+    }
+
+    pub fn dummy() -> Self {
+        Self {
+            uid: Uid::new_random(),
+            file_uid: Uid::new_random(),
+            chunk_hash: "".to_string(),
+            content: "".to_string(),
+            keywords: Keywords::default(),
+            summary: None,
+            title: None,
+            chunk_num: 0,
+            total_chunks: 0,
+            extra_info: ChunkExtraInfo::default(),
+        }
     }
 }

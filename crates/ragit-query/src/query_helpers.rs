@@ -1,8 +1,9 @@
 use std::error::Error;
+use ragit_error::ApiError;
 use lazy_static::lazy_static;
 use regex::Regex;
 //use ragit_index_io::index_struct::Index;
-use crate::prelude::Index;
+use ragit_index_types::index_struct::Index;
 use ragit_uid::Uid;
 
 //use ragit_index::Index;
@@ -99,7 +100,7 @@ pub fn uid_query(
     _index: &Index,
     _qs: &[String],
     _config: UidQueryConfig,
-) -> Result<UidQueryResult, Error> {
+) -> Result<UidQueryResult, ApiError> {
     Ok(UidQueryResult::empty())
 }
 

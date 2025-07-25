@@ -4,7 +4,8 @@ use ragit_error::ApiError;
 use ragit_types::{Uid, Chunk};
 use crate::get_chunk_by_uid::get_chunk_by_uid;
 use ragit_index_types::index_struct::Index;
-    pub async fn load_chunks_from_uids(
+
+pub async fn load_chunks_from_uids(
     index: &Index,
     uids: &[Uid],
 ) -> Result<Vec<Chunk>, ApiError> {
