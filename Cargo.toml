@@ -33,7 +33,7 @@ members = [
     "crates/ragit-agent-action", "crates/ragit-index-io",
     "crates/ragit-agent",
     "crates/ragit-index-query",
-    "crates/ragit-config-commands", "crates/ragit-command-meta", # "crates/ragit-command-status", # "crates/ragit-command-remove", # "crates/ragit-command-migrate", # "crates/ragit-command-summary", # "crates/ragit-command-query", # "crates/ragit-command-help",
+    "crates/ragit-config-commands", "crates/ragit-command-meta", "crates/ragit-legacy-agent", "crates/ragit-legacy-api-config", "crates/ragit-legacy-chunk", "crates/ragit-legacy-error", "crates/ragit-legacy-log-qa-results", "crates/ragit-legacy-uid", # "crates/ragit-command-status", # "crates/ragit-command-remove", # "crates/ragit-command-migrate", # "crates/ragit-command-summary", # "crates/ragit-command-query", # "crates/ragit-command-help",
     # "crates/ragit-command-add",
     # "crates/ragit-command-archive",
     # "crates/ragit-command-audit",
@@ -58,6 +58,14 @@ members = [
     # "crates/ragit-command-qa-test",
     # "crates/ragit-command-qa-tune",
     # "crates/ragit-command-version",
+]
+exclude = [
+    "crates/ragit-legacy-agent",
+    "crates/ragit-legacy-api-config",
+    "crates/ragit-legacy-chunk",
+    "crates/ragit-legacy-error",
+    "crates/ragit-legacy-log-qa-results",
+    "crates/ragit-legacy-uid",
 ]
 
 [dependencies]

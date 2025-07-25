@@ -2,22 +2,15 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-pub mod agent;
-pub mod api_config;
-pub mod chunk;
 pub mod constant;
-pub mod error;
 pub mod error_reporting;
 pub mod imports;
 pub mod prelude;
-
-pub mod log_qa_results;
 
 pub mod prompts;
 pub mod query;
 
 pub mod tree;
-pub mod uid;
 
 pub use ragit_agent::file_tree::FileTree;
 
