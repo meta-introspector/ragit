@@ -8,4 +8,5 @@ ragit-cli = { path = "../cli" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-index-io = { path = "../ragit-index-io" }
 ragit-index-core = { path = "../ragit-index-core" }
+ragit-types = { path = "../ragit-types" }
 anyhow = "1.0"

@@ -1,9 +1,8 @@
-use std::error::Error;
 use ragit_error::ApiError;
 use lazy_static::lazy_static;
 use regex::Regex;
-//use ragit_index_io::index_struct::Index;
-use ragit_index_types::index_struct::Index;
+//use ragit_index_core::index_struct::Index;
+use ragit_index_core::index_struct::Index;
 use ragit_uid::Uid;
 
 //use ragit_index::Index;

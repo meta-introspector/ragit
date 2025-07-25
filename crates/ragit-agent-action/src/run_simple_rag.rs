@@ -8,6 +8,6 @@ pub(crate) async fn run_simple_rag(
     _index: &Index,
 ) -> Result<ActionResult, ApiError> {
     let model = Model::new();
-    let response = model.query("What is the meaning of life?").await?;
+    let response = model.query(argument).await?;
     Ok(ActionResult::SimpleRag(response))
 }

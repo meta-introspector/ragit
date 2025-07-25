@@ -1,4 +1,4 @@
-'''use crate::action_result_enum::ActionResult;
+use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
 use ragit_types::{ApiError, Chunk};
 use ragit_utils::ragit_path_utils::normalize;
@@ -10,8 +10,7 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
 
     let result = match index.processed_files.get(&argument_path) {
         Some(_uid) => {
-            // TODO: Replace with StorageManager call
-            let chunk_uids: Vec<ragit_types::Uid> = vec![]; // Placeholder
+            let chunk_uids = index.get_chunks_of_file(*uid)?;
 
             // If the file is too long, it shows the summaries of its chunks
             // instead of `cat-file`ing the file.
@@ -23,7 +22,7 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
                 1 => {
                     // TODO: Replace with StorageManager call
                     let chunk =
-                        ragit_types::chunk::chunk_struct::Chunk::dummy().render(index)?;
+                        ragit_types::chunk::chunk_struct::Chunk::dummy().render_source();
                     ActionResult::ReadFileShort {
                         chunk_uids,
                         rendered: chunk,
@@ -32,7 +31,7 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
                 n if n <= max_chunks => {
                     // TODO: Replace with StorageManager call
                     let chunk =
-                        ragit_types::chunk::chunk_struct::Chunk::dummy().render(index)?;
+                        ragit_types::chunk::chunk_struct::Chunk::dummy().render_source();
                     ActionResult::ReadFileShort {
                         chunk_uids,
                         rendered: chunk,
@@ -43,7 +42,7 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
 
                     for _chunk_uid in chunk_uids.iter() {
                         // TODO: Replace with StorageManager call
-                        chunks.push(ragit_types::chunk::chunk_struct::Chunk::dummy()); // Placeholder
+                        chunks.push(index.get_chunk_by_uid(*chunk_uid)?);
                     }
 
                     ActionResult::ReadFileLong(chunks)
@@ -79,4 +78,4 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
         }
     };
     Ok(result)
-}''
+}

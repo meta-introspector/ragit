@@ -22,9 +22,8 @@ pub(crate) async fn run_search(
         let mut chunks = Vec::with_capacity(candidates.len());
         let mut chunks_exact_match = vec![];
 
-        for _c in candidates.iter() {
-            // TODO: Replace with StorageManager call
-            chunks.push(ragit_types::chunk::chunk_struct::Chunk::dummy()); // Placeholder
+        for c in candidates.iter() {
+            chunks.push(index.get_chunk_by_uid(*c)?);
         }
 
         if search_type == SearchType::Tfidf {

@@ -157,7 +157,8 @@ fn print_single_category(
                 );
             }
         }
-        Ok(())
+    }
+    Ok(())
 }
 
 fn print_all_categories(args: &AuditArgs, result: &HashMap<String, Audit>) -> Result<(), anyhow::Error> {

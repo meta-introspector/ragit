@@ -13,13 +13,12 @@ pub(crate) async fn run_read_chunk(argument: &str, index: &Index) -> Result<Acti
 
     let result = match chunk_uids.len() {
         0 => ActionResult::NoSuchChunk(argument.to_string()),
-        1 => ActionResult::ReadChunk(ragit_types::chunk::chunk_struct::Chunk::dummy()), // Placeholder
+        1 => ActionResult::ReadChunk(index.get_chunk_by_uid(chunk_uids[0])?),
         2..=10 => {
             let mut chunks = Vec::with_capacity(chunk_uids.len());
 
-            for _chunk_uid in chunk_uids.iter() {
-                // TODO: Replace with StorageManager call
-                chunks.push(ragit_types::chunk::chunk_struct::Chunk::dummy()); // Placeholder
+            for chunk_uid in chunk_uids.iter() {
+                chunks.push(index.get_chunk_by_uid(*chunk_uid)?);
             }
 
             ActionResult::ReadChunkAmbiguous {

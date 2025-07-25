@@ -8,7 +8,7 @@ use crate::prelude::load_index_from_path;
 
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_types::query::QueryTurn;
+use ragit_index_query::QueryTurn;
 use serde_json::Value;
 
 pub async fn query_command_main(args: &[String]) -> Result<(), anyhow::Error> {

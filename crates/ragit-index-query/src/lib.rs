@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
-//use ragit_index_core::{Index, LoadMode};
-//use ragit_index_io::index_struct::Index;
-use crate::prelude::Index;
-use crate::prelude::load_index_from_path;
+use ragit_index_types::index_struct::Index;
+
 
 use ragit_error::ApiError;
 use ragit_types::chunk::chunk_struct::Chunk;
