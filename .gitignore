@@ -20,4 +20,4 @@ crates/server/**/blobs/
 diff.txt
 patch.txt
 t_models'
-logs/
+logs/.secrets/

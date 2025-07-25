@@ -1,5 +1,8 @@
 use crate::prelude::*;
 use std::io::Read;
+use std::path::PathBuf;
+use ragit_types::Chunk;
+use anyhow::Error;
 
 pub fn load_from_file(path: &PathBuf) -> Result<Chunk, Error> {
     let content = ragit_fs::read_bytes(path.to_str().unwrap())?;
@@ -30,7 +33,7 @@ pub fn save_to_file(
 
     if create_tfidf {
         let tfidf_path = PathBuf::from(ragit_fs::set_extension(path.to_str().unwrap(), "tfidf")?);
-        crate::index::tfidf::save_to_file(
+        ragit_tfidf::save_to_file(
             tfidf_path.to_str().unwrap(),
             chunk,
             root_dir.to_str().unwrap(),

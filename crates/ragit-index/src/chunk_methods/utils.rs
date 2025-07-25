@@ -1,9 +1,11 @@
 use crate::prelude::*;
+use anyhow::anyhow;
+use ragit_types::{Uid, chunk::{RenderedChunk, MultiModalContent}};
 
 pub fn merge_and_convert_chunks(
-    _index: &crate::index::index_struct::Index,
+    _index: &ragit_index_io::index_struct::Index,
     _chunks: Vec<RenderedChunk>,
-) -> Result<Vec<RenderedChunk>> {
+) -> Result<Vec<RenderedChunk>, anyhow::Error> {
     Err(anyhow!("Not implemented"))
 }
 

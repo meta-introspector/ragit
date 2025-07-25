@@ -1,6 +1,13 @@
 use crate::prelude::*;
 use lazy_static::lazy_static;
 use regex::Regex;
+use std::collections::{HashMap, HashSet};
+use std::path::PathBuf;
+
+use ragit_types::Uid;
+use ragit_error::ApiError;
+use ragit_index_io::index_struct::Index;
+use ragit_fs::{read_dir, join3, file_name, extension, join, set_extension, exists, join4, get_relative_path};
 
 #[derive(Clone, Debug, Default)]
 pub struct UidQueryConfig {
@@ -116,7 +123,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                                 continue;
                             }
 
-                            chunks.push(Uid::from_prefix_and_suffix(&chunk_prefix, &file_name(&chunk_file)?)?);
+                            chunks.push(format!("{}{}", &chunk_prefix, &file_name(&chunk_file)?).parse::<Uid>()?);
                         }
                     }
                 }
@@ -132,7 +139,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
 
                     if file_index_prefix.starts_with(q) {
                         for file_index in read_dir(&file_index_dir, false)? {
-                            file_uids.push(Uid::from_prefix_and_suffix(&file_index_prefix, &file_name(&file_index)?)?);
+                            file_uids.push(format!("{}{}", &file_index_prefix, &file_name(&file_index)?).parse::<Uid>()?);
                         }
                     }
                 }
@@ -152,7 +159,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                                 continue;
                             }
 
-                            images.push(Uid::from_prefix_and_suffix(&image_prefix, &file_name(&image_file)?)?);
+                            images.push(format!("{}{}", &image_prefix, &file_name(&image_file)?).parse::<Uid>()?);
                         }
                     }
                 }
@@ -171,7 +178,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         continue;
                     }
 
-                    chunks.push(Uid::from_prefix_and_suffix(q, &file_name(&chunk_file)?)?);
+                    chunks.push(format!("{}{}", q, &file_name(&chunk_file)?).parse::<Uid>()?);
                 }
             }
 
@@ -182,7 +189,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                     FILE_INDEX_DIR_NAME,
                     q,
                 )?, false).unwrap_or(vec![]) {
-                    file_uids.push(Uid::from_prefix_and_suffix(q, &file_name(&file_index)?)?);
+                    file_uids.push(format!("{}{}", q, &file_name(&file_index)?).parse::<Uid>()?);
                 }
             }
 
@@ -197,7 +204,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         continue;
                     }
 
-                    images.push(Uid::from_prefix_and_suffix(q, &file_name(&image_file)?)?);
+                    images.push(format!("{}{}", q, &file_name(&image_file)?).parse::<Uid>()?);
                 }
             }
         }
@@ -223,7 +230,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         )?,
                     )?;
 
-                    if exists(&chunk_at) {
+                    if exists(&PathBuf::from(&chunk_at)) {
                         chunks.push(q.parse::<Uid>()?);
                     }
                 }
@@ -242,7 +249,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         let chunk_file = file_name(&chunk_file)?;
 
                         if chunk_file.starts_with(&suffix) {
-                            chunks.push(Uid::from_prefix_and_suffix(&prefix, &chunk_file)?);
+                            chunks.push(format!("{}{}", &prefix, &chunk_file).parse::<Uid>()?);
                         }
                     }
                 }
@@ -262,7 +269,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         )?,
                     )?;
 
-                    if exists(&file_index) {
+                    if exists(&PathBuf::from(&file_index)) {
                         file_uids.push(q.parse::<Uid>()?);
                     }
                 }
@@ -277,7 +284,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         let file_index = file_name(&file_index)?;
 
                         if file_index.starts_with(&suffix) {
-                            file_uids.push(Uid::from_prefix_and_suffix(&prefix, &file_index)?);
+                            file_uids.push(format!("{}{}", &prefix, &file_index).parse::<Uid>()?);
                         }
                     }
                 }
@@ -300,7 +307,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         )?,
                     )?;
 
-                    if exists(&image_at) {
+                    if exists(&PathBuf::from(&image_at)) {
                         images.push(q.parse::<Uid>()?);
                     }
                 }
@@ -319,7 +326,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
                         let image_file = file_name(&image_file)?;
 
                         if image_file.starts_with(&suffix) {
-                            images.push(Uid::from_prefix_and_suffix(&prefix, &image_file)?);
+                            images.push(format!("{}{}", &prefix, &image_file).parse::<Uid>()?);
                         }
                     }
                 }
@@ -350,14 +357,14 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
 
                 for path in index.processed_files.keys() {
                     if path.starts_with(&rel_path) {
-                        file_paths.push(path.to_string());
+                        file_paths.push(path.to_str().unwrap().to_string());
                     }
                 }
 
                 if config.search_staged_file {
                     for staged_file in index.staged_files.iter() {
                         if staged_file.starts_with(&rel_path) {
-                            staged_files.push(staged_file.to_string());
+                            staged_files.push(staged_file.to_str().unwrap().to_string());
                         }
                     }
                 }
@@ -367,7 +374,7 @@ pub fn uid_query_unit(index: &Index, q: &str, config: UidQueryConfig) -> Result<
 
     let mut processed_files = HashSet::with_capacity(file_paths.len() + file_uids.len());
     let processed_files_rev: HashMap<_, _> = index.processed_files.iter().map(
-        |(file, uid)| (*uid, file.to_string())
+        |(file, uid)| (*uid, file.to_str().unwrap().to_string())
     ).collect();
 
     for path in file_paths.iter() {

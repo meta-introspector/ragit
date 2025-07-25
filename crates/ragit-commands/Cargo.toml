@@ -4,19 +4,51 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ragit-utils = { path = "../ragit-utils" }
-ragit-api = { path = "../api" }
-ragit-fs = { path = "../fs" }
-ragit-uid = { path = "../ragit-uid" }
-ragit-pdl = { path = "../pdl" }
-ragit-index = { path = "../ragit-index" }
-ragit-index-io = { path = "../ragit-index-io" }
-ragit-index-query = { path = "../ragit-index-query" }
-ragit-model-query-response = { path = "../ragit-model-query-response" }
+ragit-utils = { path = "../../crates/ragit-utils" }
+ragit-api = { path = "../../crates/api" }
+ragit-fs = { path = "../../crates/fs" }
+ragit-uid = { path = "../../crates/ragit-uid" }
+ragit-pdl = { path = "../../crates/pdl" }
+ragit-index = { path = "../../crates/ragit-index" }
+ragit-index-io = { path = "../../crates/ragit-index-io" }
+ragit-index-query = { path = "../../crates/ragit-index-query" }
+ragit-model-query-response = { path = "../../crates/ragit-model-query-response" }
+ragit-command-add = { path = "../../crates/ragit-command-add" }
+ragit-command-archive = { path = "../../crates/ragit-command-archive" }
+ragit-command-audit = { path = "../../crates/ragit-command-audit" }
+ragit-command-build = { path = "../../crates/ragit-command-build" }
+ragit-command-cat-file = { path = "../../crates/ragit-command-cat-file" }
+ragit-command-check = { path = "../../crates/ragit-command-check" }
+ragit-command-clone = { path = "../../crates/ragit-command-clone" }
+ragit-command-config = { path = "../../crates/ragit-command-config" }
+ragit-command-extract-keywords = { path = "../../crates/ragit-command-extract-keywords" }
+ragit-command-gc = { path = "../../crates/ragit-command-gc" }
+ragit-command-ii-build = { path = "../../crates/ragit-command-ii-build" }
+ragit-command-ii-reset = { path = "../../crates/ragit-command-ii-reset" }
+ragit-command-ii-status = { path = "../../crates/ragit-command-ii-status" }
+ragit-command-init = { path = "../../crates/ragit-command-init" }
+ragit-command-ls = { path = "../../crates/ragit-command-ls" }
+ragit-command-merge = { path = "../../crates/ragit-command-merge" }
+ragit-command-model = { path = "../../crates/ragit-command-model" }
+ragit-command-muse-summarize = { path = "../../crates/ragit-command-muse-summarize" }
+ragit-command-pdl = { path = "../../crates/ragit-command-pdl" }
+ragit-command-pull = { path = "../../crates/ragit-command-pull" }
+ragit-command-push = { path = "../../crates/ragit-command-push" }
+ragit-command-qa-test = { path = "../../crates/ragit-command-qa-test" }
+ragit-command-qa-tune = { path = "../../crates/ragit-command-qa-tune" }
+ragit-command-version = { path = "../../crates/ragit-command-version" }
+ragit-command-status = { path = "../../crates/ragit-command-status" }
+ragit-command-remove = { path = "../../crates/ragit-command-remove" }
+ragit-command-migrate = { path = "../../crates/ragit-command-migrate" }
+ragit-command-summary = { path = "../../crates/ragit-command-summary" }
+ragit-command-query = { path = "../../crates/ragit-command-query" }
+ragit-command-help = { path = "../../crates/ragit-command-help" }
+ragit-command-meta = { path = "../../crates/ragit-command-meta" }
+ragit-config-commands = { path = "../../crates/ragit-config-commands" }
 
-ragit-types = { path = "../ragit-types" }
-ragit-error = { path = "../ragit-error" }
-ragit-core-utils = { path = "../ragit-core-utils" }
+ragit-types = { path = "../../crates/ragit-types" }
+ragit-error = { path = "../../crates/ragit-error" }
+ragit-core-utils = { path = "../../crates/ragit-core-utils" }
 chrono = "0.4.40"
 serde = { version = "1.0.218", features = ["derive"] }
 serde_json = { version = "1.0.139", features = ["arbitrary_precision"] }

@@ -33,31 +33,31 @@ members = [
     "crates/ragit-agent-action", "crates/ragit-index-io",
     "crates/ragit-agent",
     "crates/ragit-index-query",
-    "crates/ragit-config-commands", "crates/ragit-command-meta", "crates/ragit-legacy-agent", "crates/ragit-legacy-api-config", "crates/ragit-legacy-chunk", "crates/ragit-legacy-error", "crates/ragit-legacy-log-qa-results", "crates/ragit-legacy-uid", # "crates/ragit-command-status", # "crates/ragit-command-remove", # "crates/ragit-command-migrate", # "crates/ragit-command-summary", # "crates/ragit-command-query", # "crates/ragit-command-help",
-    # "crates/ragit-command-add",
-    # "crates/ragit-command-archive",
-    # "crates/ragit-command-audit",
-    # "crates/ragit-command-build",
-    # "crates/ragit-command-cat-file",
-    # "crates/ragit-command-check",
-    # "crates/ragit-command-clone",
-    # "crates/ragit-command-config",
-    # "crates/ragit-command-extract-keywords",
-    # "crates/ragit-command-gc",
-    # "crates/ragit-command-ii-build",
-    # "crates/ragit-command-ii-reset",
-    # "crates/ragit-command-ii-status",
-    # "crates/ragit-command-init",
-    # "crates/ragit-command-ls",
-    # "crates/ragit-command-merge",
-    # "crates/ragit-command-model",
-    # "crates/ragit-command-muse-summarize",
-    # "crates/ragit-command-pdl",
-    # "crates/ragit-command-pull",
-    # "crates/ragit-command-push",
-    # "crates/ragit-command-qa-test",
-    # "crates/ragit-command-qa-tune",
-    # "crates/ragit-command-version",
+    "crates/ragit-config-commands", "crates/ragit-command-meta", "crates/ragit-legacy-agent", "crates/ragit-legacy-api-config", "crates/ragit-legacy-chunk", "crates/ragit-legacy-error", "crates/ragit-legacy-log-qa-results", "crates/ragit-legacy-uid", "crates/ragit-command-status", "crates/ragit-command-remove", "crates/ragit-command-migrate", "crates/ragit-command-summary", "crates/ragit-command-query", "crates/ragit-command-help",
+    "crates/ragit-command-add",
+    "crates/ragit-command-archive",
+    "crates/ragit-command-audit",
+    "crates/ragit-command-build",
+    "crates/ragit-command-cat-file",
+    "crates/ragit-command-check",
+    "crates/ragit-command-clone",
+    "crates/ragit-command-config",
+    "crates/ragit-command-extract-keywords",
+    "crates/ragit-command-gc",
+    "crates/ragit-command-ii-build",
+    "crates/ragit-command-ii-reset",
+    "crates/ragit-command-ii-status",
+    "crates/ragit-command-init",
+    "crates/ragit-command-ls",
+    "crates/ragit-command-merge",
+    "crates/ragit-command-model",
+    "crates/ragit-command-muse-summarize",
+    "crates/ragit-command-pdl",
+    "crates/ragit-command-pull",
+    "crates/ragit-command-push",
+    "crates/ragit-command-qa-test",
+    "crates/ragit-command-qa-tune",
+    "crates/ragit-command-version",
 ]
 exclude = [
     "crates/ragit-legacy-agent",
@@ -90,8 +90,10 @@ ragit-commands = { path = "./crates/ragit-commands", version = "0.1.0" }
 ragit-agent = { path = "./crates/ragit-agent" }
 ragit-types = { path = "./crates/ragit-types" }
 ragit-index-query = { path = "./crates/ragit-index-query" }
+ragit-index = { path = "./crates/ragit-index" }
 ragit-index-types = { path = "./crates/ragit-index-types" }
 ragit-tfidf = { path = "./crates/ragit-tfidf" }
+ragit-index-io = { path = "./crates/ragit-index-io" }
 ragit-model-query-response = { path = "./crates/ragit-model-query-response" }
 regex = "1.11.1"
 reqwest = { version = "0.12.12", features = ["multipart"] }

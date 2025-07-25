@@ -107,55 +107,22 @@ As a meme miner, we dig in the mountain of Plato for gems. We place each idea we
 
 ### Current Refactoring Status:
 
-*   **`ragit-types` Crate:**
-    *   Moved `pdl` related types (`Message`, `MessageContent`, `Role`, `PdlRole`, `ImageType`, `JsonType`) into `crates/ragit-types/src/pdl_types.rs`.
-    *   Created `crates/ragit-types/src/prelude.rs` to centralize common imports within `ragit-types`.
-    *   Moved `impl Chunk` block from `ragit-index` to `ragit-types/src/chunk/impl_chunk.rs`.
-    *   Added `render_source` method to `ragit-types/src/chunk/chunk_struct.rs`.
-    *   Resolved initial compilation errors by adding necessary dependencies (`anyhow`, `ragit-core`, `ragit-utils`, `ragit-api`) to `ragit-types/Cargo.toml`.
-    *   Added `InvalidTestModel` variant to `ApiError` enum in `crates/ragit-types/src/api_error.rs`.
-    *   Moved `JsonType`, `AuditRecordAt`, and `FileSchema` to their own files within `ragit-types/src/`.
-    *   Added `From<anyhow::Error>` for `ApiError`.
-
-*   **`ragit-pdl` Crate:**
-    *   Removed definitions of types that were moved to `ragit-types`.
-    *   Removed `Pdl` struct and its associated functions (`parse_pdl`, `parse_pdl_from_file`, `into_context`). These will be re-evaluated for placement in `ragit-api` or `ragit-index`.
-    *   Restored `crates/pdl/src/lib.rs` to its original state after accidental deletion.
-
-*   **`ragit-api` Crate:**
-    *   Made modules public in `crates/api/src/lib.rs`.
-    *   Updated prelude in `crates/api/src/prelude.rs` to include `Model`, `ModelRaw`, `Request`, `Schema`, `MuseName`, `get_model_by_name`, `MessageContent`, and `JsonType`.
-    *   Corrected `JsonType` import in `crates/api/src/prelude.rs`.
-
+*   **`ragit` Crate:**
+    *   Fixed syntax error in `src/lib.rs` related to `merge_and_convert_chunks`.
+    *   Added `ragit-index` and `ragit-index-io` as dependencies to `Cargo.toml`.
+    *   Corrected imports for `into_multi_modal_contents`, `merge_and_convert_chunks`, `Chunk`, `ChunkBuildInfo`, `ChunkSource`, `MultiModalContent`, `RenderedChunk`, `Index`, `LoadMode`, `ApiConfig`, `Keywords`, `MultiTurnSchema`, `QueryConfig`, `ModelQueryResponse`, `QueryTurn`, `Uid`, `UidQueryConfig`, and `UidQueryResult` in `src/lib.rs`.
 *   **`ragit-index` Crate:**
-    *   `index_save_to_file.rs` moved to `ragit-index-save-to-file` crate.
-    *   `prompt_management.rs` moved to `ragit-prompt-management` crate.
-    *   `tfidf.rs` moved to `ragit-tfidf` crate.
-    *   `model_management.rs` moved to `ragit-index-model-management` crate.
-    *   `agent/action.rs` moved to `ragit-agent-action` crate.
-    *   `Index` struct moved to `ragit-index-types` crate.
-    *   `muse_logic.rs` commented out for now.
-
-*   **`ragit-model` Crate:**
-    *   `Model` struct updated with `Deserialize`, `Serialize`, `Clone`, `PartialEq`, `Default` derives.
-    *   `AtomicUsize` replaced with `usize` in `Model` struct.
-    *   `QualityExpectations` updated with `Eq` derive.
-    *   `model.rs` refactored into smaller files (`model_struct.rs`, `model_default.rs`, etc.).
-
-*   **`ragit-utils` Crate:**
-    *   Imports and preludes updated to reflect changes in `ragit-types`.
-
-*   **New Crates Created:**
-    *   `ragit-index-save-to-file`
-    *   `ragit-prompt-management`
-    *   `ragit-tfidf`
-    *   `ragit-index-model-management`
-    *   `ragit-index-types` (contains `Index` struct)
-    *   `ragit-agent-action` (contains `Action` enum and related logic)
-
-*   **Cyclic Dependencies:**
-    *   Encountered and resolved a cyclic dependency: `ragit-utils` -> `ragit-config` -> `ragit-index` -> `ragit-utils` by moving `query_helpers.rs` from `ragit-utils` to `ragit-index`.
-    *   Encountered a new cyclic dependency: `ragit-api` -> `ragit-types` -> `ragit-pdl` -> `ragit-api`. This was addressed by moving `JsonType` and other `pdl` related types from `ragit-pdl` to `ragit-types`, and removing `ragit-api`'s direct dependency on `ragit-pdl`.
+    *   Exposed `chunk_methods` and `query_helpers` modules in `src/lib.rs`.
+    *   Added `ragit-types` as a dependency to `Cargo.toml`.
+    *   Fixed imports and `tfidf` path in `src/chunk_methods/io.rs`.
+    *   Fixed imports, `Index` path, and `Result` type in `src/chunk_methods/utils.rs`.
+    *   Fixed `Uid` and `PathBuf` related issues in `src/query_helpers.rs` by converting `String` to `PathBuf` for `exists` calls and using `format!` and `parse::<Uid>()?` for `Uid` creation.
+*   **`ragit-commands` Crate:**
+    *   Enabled all `ragit-command-*` crates in the root `Cargo.toml`'s `members` section.
+    *   Added all `ragit-command-*` crates, `ragit-config-commands`, and `ragit-command-meta` as dependencies to `crates/ragit-commands/Cargo.toml`.
+    *   Corrected relative paths for `ragit-api`, `ragit-utils`, `ragit-types`, `ragit-error`, and similar dependencies in all `ragit-command-*` crates' `Cargo.toml` files (changed `../../` to `../`).
+*   **`ragit-server` Crate:**
+    *   Corrected relative paths for `ragit-api`, `ragit-cli`, and `ragit-fs` in `crates/server/Cargo.toml`.
 
 ### Next Immediate Steps:
 
@@ -166,3 +133,4 @@ As a meme miner, we dig in the mountain of Plato for gems. We place each idea we
     *   Resolving any remaining `impl` block errors by ensuring they are in the correct crate.
     *   Verifying that `ragit-api` and `ragit-pdl` correctly use the types from `ragit-types`.
     *   Addressing any new cyclic dependencies that may arise.
+    *   Addressing the `main` function not found error in `crates/ragit-commands/src/main.rs` by ensuring it has a proper `main` function and all command functions are correctly called.
