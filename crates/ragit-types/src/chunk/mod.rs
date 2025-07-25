@@ -1,4 +1,7 @@
 pub use self::schema::ChunkSchema;
+pub use self::atomic_token::AtomicToken;
+pub use self::chunk_source::ChunkSource;
+pub use self::rendered_chunk::{MultiModalContent, RenderedChunk};
 
 mod schema;
 pub mod atomic_token;

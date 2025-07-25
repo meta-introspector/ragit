@@ -1,7 +1,7 @@
-use crate::uid::Uid;
-pub use ragit_api::Error as ApiError;
+use ragit_types::uid::Uid;
+pub use ragit_types::ApiError;
 use ragit_fs::FileError;
-pub use ragit_pdl::JsonType;
+pub use ragit_types::JsonType;
 use std::path::PathBuf;
 use std::string::FromUtf8Error;
 

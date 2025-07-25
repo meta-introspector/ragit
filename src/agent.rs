@@ -9,14 +9,14 @@ use serde_json::Value;
 use crate::Uid;
 use crate::prelude::*;
 use ragit_pdl::Prompt;
-use ragit_utils::query::QueryResponse;
+use ragit_index_query::QueryResponse;
 
-use ragit_utils::agent::action::{
+use ragit_agent_action::{
     Action, ActionResult, ActionState, ActionTrace, ArgumentTurn, SearchType,
 };
-use ragit_utils::agent::file_tree::FileTree;
-use ragit_utils::chunk::Chunk;
-use ragit_utils::index::index_struct::Index;
+use ragit_agent::file_tree::FileTree;
+use ragit_types::chunk::chunk_struct::Chunk;
+use ragit_index_types::Index;
 use ragit_utils::path_utils;
 
 // `derive(Serialize) for AgentState` has 2 purposes.

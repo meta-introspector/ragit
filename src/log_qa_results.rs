@@ -1,5 +1,5 @@
-use crate::Error;
-use ragit_api::ModelQAResult;
+use crate::error::Error;
+use ragit_model_query_response::ModelQAResult;
 use serde_json;
 
 pub fn log_qa_results(results: &[ModelQAResult]) -> Result<(), Error> {

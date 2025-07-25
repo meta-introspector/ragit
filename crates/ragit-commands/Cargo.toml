@@ -12,6 +12,7 @@ ragit-pdl = { path = "../pdl" }
 ragit-index = { path = "../ragit-index" }
 ragit-index-io = { path = "../ragit-index-io" }
 ragit-index-query = { path = "../ragit-index-query" }
+ragit-model-query-response = { path = "../ragit-model-query-response" }
 
 ragit-types = { path = "../ragit-types" }
 ragit-error = { path = "../ragit-error" }

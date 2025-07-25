@@ -19,21 +19,21 @@ pub mod query;
 pub mod tree;
 pub mod uid;
 
-pub use ragit_utils::agent::file_tree::FileTree;
+pub use ragit_agent::file_tree::FileTree;
 
-pub use ragit_utils::chunk::utils::into_multi_modal_contents;
-pub use ragit_utils::chunk::{
+pub use ragit_types::chunk::utils::into_multi_modal_contents;
+pub use ragit_types::chunk::{
     Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, RenderedChunk, merge_and_convert_chunks,
 };
 
-pub use ragit_utils::index::index_struct::Index;
-pub use ragit_utils::index::load_mode::LoadMode;
+pub use ragit_index_types::Index;
+pub use ragit_index_types::LoadMode;
 
 
-pub use ragit_utils::api_config::ApiConfig;
-pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn};
-pub use ragit_utils::uid::Uid;
-pub use ragit_utils::uid::{UidQueryConfig, UidQueryResult};
+pub use ragit_api::ApiConfig;
+pub use ragit_index_query::{Keywords, MultiTurnSchema, QueryConfig, QueryResponse, QueryTurn};
+pub use ragit_types::uid::Uid;
+pub use ragit_types::uid::{UidQueryConfig, UidQueryResult};
 
 // My rules for version numbers
 // Let's say I'm working on 0.1.2

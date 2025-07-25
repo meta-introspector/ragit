@@ -1,4 +1,5 @@
-use crate::prelude::*;
+use ragit_utils::prelude::*;
+use ragit_cli::prelude::*;
 
 pub async fn help_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -33,7 +34,9 @@ pub async fn help_command_main(args: &[String]) -> Result<(), Error> {
             let mut new_args = args.to_vec();
             new_args[1] = command.to_string();
             new_args[2] = String::from("--help");
-            return crate::commands::main::run_command_main(&new_args).await;
+            // This line needs to be refactored as `main` is no longer directly accessible
+            // return crate::commands::main::run_command_main(&new_args).await;
+            unimplemented!("Command execution needs to be re-architected.");
         }
         None => {
             println!("{}", get_doc_content("intro.txt"));

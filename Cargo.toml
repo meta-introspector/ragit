@@ -33,7 +33,7 @@ members = [
     "crates/ragit-agent-action", "crates/ragit-index-io",
     "crates/ragit-agent",
     "crates/ragit-index-query",
-    "crates/ragit-config-commands",
+    "crates/ragit-config-commands", "crates/ragit-command-meta", # "crates/ragit-command-status", # "crates/ragit-command-remove", # "crates/ragit-command-migrate", # "crates/ragit-command-summary", # "crates/ragit-command-query", # "crates/ragit-command-help",
     # "crates/ragit-command-add",
     # "crates/ragit-command-archive",
     # "crates/ragit-command-audit",
@@ -79,6 +79,12 @@ ragit-uid = { path = "./crates/ragit-uid", version = "0.1.0" }
 ragit-utils = { path = "./crates/ragit-utils", version = "0.1.0" }
 ragit-schema = { path = "./crates/ragit-schema", version = "0.1.0" }
 ragit-commands = { path = "./crates/ragit-commands", version = "0.1.0" }
+ragit-agent = { path = "./crates/ragit-agent" }
+ragit-types = { path = "./crates/ragit-types" }
+ragit-index-query = { path = "./crates/ragit-index-query" }
+ragit-index-types = { path = "./crates/ragit-index-types" }
+ragit-tfidf = { path = "./crates/ragit-tfidf" }
+ragit-model-query-response = { path = "./crates/ragit-model-query-response" }
 regex = "1.11.1"
 reqwest = { version = "0.12.12", features = ["multipart"] }
 resvg = { version = "0.45.1", optional = true }

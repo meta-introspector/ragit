@@ -1,13 +1,13 @@
 use crate::error::Error;
 use ragit_pdl::Prompt;
-use ragit_uid::Uid;
-use ragit_utils::query::QueryResponse;
+use ragit_types::uid::Uid;
+use ragit_index_query::QueryResponse;
 
-use ragit_utils::chunk::{
+use ragit_types::chunk::{
     AtomicToken, Chunk, ChunkBuildInfo, ChunkSource, MultiModalContent, RenderedChunk,
 };
-use ragit_utils::index::index_struct::Index;
-use ragit_utils::index::tfidf;
+use ragit_index_types::Index;
+use ragit_tfidf;
 use ragit_utils::path_utils;
 
 use flate2::Compression;

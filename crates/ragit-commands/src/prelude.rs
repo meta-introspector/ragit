@@ -36,10 +36,10 @@ pub use ragit_utils::query::{Keywords, MultiTurnSchema, QueryConfig as UtilsQuer
 pub use ragit_utils::doc_utils::get_doc_content;
 pub use ragit_utils::project_root::find_root;
 pub use ragit_utils::version_info::VersionInfo;
-pub use ragit_index::Index;
+pub use ragit_index_io::index_struct::Index;
 pub use ragit_index::LoadMode;
 pub use ragit_index_query::{QueryResponse, QueryTurn};
-pub use ragit_model_query_response::{ModelQAResult, ModelQASystem, QualityScores};
+// pub use ragit_model_query_response::{ModelQAResult, ModelQASystem, QualityScores};
 
 
 
