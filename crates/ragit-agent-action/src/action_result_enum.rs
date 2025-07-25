@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
-use ragit_types::{Uid, Chunk, RenderedChunk, QueryResponse};
+use ragit_types::{Uid, Chunk};
+use ragit_types::chunk::rendered_chunk::RenderedChunk;
+use ragit_model_query_response::QueryResponse;
 use ragit_utils::file_tree::FileTree;
+use crate::search_type_enum::SearchType;
 
 #[derive(Clone, Debug, Serialize)]
 pub enum ActionResult {

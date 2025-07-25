@@ -35,12 +35,13 @@ members = [
     "crates/ragit-index-query",
     "crates/ragit-config-commands",
     # "crates/ragit-command-meta", # Disabled for now
-    "crates/ragit-legacy-agent",
-    "crates/ragit-legacy-api-config",
-    "crates/ragit-legacy-chunk",
-    "crates/ragit-legacy-error",
+    # Legacy crates, excluded from build:
+#    "crates/ragit-legacy-agent",
+#    "crates/ragit-legacy-api-config",
+#    "crates/ragit-legacy-chunk",
+#    "crates/ragit-legacy-error",
 #    "crates/ragit-legacy-log-qa-results",
-    "crates/ragit-legacy-uid",
+#    "crates/ragit-legacy-uid",
     # "crates/ragit-command-status", # Disabled for now
     # "crates/ragit-command-remove", # Disabled for now
     # "crates/ragit-command-migrate", # Disabled for now

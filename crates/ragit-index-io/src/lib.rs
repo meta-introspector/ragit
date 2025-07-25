@@ -9,9 +9,7 @@ pub mod load_chunks_from_uids;
 pub mod extract_keywords;
 pub mod retrieve_chunks;
 pub mod file_retrieval_methods;
-pub mod index_struct;
+
 
 pub mod utils;
 pub mod query_helpers;
-use ragit_error::ApiError;
-use std::path::PathBuf;

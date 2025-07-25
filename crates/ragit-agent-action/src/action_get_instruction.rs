@@ -1,6 +1,6 @@
 use super::action_enum::Action;
 use crate::constants;
-use ragit_index_types::Index;
+use ragit_index_types::index_struct::Index;
 use ragit_types::ApiError;
 use anyhow::Result;
 
@@ -12,9 +12,7 @@ impl Action {
             Action::ReadChunk => String::from(constants::INSTRUCTION_READ_CHUNK),
             Action::SearchExact => String::from(constants::INSTRUCTION_SEARCH_EXACT),
             Action::SearchTfidf => String::from(constants::INSTRUCTION_SEARCH_TFIDF),
-            Action::GetMeta => format!(constants::INSTRUCTION_GET_META,
-                index.get_all_meta()?.keys().collect::<Vec<_>>(),
-            ),
+            Action::GetMeta => format!("{}", constants::INSTRUCTION_GET_META),
             Action::GetSummary => String::from(constants::INSTRUCTION_GET_SUMMARY),
             Action::SimpleRag => String::from(constants::INSTRUCTION_SIMPLE_RAG),
         };

@@ -14,6 +14,8 @@ pub mod audit_record_at;
 pub use audit_record_at::AuditRecordAt;
 pub mod file_schema;
 pub use file_schema::FileSchema;
+pub mod add_mode;
+pub use add_mode::{AddMode, AddResult};
 
 pub use crate::uid::Uid;
 pub use crate::image::ImageSchema;
@@ -25,3 +27,5 @@ pub mod test_model;
 pub use test_model::TestModel;
 pub mod query;
 pub mod api_config;
+pub mod build_config;
+pub mod query_config;

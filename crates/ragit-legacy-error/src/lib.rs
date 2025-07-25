@@ -1,9 +1,7 @@
-use ragit_types::uid::Uid;
-pub use ragit_types::ApiError;
-use ragit_fs::FileError;
-pub use ragit_types::JsonType;
 use std::path::PathBuf;
 use std::string::FromUtf8Error;
+use ragit_types::{ApiError, JsonType, Uid};
+use ragit_fs::FileError;
 
 pub type Path = String;
 
@@ -83,18 +81,6 @@ pub enum Error {
     DeprecatedConfig { key: String, message: String },
     #[error("dirty knowledge base")]
     DirtyKnowledgeBase,
-    #[cfg(feature = "csv")]
-    #[error(transparent)]
-    CsvError(#[from] csv::Error),
-    #[cfg(feature = "pdf")]
-    #[error(transparent)]
-    MuPdfError(#[from] mupdf::Error),
-    #[cfg(feature = "svg")]
-    #[error(transparent)]
-    UsvgError(#[from] resvg::usvg::Error),
-    #[cfg(feature = "svg")]
-    #[error(transparent)]
-    PngEncodingError(#[from] png::EncodingError),
 }
 
 impl From<ragit_utils::error::Error> for Error {
@@ -130,14 +116,7 @@ impl From<ragit_utils::error::Error> for Error {
             ragit_utils::error::Error::ParseFloatError(e) => Error::ParseFloatError(e),
             ragit_utils::error::Error::UidError(e) => Error::UidError(e),
             ragit_utils::error::Error::CliError(e) => Error::CliError(e),
-            #[cfg(feature = "csv")]
-            ragit_utils::error::Error::CsvError(e) => Error::CsvError(e),
-            #[cfg(feature = "pdf")]
-            ragit_utils::error::Error::MuPdfError(e) => Error::MuPdfError(e),
-            #[cfg(feature = "svg")]
-            ragit_utils::error::Error::UsvgError(e) => Error::UsvgError(e),
-            #[cfg(feature = "svg")]
-            ragit_utils::error::Error::PngEncodingError(e) => Error::PngEncodingError(e),
+            _ => Error::Internal(format!("unhandled error: {:?}", e)),
         }
     }
 }

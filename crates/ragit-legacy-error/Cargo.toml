@@ -3,3 +3,17 @@ name = "ragit-legacy-error"
 version = "0.1.0"
 edition = "2021"
 
+[dependencies]
+ragit-types = { path = "../ragit-types" }
+ragit-fs = { path = "../fs" }
+ragit-pdl = { path = "../pdl" }
+ragit-uid = { path = "../ragit-uid" }
+ragit-utils = { path = "../ragit-utils" }
+thiserror = "1.0"
+reqwest = "0.12"
+serde_json = "1.0"
+image = "0.25"
+url = "2.5"
+tera = "1.19"
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }

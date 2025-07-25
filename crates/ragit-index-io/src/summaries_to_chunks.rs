@@ -5,7 +5,6 @@ use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_pdl::{Pdl, parse_pdl};
 use ragit_api::request::Request;
 use serde_json::json;
-use tera::Context;
 use serde_json::Value;
 use ragit_prompt_management::get_prompt::get_prompt;
 use crate::prelude::*;

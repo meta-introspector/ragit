@@ -1,5 +1,5 @@
 use ragit_utils::prelude::*;
-use ragit_cli::{ArgParser, ArgType, ArgCount, ParsedArgs};
+use ragit_cli::{ArgParser, ArgType, ArgCount};
 use ragit_utils::doc_utils::get_doc_content;
 
 pub async fn help_command_main(args: &[String]) -> Result<(), anyhow::Error> {

@@ -1,12 +1,12 @@
 use super::action_enum::Action;
 use crate::action_result_enum::ActionResult;
-use ragit_index_types::Index;
+use ragit_index_types::index_struct::Index;
 use ragit_types::{ApiError, Uid, Chunk};
 use ragit_types::chunk::rendered_chunk::RenderedChunk;
 use ragit_model_query_response::QueryResponse;
 use ragit_utils::ragit_path_utils::normalize;
 use ragit_utils::string_utils::substr_edit_distance;
-use ragit_utils::uid::query_helpers::{UidQueryConfig, UidQueryResult};
+use ragit_utils::query::query_helpers::{UidQueryConfig, UidQueryResult};
 use ragit_utils::query::Keywords;
 use ragit_utils::file_tree::FileTree;
 use serde_json::Value;
@@ -156,7 +156,7 @@ impl Action {
 
                 let chunks = 'chunks_loop: loop {
                     let candidates =
-                        ragit_tfidf::TfidfState::new(&Keywords::from(vec![argument.to_string()])).search(&Keywords::from(vec![argument.to_string()]))?;
+                        ragit_tfidf::TfidfState::new(&Keywords::from(vec![argument.to_string()])).search(&Keywords::from(vec![argument.to_string()]));
                     let mut chunks = Vec::with_capacity(candidates.len());
                     let mut chunks_exact_match = vec![];
 
