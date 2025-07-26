@@ -7,7 +7,7 @@ pub use ragit_pdl::Prompt;
 pub mod query_turn;
 pub use query_turn::QueryTurn;
 
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Default)]
 pub struct ModelQueryResponse {
     pub multi_turn_schema: Option<MultiTurnSchema>,
     pub retrieved_chunks: Vec<Chunk>,
@@ -15,6 +15,14 @@ pub struct ModelQueryResponse {
 }
 
 impl ModelQueryResponse {
+    pub fn get_message(&self) -> &str {
+        &self.response
+    }
+
+    pub fn to_json(&self) -> serde_json::Value {
+        serde_json::to_value(self).unwrap()
+    }
+
     pub async fn new(
         _model: &Model,
         _prompt: &Prompt,

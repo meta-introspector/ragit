@@ -14,8 +14,6 @@ impl Index {
             "Placeholder for get_file_schema: path={:?}, uid={:?}",
             path, uid
         );
-        Err(ApiError::Internal(
-            "Placeholder for get_file_schema".to_string(),
-        ))
+        Err(ApiError::BrokenIndex("Placeholder for get_file_schema".to_string()))
     }
 }

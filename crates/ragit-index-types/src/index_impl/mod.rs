@@ -1,6 +1,7 @@
 
-pub mod add_files;
+
 pub mod audit;
+pub mod build;
 pub mod config_methods;
 pub mod dummy;
 pub mod get_all_configs;
@@ -27,7 +28,8 @@ pub mod read_ignore_file_command;
 pub mod remove_all_meta;
 pub mod remove_files;
 pub mod remove_meta_by_key;
-pub mod retrieve_chunks;
+// pub mod retrieve_chunks;
 pub mod set_config_by_key;
+pub mod query;
 pub mod status;
 pub mod summary;

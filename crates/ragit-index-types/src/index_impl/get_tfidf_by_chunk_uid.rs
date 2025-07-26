@@ -12,8 +12,6 @@ impl Index {
             "Placeholder for get_tfidf_by_chunk_uid: chunk_uid={}",
             chunk_uid
         );
-        Err(ApiError::Internal(
-            "Placeholder for get_tfidf_by_chunk_uid".to_string(),
-        ))
+        Err(ApiError::BrokenIndex("Placeholder for get_tfidf_by_chunk_uid".to_string()))
     }
 }

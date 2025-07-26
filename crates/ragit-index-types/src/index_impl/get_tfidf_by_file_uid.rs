@@ -12,8 +12,6 @@ impl Index {
             "Placeholder for get_tfidf_by_file_uid: file_uid={}",
             file_uid
         );
-        Err(ApiError::Internal(
-            "Placeholder for get_tfidf_by_file_uid".to_string(),
-        ))
+        Err(ApiError::BrokenIndex("Placeholder for get_tfidf_by_file_uid".to_string()))
     }
 }

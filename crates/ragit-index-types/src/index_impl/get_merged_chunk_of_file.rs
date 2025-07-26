@@ -12,8 +12,6 @@ impl Index {
             "Placeholder for get_merged_chunk_of_file: file_uid={}",
             file_uid
         );
-        Err(ApiError::Internal(
-            "Placeholder for get_merged_chunk_of_file".to_string(),
-        ))
+        Err(ApiError::BrokenIndex("Placeholder for get_merged_chunk_of_file".to_string()))
     }
 }

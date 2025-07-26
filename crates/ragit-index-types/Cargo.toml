@@ -18,3 +18,5 @@ ragit-tfidf = { path = "../ragit-tfidf" }
 tokio = { version = "1.0", features = ["full"] }
 
 ragit-ignore = { path = "../ignore" }
+ragit-model-query-response = { path = "../ragit-model-query-response" }
+

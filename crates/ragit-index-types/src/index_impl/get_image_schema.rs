@@ -13,8 +13,6 @@ impl Index {
             "Placeholder for get_image_schema: image_uid={}, with_bytes={}",
             image_uid, with_bytes
         );
-        Err(ApiError::Internal(
-            "Placeholder for get_image_schema".to_string(),
-        ))
+        Err(ApiError::BrokenIndex("Placeholder for get_image_schema".to_string()))
     }
 }
