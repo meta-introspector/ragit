@@ -18,6 +18,7 @@ ragit-prompt-management = { path = "../ragit-prompt-management" }
 ragit-tfidf = { path = "../ragit-tfidf" }
 ragit-types = { path = "../ragit-types" }
 ragit-utils = { path = "../ragit-utils" }
+
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tera = "1.19"

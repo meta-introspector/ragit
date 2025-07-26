@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use ragit_index_types::index_struct::Index;
+use ragit_index_core::prelude::*;
 
 
 use ragit_error::ApiError;

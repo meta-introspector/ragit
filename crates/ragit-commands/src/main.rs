@@ -23,10 +23,11 @@ use ragit_command_muse_summarize::muse_summarize_command_main;
 use ragit_command_pdl::pdl_command_main;
 use ragit_command_pull::pull_command_main;
 use ragit_command_push::push_command_main;
-use ragit_command_qa_test::qa_test_command_main;
-use ragit_command_qa_tune::qa_tune_command_main;
+// use ragit_command_qa_test::qa_test_command_main;
+// use ragit_command_qa_tune::qa_tune_command_main;
 use ragit_command_version::version_command_main;
 use ragit_config_commands::run as config_command_main;
+use ragit_command_bootstrap::bootstrap_command_main;
 
 use async_recursion::async_recursion;
 
@@ -76,13 +77,14 @@ pub async fn run(args: Vec<String>) -> Result<(), Error> {
         Some("pdl") => pdl_command_main(&args).await?,
         Some("pull") => pull_command_main(&args).await?,
         Some("push") => push_command_main(&args).await?,
-        Some("qa-test") => qa_test_command_main(&args).await?,
-        Some("qa-tune") => qa_tune_command_main(&args).await?,
+        // Some("qa-test") => qa_test_command_main(&args).await?,
+        // Some("qa-tune") => qa_tune_command_main(&args).await?,
         Some("query") => query_command_main(&args).await?,
         Some("remove") => remove_command_main(&args).await?,
         Some("status") => status_command_main(&args).await?,
         Some("summary") => summary_command_main(&args).await?,
         Some("version") => version_command_main(&args).await?,
+        Some("bootstrap") => bootstrap_command_main(&args).await?,
         _ => {
             return Err(Error::CliError(ragit_utils::error::CliError::new_message(
                 "Unknown command.".to_string(),

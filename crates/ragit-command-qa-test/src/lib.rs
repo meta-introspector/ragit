@@ -1,7 +1,7 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
-use ragit_qa_system::ModelQASystem;
+use ragit_model_query_response::ModelQASystem;
 use ragit_index_core::Index;
 use ragit_api::{ApiConfig, Request, Message, Role, Model};
 
@@ -17,7 +17,7 @@ pub async fn qa_test_command_main(args: &[String]) -> Result<(), anyhow::Error> 
 
     let prompt = parsed_args.get_args().join(" ");
     let config = ApiConfig::default();
-    let models = Index::get_initial_models()?;
+    let models = Index::get_initial_models(&find_root()?)?;
     let qa_system = ModelQASystem::new(models, config.throttling_safety_margin.into());
     let request = Request {
         messages: vec![Message::simple_message(Role::User, prompt)],

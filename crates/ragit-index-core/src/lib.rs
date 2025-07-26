@@ -1,5 +1,6 @@
 pub mod add_files;
 pub use add_files::add_files_command;
+pub mod prelude;
 use ragit_error::ApiError;
 use ragit_index_types::index_struct::Index;
 use std::path::PathBuf;

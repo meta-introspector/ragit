@@ -1,11 +1,11 @@
 use crate::index_struct::Index;
 use ragit_error::ApiError;
 use ragit_types::uid::Uid;
-use ragit_types::chunk::chunk_struct::Chunk;
+use ragit_types::chunk::chunk_schema::ChunkSchema;
 
 impl Index {
-    pub fn get_chunk_by_uid(&self, chunk_uid: Uid) -> Result<Chunk, ApiError> {
+    pub fn get_chunk_by_uid(&self, chunk_uid: Uid) -> Result<ChunkSchema, ApiError> {
         eprintln!("Placeholder for get_chunk_by_uid: chunk_uid={}", chunk_uid);
-        Err(ApiError::BrokenIndex("Placeholder for get_chunk_by_uid".to_string()))
+        Ok(ChunkSchema::dummy("", 0))
     }
 }

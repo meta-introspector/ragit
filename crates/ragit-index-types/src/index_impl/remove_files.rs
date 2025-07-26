@@ -12,10 +12,10 @@ impl Index {
         staged: bool,
         processed: bool,
     ) -> Result<RemoveResult, ApiError> {
-        eprintln!("Placeholder for remove_files: query={:?}, dry_run={}, recursive={}, auto={}, staged={}, processed={}", query, dry_run, recursive, auto, staged, processed);
-        Ok(RemoveResult {
-            removed_files: 0,
-            removed_chunks: 0,
-        })
+        eprintln!(
+            "Placeholder for remove_files: query={:?}, dry_run={}, recursive={}, auto={}, staged={}, processed={}",
+            query, dry_run, recursive, auto, staged, processed
+        );
+        Ok(RemoveResult::default())
     }
 }

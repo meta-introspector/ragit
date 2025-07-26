@@ -18,4 +18,9 @@ impl ProcessedDoc {
     pub fn extend(&mut self, other: &ProcessedDoc) {
         self.tokens.extend(other.tokens.clone());
     }
+
+    pub fn render(&self, term_only: bool, stat_only: bool, json_mode: bool) -> String {
+        // Placeholder implementation
+        format!("Placeholder for ProcessedDoc render: term_only={}, stat_only={}, json_mode={}", term_only, stat_only, json_mode)
+    }
 }

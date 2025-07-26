@@ -44,6 +44,7 @@ ragit-command-summary = { path = "../../crates/ragit-command-summary" }
 ragit-command-query = { path = "../../crates/ragit-command-query" }
 ragit-command-help = { path = "../../crates/ragit-command-help" }
 ragit-command-meta = { path = "../../crates/ragit-command-meta" }
+ragit-command-bootstrap = { path = "../../crates/ragit-command-bootstrap" }
 ragit-config-commands = { path = "../../crates/ragit-config-commands" }
 
 ragit-types = { path = "../../crates/ragit-types" }

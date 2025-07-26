@@ -1,8 +1,8 @@
 use ragit_error::ApiError;
 use lazy_static::lazy_static;
 use regex::Regex;
-//use ragit_index_core::index_struct::Index;
-use ragit_index_core::index_struct::Index;
+//use ragit_index_types::index_struct::Index;
+use ragit_index_types::index_struct::Index;
 use ragit_uid::Uid;
 
 //use ragit_index::Index;
@@ -70,6 +70,20 @@ impl UidQueryConfig {
         self.search_staged_file = false;
         self
     }
+
+    pub fn file_or_chunk_only(mut self) -> Self {
+        self.search_chunk = true;
+        self.search_image = false;
+        self.search_file_uid = true;
+        self.search_file_path = false;
+        self.search_staged_file = false;
+        self
+    }
+
+    pub fn no_staged_file(mut self) -> Self {
+        self.search_staged_file = false;
+        self
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -92,6 +106,42 @@ impl UidQueryResult {
 
     pub fn get_chunk_uids(&self) -> Vec<Uid> {
         self.chunks.clone()
+    }
+
+    pub fn get_file_uids(&self) -> Vec<Uid> {
+        self.processed_files.iter().map(|(_, uid)| *uid).collect()
+    }
+
+    pub fn get_processed_files(&self) -> Vec<(String, Uid)> {
+        self.processed_files.clone()
+    }
+
+    pub fn get_staged_files(&self) -> Vec<String> {
+        self.staged_files.clone()
+    }
+
+    pub fn get_image_uids(&self) -> Vec<Uid> {
+        self.images.clone()
+    }
+
+    pub fn has_multiple_matches(&self) -> bool {
+        self.chunks.len() + self.images.len() + self.processed_files.len() + self.staged_files.len() > 1
+    }
+
+    pub fn len(&self) -> usize {
+        self.chunks.len() + self.images.len() + self.processed_files.len() + self.staged_files.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    pub fn get_processed_file(&self) -> Option<(String, Uid)> {
+        self.processed_files.first().cloned()
+    }
+
+    pub fn get_chunk_uid(&self) -> Option<Uid> {
+        self.chunks.first().cloned()
     }
 }
 

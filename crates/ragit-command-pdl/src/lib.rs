@@ -1,5 +1,6 @@
 use ragit_pdl::render_pdl_schema;
-use ragit_index_io::prelude::ApiError;
+use ragit_error::ApiError;
+use ragit_index_core::load_index_from_path;
 use ragit_utils::ragit_path_utils::join;
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;

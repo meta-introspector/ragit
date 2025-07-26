@@ -3,7 +3,7 @@ use ragit_api::prelude::*;
 use ragit_types::prelude::*;
 //use ragit_index_io::load_index_from_path;
 //use ragit_index_io::index_struct::load_index_from_path;
-use ragit_index_core::index_struct::Index;
+use ragit_index_types::index_struct::Index;
 use ragit_index_core::load_index_from_path;
 
 //use ragit_index_core::Index;

@@ -1,8 +1,8 @@
-use crate::prelude::*;
+use ragit_utils::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::load_index_from_path;
-use ragit_index_core::{Index, LoadMode};
+use ragit_index_core::load_index_from_path;
+use ragit_index_core::index_struct::Index;
 use ragit_utils::project_root::find_root;
 use ragit_query::query_helpers::{uid_query, UidQueryConfig};
 use std::path::PathBuf;
@@ -43,8 +43,8 @@ pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), anyhow::Error
         }
         index.list_chunks(
             &|_| true,  // no filter
-            &|c| c,  // no map
-            &|chunk| chunk.source.sortable_string(),  // sort by source
+            &|c| c.clone(),  // no map
+            &|chunk| chunk.title.clone(),  // sort by title
         )?
     } else {
         let query = uid_query(&index, &args, UidQueryConfig::new().file_or_chunk_only())?;
@@ -65,18 +65,18 @@ pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), anyhow::Error
         if chunks.is_empty() {
             return Err(anyhow::anyhow!(CliError::new_message(format!("There's no chunk/file that matches `{}`.", args.join(" ")))));
         }
-        chunks
+        chunks.into_iter().map(|c| c.into()).collect()
     };
 
     if json_mode {
         if uid_only {
-            println!("{}", serde_json::to_string_pretty(&chunks.iter().map(|c| c.uid).collect::<Vec<_>>())?);
+            println!("{}", serde_json::to_string_pretty(&chunks.iter().map(|c| c.title.clone()).collect::<Vec<_>>())?);
         } else {
             println!("{}", serde_json::to_string_pretty(&chunks)?);
         }
     } else if uid_only {
         for chunk in chunks {
-            println!("{}", chunk.uid);
+            println!("{}", chunk.title);
         }
     }
 

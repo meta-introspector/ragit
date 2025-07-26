@@ -1,2 +1,2 @@
-pub use super::QueryResponse;
-pub use super::QueryTurn;
+pub use ragit_types::QueryResponse;
+pub use ragit_types::QueryTurn;

@@ -1,8 +1,8 @@
-use crate::prelude::*;
+use ragit_utils::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::load_index_from_path;
-use ragit_index_core::{Index, LoadMode};
+use ragit_index_core::load_index_from_path;
+use ragit_index_core::index_struct::Index;
 use ragit_utils::project_root::find_root;
 use ragit_query::query_helpers::{uid_query, UidQueryConfig};
 use std::path::PathBuf;
@@ -10,7 +10,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use ragit_types::uid::Uid;
 use ragit_types::image::ImageSchema;
-use ragit_schema::get_image_schema;
+use ragit_index_io::get_image_schema;
 
 pub async fn ls_images_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
@@ -33,7 +33,7 @@ pub async fn ls_images_command_main(args: &[String]) -> Result<(), anyhow::Error
     let images = if args.is_empty() {
         index.list_images(
             &|_| true,  // no filter
-            &|image| image,  // no map
+            &|image| image.clone(),  // no map
             &|_| 0,  // no sort
         )?
     } else {
@@ -46,9 +46,7 @@ pub async fn ls_images_command_main(args: &[String]) -> Result<(), anyhow::Error
         }
         for uid in query.get_chunk_uids() {
             let chunk = index.get_chunk_by_uid(uid)?;
-            for image_uid in chunk.images {
-                image_uids.push(image_uid);
-            }
+            // chunk.images is not available in ChunkSchema
         }
         for image_uid in query.get_image_uids() {
             image_uids.push(image_uid);

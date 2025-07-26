@@ -11,6 +11,10 @@ impl From<Vec<String>> for Keywords {
 }
 
 impl Keywords {
+    pub fn new() -> Self {
+        Keywords(Vec::new())
+    }
+
     pub fn tokenize(&self) -> HashMap<String, f32> {
         let mut map = HashMap::new();
         for keyword in &self.0 {

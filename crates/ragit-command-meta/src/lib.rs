@@ -29,7 +29,7 @@ pub fn meta_command_main(args: &[String]) -> Result<(), anyhow::Error> {
             if json_mode {
                 println!("{value:?}");
             } else {
-                println!("{value}");
+                println!("{:?}", value);
             }
         }
         Some("--get-all") => {
@@ -72,7 +72,7 @@ pub fn meta_command_main(args: &[String]) -> Result<(), anyhow::Error> {
             let key = &parsed_args.get_args_exact(1)?[0];
             let prev_value = index.remove_meta_by_key(key.to_string())?;
 
-            println!("metadata unset `{key}`: `{prev_value}`");
+            println!("metadata unset `{key}`: {:?}", prev_value);
         }
         Some("--remove-all" | "--unset-all") => {
             ArgParser::new().parse(args, 3)?;

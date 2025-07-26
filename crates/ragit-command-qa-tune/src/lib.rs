@@ -1,7 +1,7 @@
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
-use ragit_qa_system::ModelQAResult;
+use ragit_model_query_response::ModelQAResult;
 use ragit_fs::{read_string, write_string, WriteMode};
 use ragit_utils::cli_types::CliError;
 

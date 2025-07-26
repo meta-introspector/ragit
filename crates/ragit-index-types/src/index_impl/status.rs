@@ -2,8 +2,8 @@ use crate::index_struct::Index;
 use ragit_error::ApiError;
 
 impl Index {
-    pub fn status(&self) -> Result<String, ApiError> {
+    pub fn status(&self) -> Result<(), ApiError> {
         eprintln!("Placeholder for status");
-        Ok("Placeholder status".to_string())
+        Ok(())
     }
 }

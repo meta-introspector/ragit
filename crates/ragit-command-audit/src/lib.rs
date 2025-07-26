@@ -101,33 +101,7 @@ fn print_single_category(
     };
 
     if args.json_mode {
-        println!(
-            "{{ \"category\": {category:?}{}{} }}",
-            if args.show_tokens {
-                format!(
-                    ", \"total tokens\": {}, \"input tokens\": {}, \"output tokens\": {}",
-                    audit.input_tokens + audit.output_tokens,
-                    audit.input_tokens,
-                    audit.output_tokens
-                )
-            } else {
-                String::new()
-            },
-            if args.show_tokens && args.show_costs {
-                ", "
-            } else {
-                ""
-            if args.show_costs {
-                format!(
-                    ", \"total cost\": {:.03}, \"input cost\": {:.03}, \"output cost\": {:.03}",
-                    (audit.input_cost + audit.output_cost) as f64 / 1_000_000.0,
-                    audit.input_cost as f64 / 1_000_000.0,
-                    audit.output_cost as f64 / 1_000_000.0
-                )
-            } else {
-                String::new()
-            }
-        );
+        println!
     } else {
         println!("category: {category}");
 

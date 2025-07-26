@@ -1,8 +1,8 @@
-use crate::prelude::*;
+use ragit_utils::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::load_index_from_path;
-use ragit_index_core::{Index, LoadMode};
+use ragit_index_core::load_index_from_path;
+use ragit_index_core::index_struct::Index;
 use ragit_utils::project_root::find_root;
 use ragit_query::query_helpers::{uid_query, UidQueryConfig};
 use std::path::PathBuf;
@@ -10,7 +10,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use ragit_types::uid::Uid;
 use ragit_types::file_schema::FileSchema;
-use ragit_schema::get_file_schema;
+use ragit_index_io::get_file_schema;
 
 pub async fn ls_files_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
@@ -64,11 +64,11 @@ pub async fn ls_files_command_main(args: &[String]) -> Result<(), anyhow::Error>
 
         index.list_files(
             &|f| (staged && !f.is_processed) || (processed && f.is_processed),
-            &|f| f,  // no map
+            &|f| f.clone(),  // no map
             &|f| f.path.to_string(),
         )?
     } else {
-        let query = uid_query(&index, &args, UidQueryConfig::new().file_only())?;
+        let query = uid_query(&index, &args, UidQueryConfig::new().file_uid_only())?;
         let mut files = vec![];
         let mut processed_files_len = 0;
         let mut staged_files_len = 0;
@@ -77,7 +77,7 @@ pub async fn ls_files_command_main(args: &[String]) -> Result<(), anyhow::Error>
             for (path, uid) in query.get_processed_files() {
                 processed_files_len += 1;
                 files.push(ragit_schema::get_file_schema(&index, Some(path), Some(uid))?);
-            n            }
+            }
         }
 
         if staged {

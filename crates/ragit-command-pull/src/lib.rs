@@ -19,7 +19,7 @@ pub async fn pull_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let index = load_index_from_path(&find_root()?)?;
+    let mut index = load_index_from_path(&find_root()?)?;
     let include_configs = parsed_args.get_flag(0).unwrap() == "--configs";
     let include_prompts = parsed_args.get_flag(1).unwrap() == "--prompts";
     let quiet = parsed_args.get_flag(2).is_some();

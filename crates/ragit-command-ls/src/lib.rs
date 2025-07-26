@@ -1,8 +1,9 @@
 pub mod commands;
 
 use anyhow::Error;
-use ragit_cli::prelude::*;
+use ragit_cli::{ArgParser, ArgType, ArgCount};
 use ragit_utils::prelude::*;
+use ragit_utils::doc_utils::get_doc_content;
 
 use crate::commands::ls_chunks::ls_chunks_command_main;
 use crate::commands::ls_files::ls_files_command_main;
@@ -20,7 +21,8 @@ pub async fn ls_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let command = parsed_args.get_args().get(0).map(|arg| arg.as_str());
+    let parsed_args_get_args = parsed_args.get_args();
+    let command = parsed_args_get_args.get(0).map(|arg| arg.as_str());
 
     match command {
         Some("chunks") => ls_chunks_command_main(args).await?,

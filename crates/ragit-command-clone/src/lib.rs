@@ -5,8 +5,8 @@ use ragit_utils::doc_utils::get_doc_content;
 use std::path::PathBuf;
 //use ragit_index_core::Index;
 //use ragit_index_io::index_struct::Index;
-use crate::prelude::Index;
-use crate::prelude::load_index_from_path;
+use ragit_index_types::index_struct::Index;
+use ragit_index_core::load_index_from_path;
 
 pub async fn clone_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()

@@ -1,8 +1,8 @@
-use crate::prelude::*;
+use ragit_utils::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::load_index_from_path;
-use ragit_index_core::{Index, LoadMode};
+use ragit_index_core::load_index_from_path;
+use ragit_index_core::index_struct::Index;
 use ragit_utils::project_root::find_root;
 use std::path::PathBuf;
 use serde_json::Value;
@@ -33,7 +33,7 @@ pub async fn ls_models_command_main(args: &[String]) -> Result<(), anyhow::Error
     let args = parsed_args.get_args();
     let index = load_index_from_path(&find_root()?)?;
     let mut models = list_models(
-        &find_root()?.join("models.json"),
+        &find_root()?.join("models.json").to_string_lossy(),
         &|_| true,  // no filter
         &|model| model,  // no map
         &|model| model.name.to_string(),
@@ -55,7 +55,7 @@ pub async fn ls_models_command_main(args: &[String]) -> Result<(), anyhow::Error
     } else if let Some(model) = args.get(0) {
         models = match get_model_by_name(&models, model) {
             Ok(model) => vec![model.clone()],
-            Err(ApiError::InvalidModelName { candidates, .. }) => {
+            Err(ragit_types::ApiError::InvalidModelName { candidates, .. }) => {
                 models.into_iter().filter(|model| candidates.contains(&model.name)).collect()
             }
             Err(_) => vec![],
