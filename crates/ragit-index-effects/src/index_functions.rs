@@ -100,9 +100,12 @@ pub async fn index_add_image_description(
 
 pub fn index_get_prompt(
     index: &Index,
-    name: &str,
+    prompt_name: &str,
 ) -> Result<String, ApiError> {
-    index.get_prompt(name)
+    match index.prompts.get(prompt_name) {
+        Some(prompt) => Ok(prompt.to_string()),
+        None => Err(ApiError::PromptMissing(prompt_name.to_string())),
+    }
 }
 
 pub fn index_api_config_get_api_usage(

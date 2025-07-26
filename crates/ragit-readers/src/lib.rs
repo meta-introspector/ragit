@@ -1,7 +1,9 @@
 use ragit_error::ApiError as Error;
-use ragit_error::ApiError as Error;
 use ragit_types::build_config::BuildConfig;
-use ragit_types::chunk::{AtomicToken, ChunkExtraInfo, Chunk, ChunkSchema};
+use ragit_types::chunk::atomic_token::AtomicToken;
+use ragit_types::chunk::chunk_extra_info::ChunkExtraInfo;
+use ragit_types::chunk::chunk_struct::Chunk;
+use ragit_types::chunk::chunk_schema::ChunkSchema;
 use ragit_types::uid::Uid;
 use ragit_types::image::Image;
 use ragit_pdl::MessageContent;
