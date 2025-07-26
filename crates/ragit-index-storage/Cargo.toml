@@ -1,10 +1,12 @@
 [package]
-name = "ragit-file-retrieval"
+name = "ragit-index-storage"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
+ragit-types = { path = "../ragit-types" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-error = { path = "../ragit-error" }
 ragit-fs = { path = "../fs" }
+ragit-index-types = { path = "../ragit-index-types" }

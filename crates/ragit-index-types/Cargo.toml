@@ -16,7 +16,6 @@ chrono = { version = "0.4", features = ["serde"] }
 serde_json = "1.0"
 ragit-tfidf = { path = "../ragit-tfidf" }
 tokio = { version = "1.0", features = ["full"] }
-ragit-index-io = { path = "../ragit-index-io" }
 ragit-file-retrieval = { path = "../ragit-file-retrieval" }
 
 ragit-ignore = { path = "../ignore" }
