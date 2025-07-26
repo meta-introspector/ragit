@@ -1,5 +1,6 @@
 use super::model_struct::Model;
-use ragit_types::ApiError as Error;
+use ragit_error::ApiError as Error;
+//use ragit_types::ApiError as Error;
 use crate::model_raw::ModelRaw;
 
 impl Model {

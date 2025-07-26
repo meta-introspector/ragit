@@ -41,10 +41,7 @@ pub enum ApiError {
     JsonSerdeError(#[from] serde_json::Error),
     #[error(transparent)]
     UidError(#[from] ragit_types::uid::UidError),
-    #[error(transparent)]
-    UtilsError(#[from] ragit_utils::error::Error),
-
-    /// see <https://docs.rs/tera/latest/tera/struct.Error.html>
+    
     
 
     #[error("wrong schema: {0}")]
@@ -86,8 +83,7 @@ pub enum ApiError {
     IndexExists(PathBuf),
     #[error("not implemented: {0}")]
     NotImplemented(String),
-    #[error(transparent)]
-    TypesApiError(#[from] ragit_types::api_error::ApiError),
+    
     #[error(transparent)]
     PdlError(#[from] ragit_pdl::Error),
     #[error(transparent)]

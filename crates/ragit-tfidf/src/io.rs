@@ -1,10 +1,10 @@
-use ragit_types::ApiError;
+//use ragit_types::ApiError;
 use ragit_types::processed_doc::ProcessedDoc;
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
 use flate2::{read::GzDecoder, write::GzEncoder, Compression};
 use ragit_types::chunk::chunk_struct::Chunk;
 use anyhow::Result;
-
+use ragit_error::ApiError;
 pub fn load_from_file(path: &str) -> Result<ProcessedDoc, ApiError> {
     let content = read_bytes(path)?;
     let mut gz = GzDecoder::new(&content[..]);

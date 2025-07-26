@@ -15,5 +15,6 @@ ragit-types = { path = "../ragit-types" }
 ragit-fs = { path = "../fs" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-pdl = { path = "../pdl" }
+ragit-error = { path = "../ragit-error" }
 
 

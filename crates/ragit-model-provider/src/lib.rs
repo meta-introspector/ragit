@@ -2,6 +2,10 @@ use ragit_error::ApiError as Error;
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq)]
+pub struct TestModel {
+    name: String
+}
+#[derive(Clone, Debug, PartialEq)]
 pub enum ModelProvider {
     OpenAi {
         url: String,

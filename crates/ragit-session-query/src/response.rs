@@ -1,5 +1,5 @@
 use crate::prelude::*;
-
+use ragit_error::ApiError as Error;
 pub trait IntoChatResponse {
     fn into_chat_response(&self) -> Result<Response, Error>;
 }
@@ -53,7 +53,7 @@ impl Response {
                 response.into_chat_response()
             }
             ApiProvider::Test(test_model) => {
-                let response_str = test_model.get_dummy_response(&vec![])?;
+                let response_str = test_model_get_dummy_response(&vec![])?;
                 Ok(Response::dummy(response_str))
             }
         }

@@ -1,6 +1,6 @@
 use super::model_struct::Model;
-use ragit_types::ApiError as Error;
-
+//use ragit_types::ApiError as Error;
+use ragit_error::ApiError as Error;
 impl Model {
     pub fn get_api_url(&self) -> Result<String, Error> {
         if self.api_provider_name == "test" {

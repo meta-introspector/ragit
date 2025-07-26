@@ -1,6 +1,7 @@
 use super::Model;
-use ragit_types::ApiError as Error;
 
+//use ragit_types::ApiError as Error;
+use ragit_error::ApiError as Error;
 pub fn get_model_by_name(models: &[Model], name: &str) -> Result<Model, Error> {
     let mut partial_matches = vec![];
 
