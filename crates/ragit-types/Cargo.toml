@@ -15,6 +15,6 @@ image = "0.25.1"
 anyhow = "1.0"
 base64 = "0.22.1"
 ragit-core = { path = "../ragit-core" }
+ragit-tfidf = { path = "../ragit-tfidf" }
 #// do not import ragit-utils
 #//ragit-utils = { path = "../ragit-utils" }
-

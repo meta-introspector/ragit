@@ -10,6 +10,11 @@ use ragit_api::Model;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+use ragit_error::ApiError;
+use ragit_types::Chunk;
+use ragit_tfidf;
+use ragit_index_io::file_retrieval_methods;
+
 
 /// This is a knowledge-base itself. I am trying my best to define a method
 /// for each command.
@@ -73,19 +78,13 @@ impl Index {
             models: Vec::new(),
         }
     }
-}
-use crate::prelude::*;
-use ragit_tfidf::load_from_file;
-use ragit_error::ApiError;
-use ragit_types::Chunk;
 
-impl Index {
     pub async fn load_all_chunks(&self) -> Result<Vec<Chunk>, ApiError> {
         let mut chunks = vec![];
 
-        for chunk_path in &ragit_index_chunk_methods::file_retrieval_methods::get_all_chunk_files(self)? {
-            // Assuming load_from_file returns a Chunk, not ProcessedDoc
-            chunks.push(ragit_tfidf::io::load_from_file(chunk_path.to_str().unwrap())?);
+        for chunk_path in &file_retrieval_methods::get_all_chunk_files(self)? {
+            eprintln!("Loading chunk from: {:?}", chunk_path);
+            chunks.push(Chunk::from(ragit_tfidf::io::load_from_file(chunk_path.to_str().unwrap())?));
         }
 
         Ok(chunks)
