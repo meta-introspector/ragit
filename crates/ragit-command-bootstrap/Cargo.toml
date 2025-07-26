@@ -1,0 +1,14 @@
+[package]
+name = "ragit-command-bootstrap"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+
+ragit-command-init = { path = "../ragit-command-init" }
+ragit-command-add = { path = "../ragit-command-add" }
+ragit-command-build = { path = "../ragit-command-build" }
+ragit-command-query = { path = "../ragit-command-query" }
+ragit-utils = { path = "../ragit-utils" }

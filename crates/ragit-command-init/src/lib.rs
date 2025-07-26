@@ -5,7 +5,7 @@ use ragit_utils::doc_utils::get_doc_content;
 use ragit_index_types::index_struct::Index;
 use ragit_utils::project_root::find_root;
 
-pub fn init_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+pub async fn init_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new().parse(args, 2)?;
 
     if parsed_args.show_help() {
