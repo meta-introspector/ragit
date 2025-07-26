@@ -1,3 +1,4 @@
+use ragit_index_types::load_mode::LoadMode;
 use ragit_index_types::index_struct::Index;
 use ragit_error::ApiError;
 use std::collections::HashMap;
@@ -13,6 +14,8 @@ use ragit_utils::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME, INDEX_FILE_NAME};
 use sha3::{Digest, Sha3_256};
 use ragit_types::chunk;
 use ragit_api::audit::AuditRecord;
+use ragit_types::ChunkBuildInfo;
+use ragit_tfidf::save_to_file;
 
 pub struct BuildResult {
     pub success: usize,
@@ -354,19 +357,19 @@ pub async fn build_chunks(
             )?;
             let parent_path = parent(image_path.as_path())?;
 
-            if !exists(path_utils::pathbuf_to_str(&parent_path)) {
-                try_create_dir(path_utils::pathbuf_to_str(&parent_path))?;
+            if !exists(parent_path.to_str().unwrap()) {
+                try_create_dir(parent_path.to_str().unwrap())?;
             }
 
             write_bytes(
-                path_utils::pathbuf_to_str(&image_path),
+                image_path.to_str().unwrap(),
                 &bytes,
                 WriteMode::Atomic,
             )?;
             index.add_image_description(*uid).await?;
         }
 
-        chunk::save_to_file(
+        save_to_file(
             &new_chunk_path,
             &new_chunk,
             index.build_config.compression_threshold,
@@ -432,7 +435,7 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
         // Be careful not to modify the index!
         let index = match Index::load(
             root_dir,
-            ragit_index_types::LoadMode::OnlyJson,
+            LoadMode::OnlyJson,
         ) {
             Ok(index) => index,
             Err(e) => {

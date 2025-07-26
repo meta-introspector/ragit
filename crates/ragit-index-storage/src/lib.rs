@@ -14,7 +14,7 @@ pub fn get_files_from_index_subdir(
         root_dir,
         &PathBuf::from(INDEX_DIR_NAME),
         &PathBuf::from(subdir_name),
-    )?;
+    ).map_err(|e| ApiError::Internal(format!("Failed to join paths: {}", e)))?;
 
     for internal in read_dir(base_path.to_str().unwrap(), false)? {
         if !is_dir(&internal) {

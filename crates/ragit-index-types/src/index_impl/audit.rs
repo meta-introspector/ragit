@@ -12,7 +12,9 @@ impl Index {
     ) -> Result<HashMap<String, AuditRecord>, ApiError> {
         let mut result = HashMap::new();
         let audit_path =
-            ragit_utils::ragit_path_utils::get_rag_path(&self.root_dir, &PathBuf::from("audit"))?.join("audit");
+            ragit_utils::ragit_path_utils::get_rag_path(&self.root_dir, &PathBuf::from("audit"))
+                .map_err(|e| ApiError::Internal(format!("Failed to get rag path: {}", e)))?
+                .join("audit");
         if !audit_path.exists() {
             return Ok(result);
         }
