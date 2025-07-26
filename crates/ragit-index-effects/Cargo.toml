@@ -10,6 +10,7 @@ ragit-index-types = { path = "../ragit-index-types" }
 ragit-error = { path = "../ragit-error" }
 ragit-fs = { path = "../fs" }
 ragit-utils = { path = "../ragit-utils" }
+ragit-model = { path = "../ragit-model" }
 ragit-tfidf = { path = "../ragit-tfidf" }
 ragit-api = { path = "../api" }
 serde = { version = "1.0", features = ["derive"] }

@@ -17,17 +17,13 @@ use ragit_api::audit::AuditRecord;
 use ragit_types::ChunkBuildInfo;
 use ragit_readers::FileReader;
 use ragit_model::Model;
-
-
+//use ragit_index_types::index_impl::{index_save_to_file, index_get_uid_path, index_get_data_path, index_remove, index_add_file_index, index_processed_files_insert, index_update_ii_buffer, index_flush_ii_buffer, index_reset_uid, index_calculate_and_save_uid, index_get_model_by_name, index_add_image_description, index_api_config_get_api_usage};
+//use ragit_index_types::index_uid::uid_new_file;
+use ragit_index_types::index_get_prompt;
+//use ragit_index_types::index_impl::{index_save_to_file, index_get_uid_path, index_get_data_path, index_remove, index_add_file_index, index_processed_files_insert, index_update_ii_buffer, index_flush_ii_buffer, index_reset_uid, index_calculate_and_save_uid, index_get_model_by_name, index_add_image_description, index_api_config_get_api_usage};
+//use ragit_index_types::index_uid::uid_new_file;
+//use ragit_index_types::index_get_prompt;
 use ragit_tfidf::save_to_file;
-
-
-pub struct BuildResult {
-    pub success: usize,
-
-    /// Vec<(file, error)>
-    pub errors: Vec<(PathBuf, String)>,
-}
 
 pub async fn build_worker(
     index: &mut Index,
@@ -155,7 +151,7 @@ pub async fn build_worker(
                     },
                     Response::Error(e) => {
                         if let Some(file) = curr_processing_file.get(&worker_index) {
-                            errors.push((file.display().to_string(), format!("{e:?}")));
+                            errors.push((file.clone(), format!("{e:?}")));
 
                             // clean up garbages of the failed file
                             let chunk_uids = buffer.get(file).unwrap().iter().map(
@@ -225,7 +221,7 @@ pub async fn build_worker(
                         false,  // auto
                         false,  // staged
                         true,   // processed
-                    )?;
+                    ).await?;
                 }
 
                 let file_uid = uid_new_file(&index.root_dir.to_str().unwrap(), real_path.to_str().unwrap())?;
@@ -368,19 +364,16 @@ pub async fn build_chunks(
 
             write_bytes(
                 image_path.to_str().unwrap(),
-                &bytes,
+                bytes,
                 WriteMode::Atomic,
             )?;
             index_add_image_description(index,*uid).await?;
         }
 
         save_to_file(
-            &new_chunk_path,
+            new_chunk_path.to_str().unwrap(),
             &new_chunk,
-            index.build_config.compression_threshold,
-            index.build_config.compression_level,
-            &index.root_dir,
-            true,  // create tfidf
+            index.root_dir.to_str().unwrap(),
         )?;;
         tx_to_main.send(Response::ChunkComplete {
             file: file.clone(),
