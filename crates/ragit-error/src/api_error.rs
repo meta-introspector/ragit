@@ -83,6 +83,8 @@ pub enum ApiError {
     IndexExists(PathBuf),
     #[error("not implemented: {0}")]
     NotImplemented(String),
+    #[error("feature not enabled: {feature}, action: {action}")]
+    FeatureNotEnabled { feature: String, action: String },
     
     #[error(transparent)]
     PdlError(#[from] ragit_pdl::Error),

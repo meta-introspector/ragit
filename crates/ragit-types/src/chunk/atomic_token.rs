@@ -12,6 +12,16 @@ pub enum AtomicToken {
     ChunkExtraInfo(ChunkExtraInfo),
 }
 
+impl AtomicToken {
+    pub fn len(&self, image_size: usize) -> usize {
+        match self {
+            AtomicToken::String { char_len, .. } => *char_len,
+            AtomicToken::Image(_) | AtomicToken::WebImage { .. } => image_size,
+            AtomicToken::PageBreak | AtomicToken::ChunkExtraInfo(_) => 0,
+        }
+    }
+}
+
 pub fn escape_pdl_tokens(s: &str) -> String {
     s.to_string()
 }

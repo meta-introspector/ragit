@@ -4,12 +4,14 @@ use std::path::PathBuf;
 use ragit_utils::constant::INDEX_FILE_NAME;
 use ragit_types::uid::Uid;
 use ragit_types::ii_status::IIStatus;
-use ragit_types::chunk::RemoveResult;
+use ragit_types::RemoveResult;
+use std::collections::HashMap;
+use ragit_types::model::Model;
+use ragit_api::AuditRecord;
+use ragit_readers::FileReader;
 use ragit_utils::ragit_path_utils;
 
-pub fn index_save_to_file(index: &mut Index, path: PathBuf) -> Result<(), ApiError> {
-    index.save_to_file(path)
-}
+
 
 pub fn index_get_uid_path(
     index: &Index,
@@ -31,19 +33,17 @@ pub fn index_get_data_path(
 
 pub async fn index_remove(
     index: &mut Index,
-    path: PathBuf,
-    dry_run: bool,
-    recursive: bool,
-    auto: bool,
-    staged: bool,
-    processed: bool,
+    _path: PathBuf,
+    _dry_run: bool,
+    _recursive: bool,
+    _auto: bool,
+    _staged: bool,
+    _processed: bool,
 ) -> Result<RemoveResult, ApiError> {
-    index.remove(path, dry_run, recursive, auto, staged, processed).await
+    index.remove().await
 }
 
-pub fn uid_new_file(root_dir: &str, file_path: &str) -> Result<Uid, ApiError> {
-    Uid::new_file(root_dir, file_path)
-}
+
 
 pub fn index_add_file_index(
     index: &mut Index,

@@ -2,16 +2,16 @@ use ragit_error::ApiError as Error;
 use ragit_types::build_config::BuildConfig;
 use ragit_types::chunk::atomic_token::AtomicToken;
 use ragit_types::chunk::chunk_extra_info::ChunkExtraInfo;
-use ragit_types::chunk::chunk_struct::Chunk;
-use ragit_types::chunk::chunk_schema::ChunkSchema;
+use ragit_index_types::chunk::chunk_struct::Chunk;
+
 use ragit_types::uid::Uid;
 use ragit_types::image::Image;
-use ragit_pdl::MessageContent;
+
 use ragit_types::image::ImageType;
 use ragit_fs::extension;
 use std::collections::{HashMap, VecDeque};
-use url::Url;
-use ragit_index_types::index_struct::Index;
+
+
 
 
 pub mod image;
@@ -93,13 +93,13 @@ impl FileReader {
         &mut self,
         index: &ragit_index_types::index_struct::Index, // Assuming Index is here
         build_info: ragit_types::ChunkBuildInfo,
-        previous_turn: Option<(ragit_types::chunk::Chunk, ragit_types::chunk::ChunkSchema)>,
+        previous_turn: Option<(Chunk, ragit_types::chunk::chunk_schema::ChunkSchema)>,
         index_in_file: usize,
-    ) -> Result<ragit_types::chunk::Chunk, Error> {
+    ) -> Result<Chunk, Error> {
         let (tokens, chunk_extra_info) = self.next_chunk()?;
         let tokens = self.fetch_images_from_web(tokens)?; // Changed to sync for now
 
-        let chunk = ragit_types::chunk::Chunk::create_chunk_from(
+        let chunk = ragit_index_types::chunk::chunk_struct::Chunk::create_chunk_from(
             index,
             &tokens,
             self.rel_path.clone().into(),
