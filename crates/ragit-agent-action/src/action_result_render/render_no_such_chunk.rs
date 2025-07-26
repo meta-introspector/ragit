@@ -9,7 +9,7 @@ impl ActionResult {
         }
 
         else {
-            format!(constants::RENDER_NO_SUCH_CHUNK, query)
+            format!("{} {}", constants::RENDER_NO_SUCH_CHUNK, query)
         }
     }
 }

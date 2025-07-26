@@ -7,8 +7,8 @@ use ragit_types::prelude::*;
 use ragit_fs::create_dir;
 use ragit_fs::read_string;
 //use ragit_index_io::index_struct::{Index, load_index_from_path};
-use crate::prelude::Index;
-use crate::prelude::load_index_from_path;
+use ragit_index_types::index_struct::Index;
+use ragit_index_io::load_index_from_path;
 
 use ragit_pdl::parse_pdl_from_file;
 use ragit_utils::path_utils::str_to_pathbuf;

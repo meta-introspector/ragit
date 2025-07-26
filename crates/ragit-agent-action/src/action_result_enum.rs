@@ -5,7 +5,48 @@ use ragit_model_query_response::ModelQueryResponse;
 use ragit_agent::file_tree::FileTree;
 use crate::search_type_enum::SearchType;
 
-
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum ActionResult {
+    ReadFileShort {
+        rendered: String,
+        file_path: String,
+    },
+    ReadFileLong(Vec<Chunk>),
+    NoSuchFile {
+        file: String,
+        similar_files: Vec<String>,
+    },
+    ReadDir(FileTree),
+    NoSuchDir {
+        dir: String,
+        similar_dirs: Vec<String>,
+    },
+    ReadChunk(Chunk),
+    NoSuchChunk(String),
+    ReadChunkAmbiguous {
+        query: String,
+        chunks: Vec<Chunk>,
+    },
+    ReadChunkTooMany {
+        query: String,
+        chunk_uids: Vec<Uid>,
+    },
+    Search {
+        r#type: SearchType,
+        keyword: String,
+        chunks: Vec<Chunk>,
+    },
+    GetMeta {
+        key: String,
+        value: String,
+    },
+    NoSuchMeta {
+        key: String,
+        similar_keys: Vec<String>,
+    },
+    GetSummary(String),
+    SimpleRag(ModelQueryResponse),
+}
 
 impl ActionResult {
     pub fn render(&self) -> String {
@@ -35,7 +76,7 @@ impl ActionResult {
                 crate::action_result_render::render_read_chunk_ambiguous::render_read_chunk_ambiguous(query, chunks)
             }
             ActionResult::ReadChunkTooMany { query, chunk_uids } => {
-                crate::action_result_render::render_read_chunk_too_many::render_read_chunk_too_many(query, *chunk_uids)
+                crate::action_result_render::render_read_chunk_too_many::render_read_chunk_too_many(query, chunk_uids)
             }
             ActionResult::Search { r#type, keyword, chunks } => {
                 crate::action_result_render::render_search::render_search(r#type, keyword, chunks)
@@ -55,5 +96,3 @@ impl ActionResult {
         }
     }
 }
-
-

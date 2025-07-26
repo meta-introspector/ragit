@@ -9,7 +9,7 @@ impl ActionResult {
         }
 
         else {
-            format!(constants::RENDER_CHUNK_TOO_MANY_AMBIGUOUS, query, chunk_uids, query)
+            format!("{} {} {} {}", constants::RENDER_CHUNK_TOO_MANY_AMBIGUOUS, query, chunk_uids, query)
         }
     }
 }

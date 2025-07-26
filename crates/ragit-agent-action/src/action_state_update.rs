@@ -39,7 +39,7 @@ impl ActionState {
                 // will generate the argument.
                 else {
                     result_rendered =
-                    result_rendered = format!(constants::FORMAT_RESULT_RENDERED, result_rendered, action.get_instruction(index)?);
+                    result_rendered = format!("{} {} {}", constants::FORMAT_RESULT_RENDERED, result_rendered, action.get_instruction(index)?);
                 }
 
                 self.argument_turns.push(ArgumentTurn {
@@ -68,7 +68,7 @@ impl ActionState {
                 self.complete = true;
             } else {
                 result_rendered =
-                    result_rendered = format!(constants::FORMAT_RESULT_RENDERED, result_rendered, action.get_instruction(index)?);
+                    result_rendered = format!("{} {} {}", constants::FORMAT_RESULT_RENDERED, result_rendered, action.get_instruction(index)?);
             }
 
             self.argument_turns.push(ArgumentTurn {

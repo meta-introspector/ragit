@@ -1,4 +1,4 @@
-use crate::action_result_enum::ActionResult;
+use super::action_result_enum::ActionResult;
 use ragit_types::chunk::rendered_chunk::RenderedChunk;
 
 impl ActionResult {

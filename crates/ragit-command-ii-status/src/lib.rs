@@ -17,6 +17,7 @@ pub fn ii_status_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
+    use ragit_index_types::load_mode::LoadMode;
     let index = Index::load(find_root()?.into(), LoadMode::QuickCheck)?;
 
     let status = if index.ii_status.enabled {

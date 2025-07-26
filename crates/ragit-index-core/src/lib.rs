@@ -10,35 +10,29 @@ pub fn load_index_from_path(path: &PathBuf) -> Result<Index, ApiError> {
     Ok(index)
 }
 
-pub mod add_files;
-pub mod get_summary;
-pub mod get_ragit_version_info;
-pub mod migrate;
-pub mod summary;
-pub mod get_all_meta;
-pub mod dummy;
-pub mod retrieve_chunks;
-pub mod audit;
-pub mod config_methods;
-pub mod get_all_configs;
-pub mod set_config_by_key;
-pub mod get_path;
-pub mod get_meta_by_key;
-pub mod remove_meta_by_key;
-pub mod remove_all_meta;
-pub mod status;
-pub mod remove_files;
-pub mod list_files;
-pub mod list_chunks;
-pub mod list_images;
-pub mod get_image_schema;
-pub mod get_file_schema;
-pub mod get_chunks_of_file;
-pub mod get_images_of_file;
-pub mod get_tfidf_by_file_uid;
-pub mod get_tfidf_by_chunk_uid;
-pub mod get_chunk_by_uid;
-pub mod get_merged_chunk_of_file;
-pub mod read_ignore_file_command;
-pub mod get_initial_models;
-pub mod load_config_from_home;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
