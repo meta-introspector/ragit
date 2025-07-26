@@ -11,6 +11,7 @@ ragit-utils = { path = "../ragit-utils" }
 ragit-fs = { path = "../fs" }
 ragit-command-init = { path = "../ragit-command-init" }
 glob = "0.3"
+ragit-index-types = { path = "../ragit-index-types" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

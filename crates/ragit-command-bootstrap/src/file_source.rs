@@ -17,11 +17,13 @@ impl FileSource for StaticFileSource {
 
 pub struct CargoPackageFileSource {
     pub package_name: String,
+    pub project_root: String,
 }
 
 impl FileSource for CargoPackageFileSource {
     fn get_files(&self) -> Result<Vec<String>> {
         let output = Command::new("cargo")
+            .current_dir(&self.project_root)
             .arg("pkgid")
             .arg("--verbose")
             .arg(&self.package_name)
