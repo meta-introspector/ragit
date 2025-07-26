@@ -2,7 +2,7 @@ use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
 use ragit_types::add_mode::AddMode;
-use ragit_index_core::{Index, load_index_from_path};
+use ragit_index_core::add_files::add_files_command;
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_utils::cli_types::{CliError, Span};
@@ -51,16 +51,16 @@ pub async fn add_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         )));
     }
 
-    let result = index
-        .add_files_command(
-            &files,
-            add_mode.clone(),
-            dry_run || add_mode.clone() == Some(AddMode::Reject),
-        )
-        .await?;
+    let result = add_files_command(
+        &mut index,
+        &files,
+        add_mode.clone(),
+        dry_run || add_mode.clone() == Some(AddMode::Reject),
+    )
+    .await?;
 
     if add_mode.clone() == Some(AddMode::Reject) && !dry_run {
-        index.add_files_command(&files, add_mode, dry_run).await?;
+        add_files_command(&mut index, &files, add_mode, dry_run).await?;
     }
 
     println!("{result}");
