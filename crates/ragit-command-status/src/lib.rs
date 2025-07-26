@@ -1,7 +1,7 @@
 use ragit_utils::prelude::*;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_utils::project_root::find_root;
-use ragit_index_types::index_struct::Index;
+use ragit_index_core::Index;
 use ragit_index_core::load_index_from_path;
 
 pub fn status_command_main(args: &[String]) -> Result<(), anyhow::Error> {
