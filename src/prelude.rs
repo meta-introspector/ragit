@@ -8,7 +8,7 @@ pub use crate::constant::{
 pub use async_recursion::async_recursion;
 pub use chrono::{Days, Local};
 pub use lazy_static::lazy_static;
-pub use ragit_api::{
+pub use ragit_cli::{
     Model, ModelRaw, Request, get_model_by_name,
 };
 // ModelQAResult, ModelQASystem, QualityScores are not directly exposed by ragit_api

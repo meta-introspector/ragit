@@ -1,7 +1,7 @@
 use async_recursion::async_recursion;
 use chrono::{Days, Local};
 
-use ragit_api::{
+use ragit_cli::{
     Model, ModelRaw, Request, get_model_by_name,
 };
 // ModelQAResult, ModelQASystem, QualityScores are not directly exposed by ragit_api

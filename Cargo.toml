@@ -7,10 +7,6 @@ description = "git-like rag pipeline"
 repository = "https://github.com/baehyunsol/ragit"
 documentation = "https://docs.rs/ragit"
 
-[[bin]]
-name = "rag"
-path = "crates/ragit-commands/src/main.rs"
-
 [workspace]
 members = [
     "crates/cli",
@@ -22,7 +18,6 @@ members = [
     "crates/ragit-utils",
     "crates/ragit-schema",
     "crates/ragit-uid",
-    "crates/ragit-commands",
     "crates/ragit-core-utils",
     "crates/ragit-types",
     "crates/ragit-core",
