@@ -1,5 +1,4 @@
-use ragit_types::ApiError as Error;
-use ragit_types::TestModel;
+use ragit_error::ApiError as Error;
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq)]

@@ -6,13 +6,23 @@ use std::path::PathBuf;
 use ragit_index_storage;
 use ragit_tfidf;
 
-pub async fn load_all_chunks(root_dir: &PathBuf) -> Result<Vec<Chunk>, ApiError> {
-    let mut chunks = vec![];
+pub struct StorageManager {
+    root_dir: PathBuf,
+}
 
-    for chunk_path in &ragit_index_storage::get_all_chunk_files(root_dir)? {
-        eprintln!("Loading chunk from: {:?}", chunk_path);
-        chunks.push(Chunk::from(ragit_tfidf::io::load_from_file(chunk_path.to_str().unwrap())?));
+impl StorageManager {
+    pub fn new(root_dir: PathBuf) -> Self {
+        Self { root_dir }
     }
 
-    Ok(chunks)
+    pub async fn load_all_chunks(&self) -> Result<Vec<Chunk>, ApiError> {
+        let mut chunks = vec![];
+
+        for chunk_path in &ragit_index_storage::get_all_chunk_files(&self.root_dir)? {
+            eprintln!("Loading chunk from: {:?}", chunk_path);
+            chunks.push(Chunk::from(ragit_tfidf::io::load_from_file(chunk_path.to_str().unwrap())?));
+        }
+
+        Ok(chunks)
+    }
 }

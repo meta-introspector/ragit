@@ -92,6 +92,10 @@ pub enum ApiError {
     PdlError(#[from] ragit_pdl::Error),
     #[error(transparent)]
     TeraError(#[from] tera::Error),
+    #[error("mpsc error: {0}")]
+    MPSCError(String),
+    #[error("internal error: {0}")]
+    Internal(String),
 }
 
 #[derive(Debug, Error)]

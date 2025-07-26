@@ -1,4 +1,4 @@
-pub use ragit_types::ApiError as ApiError;
+use ragit_error::ApiError;
 pub use ragit_fs::FileError;
 pub use ragit_pdl::JsonType;
 use ragit_types::uid::Uid;
