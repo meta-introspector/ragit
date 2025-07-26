@@ -38,6 +38,7 @@ members = [
     "crates/ragit-command-query",
     "crates/ragit-command-bootstrap",
     "crates/ragit-index-effects",
+    "crates/ragit-chunk",
 ]
 exclude = [
     "crates/server",

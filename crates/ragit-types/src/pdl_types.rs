@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use base64::Engine;
+use crate::chunk::atomic_token::AtomicToken;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum MessageContent {
     String(String),
-    Image { image_type: ImageType, bytes: Vec<u8> },
+    Image { image_type: crate::image::image_struct::ImageType, bytes: Vec<u8> },
 }
 
 impl MessageContent {
@@ -87,6 +88,21 @@ impl From<PdlRole> for Role {
             PdlRole::System => Role::System,
             PdlRole::Reasoning => Role::Reasoning,
             PdlRole::Schema => panic!("Schema role cannot be converted to Role"),
+        }
+    }
+}
+
+impl From<AtomicToken> for MessageContent {
+    fn from(token: AtomicToken) -> Self {
+        match token {
+            AtomicToken::String { data, .. } => MessageContent::String(data),
+            AtomicToken::Image(image) => MessageContent::Image {
+                image_type: image.image_type,
+                bytes: image.bytes,
+            },
+            AtomicToken::WebImage { subst, .. } => MessageContent::String(subst),
+            AtomicToken::PageBreak => MessageContent::String(String::new()),
+            AtomicToken::ChunkExtraInfo(_) => MessageContent::String(String::new()),
         }
     }
 }

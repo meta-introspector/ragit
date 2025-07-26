@@ -3,6 +3,7 @@ use ragit_types::build_config::BuildConfig;
 use ragit_types::chunk::atomic_token::AtomicToken;
 use ragit_types::chunk::chunk_extra_info::ChunkExtraInfo;
 use ragit_index_types::chunk::chunk_struct::Chunk;
+use ragit_chunk;
 
 use ragit_types::uid::Uid;
 use ragit_types::image::Image;
@@ -99,7 +100,7 @@ impl FileReader {
         let (tokens, chunk_extra_info) = self.next_chunk()?;
         let tokens = self.fetch_images_from_web(tokens)?; // Changed to sync for now
 
-        let chunk = ragit_index_types::chunk::chunk_struct::Chunk::create_chunk_from(
+        let chunk = ragit_chunk::create_chunk_from(
             index,
             &tokens,
             self.rel_path.clone().into(),

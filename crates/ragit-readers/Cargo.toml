@@ -16,3 +16,4 @@ ragit-error = { path = "../ragit-error" }
 ragit-pdl = { path = "../pdl" }
 url = "2.5.0"
 ragit-index-types = { path = "../ragit-index-types" }
+ragit-chunk = { path = "../ragit-chunk" }

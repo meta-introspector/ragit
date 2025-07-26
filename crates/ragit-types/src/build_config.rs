@@ -7,6 +7,8 @@ pub struct BuildConfig {
     pub slide_len: usize,
     pub compression_threshold: u64,
     pub compression_level: u32,
+    pub min_summary_len: usize,
+    pub max_summary_len: usize,
     pub summary_after_build: bool,
     pub strict_file_reader: bool,
 }
