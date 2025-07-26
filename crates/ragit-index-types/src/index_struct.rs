@@ -56,39 +56,23 @@ pub struct Index {
 }
 
 impl Index {
-    pub fn get_summary(&self) -> Option<&str> {
-        self.summary.as_ref().map(|s| s.content.as_str())
-    }
-
-    pub fn get_ragit_version_info(&self) -> VersionInfo {
-        // Placeholder implementation
-        VersionInfo {
-            version: self.ragit_version.clone(),
-            compatible: true, // Assume compatible for now
+    pub fn new(root_dir: PathBuf) -> Self {
+        Self {
+            ragit_version: env!("CARGO_PKG_VERSION").to_string(),
+            chunk_count: 0,
+            staged_files: Vec::new(),
+            processed_files: HashMap::new(),
+            curr_processing_file: None,
+            repo_url: None,
+            ii_status: IIStatus::default(),
+            uid: None,
+            summary: None,
+            root_dir,
+            build_config: BuildConfig::default(),
+            query_config: QueryConfig::default(),
+            api_config: ApiConfig::default(),
+            prompts: HashMap::new(),
+            models: Vec::new(),
         }
     }
-
-    pub fn migrate(&mut self, to_version: String) -> Result<(), ApiError> {
-        // Placeholder implementation
-        eprintln!("Migrating to version: {}", to_version);
-        // In a real scenario, this would contain logic to migrate the index data
-        // based on the `to_version`.
-        Ok(())
-    }
-
-    pub async fn summary(&mut self, mode: Option<SummaryMode>) -> Result<Option<String>, ApiError> {
-        // Placeholder implementation for summary generation
-        eprintln!("Generating summary with mode: {:?}", mode);
-        // In a real scenario, this would involve LLM calls to generate the summary.
-        // For now, let's return a dummy summary.
-        self.summary = Some(Summary { content: String::from("This is a generated summary.") });
-        Ok(self.summary.clone().map(|s| s.content))
-    }
-
-    pub fn get_all_meta(&self) -> Result<HashMap<String, String>, ApiError> {
-        let result = HashMap::new();
-
-        Ok(result)
-    }
-
 }

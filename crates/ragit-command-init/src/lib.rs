@@ -2,7 +2,8 @@ use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_core::index_struct::Index;
+use ragit_index_types::index_struct::Index;
+use ragit_utils::project_root::find_root;
 
 pub fn init_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new().parse(args, 2)?;
@@ -12,11 +13,9 @@ pub fn init_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    match Index::dummy() {
-        _ => {
-            println!("initialized");
-        }
-    }
+    let index = Index::new(find_root()?);
+    // TODO: Save the index to disk
+    println!("initialized");
 
     Ok(())
 }

@@ -1,6 +1,6 @@
-use ragit_index_types::index_struct::Index;
+use crate::index_struct::Index;
 use ragit_error::ApiError;
-use ragit_types::ChunkSchema;
+use ragit_types::chunk::chunk_schema::ChunkSchema;
 
 impl Index {
     pub fn list_chunks<F, M, S>(

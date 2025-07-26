@@ -1,4 +1,4 @@
-use ragit_index_types::index_struct::Index;
+use crate::index_struct::Index;
 use std::path::PathBuf;
 use std::collections::HashMap;
 use ragit_types::ii_status::IIStatus;

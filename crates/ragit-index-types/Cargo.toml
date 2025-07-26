@@ -12,3 +12,9 @@ ragit-utils = { path = "../ragit-utils" }
 ragit-error = { path = "../ragit-error" }
 ragit-config = { path = "../ragit-config" }
 ragit-api = { path = "../api" }
+chrono = { version = "0.4", features = ["serde"] }
+serde_json = "1.0"
+ragit-tfidf = { path = "../ragit-tfidf" }
+tokio = { version = "1.0", features = ["full"] }
+
+ragit-ignore = { path = "../ignore" }

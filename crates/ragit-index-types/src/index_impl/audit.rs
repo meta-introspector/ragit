@@ -1,4 +1,4 @@
-use ragit_index_types::index_struct::Index;
+use crate::index_struct::Index;
 use ragit_error::ApiError;
 use std::collections::HashMap;
 use chrono::{Local, DateTime, Utc};

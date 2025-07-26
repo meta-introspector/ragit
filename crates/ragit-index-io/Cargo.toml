@@ -11,7 +11,7 @@ regex = "*"
 ragit-api = { path = "../api" }
 ragit-config = { path = "../ragit-config" }
 ragit-error = { path = "../ragit-error" }
-ragit-fs = { path = "../fs" }
+ragit-fs = { path = "../fs", features = ["diff"] }
 ragit-index-types = { path = "../ragit-index-types" }
 ragit-pdl = { path = "../pdl" }
 ragit-prompt-management = { path = "../ragit-prompt-management" }

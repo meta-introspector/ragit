@@ -1,6 +1,6 @@
-use ragit_index_types::index_struct::Index;
+use crate::index_struct::Index;
 use ragit_error::ApiError;
-use ragit_types::ignore::Ignore;
+use ragit_ignore::Ignore;
 
 impl Index {
     pub fn read_ignore_file_command(&self, root_dir: &str) -> Result<Ignore, ApiError> {
