@@ -1,5 +1,32 @@
 
 
+pub mod save_to_file;
+pub use save_to_file::index_save_to_file;
+pub mod get_uid_path;
+pub use get_uid_path::index_get_uid_path;
+pub mod get_data_path;
+pub use get_data_path::index_get_data_path;
+pub mod remove;
+pub use remove::index_remove;
+pub mod add_file_index;
+pub use add_file_index::index_add_file_index;
+pub mod processed_files_insert;
+pub use processed_files_insert::index_processed_files_insert;
+pub mod update_ii_buffer;
+pub use update_ii_buffer::index_update_ii_buffer;
+pub mod flush_ii_buffer;
+pub use flush_ii_buffer::index_flush_ii_buffer;
+pub mod reset_uid;
+pub use reset_uid::index_reset_uid;
+pub mod calculate_and_save_uid;
+pub use calculate_and_save_uid::index_calculate_and_save_uid;
+pub mod get_model_by_name;
+pub use get_model_by_name::index_get_model_by_name;
+pub mod add_image_description;
+pub use add_image_description::index_add_image_description;
+pub mod api_config_get_api_usage;
+pub use api_config_get_api_usage::index_api_config_get_api_usage;
+
 pub mod audit;
 pub mod build;
 pub mod build_ii;
@@ -34,18 +61,4 @@ pub mod pull;
 pub mod push;
 pub mod qa_test;
 pub mod qa_tune;
-pub mod remove;
-pub mod remove_files;
-pub mod remove_meta_by_key;
-pub mod set_meta_by_key;
-pub mod remove_all_local_models;
-pub mod remove_local_model;
-pub mod fetch_all_remote_models;
-pub mod fetch_remote_models;
-// pub mod retrieve_chunks;
-pub mod set_config_by_key;
-pub mod reset_ii;
-pub mod query;
-pub mod status;
-pub mod summary;
-pub mod version;
+

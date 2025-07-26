@@ -1,10 +1,16 @@
 use crate::index_struct::Index;
 use ragit_error::ApiError;
-use ragit_types::remove_result::RemoveResult;
+use std::path::PathBuf;
+use ragit_types::RemoveResult;
 
-impl Index {
-    pub async fn remove(&mut self) -> Result<RemoveResult, ApiError> {
-        eprintln!("Placeholder for remove");
-        Ok(RemoveResult::default())
-    }
+pub async fn index_remove(
+    index: &mut Index,
+    _path: PathBuf,
+    _dry_run: bool,
+    _recursive: bool,
+    _auto: bool,
+    _staged: bool,
+    _processed: bool,
+) -> Result<RemoveResult, ApiError> {
+    index.remove().await
 }

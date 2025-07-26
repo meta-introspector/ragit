@@ -12,6 +12,8 @@ pub mod ragit_path_utils;
 pub mod index;
 pub mod chunk;
 pub mod path_utils;
+pub mod uid_helpers;
+pub use uid_helpers::uid_new_file;
 
 pub mod version_info;
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

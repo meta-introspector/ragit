@@ -9,6 +9,5 @@ serde_json = "1.0"
 anyhow = "1.0"
 ragit-fs = { path = "../fs" }
 ragit-types = { path = "../ragit-types" }
-
 ragit-pdl = { path = "../pdl" }
 tera = "1.19"

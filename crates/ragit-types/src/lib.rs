@@ -33,3 +33,5 @@ pub mod build_config;
 pub mod query_config;
 pub mod query_turn;
 pub use query_turn::{QueryTurn, QueryResponse};
+pub mod file_error;
+pub use file_error::{FileError, FileErrorKind};
