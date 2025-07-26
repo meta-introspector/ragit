@@ -1,7 +1,7 @@
 use crate::index_struct::Index;
 use ragit_error::ApiError;
 use ragit_types::uid::Uid;
-use ragit_tfidf::ProcessedDoc;
+use ragit_types::processed_doc::ProcessedDoc;
 
 impl Index {
     pub fn get_tfidf_by_chunk_uid(

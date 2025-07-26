@@ -7,8 +7,7 @@ use ragit_types::uid::Uid;
 use ragit_utils::query::Keywords;
 use anyhow::Result;
 
-pub mod processed_doc;
-pub use processed_doc::ProcessedDoc;
+use ragit_types::processed_doc::ProcessedDoc;
 pub mod io;
 pub use io::{load_from_file, save_to_file};
 

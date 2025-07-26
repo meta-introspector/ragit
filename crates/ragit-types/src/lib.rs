@@ -18,6 +18,7 @@ pub mod add_mode;
 pub use add_mode::{AddMode, AddResult};
 pub mod remove_result;
 pub use remove_result::RemoveResult;
+pub mod processed_doc;
 
 pub use crate::uid::Uid;
 pub use crate::image::ImageSchema;

@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use ragit_error::ApiError;
 use ragit_types::Chunk;
 use ragit_tfidf;
-use ragit_index_io::file_retrieval_methods;
+
 
 
 /// This is a knowledge-base itself. I am trying my best to define a method
@@ -82,7 +82,7 @@ impl Index {
     pub async fn load_all_chunks(&self) -> Result<Vec<Chunk>, ApiError> {
         let mut chunks = vec![];
 
-        for chunk_path in &file_retrieval_methods::get_all_chunk_files(self)? {
+        for chunk_path in &ragit_file_retrieval::get_all_chunk_files(self)? {
             eprintln!("Loading chunk from: {:?}", chunk_path);
             chunks.push(Chunk::from(ragit_tfidf::io::load_from_file(chunk_path.to_str().unwrap())?));
         }

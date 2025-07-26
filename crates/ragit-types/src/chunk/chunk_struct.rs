@@ -3,7 +3,7 @@ use crate::uid::Uid;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use ragit_tfidf::ProcessedDoc;
+use crate::processed_doc::ProcessedDoc;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChunkBuildInfo {
