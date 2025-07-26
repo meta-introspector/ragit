@@ -66,7 +66,7 @@ pub async fn build_worker(
         }
     }
 
-    index.save_to_file(index.root_dir.join(INDEX_FILE_NAME).into())?;
+    index_save_to_file(index, index.root_dir.join(INDEX_FILE_NAME).into())?;
     let mut has_to_erase_lines = false;
 
     loop {
@@ -158,7 +158,7 @@ pub async fn build_worker(
                             ).collect::<Vec<_>>();
 
                             for chunk_uid in chunk_uids.iter() {
-                                let chunk_path = index.get_uid_path(
+                                let chunk_path = index_get_uid_path(index,
                                     index.root_dir.to_str().unwrap(),
                                     CHUNK_DIR_NAME,
                                     *chunk_uid,
@@ -207,13 +207,13 @@ pub async fn build_worker(
             let mut ii_buffer = HashMap::new();
 
             for file in curr_completed_files.iter() {
-                let real_path = index.get_data_path(
+                let real_path = index_get_data_path(index,
                     &index.root_dir,
                     &file.to_path_buf(),
                 )?;
 
                 if index.processed_files.contains_key(file) {
-                    index.remove(
+                    index_remove(index,
                         real_path.clone().into(),
                         false,  // dry run
                         false,  // recursive
@@ -223,19 +223,19 @@ pub async fn build_worker(
                     )?;
                 }
 
-                let file_uid = Uid::new_file(&index.root_dir.to_str().unwrap(), real_path.to_str().unwrap())?;
+                let file_uid = uid_new_file(&index.root_dir.to_str().unwrap(), real_path.to_str().unwrap())?;
                 let mut chunk_uids = buffer.get(file).unwrap().iter().map(
                     |(chunk_index, uid)| (*chunk_index, *uid)
                 ).collect::<Vec<_>>();
                 chunk_uids.sort_by_key(|(chunk_index, _)| *chunk_index);
                 let chunk_uids = chunk_uids.into_iter().map(|(_, chunk_uid)| chunk_uid).collect::<Vec<_>>();
-                index.add_file_index(file_uid, &chunk_uids)?;
-                index.processed_files.insert(file.clone(), file_uid);
+                index_add_file_index(index,file_uid, &chunk_uids)?;
+                index_processed_files_insert(index,file.clone(), file_uid);
 
                 match index.ii_status {
                     IIStatus::Complete => {
                         for chunk_uid in chunk_uids.iter() {
-                            index.update_ii_buffer(&mut ii_buffer, *chunk_uid)?;
+                            index_update_ii_buffer(index,&mut ii_buffer, *chunk_uid)?;
                         }
                     },
                     IIStatus::Ongoing(_)
@@ -249,12 +249,12 @@ pub async fn build_worker(
             }
 
             if let IIStatus::Complete = index.ii_status {
-                index.flush_ii_buffer(ii_buffer)?;
+                index_flush_ii_buffer(index,ii_buffer)?;
             }
 
             index.chunk_count += buffered_chunk_count;
-            index.reset_uid(false /* save to file */)?;
-            index.save_to_file(index.root_dir.join(INDEX_FILE_NAME).into())?;
+            index_reset_uid(index,false /* save to file */)?;
+            index_save_to_file(index, index.root_dir.join(INDEX_FILE_NAME).into())?;
 
             buffered_chunk_count = 0;
             curr_completed_files = vec![];
@@ -281,8 +281,8 @@ pub async fn build_worker(
     }
 
     index.curr_processing_file = None;
-    index.save_to_file(index.root_dir.join(INDEX_FILE_NAME).into())?;
-    index.calculate_and_save_uid()?;
+    index_save_to_file(index, index.root_dir.join(INDEX_FILE_NAME).into())?;
+    index_calculate_and_save_uid(index)?;
 
     // 1. If there's an error, the knowledge-base is incomplete. We should not create a summary.
     // 2. If there's no success and no error and we already have a summary, then
@@ -309,7 +309,7 @@ pub async fn build_chunks(
     prompt_hash: String,
     tx_to_main: mpsc::UnboundedSender<Response>,
 ) -> Result<(), ApiError> {
-    let real_path = index.get_data_path(
+    let real_path = index_get_data_path(index,
         &index.root_dir,
         &file,
     )?;
@@ -327,7 +327,7 @@ pub async fn build_chunks(
         // different `api_config.model` might point to the same model,
         // but different `get_model_by_name().name` always refer to
         // different models
-        index.get_model_by_name(&index.api_config.model)?.name,
+        index_get_model_by_name(index, &index.api_config.model)?.name,
     );
     let mut index_in_file = 0;
     let mut previous_summary = None;
@@ -341,7 +341,7 @@ pub async fn build_chunks(
         ).await?;
         previous_summary = Some((new_chunk.clone(), (&new_chunk).into()));
         let new_chunk_uid = new_chunk.uid;
-        let new_chunk_path = index.get_uid_path(
+        let new_chunk_path = index_get_uid_path(index,
             index.root_dir.to_str().unwrap(),
             CHUNK_DIR_NAME,
             new_chunk_uid,
@@ -349,7 +349,7 @@ pub async fn build_chunks(
         )?;
 
         for (uid, bytes) in fd.images.iter() {
-            let image_path = index.get_uid_path(
+            let image_path = index_get_uid_path(index,
                 index.root_dir.to_str().unwrap(),
                 IMAGE_DIR_NAME,
                 *uid,
@@ -357,7 +357,7 @@ pub async fn build_chunks(
             )?;
             let parent_path = parent(image_path.as_path())?;
 
-            if !exists(parent_path.to_str().unwrap()) {
+            if !exists(&parent_path) {
                 try_create_dir(parent_path.to_str().unwrap())?;
             }
 
@@ -366,7 +366,7 @@ pub async fn build_chunks(
                 &bytes,
                 WriteMode::Atomic,
             )?;
-            index.add_image_description(*uid).await?;
+            index_add_image_description(index,*uid).await?;
         }
 
         save_to_file(
@@ -444,7 +444,7 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
                 return;
             },
         };
-        let prompt = match index.get_prompt("summarize") {
+        let prompt = match index_get_prompt(index,"summarize") {
             Ok(prompt) => prompt,
             Err(e) => {
                 let _ = tx_to_main.send(Response::Error(e));
@@ -537,7 +537,7 @@ pub fn render_build_dashboard(
     let mut input_cost_s = 0;
     let mut output_cost_s = 0;
 
-    match index.api_config.get_api_usage(&index.root_dir, "create_chunk_from") {
+    match index_api_config_get_api_usage(index,&index.root_dir, "create_chunk_from") {
         Ok(api_records) => {
             for AuditRecord { input_tokens, output_tokens, input_cost, output_cost } in api_records.values() {
                 input_tokens_s += input_tokens;

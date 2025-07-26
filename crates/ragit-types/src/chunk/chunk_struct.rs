@@ -7,12 +7,26 @@ use crate::processed_doc::ProcessedDoc;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChunkBuildInfo {
+    pub file_reader_key: String,
+    pub prompt_hash: String,
     pub model: String,
+}
+
+impl ChunkBuildInfo {
+    pub fn new(file_reader_key: String, prompt_hash: String, model: String) -> Self {
+        ChunkBuildInfo {
+            file_reader_key,
+            prompt_hash,
+            model,
+        }
+    }
 }
 
 impl Default for ChunkBuildInfo {
     fn default() -> Self {
         ChunkBuildInfo {
+            file_reader_key: String::new(),
+            prompt_hash: String::new(),
             model: String::new(),
         }
     }

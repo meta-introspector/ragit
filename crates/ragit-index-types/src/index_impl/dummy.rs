@@ -15,7 +15,7 @@ impl Index {
             processed_files: HashMap::new(),
             curr_processing_file: None,
             repo_url: None,
-            ii_status: IIStatus::default(),
+            ii_status: IIStatus::None,
             uid: None,
             summary: None,
             root_dir: PathBuf::from("."),
