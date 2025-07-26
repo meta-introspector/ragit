@@ -87,10 +87,9 @@ lazy_static = "1.5.0"
 mupdf = { version = "0.5.0", optional = true }
 png = { version = "0.17.16", optional = true }  # `resvg`'s function returns `png::EncodingError`
 
-ragit-cli = { path = "./crates/cli", version = "0.4.2" }
-ragit-fs = { path = "./crates/fs", version = "0.4.2", features = ["diff"] }
 ragit-ignore = { path = "./crates/ignore", version = "0.4.2" }
 ragit-korean = { path = "./crates/korean", version = "0.4.2", optional = true }
+ragit-model = { path = "./crates/ragit-model" }
 ragit-pdl = { path = "./crates/pdl", version = "0.4.2" }
 ragit-uid = { path = "./crates/ragit-uid", version = "0.1.0" }
 ragit-utils = { path = "./crates/ragit-utils", version = "0.1.0" }

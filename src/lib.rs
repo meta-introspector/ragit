@@ -14,12 +14,8 @@ pub mod tree;
 
 pub use ragit_agent::file_tree::FileTree;
 
-pub use ragit_index::chunk_methods::utils::into_multi_modal_contents;
-pub use ragit_types::{Chunk, ChunkBuildInfo, chunk::{ChunkSource, MultiModalContent, RenderedChunk}};
-pub use ragit_index::chunk_methods::utils::merge_and_convert_chunks;
-
-pub use ragit_index_io::index_struct::Index;
-pub use ragit_index::load_mode::LoadMode;
+//pub use ragit_index_types::prelude::Index;
+//pub use ragit_types::load_mode::LoadMode;
 
 
 pub use ragit_types::api_config::ApiConfig;

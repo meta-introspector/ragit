@@ -1,4 +1,4 @@
-use ragit_index::Index;
+use ragit_index_types::Index;
 use ragit_types::ApiError;
 use ragit_fs::{exists, read_string, write_string, WriteMode};
 use ragit_utils::ragit_path_utils::{get_rag_path, join_paths};

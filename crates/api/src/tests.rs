@@ -50,7 +50,6 @@ What do you see in this picture?
         "__tmp_pdl_test/pdl/sample1.pdl",
         &tera::Context::new(),
         true,
-        true,
     )
     .unwrap();
     let Pdl {
@@ -60,7 +59,6 @@ What do you see in this picture?
         pdl2,
         &tera::Context::new(),
         &current_dir().unwrap(),
-        true,
         true,
     )
     .unwrap();
@@ -216,7 +214,7 @@ async fn run_pdl<T: Serialize, U: Default + DeserializeOwned>(pdl: &str, context
 
     let Pdl { messages, schema } = parse_pdl(
         pdl, &context, ".", // no media files
-        true, true,
+        true,
     )
     .unwrap();
     let request = Request {
