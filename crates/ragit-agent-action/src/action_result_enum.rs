@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use ragit_types::{Uid, Chunk};
 use ragit_types::chunk::rendered_chunk::RenderedChunk;
-use ragit_model_query_response::{ModelQueryResponse, QueryResponse};
+use ragit_model_query_response::ModelQueryResponse;
+use ragit_types::QueryResponse;
 use ragit_agent::file_tree::FileTree;
 use crate::search_type_enum::SearchType;
 

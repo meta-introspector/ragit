@@ -10,9 +10,8 @@ use ragit_api::Model;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use ragit_error::ApiError;
-use ragit_types::Chunk;
-use ragit_index_storage;
+
+
 
 
 
@@ -79,14 +78,5 @@ impl Index {
         }
     }
 
-    pub async fn load_all_chunks(&self) -> Result<Vec<Chunk>, ApiError> {
-        let mut chunks = vec![];
-
-        for chunk_path in &ragit_index_storage::get_all_chunk_files(&self.root_dir)? {
-            eprintln!("Loading chunk from: {:?}", chunk_path);
-            chunks.push(Chunk::from(ragit_tfidf::io::load_from_file(chunk_path.to_str().unwrap())?));
-        }
-
-        Ok(chunks)
-    }
+    
 }

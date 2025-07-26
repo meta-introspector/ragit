@@ -10,8 +10,8 @@ use std::collections::HashMap;
 use ragit_api::list_models;
 use ragit_api::get_model_by_name;
 //use ragit_api::ApiError;
-use ragit_index_io::index_struct::load_index_from_path;
-use ragit_index_io::prelude::ApiError;
+use ragit_index_core::load_index_from_path;
+use ragit_types::ApiError;
 pub async fn run(args: &[String]) -> Result<(), anyhow::Error> {
     let mut index = load_index_from_path(&find_root()?)?;
 

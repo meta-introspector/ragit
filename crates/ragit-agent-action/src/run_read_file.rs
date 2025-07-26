@@ -1,6 +1,6 @@
 use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
-use ragit_index_io::{get_chunks_of_file, get_chunk_by_uid};
+use ragit_index_types::index_impl::{get_chunks_of_file, get_chunk_by_uid};
 use ragit_types::{ApiError, Chunk};
 use ragit_utils::ragit_path_utils::normalize;
 use ragit_utils::string_utils::substr_edit_distance;

@@ -14,8 +14,7 @@ members = [
     "crates/ignore",
     "crates/korean",
     "crates/pdl",
-    "crates/server",
-    "crates/ragit-utils",
+    
     "crates/ragit-schema",
     "crates/ragit-uid",
     "crates/ragit-core-utils",
@@ -29,7 +28,6 @@ members = [
     "crates/ragit-prompt-management",
     "crates/ragit-tfidf",
     "crates/ragit-index-model-management",
-    "crates/ragit-agent-action",
     "crates/ragit-index-io",
     "crates/ragit-agent",
     "crates/ragit-index-query",
@@ -41,6 +39,8 @@ members = [
     "crates/ragit-command-bootstrap",
 ]
 exclude = [
+    "crates/server",
+    "crates/ragit-agent-action",
     "crates/ragit-legacy-agent",
     "crates/ragit-legacy-api-config",
     "crates/ragit-legacy-chunk",
@@ -76,6 +76,7 @@ exclude = [
     "crates/ragit-command-summary",
     "crates/ragit-command-version",
 ]
+
 
 [dependencies]
 async-recursion = "1.1.1"

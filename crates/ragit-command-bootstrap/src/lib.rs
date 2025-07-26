@@ -8,7 +8,7 @@ pub mod file_source;
 
 use ragit_command_init::init_command_main;
 use crate::file_source::FileSource;
-use ragit_index_io::load_all_chunks::load_all_chunks as load_all_chunks_from_io;
+use ragit_index_io::load_all_chunks as load_all_chunks_from_io;
 
 pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error> {
     // 1. rag init
@@ -35,7 +35,7 @@ pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error>
 
     // Write chunks to markdown file
     println!("Writing chunks to markdown file...");
-    let all_chunks = load_all_chunks_from_io(&index).await?;
+    let all_chunks = load_all_chunks_from_io(&index.root_dir).await?;
     let mut markdown_output = String::new();
     for chunk in all_chunks {
         writeln!(&mut markdown_output, "## Chunk UID: {}", chunk.uid)?;
