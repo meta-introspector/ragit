@@ -7,7 +7,6 @@ use ragit_api::request::Request;
 use serde_json::json;
 use serde_json::Value;
 use ragit_prompt_management::get_prompt::get_prompt;
-use crate::prelude::*;
 pub async fn summaries_to_chunks(
     index: &Index,
     query: &str,

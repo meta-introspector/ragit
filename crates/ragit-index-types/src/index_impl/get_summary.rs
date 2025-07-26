@@ -1,5 +1,4 @@
 use crate::index_struct::Index;
-use ragit_types::summary::Summary;
 
 impl Index {
     pub fn get_summary(&self) -> Option<&str> {

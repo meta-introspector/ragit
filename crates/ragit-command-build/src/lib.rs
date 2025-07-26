@@ -1,6 +1,4 @@
 use ragit_utils::prelude::*;
-use ragit_api::prelude::*;
-use ragit_types::prelude::*;
 use ragit_index_core::load_index_from_path;
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;

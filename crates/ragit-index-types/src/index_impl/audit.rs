@@ -1,7 +1,7 @@
 use crate::index_struct::Index;
 use ragit_error::ApiError;
 use std::collections::HashMap;
-use chrono::{Local, DateTime, Utc};
+use chrono::{DateTime, Utc};
 use ragit_api::AuditRecord;
 use std::path::PathBuf;
 

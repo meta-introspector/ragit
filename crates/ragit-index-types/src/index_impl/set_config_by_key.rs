@@ -1,9 +1,6 @@
 use crate::index_struct::Index;
 use ragit_error::ApiError;
 use serde_json::Value;
-use ragit_types::api_config::ApiConfig;
-use ragit_types::build_config::BuildConfig;
-use ragit_types::query::QueryConfig;
 
 impl Index {
     pub fn set_config_by_key(
