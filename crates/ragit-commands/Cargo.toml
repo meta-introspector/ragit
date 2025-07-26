@@ -33,6 +33,7 @@ ragit-index = { path = "../../crates/ragit-index" }
 ragit-index-query = { path = "../../crates/ragit-index-query" }
 ragit-model-query-response = { path = "../../crates/ragit-model-query-response" }
 ragit-cli = { path = "../../crates/cli" }
+ragit-command-bootstrap = { path = "../../crates/ragit-command-bootstrap" }
 
 [features]
 default = ["csv"]

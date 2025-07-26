@@ -5,10 +5,8 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
-tokio = { version = "1.0", features = ["full"] }
-
-ragit-command-init = { path = "../ragit-command-init" }
-ragit-command-add = { path = "../ragit-command-add" }
-ragit-command-build = { path = "../ragit-command-build" }
-ragit-command-query = { path = "../ragit-command-query" }
+ragit-index-core = { path = "../ragit-index-core" }
+ragit-types = { path = "../ragit-types" }
 ragit-utils = { path = "../ragit-utils" }
+ragit-fs = { path = "../fs" }
+ragit-command-init = { path = "../ragit-command-init" }

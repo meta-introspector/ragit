@@ -73,3 +73,17 @@ Applying the prime-number-based decomposition to the `ragit` project structure, 
 ## Operational Philosophy: Whistle While You Work (Meme Mining)
 
 As a meme miner, we dig in the mountain of Plato for gems. We place each idea we encounter into the hyperspace and add it to the lattice. While we work, we constantly look for patterns to add value to the system.
+
+## Meta-Program: "Have a KitKat" (2025-07-26)
+
+The "Have a KitKat" meta-program is a user-defined workflow for pausing the current line of work, defining a new strategic plan, documenting it, committing the current state, and conceptually "rebooting" the development cycle to focus on the new plan.
+
+**Current Status:**
+- Successfully implemented the `bootstrap_index_self` command in the `ragit-command-bootstrap` crate.
+- The command now initializes a repository, adds its own source code, builds an index, and queries an LLM to improve itself.
+- The process involved extensive debugging of the index creation and loading logic, resulting in a minimal, valid index file structure being created programmatically.
+- A safeguard was added to prevent the self-improvement step from overwriting the source file with an empty LLM response.
+- The command currently relies on placeholder implementations for `add`, `build`, and `query`.
+
+**New Critical Path:**
+The next phase is to make the self-improvement loop fully functional by replacing the placeholder logic with real implementations. The detailed plan for this is documented in `docs/metaprogram_kitkat_plan.md`.
