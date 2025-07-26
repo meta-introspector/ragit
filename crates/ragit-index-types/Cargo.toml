@@ -16,7 +16,7 @@ chrono = { version = "0.4", features = ["serde"] }
 serde_json = "1.0"
 ragit-tfidf = { path = "../ragit-tfidf" }
 tokio = { version = "1.0", features = ["full"] }
-ragit-file-retrieval = { path = "../ragit-file-retrieval" }
+ragit-index-storage = { path = "../ragit-index-storage" }
 
 ragit-ignore = { path = "../ignore" }
 ragit-model-query-response = { path = "../ragit-model-query-response" }
@@ -25,5 +25,3 @@ ragit-model-query-response = { path = "../ragit-model-query-response" }
 default = []
 index = []
 all = ["index"]
-
-
