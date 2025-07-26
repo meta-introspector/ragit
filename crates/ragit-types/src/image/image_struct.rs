@@ -18,6 +18,7 @@ pub enum ImageType {
     Gif,
     Webp,
     Svg,
+    Bmp,
 }
 
 impl ImageType {
@@ -31,6 +32,7 @@ impl ImageType {
 
             // I'm not sure whether it'd work with anthropic api
             ImageType::Svg => "image/svg+xml",
+            ImageType::Bmp => "image/bmp",
         }
     }
 
@@ -73,6 +75,7 @@ impl ImageType {
             ImageType::Gif => "gif",
             ImageType::Webp => "webp",
             ImageType::Svg => "svg",
+            ImageType::Bmp => "bmp",
         }
     }
 }
@@ -89,6 +92,9 @@ impl TryFrom<ImageType> for image::ImageFormat {
             ImageType::Svg => Err(Error::InvalidImageType(
                 image_type.to_extension().to_string(),
             )),
+            ImageType::Bmp => Err(Error::InvalidImageType(
+                image_type.to_extension().to_string(),
+            )),
         }
     }
 }
@@ -96,6 +102,19 @@ impl TryFrom<ImageType> for image::ImageFormat {
 impl fmt::Display for ImageType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
+    }
+}
+
+impl From<crate::pdl_types::ImageType> for ImageType {
+    fn from(pdl_image_type: crate::pdl_types::ImageType) -> Self {
+        match pdl_image_type {
+            crate::pdl_types::ImageType::Png => ImageType::Png,
+            crate::pdl_types::ImageType::Jpeg => ImageType::Jpeg,
+            crate::pdl_types::ImageType::Gif => ImageType::Gif,
+            crate::pdl_types::ImageType::Webp => ImageType::Webp,
+            crate::pdl_types::ImageType::Svg => ImageType::Svg,
+            crate::pdl_types::ImageType::Bmp => ImageType::Bmp,
+        }
     }
 }
 

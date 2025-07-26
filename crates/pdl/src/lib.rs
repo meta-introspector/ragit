@@ -298,7 +298,8 @@ fn into_message_contents(s: &str, curr_dir: &str) -> Result<Vec<MessageContent>,
                         }
                     }
 
-                    result.push(MessageContent::Image { image_type, bytes });
+
+                    result.push(MessageContent::Image { image_type: image_type.into(), bytes });
                     index = new_index;
                     string_buffer = vec![];
                     continue;

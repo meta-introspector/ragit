@@ -1,3 +1,4 @@
+use ragit_types::AuditRecordAt;
 use ragit_types::build_config::BuildConfig;
 use ragit_types::chunk::atomic_token::AtomicToken;
 use ragit_types::api_config::ApiConfig;
@@ -5,15 +6,15 @@ use ragit_error::ApiError as Error;
 use regex::Regex;
 use serde_json::Value as JsonValue;
 use sha3::{Digest, Sha3_256};
-use ragit_api::request::{ChatRequest, RecordAt};
-use ragit_pdl::messages_from_pdl;
+//use ragit_api::request::{ChatRequest, RecordAt};
+//use ragit_pdl::messages_from_pdl;
 use ragit_types::pdl_types::{Message, MessageContent, Role};
 use ragit_fs::{normalize};
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_types::chunk::chunk_source::ChunkSource;
 use ragit_types::uid::Uid;
 use std::collections::HashMap;
-
+use ragit_api::Request;
 pub async fn create_chunk_from(
     tokens: &[AtomicToken],
     config: &BuildConfig,
@@ -44,8 +45,8 @@ pub async fn create_chunk_from(
         unreachable!()
     }
 
-    let mut request = ChatRequest {
-        api_key: api_config.api_key.clone(),
+    let mut request = Request {
+        api_key: api_config_get_api_key(api_config),
         messages: prompt,
         model: api_config.model.clone(),
         frequency_penalty: None,
@@ -54,10 +55,10 @@ pub async fn create_chunk_from(
         sleep_between_retries: api_config.sleep_between_retries,
         timeout: api_config.timeout,
         temperature: None,
-        record_api_usage_at: api_config.dump_api_usage_at.clone().map(
-            |path| RecordAt { path, id: String::from("create_chunk_from") }
+        record_api_usage_at: api_config.dump_api_usage_at().clone().map(
+            |path| AuditRecordAt { path, id: String::from("create_chunk_from") }
         ),
-        dump_pdl_at: api_config.create_pdl_path("create_chunk_from"),
+        dump_pdl_at: api_config_create_pdl_path(api_config,"create_chunk_from"),
     };
     let mut response = request.send().await?;
     let mut response_text = response.get_message(0).unwrap();
