@@ -3,22 +3,28 @@ use ragit_index_core::load_index_from_path;
 use ragit_index_core::add_files::add_files_command;
 use ragit_utils::project_root::find_root;
 use ragit_fs::{read_string, write_string, WriteMode};
-use ragit_command_init::init_command_main;
+pub mod file_source;
 
-pub async fn bootstrap_index_self(_args: &[String]) -> Result<()> {
+use ragit_command_init::init_command_main;
+use crate::file_source::FileSource;
+
+pub async fn bootstrap_index_self(file_sources: Vec<Box<dyn FileSource>>) -> Result<()> {
     // 1. rag init
     println!("Running: rag init");
     init_command_main(&["ragit".to_string(), "init".to_string()]).await?;
     let root_dir = find_root()?;
     let index_path = root_dir.join(".ragit/index");
-    let index_content = r#"{"ragit_version": "0.4.2", "files": {}, "staged_files": [], "processed_files": {}, "chunks": [], "chunk_count": 0, "inverted_index": null, "ii_status": {"enabled": false}}"#;
+    let index_content = r#"{"ragit_version": "0.4.2", "api_config": {"model": "test-model"}, "files": {}, "staged_files": [], "processed_files": {}, "chunks": [], "chunk_count": 0, "inverted_index": null, "ii_status": {"enabled": false}}"#;
     write_string(index_path.to_str().unwrap(), index_content, WriteMode::CreateOrTruncate)?;
     let mut index = load_index_from_path(&index_path)?;
 
     // 2. rag add crates/ragit-command-bootstrap
-    println!("Running: rag add crates/ragit-command-bootstrap");
-    let files_to_add = vec!["crates/ragit-command-bootstrap".to_string()];
-    add_files_command(&mut index, &files_to_add, None, false).await?;
+    println!("Running: rag add");
+    let mut all_files_to_add: Vec<String> = Vec::new();
+    for source in file_sources {
+        all_files_to_add.extend(source.get_files()?);
+    }
+    add_files_command(&mut index, &all_files_to_add, None, false).await?;
 
     // 3. rag build
     println!("Running: rag build");

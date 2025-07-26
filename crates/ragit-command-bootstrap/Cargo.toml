@@ -10,3 +10,8 @@ ragit-types = { path = "../ragit-types" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-fs = { path = "../fs" }
 ragit-command-init = { path = "../ragit-command-init" }
+glob = "0.3"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tempfile = "3.3.0"
