@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct ApiConfig {
+    pub api_key: String,
     pub model: String,
     pub max_retry: usize,
     pub sleep_between_retries: u64,
@@ -19,6 +20,7 @@ impl Default for ApiConfig {
     fn default() -> Self {
         Self {
             model: "default_model".to_string(),
+            api_key: String::new(),
             max_retry: 5,
             sleep_between_retries: 1000,
             timeout: None,

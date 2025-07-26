@@ -15,8 +15,9 @@ use sha3::{Digest, Sha3_256};
 use ragit_types::chunk;
 use ragit_api::audit::AuditRecord;
 use ragit_types::ChunkBuildInfo;
-pub mod index_functions;
-use crate::index_functions::{index_save_to_file, index_get_uid_path, index_get_data_path, index_remove, uid_new_file, index_add_file_index, index_processed_files_insert, index_update_ii_buffer, index_flush_ii_buffer, index_reset_uid, index_calculate_and_save_uid, index_get_model_by_name, index_add_image_description, index_get_prompt, index_api_config_get_api_usage};
+use ragit_readers::FileReader;
+use ragit_model::Model;
+
 
 use ragit_tfidf::save_to_file;
 

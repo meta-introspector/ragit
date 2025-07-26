@@ -4,6 +4,7 @@ use ragit_types::chunk::atomic_token::AtomicToken;
 use ragit_types::chunk::chunk_extra_info::ChunkExtraInfo;
 use ragit_index_types::chunk::chunk_struct::Chunk;
 use ragit_chunk;
+use ragit_index_types::index_get_prompt;
 
 use ragit_types::uid::Uid;
 use ragit_types::image::Image;
@@ -55,7 +56,7 @@ pub struct FileReader {
 }
 
 impl FileReader {
-    pub fn new(rel_path: String, real_path: String, root_dir: &str, config: BuildConfig) -> Result<Self, Error> {
+    pub async fn new(rel_path: String, real_path: String, root_dir: &str, config: BuildConfig) -> Result<Self, Error> {
         let inner = match extension(&rel_path)?.unwrap_or_default().to_ascii_lowercase().as_str() {
             "md" => Box::new(MarkdownReader::new(&real_path, root_dir, &config)?) as Box<dyn FileReaderImpl + Send>,
             "png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" => Box::new(ImageReader::new(&real_path, root_dir, &config)?),
@@ -90,7 +91,7 @@ impl FileReader {
         !self.buffer.is_empty() || self.inner.has_more_to_read()
     }
 
-    pub fn generate_chunk(
+    pub async fn generate_chunk(
         &mut self,
         index: &ragit_index_types::index_struct::Index, // Assuming Index is here
         build_info: ragit_types::ChunkBuildInfo,
@@ -101,14 +102,14 @@ impl FileReader {
         let tokens = self.fetch_images_from_web(tokens)?; // Changed to sync for now
 
         let chunk = ragit_chunk::create_chunk_from(
-            index,
             &tokens,
-            self.rel_path.clone().into(),
+            &self.config,
+            self.rel_path.clone(),
             index_in_file,
+            &index.api_config,
+            &index_get_prompt(index, "summarize")?,
             build_info,
-            previous_turn,
-            chunk_extra_info,
-        ); // Removed .await and ? for sync
+        ).await?;
 
         // if let Some(ms) = index.api_config.sleep_after_llm_call {
         //     tokio::time::sleep(std::time::Duration::from_millis(ms)).await;

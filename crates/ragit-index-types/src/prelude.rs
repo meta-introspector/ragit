@@ -15,3 +15,4 @@ pub use std::result::Result;
 pub use std::io::Result as IoResult;
 pub use ::serde::{Deserialize, Serialize};
 pub use ragit_utils::constant::*;
+pub use crate::index_get_prompt;

@@ -13,8 +13,12 @@ use ragit_fs::{normalize};
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_types::chunk::chunk_source::ChunkSource;
 use ragit_types::uid::Uid;
+use std::str::FromStr;
 use std::collections::HashMap;
 use ragit_api::Request;
+use ragit_model::Model;
+use ragit_pdl::{Pdl, parse_pdl};
+use std::path::PathBuf;
 pub async fn create_chunk_from(
     tokens: &[AtomicToken],
     config: &BuildConfig,
@@ -27,9 +31,11 @@ pub async fn create_chunk_from(
     let mut dummy_context = tera::Context::new();
     dummy_context.insert("chunk", "placeholder");
 
-    let mut prompt = messages_from_pdl(
-        pdl.to_string(),
-        dummy_context,
+    let Pdl { messages: mut prompt, .. } = ragit_pdl::parse_pdl(
+        pdl,
+        &dummy_context,
+        &file, // Assuming 'file' can be used as the current directory for media files
+        true, // strict_mode
     )?;
 
     if let Some(message) = prompt.last_mut() {
@@ -46,19 +52,20 @@ pub async fn create_chunk_from(
     }
 
     let mut request = Request {
-        api_key: api_config_get_api_key(api_config),
+        
         messages: prompt,
-        model: api_config.model.clone(),
+        model: Model { name: api_config.model.clone(), ..Default::default() },
         frequency_penalty: None,
         max_tokens: None,
         max_retry: api_config.max_retry,
         sleep_between_retries: api_config.sleep_between_retries,
         timeout: api_config.timeout,
         temperature: None,
-        record_api_usage_at: api_config.dump_api_usage_at().clone().map(
-            |path| AuditRecordAt { path, id: String::from("create_chunk_from") }
-        ),
-        dump_pdl_at: api_config_create_pdl_path(api_config,"create_chunk_from"),
+        dump_api_usage_at: api_config.dump_api_usage_at(&PathBuf::from(&file), "create_chunk_from"),
+        dump_pdl_at: api_config.create_pdl_path(&PathBuf::from(&file), "create_chunk_from").map(|path| path.to_string_lossy().into_owned()),
+        dump_json_at: None,
+        schema: None,
+        schema_max_try: 0,
     };
     let mut response = request.send().await?;
     let mut response_text = response.get_message(0).unwrap();
@@ -158,11 +165,11 @@ pub async fn create_chunk_from(
 
         request.messages.push(Message {
             role: Role::Assistant,
-            content: MessageContent::Text(response_text.to_string()),
+            content: vec![MessageContent::String(response_text.to_string())],
         });
         request.messages.push(Message {
             role: Role::User,
-            content: MessageContent::Text(error_message),
+            content: vec![MessageContent::String(error_message)],
         });
         response = request.send().await?;
         response_text = response.get_message(0).unwrap();
@@ -182,7 +189,7 @@ pub async fn create_chunk_from(
         summary,
         file: normalize(&file)?,
         index: file_index,
-        uid: Uid::new(format!("{:064x}", uid)),
+        uid: Uid::from_str(&format!("{:064x}", uid))?,
         build_info,
         timestamp: 0, // Placeholder, needs to be set correctly
         searchable: true, // Placeholder, needs to be set correctly

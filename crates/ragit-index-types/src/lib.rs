@@ -9,4 +9,13 @@ pub use std::time::{Duration, Instant};
 pub use ragit_types::chunk;
 pub use ragit_types::uid::Uid;
 pub use ragit_types::ii_status::IIStatus;
+pub fn index_get_prompt(
+    index: &Index,
+    prompt_name: &str,
+) -> Result<String, ragit_error::ApiError> {
+    match index.prompts.get(prompt_name) {
+        Some(prompt) => Ok(prompt.to_string()),
+        None => Err(ragit_error::ApiError::PromptMissing(prompt_name.to_string())),
+    }
+}
 
