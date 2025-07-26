@@ -53,7 +53,7 @@ impl Response {
                 response.into_chat_response()
             }
             ApiProvider::Test(test_model) => {
-                let response_str = test_model_get_dummy_response(&vec![])?;
+                let response_str = "dummy response".to_string();
                 Ok(Response::dummy(response_str))
             }
         }

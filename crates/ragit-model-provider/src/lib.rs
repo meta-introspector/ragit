@@ -2,8 +2,26 @@ use ragit_error::ApiError as Error;
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct TestModel {
-    name: String
+pub enum TestModel {
+    Dummy,
+    Stdin,
+    Error,
+}
+
+use ragit_types::pdl_types::Message;
+
+impl TestModel {
+pub fn get_dummy_response(&self, _messages: &[Message]) -> Result<String, Error> {
+        match self {
+            TestModel::Dummy => Ok(String::from("dummy response from TestModel::Dummy")),
+            TestModel::Stdin => {
+                let mut input = String::new();
+                std::io::stdin().read_line(&mut input)?;
+                Ok(input.trim().to_string())
+            },
+            TestModel::Error => Err(Error::TestModelError),
+        }
+    }
 }
 #[derive(Clone, Debug, PartialEq)]
 pub enum ModelProvider {
@@ -58,7 +76,9 @@ impl fmt::Display for ModelProvider {
                 ModelProvider::Cohere => "cohere",
                 ModelProvider::Anthropic => "anthropic",
                 ModelProvider::Google => "google",
-                ModelProvider::Test(_) => "test",
+                ModelProvider::Test(TestModel::Dummy) => "test_dummy",
+                ModelProvider::Test(TestModel::Stdin) => "test_stdin",
+                ModelProvider::Test(TestModel::Error) => "test_error",
             },
         )
     }

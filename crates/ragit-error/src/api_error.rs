@@ -53,8 +53,8 @@ pub enum ApiError {
     },
     #[error("unsupported media format: {extension:?}")]
     UnsupportedMediaFormat { extension: Option<String> },
-    #[error("test model")]
-    TestModel,
+    #[error("test model error")]
+    TestModelError,
     #[error("invalid test model: {0}")]
     InvalidTestModel(String),
     #[error("insufficient models")]
