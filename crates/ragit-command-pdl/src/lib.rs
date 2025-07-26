@@ -8,7 +8,7 @@ use ragit_fs::create_dir;
 use ragit_fs::read_string;
 //use ragit_index_io::index_struct::{Index, load_index_from_path};
 use ragit_index_types::index_struct::Index;
-use ragit_index_io::load_index_from_path;
+use ragit_index_core::load_index_from_path;
 
 use ragit_pdl::parse_pdl_from_file;
 use ragit_utils::path_utils::str_to_pathbuf;
@@ -71,7 +71,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         Some(model) => get_model_by_name(&models, model)?,
         None => match &index_result {
             Ok(Ok(index)) => get_model_by_name(&models, &index.api_config.model)?,
-            _ => match load_config_from_home_dir::<Value>("api.json") {
+            _ => match Index::load_config_from_home("api.json") {
                 Ok(Some(Value::Object(api_config))) => match api_config.get("model") {
                     Some(Value::String(model)) => get_model_by_name(&models, model)?,
                     _ => return Err(anyhow::anyhow!(ApiError::ModelNotSelected)),
@@ -99,7 +99,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {
                 Some(str_to_pathbuf(&join(
                     log_at,
                     &format!("{}.pdl", now.to_rfc3339()),
-                )?)),
+                )?).to_string_lossy().to_string()),
                 Some(log_at.to_string()),
             )
         }

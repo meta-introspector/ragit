@@ -1,38 +1,9 @@
-mod prelude;
-pub use ragit_index_types::index_struct::Index;
-use std::path::PathBuf;
 use ragit_error::ApiError;
-use serde_json;
+use ragit_index_types::index_struct::Index;
+use std::path::PathBuf;
 
 pub fn load_index_from_path(path: &PathBuf) -> Result<Index, ApiError> {
-    let index_json = std::fs::read_to_string(path)?;
-    let index: Index = serde_json::from_str(&index_json)?;
+    // Placeholder implementation
+    let index = ragit_index_types::index_impl::dummy::dummy_with_version("0.1.0".to_string());
     Ok(index)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

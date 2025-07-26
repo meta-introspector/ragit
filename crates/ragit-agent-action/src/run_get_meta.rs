@@ -1,5 +1,6 @@
 use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
+use ragit_index_io::{get_config_by_key, get_all_meta};
 use ragit_types::ApiError;
 use ragit_utils::string_utils::substr_edit_distance;
 
@@ -19,7 +20,7 @@ pub(crate) async fn run_get_meta(
     let mut result = None;
 
     for candidate in candidates.iter() {
-        if let Some(value) = index.get_config_by_key(candidate.to_string())? {
+        if let Some(value) = get_config_by_key(index, candidate.to_string())? {
             result = Some((candidate.to_string(), value.to_string()));
             break;
         }
@@ -30,7 +31,7 @@ pub(crate) async fn run_get_meta(
     } else {
         let mut similar_keys = vec![];
 
-        for key in index.get_all_meta().keys() {
+        for key in get_all_meta(index)?.keys() {
             let dist = substr_edit_distance(argument.as_bytes(), key.as_bytes());
 
             if dist < 3 {

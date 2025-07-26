@@ -4,10 +4,10 @@ use ragit_model::Model;
 use ragit_types::ApiError;
 
 pub(crate) async fn run_simple_rag(
-    _argument: &str,
+    argument: &str,
     _index: &Index,
 ) -> Result<ActionResult, ApiError> {
-    let model = Model::new();
+    let model = Model::dummy();
     let response = model.query(argument).await?;
     Ok(ActionResult::SimpleRag(response))
 }

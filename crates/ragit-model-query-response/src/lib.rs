@@ -7,7 +7,7 @@ pub use ragit_pdl::Prompt;
 pub mod query_turn;
 pub use query_turn::QueryTurn;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct ModelQueryResponse {
     pub multi_turn_schema: Option<MultiTurnSchema>,
     pub retrieved_chunks: Vec<Chunk>,

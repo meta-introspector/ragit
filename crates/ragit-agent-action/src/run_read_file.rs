@@ -1,5 +1,6 @@
 use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
+use ragit_index_io::{get_chunks_of_file, get_chunk_by_uid};
 use ragit_types::{ApiError, Chunk};
 use ragit_utils::ragit_path_utils::normalize;
 use ragit_utils::string_utils::substr_edit_distance;
@@ -9,8 +10,8 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
     let argument_path = PathBuf::from(normalize(argument)?);
 
     let result = match index.processed_files.get(&argument_path) {
-        Some(_uid) => {
-            let chunk_uids = index.get_chunks_of_file(*uid)?;
+        Some(uid) => {
+            let chunk_uids = get_chunks_of_file(index, *uid)?;
 
             // If the file is too long, it shows the summaries of its chunks
             // instead of `cat-file`ing the file.
@@ -24,7 +25,6 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
                     let chunk =
                         ragit_types::chunk::chunk_struct::Chunk::dummy().render_source();
                     ActionResult::ReadFileShort {
-                        chunk_uids,
                         rendered: chunk,
                     }
                 }
@@ -33,16 +33,15 @@ pub(crate) async fn run_read_file(argument: &str, index: &Index) -> Result<Actio
                     let chunk =
                         ragit_types::chunk::chunk_struct::Chunk::dummy().render_source();
                     ActionResult::ReadFileShort {
-                        chunk_uids,
                         rendered: chunk,
                     }
                 }
                 _ => {
                     let mut chunks = Vec::with_capacity(chunk_uids.len());
 
-                    for _chunk_uid in chunk_uids.iter() {
+                    for chunk_uid in chunk_uids.iter() {
                         // TODO: Replace with StorageManager call
-                        chunks.push(index.get_chunk_by_uid(*chunk_uid)?);
+                        chunks.push(get_chunk_by_uid(index, *chunk_uid)?);
                     }
 
                     ActionResult::ReadFileLong(chunks)

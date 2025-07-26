@@ -1,7 +1,8 @@
 use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
+use ragit_index_io::get_chunk_by_uid;
 use ragit_types::{ApiError, Uid, Chunk};
-use ragit_index_io::query_helpers::{uid_query, UidQueryConfig};
+use ragit_utils::uid::query_helpers::{uid_query, UidQueryConfig};
 
 pub(crate) async fn run_read_chunk(argument: &str, index: &Index) -> Result<ActionResult, ApiError> {
     if !Uid::is_valid_prefix(argument) {
@@ -13,12 +14,12 @@ pub(crate) async fn run_read_chunk(argument: &str, index: &Index) -> Result<Acti
 
     let result = match chunk_uids.len() {
         0 => ActionResult::NoSuchChunk(argument.to_string()),
-        1 => ActionResult::ReadChunk(index.get_chunk_by_uid(chunk_uids[0])?),
+        1 => ActionResult::ReadChunk(get_chunk_by_uid(index, chunk_uids[0])?),
         2..=10 => {
             let mut chunks = Vec::with_capacity(chunk_uids.len());
 
             for chunk_uid in chunk_uids.iter() {
-                chunks.push(index.get_chunk_by_uid(*chunk_uid)?);
+                chunks.push(get_chunk_by_uid(index, *chunk_uid)?);
             }
 
             ActionResult::ReadChunkAmbiguous {

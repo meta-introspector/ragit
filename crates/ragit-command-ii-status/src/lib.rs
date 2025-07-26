@@ -1,9 +1,7 @@
 use ragit_utils::prelude::*;
-use ragit_api::prelude::*;
-use ragit_types::prelude::*;
-//use ragit_index_io::index_struct::{Index};
-use crate::prelude::Index;
-use crate::prelude::load_index_from_path;
+use ragit_index_types::index_struct::Index;
+use ragit_index_core::load_index_from_path;
+use ragit_index_types::load_mode::LoadMode;
 
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;

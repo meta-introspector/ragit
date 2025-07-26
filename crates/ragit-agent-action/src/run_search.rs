@@ -1,6 +1,7 @@
 use crate::action_result_enum::ActionResult;
 use crate::search_type_enum::SearchType;
 use ragit_index_types::index_struct::Index;
+use ragit_index_io::get_chunk_by_uid;
 use ragit_types::{ApiError, Chunk};
 use ragit_utils::query::Keywords;
 use ragit_utils::string_utils::substr_edit_distance;
@@ -23,7 +24,7 @@ pub(crate) async fn run_search(
         let mut chunks_exact_match = vec![];
 
         for c in candidates.iter() {
-            chunks.push(index.get_chunk_by_uid(*c)?);
+            chunks.push(get_chunk_by_uid(index, *c)?);
         }
 
         if search_type == SearchType::Tfidf {
@@ -42,14 +43,14 @@ pub(crate) async fn run_search(
 
         // We have a complete set of the tfidf result, so there's
         // no point in increasing the limit.
-        if candidates.len() < limit || limit == index.chunk_count() {
+        if candidates.len() < limit || limit == index.chunk_count {
             break chunks_exact_match;
         }
 
         // Maybe we can get more exact-matches if we increase the
         // limit of the tfidf-match.
-        limit = (limit * 5).min(index.chunk_count());
+        limit = (limit * 5).min(index.chunk_count);
     };
 
-    Ok(ActionResult::Search { chunks })
+    Ok(ActionResult::Search { r#type: search_type, keyword: argument.to_string(), chunks })
 }

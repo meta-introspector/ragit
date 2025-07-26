@@ -4,7 +4,7 @@ use super::action_state_struct::ActionState;
 use super::argument_turn_struct::ArgumentTurn;
 use super::action_trace_struct::ActionTrace;
 use crate::constants;
-use ragit_index_types::Index;
+use ragit_index_types::index_struct::Index;
 use ragit_types::ApiError;
 use serde_json::Value;
 use anyhow::Result;
@@ -38,7 +38,6 @@ impl ActionState {
                 // If it's not complete, we have to give the instruction again so that the AI
                 // will generate the argument.
                 else {
-                    result_rendered =
                     result_rendered = format!("{} {} {}", constants::FORMAT_RESULT_RENDERED, result_rendered, action.get_instruction(index)?);
                 }
 
@@ -67,8 +66,7 @@ impl ActionState {
             if !result.has_to_retry() || self.argument_turns.len() > 0 {
                 self.complete = true;
             } else {
-                result_rendered =
-                    result_rendered = format!("{} {} {}", constants::FORMAT_RESULT_RENDERED, result_rendered, action.get_instruction(index)?);
+                result_rendered = format!("{} {} {}", constants::FORMAT_RESULT_RENDERED, result_rendered, action.get_instruction(index)?);
             }
 
             self.argument_turns.push(ArgumentTurn {

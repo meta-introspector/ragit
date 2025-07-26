@@ -8,6 +8,7 @@ ragit-utils = { path = "../ragit-utils" }
 ragit-api = { path = "../api" }
 ragit-types = { path = "../ragit-types" }
 ragit-index-io = { path = "../ragit-index-io" }
+ragit-index-types = { path = "../ragit-index-types" }
 ragit-pdl = { path = "../pdl" }
 ragit-schema = { path = "../ragit-schema" }
 ragit-fs = { path = "../fs" }

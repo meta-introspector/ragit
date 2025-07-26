@@ -1,6 +1,7 @@
 use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
 use ragit_agent::file_tree::FileTree;
+use ragit_types::ApiError;
 use std::path::PathBuf;
 
 pub(crate) async fn run_read_dir(argument: &str, index: &Index) -> Result<ActionResult, ApiError> {
@@ -9,7 +10,7 @@ pub(crate) async fn run_read_dir(argument: &str, index: &Index) -> Result<Action
         argument_path.push("");
     }
 
-    let mut file_tree = FileTree::new();
+    let mut file_tree = FileTree::root();
 
     for file in index.processed_files.keys() {
         if file.starts_with(&argument_path) {

@@ -2,9 +2,7 @@ use ragit_utils::prelude::*;
 use ragit_api::AuditRecord as Audit;
 use ragit_types::prelude::*;
 use std::collections::HashMap;
-//use ragit_index_io::load_index_from_path;
-//use ragit_index_core::Index;
-//use ragit_index_types::Index;
+use ragit_index_types::index_struct::Index;
 
 
 use ragit_utils::project_root::find_root;
