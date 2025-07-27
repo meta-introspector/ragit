@@ -6,7 +6,7 @@ use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_utils::cli_types::{CliError, Span};
 use ragit_index_types::index_struct::Index;
-use std::path::PathBuf;
+
 
 pub async fn add_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
