@@ -1,12 +1,12 @@
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, Span};
-use ragit_utils::doc_utils::get_doc_content;
+//use ragit_utils::doc_utils::get_doc_content;
 //use ragit_index_io::load_index_from_path;
 //use ragit_index_core::Index;
 use ragit_utils::project_root::find_root;
 use ragit_utils::error::{CliError};
-use std::path::PathBuf;
+//use std::path::PathBuf;
 use serde_json::Value;
-use std::collections::HashMap;
+//use std::collections::HashMap;
 use ragit_api::list_models;
 use ragit_api::get_model_by_name;
 //use ragit_api::ApiError;
