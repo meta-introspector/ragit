@@ -29,6 +29,7 @@ pub async fn send_and_validate_chunk_response(
     char_len: usize,
     image_count: usize,
     data: String,
+    dry_run_llm: bool,
 ) -> Result<(String, String, String), Error> { // (response_text, title, summary)
     let json_regex = Regex::new(r"(?s)[^{}]*({.*})[^{}]*").unwrap();
     let mut mistakes = 0;
@@ -36,22 +37,52 @@ pub async fn send_and_validate_chunk_response(
     loop {
         let error_message;
 
-        let response = Request::ChatRequest {
-            messages: messages.clone(),
-            model: model.clone(),
-            temperature,
-            frequency_penalty,
-            max_tokens,
-            timeout,
-            max_retry,
-            sleep_between_retries,
-            dump_api_usage_at: dump_api_usage_at.clone(),
-            dump_pdl_at: dump_pdl_at.clone(),
-            dump_json_at: dump_json_at.clone(),
-            schema: schema.clone(),
-            schema_max_try,
-        }.send().await?;
-        let response_text = response.get_message(0).unwrap();
+        let response_text = if dry_run_llm {
+            use tokio::fs::OpenOptions;
+            use tokio::io::AsyncWriteExt;
+            use std::path::PathBuf;
+
+            let log_path = PathBuf::from("/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/llm_queries.md");
+            let mut file = OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(&log_path)
+                .await
+                .expect("Failed to open llm_queries.md");
+
+            file.write_all(b"--- New LLM Query ---\n").await.expect("Failed to write to llm_queries.md");
+            for message in &messages {
+                file.write_all(format!("Role: {:?}\n", message.role).as_bytes()).await.expect("Failed to write to llm_queries.md");
+                for content in &message.content {
+                    match content {
+                        MessageContent::String(s) => file.write_all(format!("Content: {}\n", s).as_bytes()).await.expect("Failed to write to llm_queries.md"),
+                        _ => file.write_all(b"Content: (Non-string content)\n").await.expect("Failed to write to llm_queries.md"),
+                    }
+                }
+                file.write_all(b"\n").await.expect("Failed to write to llm_queries.md");
+            }
+            file.write_all(b"---------------------\n\n").await.expect("Failed to write to llm_queries.md");
+
+            // Return dummy values for dry run
+            String::from("{\"title\": \"dummy title\", \"summary\": \"dummy summary\"}")
+        } else {
+            let response = Request::ChatRequest {
+                messages: messages.clone(),
+                model: model.clone(),
+                temperature,
+                frequency_penalty,
+                max_tokens,
+                timeout,
+                max_retry,
+                sleep_between_retries,
+                dump_api_usage_at: dump_api_usage_at.clone(),
+                dump_pdl_at: dump_pdl_at.clone(),
+                dump_json_at: dump_json_at.clone(),
+                schema: schema.clone(),
+                schema_max_try,
+            }.send().await?;
+            response.get_message(0).unwrap().to_string()
+        };
 
         if let Some(cap) = json_regex.captures(&response_text) {
             let json_text = cap[1].to_string();

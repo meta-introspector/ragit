@@ -15,7 +15,7 @@ cargo run --package ragit-commands -- bootstrap
 3. **Copies source code:** It copies the `ragit` source code into the new repository.
 4. **Copies prompts:** It copies the `prompts` directory, which is essential for building the index.
 5. **Builds the index:** It builds a new index from the source code.
-6. **Self-improvement (future):** The goal is for the `bootstrap` command to then use the newly created index to query an LLM and suggest improvements to the `ragit` codebase.
+6. **Self-improvement (Prompt Generation for Evaluation):** This step now uses the newly created index to query an LLM and generate prompts for evaluation. These prompts are stored in `tmp_bootstrap/chunks_output.md` and `tmp_bootstrap/improved_lib.rs`.
 
 ## Debugging
 

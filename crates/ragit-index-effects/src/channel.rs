@@ -6,7 +6,7 @@ use std::path::PathBuf;
 #[derive(Debug)]
 pub enum WorkerRequest {
     Kill,
-    BuildChunks { file: PathBuf },
+    BuildChunks { file: PathBuf, dry_run_llm: bool },
 }
 
 #[derive(Debug)]

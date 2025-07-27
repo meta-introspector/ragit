@@ -30,6 +30,7 @@ pub async fn create_chunk_from(
     api_config: &ApiConfig,
     pdl: &str,
     build_info: ragit_types::chunk::chunk_struct::ChunkBuildInfo,
+    dry_run_llm: bool,
 ) -> Result<Chunk, Error> {
     let mut dummy_context = tera::Context::new();
     dummy_context.insert("chunk", "placeholder");
@@ -112,6 +113,7 @@ pub async fn create_chunk_from(
         char_len,
         image_count,
         data.clone(),
+        dry_run_llm,
     ).await?;
 
     let mut hasher = Sha3_256::new();

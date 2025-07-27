@@ -80,7 +80,7 @@ pub async fn bootstrap_index_self(verbose: bool) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag build");
     }
-    ragit_index_effects::build(&mut index, 8, false).await?;
+    ragit_index_effects::build(&mut index, 8, false, true).await?;
     if verbose {
         println!("bootstrap_index_self: Built index");
     }

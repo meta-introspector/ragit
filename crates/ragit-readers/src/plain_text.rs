@@ -10,12 +10,14 @@ pub struct PlainTextReader {
 
 impl FileReaderImpl for PlainTextReader {
     fn new(path: &str, root_dir: &str, config: &BuildConfig) -> Result<Self, Error> {
-        Ok(PlainTextReader {
+        let mut reader = PlainTextReader {
             _path: path.to_string(),
             _root_dir: root_dir.to_string(),
             _config: config.clone(),
             _tokens: VecDeque::new(),
-        })
+        };
+        reader.load_tokens()?;
+        Ok(reader)
     }
 
     fn pop_all_tokens(&mut self) -> Result<Vec<AtomicToken>, Error> {
@@ -23,6 +25,31 @@ impl FileReaderImpl for PlainTextReader {
     }
 
     fn load_tokens(&mut self) -> Result<(), Error> {
+        use std::fs;
+        use std::io::Read;
+        use anyhow::Context;
+
+        let mut file = fs::File::open(&self._path)
+            .context(format!("Failed to open plain text file: {}", self._path))?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)
+            .context(format!("Failed to read plain text file: {}", self._path))?;
+
+        let chunk_size = self._config.chunk_size;
+        let mut current_char_index = 0;
+        let chars: Vec<char> = contents.chars().collect();
+
+        while current_char_index < chars.len() {
+            let end_index = (current_char_index + chunk_size).min(chars.len());
+            let chunk_chars = &chars[current_char_index..end_index];
+            let chunk_string: String = chunk_chars.iter().collect();
+
+            self._tokens.push_back(AtomicToken::String {
+                data: chunk_string.clone(),
+                char_len: chunk_string.chars().count(),
+            });
+            current_char_index = end_index;
+        }
         Ok(())
     }
 

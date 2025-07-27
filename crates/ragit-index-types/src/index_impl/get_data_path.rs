@@ -4,8 +4,12 @@ use std::path::PathBuf;
 
 pub fn index_get_data_path(
     _index: &Index,
-    _root_dir: &PathBuf,
-    _file: &PathBuf,
+    root_dir: &PathBuf,
+    file: &PathBuf,
 ) -> Result<PathBuf, ApiError> {
-    Ok(PathBuf::new())
+    println!("index_get_data_path: root_dir: {:?}", root_dir);
+    println!("index_get_data_path: file: {:?}", file);
+    let full_path = root_dir.join(file);
+    println!("index_get_data_path: full_path: {:?}", full_path);
+    Ok(full_path)
 }

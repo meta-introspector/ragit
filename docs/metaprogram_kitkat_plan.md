@@ -33,16 +33,19 @@ This document outlines the current state of the `ragit` project refactoring effo
 - **Modified `bootstrap_index_self`:** To create a temporary directory within the project root and use relative paths for files added to the index.
 - **Updated `crates/ragit-commands/src/main.rs`:** To reflect changes in `bootstrap_index_self` signature and remove temporary directory creation.
 - **Updated `docs/lessons.md`:** With new insights regarding compile-time vs. runtime loading, specific error handling, and `cargo run` usage.
+- **Introduced `dry_run_llm` flag:** Added a `dry_run_llm` boolean flag to `send_and_validate_chunk_response` in `ragit-chunk/src/chunk_creation_utils.rs` to log LLM queries to `tmp_bootstrap/llm_queries.md` instead of making actual API calls. This required propagating the flag through `create_chunk_from` in `ragit-chunk/src/create_chunk_from.rs`, `generate_chunk` in `ragit-readers/src/lib.rs`, `build` in `ragit-index-effects/src/build.rs`, `build_worker` in `ragit-index-effects/src/build_worker.rs`, and `WorkerRequest::BuildChunks` in `ragit-index-effects/src/channel.rs` and `ragit-index-effects/src/init_worker.rs`.
+- **Fixed type mismatch:** Corrected a type mismatch (`String` vs. `&str`) in `ragit-chunk/src/chunk_creation_utils.rs` related to the `dry_run_llm` implementation.
 
 ## Current Issues / Remaining Challenges:
-The project now compiles successfully after these extensive fixes. All major compilation errors and cyclic dependencies identified have been addressed. However, the `ragit bootstrap` command is still failing with a "Read-only file system (os error 30)" error during the `rag build` step, despite the temporary directory having write permissions for the owner. This suggests an issue with a specific file operation within the temporary directory.
+The `ragit bootstrap` command is still failing with an exit code 137 (out-of-memory), despite attempts to disable LLM calls via the `dry_run_llm` flag. This suggests that the memory issue is likely not solely due to LLM calls, or the `dry_run_llm` flag isn't fully mitigating the memory usage. The previous "Read-only file system (os error 30)" error has not reappeared, indicating the temporary directory permissions are likely resolved.
 
 ## Next Steps (Post-KitKat):
-The immediate priority is to resolve the "Read-only file system" error and get the `ragit bootstrap` command to run successfully. This will involve:
-1.  **Analyze `strace.log`:** Pinpoint the exact file operation causing the "Read-only file system (os error 30)" error.
-2.  **Identify Root Cause & Fix:** Based on the `strace.log` analysis, identify the root cause of the permission issue and implement a fix.
-3.  **Run Tests:** Execute `cargo check` and `cargo test` to ensure all changes are valid and no regressions were introduced.
-4.  **Code Cleanup:** Clean up any remaining warnings.
-5.  **Functional Verification:** Manually test key `ragit` commands (`add`, `build`, `query`) to confirm they work as expected.
-6.  **Performance Review:** Monitor performance, especially for `rag build`, to ensure the changes haven't negatively impacted efficiency.
-7.  **Documentation Update:** Continue to update relevant documentation files to reflect the new module structure and API changes.
+The immediate priority is to resolve the out-of-memory error and get the `ragit bootstrap` command to run successfully. This will involve:
+1.  **Investigate memory usage:** Use memory profiling tools (if available and compatible with Android/Termux) or more detailed logging to pinpoint the exact memory-intensive operations during the `rag build` step, especially within `ragit-index-effects` and `ragit-readers`.
+2.  **Optimize data processing:** Review the token and chunk processing logic in `ragit-readers` and `ragit-chunk` for potential memory optimizations.
+3.  **Review `tokio` features:** Revisit the `tokio` feature set in `crates/ragit-index-core/Cargo.toml` to ensure only necessary features are enabled, as `full` can be memory-intensive.
+4.  **Consider smaller test cases:** If the current `bootstrap` process is too large to debug effectively, create a minimal test case that reproduces the memory issue.
+5.  **Run Tests:** Execute `cargo check` and `cargo test` to ensure all changes are valid and no regressions were introduced.
+6.  **Code Cleanup:** Clean up any remaining warnings and remove the temporary `println!` statements and `dry_run_llm` flags once the memory issue is resolved.
+7.  **Functional Verification:** Manually test key `ragit` commands (`add`, `build`, `query`) to confirm they work as expected.
+8.  **Documentation Update:** Continue to update relevant documentation files to reflect the new module structure and API changes.

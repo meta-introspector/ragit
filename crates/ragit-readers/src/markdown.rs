@@ -26,8 +26,21 @@ impl FileReaderImpl for MarkdownReader {
     }
 
     fn load_tokens(&mut self) -> Result<(), Error> {
-        // Placeholder implementation
-        // In a real implementation, this would read from the markdown file
+        use std::fs;
+        use std::io::Read;
+        use anyhow::Context;
+
+        let mut file = fs::File::open(&self._path)
+            .context(format!("Failed to open markdown file: {}", self._path))?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)
+            .context(format!("Failed to read markdown file: {}", self._path))?;
+
+        // For now, just add the whole content as a single token
+        self._tokens.push_back(AtomicToken::String {
+            data: contents.clone(),
+            char_len: contents.chars().count(),
+        });
         Ok(())
     }
 

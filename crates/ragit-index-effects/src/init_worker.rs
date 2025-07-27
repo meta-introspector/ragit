@@ -43,11 +43,12 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
 
         while let Some(msg) = rx_from_main.recv().await {
             match msg {
-                WorkerRequest::BuildChunks { file } => match build_chunks(
+                WorkerRequest::BuildChunks { file, dry_run_llm } => match build_chunks(
                     &mut index,
                     file,
                     prompt_hash.clone(),
                     tx_to_main.clone(),
+                    dry_run_llm,
                 ).await {
                     Ok(_) => {},
                     Err(e) => {

@@ -5,6 +5,7 @@ use ragit_types::chunk::chunk_extra_info::ChunkExtraInfo;
 use ragit_index_types::chunk::chunk_struct::Chunk;
 use ragit_chunk;
 use ragit_index_types::index_get_prompt;
+use anyhow::Context;
 
 use ragit_types::uid::Uid;
 use ragit_types::image::Image;
@@ -58,22 +59,22 @@ pub struct FileReader {
 impl FileReader {
     pub async fn new(rel_path: String, real_path: String, root_dir: &str, config: BuildConfig) -> Result<Self, Error> {
         let inner = match extension(&rel_path)?.unwrap_or_default().to_ascii_lowercase().as_str() {
-            "md" => Box::new(MarkdownReader::new(&real_path, root_dir, &config)?) as Box<dyn FileReaderImpl + Send>,
-            "png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" => Box::new(ImageReader::new(&real_path, root_dir, &config)?),
-            "jsonl" => Box::new(LineReader::new(&real_path, root_dir, &config)?),
+            "md" => Box::new(MarkdownReader::new(&real_path, root_dir, &config).context(format!("Failed to create MarkdownReader for path: {:?}", real_path))?) as Box<dyn FileReaderImpl + Send>,
+            "png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" => Box::new(ImageReader::new(&real_path, root_dir, &config).context(format!("Failed to create ImageReader for path: {:?}", real_path))?),
+            "jsonl" => Box::new(LineReader::new(&real_path, root_dir, &config).context(format!("Failed to create LineReader for path: {:?}", real_path))?),
             "csv" => {
                 #[cfg(feature = "csv")]
-                { Box::new(CsvReader::new(&real_path, root_dir, &config)?) }
+                { Box::new(CsvReader::new(&real_path, root_dir, &config).context(format!("Failed to create CsvReader for path: {:?}", real_path))?) }
                 #[cfg(not(feature = "csv"))]
-                { Box::new(PlainTextReader::new(&real_path, root_dir, &config)?) }
+                { Box::new(PlainTextReader::new(&real_path, root_dir, &config).context(format!("Failed to create PlainTextReader for path: {:?}", real_path))?) }
             },
             "pdf" => {
                 #[cfg(feature = "pdf")]
-                { Box::new(PdfReader::new(&real_path, root_dir, &config)?) }
+                { Box::new(PdfReader::new(&real_path, root_dir, &config).context(format!("Failed to create PdfReader for path: {:?}", real_path))?) }
                 #[cfg(not(feature = "pdf"))]
                 { return Err(Error::FeatureNotEnabled { feature: String::from("pdf"), action: format!("read `{rel_path}`") }); }
             },
-            _ => Box::new(PlainTextReader::new(&real_path, root_dir, &config)?),
+            _ => Box::new(PlainTextReader::new(&real_path, root_dir, &config).context(format!("Failed to create PlainTextReader for path: {:?}", real_path))?),
         };
 
         Ok(FileReader {
@@ -97,10 +98,15 @@ impl FileReader {
         build_info: ragit_types::ChunkBuildInfo,
         _previous_turn: Option<(Chunk, ragit_types::chunk::chunk_schema::ChunkSchema)>,
         index_in_file: usize,
+        dry_run_llm: bool,
     ) -> Result<Chunk, Error> {
+        println!("generate_chunk: Calling next_chunk");
         let (tokens, _chunk_extra_info) = self.next_chunk()?;
+        println!("generate_chunk: next_chunk returned {} tokens", tokens.len());
         let tokens = self.fetch_images_from_web(tokens)?; // Changed to sync for now
+        println!("generate_chunk: Tokens after image fetching: {}", tokens.len());
 
+        println!("generate_chunk: Calling ragit_chunk::create_chunk_from");
         let chunk = ragit_chunk::create_chunk_from(
             &tokens,
             &self.config,
@@ -109,7 +115,9 @@ impl FileReader {
             &index.api_config,
             &index_get_prompt(index, "summarize")?,
             build_info,
+            dry_run_llm,
         ).await?;
+        println!("generate_chunk: ragit_chunk::create_chunk_from returned");
 
         // if let Some(ms) = index.api_config.sleep_after_llm_call {
         //     tokio::time::sleep(std::time::Duration::from_millis(ms)).await;
@@ -191,19 +199,29 @@ impl FileReader {
     }
 
     fn fill_buffer_until_n_chunks(&mut self, n: usize) -> Result<(), Error> {
+        println!("fill_buffer_until_n_chunks: Entering. Current buffer size: {}, target: {}", self.curr_buffer_size, n * self.config.chunk_size);
         loop {
             if self.curr_buffer_size >= n * self.config.chunk_size {
+                println!("fill_buffer_until_n_chunks: Buffer filled. Returning.");
                 return Ok(());
             }
 
+            println!("fill_buffer_until_n_chunks: Loading tokens from inner reader.");
             self.inner.load_tokens()?;
 
-            for token in self.inner.pop_all_tokens()? {
+            let popped_tokens = self.inner.pop_all_tokens()?;
+            println!("fill_buffer_until_n_chunks: Popped {} tokens from inner reader.", popped_tokens.len());
+            for token in popped_tokens {
                 self.curr_buffer_size += token.len(self.config.image_size);
                 self.buffer.push_back(token);
             }
+            println!("fill_buffer_until_n_chunks: Current buffer size after adding tokens: {}", self.curr_buffer_size);
 
-            if !self.inner.has_more_to_read() {
+            // Continue processing if there are still tokens in the inner reader's buffer
+            if self.inner.has_more_to_read() || !self.inner.pop_all_tokens()?.is_empty() {
+                continue;
+            } else {
+                println!("fill_buffer_until_n_chunks: Inner reader has no more to read and no more tokens to pop. Returning.");
                 return Ok(());
             }
         }

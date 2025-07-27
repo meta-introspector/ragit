@@ -8,9 +8,10 @@ pub async fn build(
     index: &mut Index,
     workers_count: usize,
     quiet: bool,
+    dry_run_llm: bool,
 ) -> Result<BuildResult, ApiError> {
     let mut workers = init_workers(workers_count, index.root_dir.clone());
-    build_worker(index, &mut workers, Instant::now(), quiet).await
+    build_worker(index, &mut workers, Instant::now(), quiet, dry_run_llm).await
 }
 
 pub struct BuildResult {

@@ -38,6 +38,7 @@ pub async fn build_worker(
     workers: &mut Vec<Channel>,
     started_at: Instant,
     quiet: bool,
+    dry_run_llm: bool,
 ) -> Result<BuildResult, ApiError> {
     println!("build_worker: Starting");
     let mut killed_workers = vec![];
@@ -69,7 +70,7 @@ pub async fn build_worker(
 
             buffer.insert(file.clone(), HashMap::new());
             curr_processing_file.insert(worker_index, file.clone());
-            worker.send(WorkerRequest::BuildChunks { file: file.clone() }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up")))?;
+            worker.send(WorkerRequest::BuildChunks { file: file.clone(), dry_run_llm }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up")))?;
         }
 
         else {
@@ -158,7 +159,7 @@ pub async fn build_worker(
                             let file_path_new = file.clone();
                             buffer.insert(file_path_new.clone(), HashMap::new());
                             curr_processing_file.insert(worker_index, file_path_new.clone());
-                            worker.send(WorkerRequest::BuildChunks { file: file_path_new }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(WorkerRequest::BuildChunks { file: file_path_new, dry_run_llm }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                         }
 
                         else {
@@ -204,7 +205,7 @@ pub async fn build_worker(
                             println!("build_worker: Sending new file {:?} to worker {}", file, worker_index);
                             buffer.insert(file.clone(), HashMap::new());
                             curr_processing_file.insert(worker_index, file.clone());
-                            worker.send(WorkerRequest::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(WorkerRequest::BuildChunks { file: file.clone(), dry_run_llm }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                         }
 
                         else {
