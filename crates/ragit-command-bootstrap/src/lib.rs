@@ -7,6 +7,9 @@ use ragit_index_types::{index_struct::Index, load_mode::LoadMode};
 use std::fmt::Write as FmtWrite;
 use crate::file_source::FileSource;
 use std::fs;
+use anyhow::Result;
+
+pub mod file_source;
 
 pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error> {
     println!("bootstrap_index_self: Starting");
@@ -26,6 +29,19 @@ pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error>
     };
     let all_files_to_add = bootstrap_source.get_files()?;
     println!("bootstrap_index_self: Found {} files to add", all_files_to_add.len());
+
+    let prompts_dir = actual_root_dir.join("prompts");
+    let temp_prompts_dir = temp_path.join("prompts");
+    fs::create_dir_all(&temp_prompts_dir)?;
+    for entry in fs::read_dir(prompts_dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_file() {
+            let dest_path = temp_prompts_dir.join(path.file_name().unwrap());
+            fs::copy(&path, &dest_path)?;
+            println!("bootstrap_index_self: Copied prompt {:?} to {:?}", path, dest_path);
+        }
+    }
 
     add_files_command(&mut index, &all_files_to_add, None, false).await?;
     println!("bootstrap_index_self: Added files to index");

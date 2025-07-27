@@ -30,6 +30,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 ## More documents
 
 - [Build](./docs/build.md)
+- [Bootstrap](./docs/bootstrap.md)
 - [Chunks](./docs/chunks.md)
 - [Configuration](./docs/config.md)
 - [Contribution](./docs/contribution.md)
@@ -38,6 +39,14 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Pipeline](./docs/pipeline.md)
 - [Prompt Engineering](./docs/prompt_engineering.md)
 - [Quick Guide](./docs/quick_guide.md)
+
+## Debugging
+
+Ragit provides a `--verbose` flag for more detailed output, which can be helpful for debugging.
+
+```sh
+rag --verbose <command>
+```
 
 ## Interactive documents
 

@@ -27,6 +27,7 @@ pub async fn build_worker(
     started_at: Instant,
     quiet: bool,
 ) -> Result<BuildResult, ApiError> {
+    println!("build_worker: Starting");
     let mut killed_workers = vec![];
     let mut staged_files = index.staged_files.clone();
     let mut curr_completed_files = Vec::<PathBuf>::new();
@@ -41,8 +42,10 @@ pub async fn build_worker(
     // HashMap<worker id, file>
     let mut curr_processing_file: HashMap<usize, PathBuf> = HashMap::new();
 
+    println!("build_worker: Initializing workers");
     for (worker_index, worker) in workers.iter_mut().enumerate() {
         if let Some(file) = staged_files.pop() {
+            println!("build_worker: Sending file {:?} to worker {}", file, worker_index);
             // Previously, all the builds were in serial and this field tells
             // which file the index is building. When something goes wrong, ragit
             // reads this field and clean up garbages. Now, all the builds are in
@@ -58,14 +61,17 @@ pub async fn build_worker(
         }
 
         else {
+            println!("build_worker: No more files to process, killing worker {}", worker_index);
             worker.send(WorkerRequest::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
             killed_workers.push(worker_index);
         }
     }
 
+    println!("build_worker: Saving index state");
     index_save_to_file(index, index.root_dir.join(INDEX_FILE_NAME).into())?;
     let mut has_to_erase_lines = false;
 
+    println!("build_worker: Entering main loop");
     loop {
         if !quiet {
             render_build_dashboard(
@@ -88,6 +94,7 @@ pub async fn build_worker(
             match worker.try_recv() {
                 Ok(msg) => match msg {
                     WorkerResponse::ChunkComplete { file, chunk_uid, index: chunk_index } => {
+                        println!("build_worker: Received ChunkComplete from worker {}", worker_index);
                         buffered_chunk_count += 1;
 
                         let file_path = PathBuf::from(file);
@@ -105,6 +112,7 @@ pub async fn build_worker(
                         }
                     },
                     WorkerResponse::FileComplete { file, chunk_count } => {
+                        println!("build_worker: Received FileComplete from worker {}", worker_index);
                         let file_path = PathBuf::from(file);
                         match buffer.get(&file_path) {
                             Some(chunks) => {
@@ -134,6 +142,7 @@ pub async fn build_worker(
                         }
 
                         if let Some(file) = staged_files.pop() {
+                            println!("build_worker: Sending new file {:?} to worker {}", file, worker_index);
                             let file_path_new = file.clone();
                             buffer.insert(file_path_new.clone(), HashMap::new());
                             curr_processing_file.insert(worker_index, file_path_new.clone());
@@ -141,6 +150,7 @@ pub async fn build_worker(
                         }
 
                         else {
+                            println!("build_worker: No more files to process, killing worker {}", worker_index);
                             worker.send(WorkerRequest::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                             killed_workers.push(worker_index);
                         }
@@ -149,6 +159,7 @@ pub async fn build_worker(
                         success += 1;
                     },
                     WorkerResponse::Error(e) => {
+                        println!("build_worker: Received error from worker {}: {:?}", worker_index, e);
                         if let Some(file) = curr_processing_file.get(&worker_index) {
                             errors.push((file.clone(), format!("{e:?}")));
 
@@ -178,12 +189,14 @@ pub async fn build_worker(
                         }
 
                         if let Some(file) = staged_files.pop() {
+                            println!("build_worker: Sending new file {:?} to worker {}", file, worker_index);
                             buffer.insert(file.clone(), HashMap::new());
                             curr_processing_file.insert(worker_index, file.clone());
                             worker.send(WorkerRequest::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                         }
 
                         else {
+                            println!("build_worker: No more files to process, killing worker {}", worker_index);
                             worker.send(WorkerRequest::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                             killed_workers.push(worker_index);
                         }
@@ -192,6 +205,7 @@ pub async fn build_worker(
                 Err(TryRecvError::Empty) => {},
                 Err(TryRecvError::Disconnected) => {
                     if !killed_workers.contains(&worker_index) {
+                        println!("build_worker: Worker {} disconnected unexpectedly", worker_index);
                         return Err(ApiError::MPSCError(String::from("Build worker hung up.")));
                     }
                 },
@@ -201,6 +215,7 @@ pub async fn build_worker(
         // It flushes and commits 20 or more files at once.
         // TODO: this number has to be configurable
         if curr_completed_files.len() >= 20 || killed_workers.len() == workers.len() {
+            println!("build_worker: Flushing buffer");
             index.staged_files = index.staged_files.drain(..).filter(
                 |staged_file| !curr_completed_files.contains(staged_file)
             ).collect();
@@ -273,6 +288,7 @@ pub async fn build_worker(
         std::thread::sleep(Duration::from_millis(100));
     }
 
+    println!("build_worker: Finishing");
     index.curr_processing_file = None;
     index_save_to_file(index, index.root_dir.join(INDEX_FILE_NAME).into())?;
     index_calculate_and_save_uid(index)?;
