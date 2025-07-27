@@ -1,4 +1,3 @@
-use std::path::{Path, PathBuf};
 use anyhow::Result;
 use ragit_api::Request;
 use ragit_model::Model;
@@ -7,8 +6,8 @@ use ragit_types::pdl_types::{Message, MessageContent, Role};
 use serde_json::Value as JsonValue;
 use regex::Regex;
 use std::time::Instant;
-use ragit_fs::{write_log};
-use anyhow::Context;
+//use ragit_types::Schema;
+use ragit_api::Schema;
 
 pub async fn send_and_validate_chunk_response(
     mut messages: Vec<Message>,
@@ -22,9 +21,9 @@ pub async fn send_and_validate_chunk_response(
     dump_api_usage_at: Option<ragit_types::AuditRecordAt>,
     dump_pdl_at: Option<String>,
     dump_json_at: Option<String>,
-    schema: Option<ragit_schema::Schema>,
+    schema: Option<Schema>,
     schema_max_try: usize,
-    started_at: Instant,
+    _started_at: Instant,
     config_min_summary_len: usize,
     config_max_summary_len: usize,
     char_len: usize,
@@ -79,7 +78,7 @@ pub async fn send_and_validate_chunk_response(
                                 }
 
                                 else {
-                                    return Ok((response_text, title.to_string(), summary.to_string()));
+                                    return Ok((response_text.to_string(), title.to_string(), summary.to_string()));
                                 }
                             },
                             _ => {
@@ -115,7 +114,7 @@ pub async fn send_and_validate_chunk_response(
 
             // default values
             return Ok((
-                response_text,
+                response_text.to_string(),
                 String::from("untitled"),
                 data_chars[..((config_min_summary_len + config_max_summary_len) / 2).min(data_chars.len())].iter().collect::<String>().replace("\n", " "),
             ));

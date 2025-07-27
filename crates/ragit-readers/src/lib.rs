@@ -95,10 +95,10 @@ impl FileReader {
         &mut self,
         index: &ragit_index_types::index_struct::Index, // Assuming Index is here
         build_info: ragit_types::ChunkBuildInfo,
-        previous_turn: Option<(Chunk, ragit_types::chunk::chunk_schema::ChunkSchema)>,
+        _previous_turn: Option<(Chunk, ragit_types::chunk::chunk_schema::ChunkSchema)>,
         index_in_file: usize,
     ) -> Result<Chunk, Error> {
-        let (tokens, chunk_extra_info) = self.next_chunk()?;
+        let (tokens, _chunk_extra_info) = self.next_chunk()?;
         let tokens = self.fetch_images_from_web(tokens)?; // Changed to sync for now
 
         let chunk = ragit_chunk::create_chunk_from(

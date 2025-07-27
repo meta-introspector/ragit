@@ -6,7 +6,7 @@ use ragit_types::query_turn::QueryTurn;
 pub mod prelude;
 
 pub async fn query(
-    index: &Index,
+    _index: &Index,
     query: &str,
     turns: Vec<QueryTurn>,
     model_override: Option<String>,

@@ -51,8 +51,8 @@ impl Request {
                 dump_api_usage_at,
                 dump_pdl_at,
                 dump_json_at,
-                schema,
-                schema_max_try,
+                schema: _,
+                schema_max_try: _,
             } => {
                 let started_at = Instant::now();
                 let client = reqwest::Client::new();

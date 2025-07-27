@@ -19,3 +19,4 @@ regex = "1.5"
 tera = "1.17"
 ragit-pdl = { path = "../pdl" }
 ragit-model = { path = "../ragit-model" }
+ragit-schema = { path = "../ragit-schema" }

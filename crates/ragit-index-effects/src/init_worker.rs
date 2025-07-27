@@ -1,6 +1,6 @@
 use ragit_index_types::index_struct::Index;
 use ragit_index_types::load_mode::LoadMode;
-use ragit_types::ApiError;
+//use ragit_types::ApiError;
 use std::path::PathBuf;
 use tokio::sync::mpsc;
 use sha3::{Digest, Sha3_256};

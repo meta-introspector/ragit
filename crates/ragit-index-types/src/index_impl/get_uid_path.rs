@@ -4,11 +4,11 @@ use std::path::PathBuf;
 use ragit_types::uid::Uid;
 
 pub fn index_get_uid_path(
-    index: &Index,
-    root_dir: &str,
-    dir_name: &str,
-    uid: Uid,
-    extension: Option<&str>,
+    _index: &Index,
+    _root_dir: &str,
+    _dir_name: &str,
+    _uid: Uid,
+    _extension: Option<&str>,
 ) -> Result<PathBuf, ApiError> {
     Ok(PathBuf::new())
 }

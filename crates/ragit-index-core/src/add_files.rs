@@ -7,8 +7,8 @@ use std::path::PathBuf;
 pub async fn add_files_command(
     index: &mut Index,
     files: &[String],
-    add_mode: Option<AddMode>,
-    dry_run: bool,
+    _add_mode: Option<AddMode>,
+    _dry_run: bool,
 ) -> Result<AddResult, ApiError> {
     let mut added_files = 0;
     for file in files {

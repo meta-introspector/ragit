@@ -4,8 +4,8 @@ use std::collections::HashMap;
 use ragit_types::uid::Uid;
 
 pub fn index_flush_ii_buffer(
-    index: &mut Index,
-    ii_buffer: HashMap<String, Vec<Uid>>,
+    _index: &mut Index,
+    _ii_buffer: HashMap<String, Vec<Uid>>,
 ) -> Result<(), ApiError> {
         Ok(())
 }

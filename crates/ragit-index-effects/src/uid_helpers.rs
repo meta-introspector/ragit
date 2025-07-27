@@ -1,4 +1,6 @@
-use ragit_types::uid::{Uid, UidError};
+use ragit_types::uid::{Uid,
+		       //UidError
+};
 use ragit_fs::{file_size, get_relative_path, read_bytes_offset, read_bytes};
 use sha3::{Digest, Sha3_256};
 use ragit_types::ApiError as Error;
@@ -11,7 +13,7 @@ pub fn uid_new_file(
     let rel_path = get_relative_path(&root_dir.to_string(), &path.to_string())?;
     let mut file_path_hasher = Sha3_256::new();
     file_path_hasher.update(rel_path.as_bytes());
-    let file_path_uid = format!("{:064x}", file_path_hasher.finalize()).parse::<Uid>().unwrap();
+    //let _file_path_uid = format!("{:064x}", file_path_hasher.finalize()).parse::<Uid>().unwrap();
     let mut file_content_hasher = Sha3_256::new();
 
     if size < 32 * 1024 * 1024 {
@@ -34,7 +36,7 @@ pub fn uid_new_file(
         }
     }
 
-    let mut result = format!("{:064x}", file_content_hasher.finalize()).parse::<Uid>().unwrap();
+    let  result = format!("{:064x}", file_content_hasher.finalize()).parse::<Uid>().unwrap();
     // Assuming Uid has a public xor_assign method or similar for combining.
     // If not, this will need to be adjusted based on Uid's actual API.
     // For now, using a placeholder that assumes direct field access or a helper.

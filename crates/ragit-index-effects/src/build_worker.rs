@@ -1,8 +1,12 @@
-use ragit_index_types::index_impl::{index_save_to_file, index_get_uid_path, index_get_data_path, index_remove, index_add_file_index, index_processed_files_insert, index_update_ii_buffer, index_flush_ii_buffer, index_reset_uid, index_calculate_and_save_uid, index_get_model_by_name, index_add_image_description, index_api_config_get_api_usage};
+use ragit_index_types::index_impl::{index_save_to_file, index_get_uid_path, index_get_data_path, index_remove, index_add_file_index, index_processed_files_insert, index_update_ii_buffer, index_flush_ii_buffer, index_reset_uid, index_calculate_and_save_uid,
+				    //index_get_model_by_name,
+				    //index_add_image_description,
+				    //index_api_config_get_api_usage
+};
 use ragit_utils::uid_new_file;
-use ragit_index_types::index_get_prompt;
-use ragit_tfidf::save_to_file;
-use ragit_index_types::load_mode::LoadMode;
+//use ragit_index_types::index_get_prompt;
+//use ragit_tfidf::save_to_file;
+//use ragit_index_types::load_mode::LoadMode;
 use ragit_index_types::index_struct::Index;
 use ragit_types::ApiError;
 use std::collections::HashMap;
@@ -10,12 +14,20 @@ use std::path::PathBuf;
 use std::time::{Instant, Duration};
 use ragit_types::uid::Uid;
 use ragit_types::ii_status::IIStatus;
-use ragit_fs::{remove_file, try_create_dir, write_bytes, WriteMode, exists, parent};
-use ragit_utils::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME, INDEX_FILE_NAME};
-use ragit_api::audit::AuditRecord;
-use ragit_types::ChunkBuildInfo;
-use ragit_readers::FileReader;
-use ragit_model::Model;
+use ragit_fs::{remove_file,
+	       //try_create_dir,
+	       //write_bytes,
+	       //WriteMode,
+	       //exists,
+	       //parent
+};
+use ragit_utils::constant::{CHUNK_DIR_NAME,
+			    //IMAGE_DIR_NAME,
+			    INDEX_FILE_NAME};
+//use ragit_api::audit::AuditRecord;
+//use ragit_types::ChunkBuildInfo;
+//use ragit_readers::FileReader;
+//use ragit_model::Model;
 use tokio::sync::mpsc::error::TryRecvError;
 use crate::channel::{Channel, WorkerRequest, WorkerResponse};
 use crate::build_dashboard::render_build_dashboard;

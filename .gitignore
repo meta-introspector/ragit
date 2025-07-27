@@ -22,3 +22,4 @@ patch.txt
 t_models'
 .secrets
 /tmp_bootstrap/
+*~

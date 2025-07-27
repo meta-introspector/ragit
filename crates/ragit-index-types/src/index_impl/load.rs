@@ -5,7 +5,7 @@ use std::fs;
 use std::io::Read;
 use serde_json;
 use crate::load_mode::LoadMode;
-use std::collections::HashMap;
+//use std::collections::HashMap;
 
 impl Index {
     pub fn load(path: PathBuf, _mode: LoadMode) -> Result<Self, ApiError> {

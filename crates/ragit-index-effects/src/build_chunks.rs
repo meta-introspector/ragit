@@ -4,14 +4,17 @@ use std::path::PathBuf;
 use tokio::sync::mpsc;
 use ragit_readers::FileReader;
 use ragit_types::{ChunkBuildInfo};
-use ragit_types::build_config::BuildConfig;
+//use ragit_types::build_config::BuildConfig;
 use ragit_utils::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME};
-use ragit_fs::{remove_file, try_create_dir, write_bytes, WriteMode, exists, parent};
+use ragit_fs::{//remove_file,
+    try_create_dir, write_bytes, WriteMode, exists, parent};
 use ragit_tfidf::save_to_file;
-use ragit_index_types::index_impl::{index_get_data_path, index_get_uid_path, index_get_model_by_name, index_add_image_description};
-use ragit_utils::uid_new_file;
+use ragit_index_types::index_impl::{index_get_data_path, index_get_uid_path,
+				    //index_get_model_by_name,
+				    index_add_image_description};
+//use ragit_utils::uid_new_file;
 use crate::channel::WorkerResponse as Response;
-use ragit_model::Model;
+//use ragit_model::Model;
 use crate::channel::WorkerResponse;
 
 pub async fn build_chunks(
@@ -79,7 +82,7 @@ pub async fn build_chunks(
             new_chunk_path.to_str().unwrap(),
             &new_chunk,
             index.root_dir.to_str().unwrap(),
-        )?;;
+        )?;
         tx_to_main.send(Response::ChunkComplete {
             file: file.to_string_lossy().into_owned(),
             index: index_in_file,
