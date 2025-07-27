@@ -11,13 +11,19 @@ use anyhow::Result;
 
 pub mod file_source;
 
-pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error> {
+pub async fn bootstrap_index_self() -> Result<(), anyhow::Error> {
     println!("bootstrap_index_self: Starting");
+    let actual_root_dir = ragit_utils::project_root::find_root()?;
+    let temp_dir = actual_root_dir.join("tmp_bootstrap");
+    fs::create_dir_all(&temp_dir)?;
+    println!("bootstrap_index_self: Created temporary directory: {:?}", temp_dir);
+
     // 1. rag init
     println!("bootstrap_index_self: Running rag init");
-    init_command_main(&["ragit".to_string(), "init".to_string()], Some(temp_path)).await?;
+    init_command_main(&["ragit".to_string(), "init".to_string()], Some(&temp_dir)).await?;
+    println!("bootstrap_index_self: Checking temp_dir permissions: {:?}", temp_dir.metadata()?.permissions());
     println!("bootstrap_index_self: Loading index");
-    let mut index = Index::load(temp_path.to_path_buf(), LoadMode::OnlyJson)?;
+    let mut index = Index::load(temp_dir.to_path_buf(), LoadMode::OnlyJson)?;
 
     // 2. rag add crates/ragit-command-bootstrap
     println!("bootstrap_index_self: Running rag add");
@@ -27,11 +33,21 @@ pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error>
         package_name: "ragit-command-bootstrap".to_string(),
         project_root: actual_root_dir.to_str().unwrap().to_string(),
     };
-    let all_files_to_add = bootstrap_source.get_files()?;
-    println!("bootstrap_index_self: Found {} files to add", all_files_to_add.len());
+    let original_files_to_add = bootstrap_source.get_files()?;
+    println!("bootstrap_index_self: Found {} files to add", original_files_to_add.len());
+
+    let mut temp_files_to_add = Vec::new();
+    for original_file_path in original_files_to_add {
+        let relative_path = original_file_path.strip_prefix(actual_root_dir.to_str().unwrap()).ok_or_else(|| anyhow::anyhow!("Failed to strip prefix from {:?}", original_file_path))?;
+        let temp_file_path = temp_dir.join(relative_path);
+        fs::create_dir_all(temp_file_path.parent().unwrap())?;
+        fs::copy(&original_file_path, &temp_file_path)?;
+        println!("bootstrap_index_self: Copied file {:?} to {:?}", original_file_path, temp_file_path);
+        temp_files_to_add.push(temp_file_path);
+    }
 
     let prompts_dir = actual_root_dir.join("prompts");
-    let temp_prompts_dir = temp_path.join("prompts");
+    let temp_prompts_dir = temp_dir.join("prompts");
     fs::create_dir_all(&temp_prompts_dir)?;
     for entry in fs::read_dir(prompts_dir)? {
         let entry = entry?;
@@ -43,7 +59,10 @@ pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error>
         }
     }
 
-    add_files_command(&mut index, &all_files_to_add, None, false).await?;
+    let relative_temp_files_to_add = temp_files_to_add.iter().map(|p| {
+        p.strip_prefix(&temp_dir).unwrap().to_string_lossy().into_owned()
+    }).collect::<Vec<String>>();
+    add_files_command(&mut index, &relative_temp_files_to_add, None, false).await?;
     println!("bootstrap_index_self: Added files to index");
 
     // 3. rag build
@@ -66,14 +85,14 @@ pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error>
 ```
 ", chunk.data)?;
     }
-    let chunks_file_path = temp_path.join("chunks_output.md");
+    let chunks_file_path = temp_dir.join("chunks_output.md");
     write_string(chunks_file_path.to_str().unwrap(), &markdown_output, WriteMode::CreateOrTruncate)?;
     println!("bootstrap_index_self: Chunks written to {:?}", chunks_file_path);
 
     // 4. Self-improvement
     println!("bootstrap_index_self: Running self-improvement query");
     let self_path = actual_root_dir.join("crates/ragit-command-bootstrap/src/lib.rs");
-    let self_code = read_string(self_path.to_str().unwrap())?;
+    let self_code = read_string(self_path.to_str().ok_or_else(|| anyhow::anyhow!("Invalid path for self_code: {:?}", self_path))?)?;
     let prompt = format!(
         "The following is the Rust source code for a function that bootstraps a RAGIT index and then attempts to improve itself. Please review the code and provide an improved version. The improved version should be more robust, efficient, and clear. The function should also contain a query to reflect on its own functionality. Only output the complete, raw rust code for the file, without any explanations or markdown formatting.\n\n```rust\n{}\n```",
         self_code

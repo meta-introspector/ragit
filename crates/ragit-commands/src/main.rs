@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
 use ragit_command_bootstrap::bootstrap_index_self;
-use tempfile::tempdir;
+
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -30,9 +30,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
-            let temp_dir = tempdir()?;
-            let temp_path = temp_dir.path();
-            bootstrap_index_self(temp_path).await?;
+            bootstrap_index_self().await?;
         }
     }
 

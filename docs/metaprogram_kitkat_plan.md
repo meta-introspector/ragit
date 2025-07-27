@@ -1,7 +1,7 @@
-# KitKat Metaprogram - Current State (2025-07-26)
+# KitKat Metaprogram - Current State (2025-07-27)
 
 ## Overview
-This document outlines the current state of the `ragit` project refactoring efforts as of July 26, 2025. The primary goal has been to improve modularity and resolve dependency issues, particularly cyclic dependencies between core crates.
+This document outlines the current state of the `ragit` project refactoring efforts as of July 27, 2025. The primary goal has been to improve modularity and resolve dependency issues, particularly cyclic dependencies between core crates, and to get the `ragit bootstrap` command working.
 
 ## Refactoring Actions Taken:
 - **`impl Index` functions refactored:** Functions previously part of `impl Index` blocks in `ragit-index-effects` have been moved into individual, standalone files within `ragit-index-types/src/index_impl/`. Each function now resides in its own `.rs` file and is re-exported through `ragit-index-types/src/index_impl/mod.rs`.
@@ -29,14 +29,20 @@ This document outlines the current state of the `ragit` project refactoring effo
 - **Fixed `Index::load` usage in `ragit-command-bootstrap`:** Changed `use ragit_index_core::load_index_from_path;` to `use ragit_index_types::index_struct::Index;` and `use ragit_index_types::load_mode::LoadMode;` and updated the call to `Index::load(index_path, LoadMode::OnlyJson)?;`.
 - **Fixed `ragit-index-types/src/index_struct.rs`:** Changed `pub models: Vec<Model>,` to `pub models: Vec<ragit_model::Model>,` and updated the import to `use ragit_model::Model;`.
 - **Fixed `ragit-index-types/src/index_impl/get_model_by_name.rs`:** Updated the function signature and return type to use `ragit_model::Model` explicitly.
+- **Removed compile-time prompt loading:** From `crates/ragit-utils/src/prompts.rs` and `crates/ragit-utils/src/prelude.rs`.
+- **Modified `bootstrap_index_self`:** To create a temporary directory within the project root and use relative paths for files added to the index.
+- **Updated `crates/ragit-commands/src/main.rs`:** To reflect changes in `bootstrap_index_self` signature and remove temporary directory creation.
+- **Updated `docs/lessons.md`:** With new insights regarding compile-time vs. runtime loading, specific error handling, and `cargo run` usage.
 
 ## Current Issues / Remaining Challenges:
-The project now compiles successfully after these extensive fixes. All major compilation errors and cyclic dependencies identified have been addressed.
+The project now compiles successfully after these extensive fixes. All major compilation errors and cyclic dependencies identified have been addressed. However, the `ragit bootstrap` command is still failing with a "Read-only file system (os error 30)" error during the `rag build` step, despite the temporary directory having write permissions for the owner. This suggests an issue with a specific file operation within the temporary directory.
 
 ## Next Steps (Post-KitKat):
-The immediate priority is to verify the functionality of the `bootstrap_index_self` command and other core features now that the build is stable. This will involve:
-1.  **Running Tests:** Execute existing unit and integration tests to ensure that the refactoring has not introduced regressions.
-2.  **Functional Verification:** Manually test key `ragit` commands (`add`, `build`, `query`) to confirm they work as expected.
-3.  **Performance Review:** Monitor performance, especially for `rag build`, to ensure the changes haven't negatively impacted efficiency.
-4.  **Code Cleanup:** Address any remaining warnings (unused imports, mutable variables that don't need to be mutable, etc.) identified by `cargo check`.
-5.  **Documentation Update:** Continue to update relevant documentation files to reflect the new module structure and API changes.
+The immediate priority is to resolve the "Read-only file system" error and get the `ragit bootstrap` command to run successfully. This will involve:
+1.  **Analyze `strace.log`:** Pinpoint the exact file operation causing the "Read-only file system (os error 30)" error.
+2.  **Identify Root Cause & Fix:** Based on the `strace.log` analysis, identify the root cause of the permission issue and implement a fix.
+3.  **Run Tests:** Execute `cargo check` and `cargo test` to ensure all changes are valid and no regressions were introduced.
+4.  **Code Cleanup:** Clean up any remaining warnings.
+5.  **Functional Verification:** Manually test key `ragit` commands (`add`, `build`, `query`) to confirm they work as expected.
+6.  **Performance Review:** Monitor performance, especially for `rag build`, to ensure the changes haven't negatively impacted efficiency.
+7.  **Documentation Update:** Continue to update relevant documentation files to reflect the new module structure and API changes.
