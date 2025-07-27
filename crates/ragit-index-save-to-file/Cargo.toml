@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 ragit-types = { path = "../ragit-types" }
-ragit-index = { path = "../ragit-index" }
+ragit-index-types = { path = "../ragit-index-types" }
 ragit-fs = { path = "../fs" }
 anyhow = "1.0"
 serde_json = "1.0"

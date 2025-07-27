@@ -1,5 +1,6 @@
 use anyhow::Result;
 use std::process::Command;
+use std::path::Path;
 
 pub trait FileSource {
     fn get_files(&self) -> Result<Vec<String>>;
@@ -22,14 +23,15 @@ pub struct CargoPackageFileSource {
 
 impl FileSource for CargoPackageFileSource {
     fn get_files(&self) -> Result<Vec<String>> {
+        println!("CargoPackageFileSource: Getting files for package '{}' in project root '{}'", self.package_name, self.project_root);
         let output = Command::new("cargo")
             .current_dir(&self.project_root)
             .arg("pkgid")
-            .arg("--verbose")
             .arg(&self.package_name)
             .output()?;
 
         if !output.status.success() {
+            println!("CargoPackageFileSource: Failed to get package files for {}: {}", self.package_name, String::from_utf8_lossy(&output.stderr));
             return Err(anyhow::anyhow!(
                 "Failed to get package files for {}: {}",
                 self.package_name,
@@ -37,13 +39,44 @@ impl FileSource for CargoPackageFileSource {
             ));
         }
 
-        let output = String::from_utf8(output.stdout)?;
-        let files = output
-            .lines()
-            .filter(|line| line.starts_with("file://"))
-            .map(|line| line.trim_start_matches("file://").to_string())
-            .collect();
+        let output_str = String::from_utf8(output.stdout)?;
+        println!("CargoPackageFileSource: 'cargo pkgid' output:\n{}", output_str);
 
+        let pkgid = output_str.trim();
+
+        let metadata_output = Command::new("cargo")
+            .current_dir(&self.project_root)
+            .arg("metadata")
+            .arg("--format-version=1")
+            .output()?;
+
+        if !metadata_output.status.success() {
+            println!("CargoPackageFileSource: Failed to get metadata: {}", String::from_utf8_lossy(&metadata_output.stderr));
+            return Err(anyhow::anyhow!(
+                "Failed to get metadata: {}",
+                String::from_utf8_lossy(&metadata_output.stderr)
+            ));
+        }
+
+        let metadata_str = String::from_utf8(metadata_output.stdout)?;
+        let metadata: serde_json::Value = serde_json::from_str(&metadata_str)?;
+
+        let mut files = Vec::new();
+        if let Some(packages) = metadata["packages"].as_array() {
+            for package in packages {
+                if package["id"].as_str() == Some(pkgid) {
+                    if let Some(targets) = package["targets"].as_array() {
+                        for target in targets {
+                            if let Some(src_path) = target["src_path"].as_str() {
+                                files.push(src_path.to_string());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        println!("CargoPackageFileSource: Found files: {:?}", files);
         Ok(files)
     }
 }
@@ -68,3 +101,4 @@ impl FileSource for GlobFileSource {
         Ok(files)
     }
 }
+

@@ -1,4 +1,4 @@
-use ragit_index::Index;
+use ragit_index_types::index_struct::Index;
 use ragit_fs::{write_string, WriteMode};
 use anyhow::Result;
 use std::path::PathBuf;
