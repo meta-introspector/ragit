@@ -1,6 +1,8 @@
 use ragit_utils::prelude::*;
 //use ragit_cli::prelude::*;
-use ragit_index_core::load_index_from_path;
+use ragit_index_query::query;
+use ragit_index_types::index_struct::Index;
+use ragit_index_types::load_mode::LoadMode;
 
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
@@ -20,12 +22,12 @@ pub async fn query_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let index = load_index_from_path(&find_root()?)?;
+    let index = Index::load(find_root()?, LoadMode::OnlyJson)?;
 
     let no_pdl = parsed_args.get_flag(0).is_some();
     let multi_turn = parsed_args.get_flag(1).is_some();
     let json_mode = parsed_args.get_flag(2).is_some();
-    let query = parsed_args.get_args().join(" ");
+    let query_str = parsed_args.get_args().join(" ");
 
     if multi_turn {
         let mut turns = vec![];
@@ -39,7 +41,7 @@ pub async fn query_command_main(args: &[String]) -> Result<(), anyhow::Error> {
                 break;
             }
 
-            let response = index.query(&input, turns.clone(), None).await?;
+            let response = query(&index, &input, turns.clone(), None).await?;
             println!("{}", response.get_message());
             turns.push(QueryTurn {
                 query: input.to_string(),
@@ -47,7 +49,7 @@ pub async fn query_command_main(args: &[String]) -> Result<(), anyhow::Error> {
             });
         }
     } else {
-        let response = index.query(&query, vec![], None).await?;
+        let response = query(&index, &query_str, vec![], None).await?;
 
         if json_mode {
             println!("{}", serde_json::to_string_pretty(&response.to_json())?);

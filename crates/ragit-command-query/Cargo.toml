@@ -10,6 +10,7 @@ ragit-types = { path = "../ragit-types" }
 ragit-index-io = { path = "../ragit-index-io" }
 ragit-index-core = { path = "../ragit-index-core" }
 ragit-index-types = { path = "../ragit-index-types" }
+ragit-index-query = { path = "../ragit-index-query" }
 anyhow = "1.0"
 async-trait = "0.1"
 clap = { version = "4.0", features = ["derive"] }

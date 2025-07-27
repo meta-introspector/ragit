@@ -26,6 +26,8 @@ pub mod add_image_description;
 pub use add_image_description::index_add_image_description;
 pub mod api_config_get_api_usage;
 pub use api_config_get_api_usage::index_api_config_get_api_usage;
+pub mod set_config_by_key;
+pub use set_config_by_key::index_set_config_by_key;
 
 pub mod audit;
 pub mod build;

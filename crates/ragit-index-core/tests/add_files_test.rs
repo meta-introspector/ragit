@@ -1,6 +1,6 @@
 
 use ragit_index_core::add_files::add_files_command;
-use ragit_index_core::load_index_from_path;
+use ragit_index_types::load_mode::LoadMode;
 use ragit_index_types::index_struct::Index;
 use std::fs;
 use std::path::PathBuf;
@@ -19,8 +19,7 @@ async fn test_add_single_file() {
     fs::write(&index_path, index_json).unwrap();
 
     // 1. Initialize a repository
-    let mut index = load_index_from_path(&index_path).unwrap();
-    index.root_dir = root_dir;
+    let mut index = Index::load(root_dir.clone(), LoadMode::OnlyJson).unwrap();
 
     // 2. Create a new file
     let file_path = index.root_dir.join("test.txt");

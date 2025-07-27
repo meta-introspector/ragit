@@ -5,7 +5,7 @@ use ragit_index_core::add_files::add_files_command;
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_utils::cli_types::{CliError, Span};
-use ragit_index_core::load_index_from_path;
+use ragit_index_types::index_struct::Index;
 use std::path::PathBuf;
 
 pub async fn add_command_main(args: &[String]) -> Result<(), anyhow::Error> {
@@ -23,9 +23,7 @@ pub async fn add_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     }
 
     let root_dir = find_root()?;
-    let mut index = load_index_from_path(
-        &PathBuf::from(root_dir.to_string_lossy().into_owned()),
-    )?;
+    let mut index = Index::load(root_dir.clone(), ragit_index_types::load_mode::LoadMode::OnlyJson)?;
     let add_mode = parsed_args
         .get_flag(0)
         .map(|flag| AddMode::parse_flag(&flag))

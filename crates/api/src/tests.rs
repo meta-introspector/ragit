@@ -65,10 +65,27 @@ What do you see in this picture?
 
     for messages in [messages1, messages2] {
         for model in [ModelRaw::gpt_4o_mini(), ModelRaw::gemini_2_flash()] {
-            let request = Request {
+            let default_request = Request::default();
+            let (default_messages, default_model, default_temperature, default_frequency_penalty, default_max_tokens, default_timeout, default_max_retry, default_sleep_between_retries, default_dump_api_usage_at, default_dump_pdl_at, default_dump_json_at, default_schema, default_schema_max_try) = if let Request::ChatRequest { messages, model, temperature, frequency_penalty, max_tokens, timeout, max_retry, sleep_between_retries, dump_api_usage_at, dump_pdl_at, dump_json_at, schema, schema_max_try } = default_request {
+                (messages, model, temperature, frequency_penalty, max_tokens, timeout, max_retry, sleep_between_retries, dump_api_usage_at, dump_pdl_at, dump_json_at, schema, schema_max_try)
+            } else {
+                panic!("Default request is not a ChatRequest");
+            };
+
+            let request = Request::ChatRequest {
                 model: (&model).try_into().unwrap(),
                 messages: messages.clone(),
-                ..Request::default()
+                temperature: default_temperature,
+                frequency_penalty: default_frequency_penalty,
+                max_tokens: default_max_tokens,
+                timeout: default_timeout,
+                max_retry: default_max_retry,
+                sleep_between_retries: default_sleep_between_retries,
+                dump_api_usage_at: default_dump_api_usage_at,
+                dump_pdl_at: default_dump_pdl_at,
+                dump_json_at: default_dump_json_at,
+                schema: default_schema,
+                schema_max_try: default_schema_max_try,
             };
             let response = request
                 .send()
@@ -217,11 +234,27 @@ async fn run_pdl<T: Serialize, U: Default + DeserializeOwned>(pdl: &str, context
         true,
     )
     .unwrap();
-    let request = Request {
+    let default_request = Request::default();
+    let (default_messages, default_model, default_temperature, default_frequency_penalty, default_max_tokens, default_timeout, default_max_retry, default_sleep_between_retries, default_dump_api_usage_at, default_dump_pdl_at, default_dump_json_at, default_schema, default_schema_max_try) = if let Request::ChatRequest { messages, model, temperature, frequency_penalty, max_tokens, timeout, max_retry, sleep_between_retries, dump_api_usage_at, dump_pdl_at, dump_json_at, schema, schema_max_try } = default_request {
+        (messages, model, temperature, frequency_penalty, max_tokens, timeout, max_retry, sleep_between_retries, dump_api_usage_at, dump_pdl_at, dump_json_at, schema, schema_max_try)
+    } else {
+        panic!("Default request is not a ChatRequest");
+    };
+
+    let request = Request::ChatRequest {
         model: (&ModelRaw::gpt_4o_mini()).try_into().unwrap(),
         messages,
         schema,
-        ..Request::default()
+        temperature: default_temperature,
+        frequency_penalty: default_frequency_penalty,
+        max_tokens: default_max_tokens,
+        timeout: default_timeout,
+        max_retry: default_max_retry,
+        sleep_between_retries: default_sleep_between_retries,
+        dump_api_usage_at: default_dump_api_usage_at,
+        dump_pdl_at: default_dump_pdl_at,
+        dump_json_at: default_dump_json_at,
+        schema_max_try: default_schema_max_try,
     };
     let response = request.send_and_validate::<U>(U::default()).await.unwrap();
 

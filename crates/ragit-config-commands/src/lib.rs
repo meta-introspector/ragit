@@ -10,10 +10,12 @@ use std::collections::HashMap;
 use ragit_api::list_models;
 use ragit_api::get_model_by_name;
 //use ragit_api::ApiError;
-use ragit_index_core::load_index_from_path;
+use ragit_index_types::index_struct::Index;
+use ragit_index_types::load_mode::LoadMode;
+use ragit_index_types::index_impl::set_config_by_key::index_set_config_by_key;
 use ragit_types::ApiError;
 pub async fn run(args: &[String]) -> Result<(), anyhow::Error> {
-    let mut index = load_index_from_path(&find_root()?)?;
+    let mut index = Index::load(find_root()?, LoadMode::OnlyJson)?;
 
     match args.get(2).map(|s| s.as_str()) {
         Some("--get") => {
@@ -62,7 +64,7 @@ pub async fn run(args: &[String]) -> Result<(), anyhow::Error> {
                 }
             }
 
-            let previous_value = index.set_config_by_key(key.clone(), value.clone())?;
+            let previous_value = index_set_config_by_key(&mut index, key.clone(), value.clone())?;
 
             match previous_value {
                 Some(prev) => {

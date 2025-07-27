@@ -476,7 +476,7 @@ Write me a sudoku-solver.
             vec![Message {
                 role: Role::User,
                 content: vec![MessageContent::Image {
-                    image_type: ImageType::Png,
+                    image_type: ImageType::Png.into(),
                     bytes: decode_base64("HiMyNameIsBaehyunsol").unwrap(),
                 },],
             },],

@@ -18,6 +18,7 @@
     - Consistent `PathBuf` usage for all file system operations.
     - Consistent API for command handling and inter-crate communication.
     - Clear and unambiguous module structures (e.g., `mod.rs` for re-exports only).
+    - **`Index` Method Refactoring:** All methods previously defined directly on the `Index` struct (e.g., `index.method()`) are being refactored into standalone functions prefixed with `index_` (e.g., `index_method(&mut index, ...)`). These functions are located in `ragit-index-types/src/index_impl/` and re-exported via `ragit-index-types/src/index_impl/mod.rs`.
 - **Loose Coupling through Preludes & Wildcard Imports:**
     - Favor the use of `prelude` modules and `use *` imports where appropriate. This allows for easier access to commonly used types and functions within a crate, reducing the need for verbose, specific module paths in `use` statements.
     - This approach supports loose coupling by abstracting away the exact location of types, making refactoring and moving code within a crate less disruptive to dependent modules.
