@@ -6,7 +6,7 @@ use ragit_types::ii_status::IIStatus;
 use ragit_types::summary::Summary;
 use ragit_types::build_config::BuildConfig;
 
-use ragit_api::Model;
+use ragit_model::Model;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -54,7 +54,7 @@ pub struct Index {
     #[serde(skip)]
     pub prompts: HashMap<String, String>,
     #[serde(skip)]
-    pub models: Vec<Model>,
+    pub models: Vec<ragit_model::Model>,
 }
 
 impl Index {

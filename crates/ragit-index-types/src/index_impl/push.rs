@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 
 impl Index {
     pub async fn push(&mut self, include_configs: bool, include_prompts: bool, quiet: bool) -> Result<(), ApiError> {

@@ -5,7 +5,7 @@ use std::path::PathBuf;
 //use ragit_index_types::Index;
 use crate::prelude::Index;
 use ragit_types::Uid;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 //use ragit_index_core::Index;
 use ragit_fs::{read_dir, join3, file_name, extension, join, set_extension, exists, join4, get_relative_path};
 

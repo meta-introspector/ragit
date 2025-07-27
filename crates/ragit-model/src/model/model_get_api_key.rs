@@ -1,6 +1,6 @@
 use super::model_struct::Model;
 //use ragit_types::ApiError as Error;
-use ragit_error::ApiError as Error;
+use ragit_types::ApiError as Error;
 impl Model {
     pub fn get_api_key(&self) -> Result<String, Error> {
         // Collect all available API keys

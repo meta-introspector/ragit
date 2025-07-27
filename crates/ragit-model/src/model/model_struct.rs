@@ -1,9 +1,11 @@
 use serde::{Deserialize, Serialize};
 
-use crate::prelude::*;
+use crate::prelude::{TestModel, *};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Model {
+    pub api_url: Option<String>,
+    pub test_model: Option<TestModel>,
     pub name: String,
     pub api_name: String,
     pub can_read_images: bool,

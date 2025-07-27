@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 ragit-types = { path = "../ragit-types" }
-ragit-error = { path = "../ragit-error" }
+
 
 ragit-fs = { path = "../fs" }
 ragit-utils = { path = "../ragit-utils" }

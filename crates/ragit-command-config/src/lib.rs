@@ -1,5 +1,5 @@
 use ragit_utils::prelude::*;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::prelude::*;
 use ragit_index_types::index_struct::Index;
 use ragit_index_core::load_index_from_path;

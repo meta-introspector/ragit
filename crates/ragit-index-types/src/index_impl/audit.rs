@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use ragit_api::AuditRecord;

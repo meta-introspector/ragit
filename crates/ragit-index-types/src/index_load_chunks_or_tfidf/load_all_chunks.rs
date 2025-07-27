@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use crate::index_struct::Index;
 use ragit_tfidf::load_from_file;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::Chunk;
 
 impl Index {

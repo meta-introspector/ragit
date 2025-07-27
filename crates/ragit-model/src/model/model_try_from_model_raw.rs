@@ -1,6 +1,6 @@
 use super::model_struct::Model;
 
-use ragit_error::ApiError as Error;
+use ragit_types::ApiError as Error;
 //use ragit_types::ApiError as Error;
 use crate::model_raw::ModelRaw;
 
@@ -29,6 +29,8 @@ impl TryFrom<&ModelRaw> for Model {
             api_keys: m.api_keys.clone(),
             api_env_vars: m.api_env_vars.clone(),
             current_key_index: 0,
+            api_url: m.api_url.clone(),
+            test_model: m.test_model.clone(),
         })
     }
 }

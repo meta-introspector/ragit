@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 
 pub fn index_calculate_and_save_uid(index: &mut Index) -> Result<(), ApiError> {
     Ok(())

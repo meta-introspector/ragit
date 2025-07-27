@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 
 pub struct FetchResult {
     pub fetched: usize,

@@ -1,6 +1,6 @@
 
 //use ragit_index_types::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_utils::query::Keywords;
 //use ragit_index_types::Index;
 use crate::prelude::Index;

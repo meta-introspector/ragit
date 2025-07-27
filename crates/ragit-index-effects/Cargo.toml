@@ -7,7 +7,7 @@ edition = "2021"
 anyhow = "1.0"
 ragit-types = { path = "../ragit-types" }
 ragit-index-types = { path = "../ragit-index-types" }
-ragit-error = { path = "../ragit-error" }
+
 ragit-fs = { path = "../fs" }
 ragit-utils = { path = "../ragit-utils" }
 ragit-model = { path = "../ragit-model" }

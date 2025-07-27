@@ -24,6 +24,8 @@ impl Model {
             api_keys: None,
             api_env_vars: None,
             current_key_index: 0,
+            api_url: None,
+            test_model: Some(super::test_model_struct::TestModel { dummy_response: String::from("dummy") }),
         }
     }
 }

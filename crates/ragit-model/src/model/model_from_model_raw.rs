@@ -31,6 +31,7 @@ impl From<&Model> for ModelRaw {
             api_keys: m.api_keys.clone(),
             api_env_vars: m.api_env_vars.clone(),
             current_key_index: 0,
+            test_model: m.test_model.clone(),
         }
     }
 }

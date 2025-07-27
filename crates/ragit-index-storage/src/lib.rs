@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 use ragit_utils::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME, INDEX_DIR_NAME};
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_utils::ragit_path_utils::join3_paths;
 use ragit_fs::{extension, is_dir, read_dir};
 

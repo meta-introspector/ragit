@@ -1,8 +1,9 @@
 use ragit_types::AuditRecordAt;
+use ragit_error_conversions::WrappedPdlError;
 use ragit_types::build_config::BuildConfig;
 use ragit_types::chunk::atomic_token::AtomicToken;
 use ragit_types::api_config::ApiConfig;
-use ragit_error::ApiError as Error;
+use ragit_types::ApiError as Error;
 use regex::Regex;
 use serde_json::Value as JsonValue;
 use sha3::{Digest, Sha3_256};
@@ -36,7 +37,7 @@ pub async fn create_chunk_from(
         &dummy_context,
         &file, // Assuming 'file' can be used as the current directory for media files
         true, // strict_mode
-    )?;
+    ).map_err(WrappedPdlError)?;
 
     if let Some(message) = prompt.last_mut() {
         debug_assert_eq!(message.role, Role::User);
@@ -51,23 +52,35 @@ pub async fn create_chunk_from(
         unreachable!()
     }
 
-    let mut request = Request {
-        
-        messages: prompt,
-        model: Model { name: api_config.model.clone(), ..Default::default() },
-        frequency_penalty: None,
-        max_tokens: None,
-        max_retry: api_config.max_retry,
-        sleep_between_retries: api_config.sleep_between_retries,
-        timeout: api_config.timeout,
-        temperature: None,
-        dump_api_usage_at: api_config.dump_api_usage_at(&PathBuf::from(&file), "create_chunk_from"),
-        dump_pdl_at: api_config.create_pdl_path(&PathBuf::from(&file), "create_chunk_from").map(|path| path.to_string_lossy().into_owned()),
-        dump_json_at: None,
-        schema: None,
-        schema_max_try: 0,
-    };
-    let mut response = request.send().await?;
+    let mut messages = prompt;
+    let mut model = Model { name: api_config.model.clone(), ..Default::default() };
+    let mut temperature = None;
+    let mut frequency_penalty = None;
+    let mut max_tokens = None;
+    let mut timeout = api_config.timeout;
+    let mut max_retry = api_config.max_retry;
+    let mut sleep_between_retries = api_config.sleep_between_retries;
+    let mut dump_api_usage_at = api_config.dump_api_usage_at(&PathBuf::from(&file), "create_chunk_from");
+    let mut dump_pdl_at = api_config.create_pdl_path(&PathBuf::from(&file), "create_chunk_from").map(|path| path.to_string_lossy().into_owned());
+    let mut dump_json_at = None;
+    let mut schema = None;
+    let mut schema_max_try = 0;
+
+    let mut response = ragit_api::Request::ChatRequest {
+        messages: messages.clone(),
+        model: model.clone(),
+        temperature,
+        frequency_penalty,
+        max_tokens,
+        timeout,
+        max_retry,
+        sleep_between_retries,
+        dump_api_usage_at: dump_api_usage_at.clone(),
+        dump_pdl_at: dump_pdl_at.clone(),
+        dump_json_at: dump_json_at.clone(),
+        schema: schema.clone(),
+        schema_max_try,
+    }.send().await?;
     let mut response_text = response.get_message(0).unwrap();
     let json_regex = Regex::new(r"(?s)[^{}]*({.*})[^{}]*").unwrap();
 
@@ -163,15 +176,44 @@ pub async fn create_chunk_from(
             );
         }
 
-        request.messages.push(Message {
+        let mut chat_request = ragit_api::Request::ChatRequest {
+            messages: messages.clone(),
+            model: model.clone(),
+            temperature,
+            frequency_penalty,
+            max_tokens,
+            timeout,
+            max_retry,
+            sleep_between_retries,
+            dump_api_usage_at: dump_api_usage_at.clone(),
+            dump_pdl_at: dump_pdl_at.clone(),
+            dump_json_at: dump_json_at.clone(),
+            schema: schema.clone(),
+            schema_max_try,
+        };
+        messages.push(Message {
             role: Role::Assistant,
             content: vec![MessageContent::String(response_text.to_string())],
         });
-        request.messages.push(Message {
+        messages.push(Message {
             role: Role::User,
             content: vec![MessageContent::String(error_message)],
         });
-        response = request.send().await?;
+        response = ragit_api::Request::ChatRequest {
+            messages: messages.clone(),
+            model: model.clone(),
+            temperature,
+            frequency_penalty,
+            max_tokens,
+            timeout,
+            max_retry,
+            sleep_between_retries,
+            dump_api_usage_at: dump_api_usage_at.clone(),
+            dump_pdl_at: dump_pdl_at.clone(),
+            dump_json_at: dump_json_at.clone(),
+            schema: schema.clone(),
+            schema_max_try,
+        }.send().await?;
         response_text = response.get_message(0).unwrap();
     };
     let mut hasher = Sha3_256::new();

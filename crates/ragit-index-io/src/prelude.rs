@@ -1,6 +1,6 @@
 pub use ragit_index_types::index_struct::Index;
 
-pub use ragit_error::ApiError;
+pub use ragit_types::ApiError;
 pub use std::path::PathBuf;
 pub use ragit_types::uid::Uid;
 pub use ragit_types::chunk::chunk_struct::Chunk;

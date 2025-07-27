@@ -1,6 +1,6 @@
 use crate::response::{IntoChatResponse, Response};
 
-use ragit_error::ApiError as Error;
+use ragit_types::ApiError as Error;
 //use ragit_types::ApiError as Error;
 use serde::Deserialize;
 

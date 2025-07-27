@@ -12,3 +12,6 @@ pub mod model_default_models;
 pub mod model_try_from_model_raw;
 pub mod model_from_model_raw;
 pub mod model_partial_eq;
+pub mod test_model_struct;
+
+pub use test_model_struct::TestModel;

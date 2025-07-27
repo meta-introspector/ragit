@@ -7,6 +7,7 @@ pub mod uid;
 pub mod prelude;
 pub mod pdl_types;
 pub mod api_error;
+pub use api_error::ApiError;
 
 pub mod json_type;
 pub use json_type::JsonType;
@@ -25,7 +26,7 @@ pub use crate::image::ImageSchema;
 pub use crate::chunk::chunk_struct::{Chunk, ChunkBuildInfo};
 pub mod ii_status;
 pub mod summary;
-pub mod response;
+
 
 pub mod query;
 pub mod api_config;

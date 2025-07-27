@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::remove_result::RemoveResult;
 
 impl Index {

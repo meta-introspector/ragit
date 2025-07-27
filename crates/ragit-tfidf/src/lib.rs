@@ -1,13 +1,13 @@
 //use ragit_types::ApiError;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use ragit_error::ApiError as Error;
+
 //use std::hash::Hash;
 use rust_stemmers::{Stemmer, Algorithm};
 use ragit_types::uid::Uid;
 use ragit_utils::query::Keywords;
 use anyhow::Result;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::processed_doc::ProcessedDoc;
 pub mod io;
 pub use io::{load_from_file, save_to_file};

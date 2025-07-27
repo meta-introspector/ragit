@@ -1,4 +1,5 @@
-use ragit_index_core::load_index_from_path;
+use ragit_index_types::index_struct::Index;
+use ragit_index_types::load_mode::LoadMode;
 
 use ragit_index_core::add_files::add_files_command;
 use std::path::Path;
@@ -18,7 +19,7 @@ pub async fn bootstrap_index_self(temp_path: &Path) -> Result<(), anyhow::Error>
     let index_path = temp_path.join(".ragit/index");
     let index_content = r#"{"ragit_version": "0.4.2", "api_config": {"model": "test-model"}, "files": {}, "staged_files": [], "processed_files": {}, "chunks": [], "chunk_count": 0, "inverted_index": null, "ii_status": {"enabled": false}}"#;
     write_string(index_path.to_str().unwrap(), index_content, WriteMode::CreateOrTruncate)?;
-    let mut index = load_index_from_path(&index_path)?;
+    let mut index = Index::load(index_path, LoadMode::OnlyJson)?;
 
     // 2. rag add crates/ragit-command-bootstrap
     println!("Running: rag add");

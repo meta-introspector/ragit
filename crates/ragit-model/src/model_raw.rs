@@ -85,6 +85,7 @@ pub struct ModelRaw {
     pub api_env_vars: Option<Vec<String>>,
     #[serde(skip)]
     pub current_key_index: usize,
+    pub test_model: Option<super::model::test_model_struct::TestModel>,
 }
 
 impl ModelRaw {

@@ -1,5 +1,5 @@
 use ragit_index_types::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::push::PushResult;
 
 impl Index {

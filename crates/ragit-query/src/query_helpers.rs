@@ -1,4 +1,4 @@
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use lazy_static::lazy_static;
 use regex::Regex;
 //use ragit_index_types::index_struct::Index;

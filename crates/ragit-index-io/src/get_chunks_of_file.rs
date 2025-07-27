@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use std::path::Path;
 use ragit_utils::ragit_path_utils::get_uid_path;
 use ragit_fs::{exists, read_string};
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::uid::Uid;
 use ragit_utils::constant::FILE_INDEX_DIR_NAME;
 

@@ -4,7 +4,7 @@ use ragit_utils::ragit_path_utils::get_uid_path;
 use std::path::Path;
 
 use ragit_fs::exists;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::uid::Uid;
 use ragit_tfidf::{ProcessedDoc, load_from_file as load_tfidf_from_file};
 use ragit_utils::constant::CHUNK_DIR_NAME;

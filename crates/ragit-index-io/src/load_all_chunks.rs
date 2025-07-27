@@ -1,6 +1,6 @@
 
 
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::Chunk;
 use ragit_fs::read_dir;
 use ragit_utils::constant::{INDEX_DIR_NAME, CHUNK_DIR_NAME};

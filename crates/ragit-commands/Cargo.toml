@@ -23,7 +23,7 @@ resvg = { version = "0.45.1", optional = true }
 png = { version = "0.17.16", optional = true }
 
 ragit-api = { path = "../../crates/api" }
-ragit-error = { path = "../ragit-error" }
+
 ragit-fs = { path = "../../crates/fs" }
 ragit-pdl = { path = "../../crates/pdl" }
 ragit-types = { path = "../../crates/ragit-types" }

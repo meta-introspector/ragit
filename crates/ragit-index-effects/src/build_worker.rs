@@ -4,7 +4,7 @@ use ragit_index_types::index_get_prompt;
 use ragit_tfidf::save_to_file;
 use ragit_index_types::load_mode::LoadMode;
 use ragit_index_types::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::time::{Instant, Duration};
@@ -16,9 +16,8 @@ use ragit_api::audit::AuditRecord;
 use ragit_types::ChunkBuildInfo;
 use ragit_readers::FileReader;
 use ragit_model::Model;
-use tokio::sync::mpsc;
-
-
+use tokio::sync::mpsc::error::TryRecvError;
+use crate::channel::{Channel, WorkerRequest, WorkerResponse};
 use crate::build_dashboard::render_build_dashboard;
 use crate::build::BuildResult;
 
@@ -55,11 +54,11 @@ pub async fn build_worker(
 
             buffer.insert(file.clone(), HashMap::new());
             curr_processing_file.insert(worker_index, file.clone());
-            worker.send(ragit_api::Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up")))?;
+            worker.send(WorkerRequest::BuildChunks { file: file.clone() }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up")))?;
         }
 
         else {
-            worker.send(Request::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+            worker.send(WorkerRequest::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
             killed_workers.push(worker_index);
         }
     }
@@ -88,27 +87,29 @@ pub async fn build_worker(
 
             match worker.try_recv() {
                 Ok(msg) => match msg {
-                    Response::ChunkComplete { file, chunk_uid, index: chunk_index } => {
+                    WorkerResponse::ChunkComplete { file, chunk_uid, index: chunk_index } => {
                         buffered_chunk_count += 1;
 
-                        match buffer.get_mut(&file) {
+                        let file_path = PathBuf::from(file);
+                        match buffer.get_mut(&file_path) {
                             Some(chunks) => {
                                 if let Some(prev_uid) = chunks.insert(chunk_index, chunk_uid) {
-                                    return Err(ApiError::Internal(format!("{}th chunk of {} is created twice: {prev_uid}, {chunk_uid}", chunk_index + 1, file.display())));
+                                    return Err(ApiError::Internal(format!("{}th chunk of {} is created twice: {prev_uid}, {chunk_uid}", chunk_index + 1, file_path.display())));
                                 }
                             },
                             None => {
                                 let mut chunks = HashMap::new();
                                 chunks.insert(chunk_index, chunk_uid);
-                                buffer.insert(file, chunks);
+                                buffer.insert(file_path, chunks);
                             },
                         }
                     },
-                    Response::FileComplete { file, chunk_count } => {
-                        match buffer.get(&file) {
+                    WorkerResponse::FileComplete { file, chunk_count } => {
+                        let file_path = PathBuf::from(file);
+                        match buffer.get(&file_path) {
                             Some(chunks) => {
                                 if chunks.len() != chunk_count {
-                                    return Err(ApiError::Internal(format!("Some chunks in `{}` are missing: expected {chunk_count} chunks, got only {} chunks.", file.display(), chunks.len())));
+                                    return Err(ApiError::Internal(format!("Some chunks in `{}` are missing: expected {chunk_count} chunks, got only {} chunks.", file_path.display(), chunks.len())));
                                 }
 
                                 for i in 0..chunk_count {
@@ -121,32 +122,33 @@ pub async fn build_worker(
                                                 2 => String::from("3rd"),
                                                 n => format!("{}th", n + 1),
                                             },
-                                            file.display()
+                                            file_path.display()
                                         )));
                                     }
                                 }
                             },
                             None if chunk_count != 0 => {
-                                return Err(ApiError::Internal(format!("Some chunks in `{}` are missing: expected {chunk_count} chunks, got no chunks.", file.display())));
+                                return Err(ApiError::Internal(format!("Some chunks in `{}` are missing: expected {chunk_count} chunks, got no chunks.", file_path.display())));
                             },
                             None => {},
                         }
 
                         if let Some(file) = staged_files.pop() {
-                            buffer.insert(file.clone(), HashMap::new());
-                            curr_processing_file.insert(worker_index, file.clone());
-                            worker.send(ragit_api::Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            let file_path_new = file.clone();
+                            buffer.insert(file_path_new.clone(), HashMap::new());
+                            curr_processing_file.insert(worker_index, file_path_new.clone());
+                            worker.send(WorkerRequest::BuildChunks { file: file_path_new }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                         }
 
                         else {
-                            worker.send(ragit_api::Request::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(WorkerRequest::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                             killed_workers.push(worker_index);
                         }
 
-                        curr_completed_files.push(file);
+                        curr_completed_files.push(file_path);
                         success += 1;
                     },
-                    ragit_api::Response::Error(e) => {
+                    WorkerResponse::Error(e) => {
                         if let Some(file) = curr_processing_file.get(&worker_index) {
                             errors.push((file.clone(), format!("{e:?}")));
 
@@ -178,17 +180,17 @@ pub async fn build_worker(
                         if let Some(file) = staged_files.pop() {
                             buffer.insert(file.clone(), HashMap::new());
                             curr_processing_file.insert(worker_index, file.clone());
-                            worker.send(ragit_api::Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(WorkerRequest::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                         }
 
                         else {
-                            worker.send(ragit_api::Request::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(WorkerRequest::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                             killed_workers.push(worker_index);
                         }
                     },
                 },
-                Err(mpsc::error::TryRecvError::Empty) => {},
-                Err(mpsc::error::TryRecvError::Disconnected) => {
+                Err(TryRecvError::Empty) => {},
+                Err(TryRecvError::Disconnected) => {
                     if !killed_workers.contains(&worker_index) {
                         return Err(ApiError::MPSCError(String::from("Build worker hung up.")));
                     }

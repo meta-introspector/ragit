@@ -1,5 +1,5 @@
 use ragit_index_types::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use std::time::Instant;
 use crate::build_worker::build_worker;
 use crate::init_workers::init_workers;

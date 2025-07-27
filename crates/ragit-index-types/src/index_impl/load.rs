@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use std::path::PathBuf;
 //use crate::load_mode::LoadMode;
 use crate::load_mode::LoadMode;

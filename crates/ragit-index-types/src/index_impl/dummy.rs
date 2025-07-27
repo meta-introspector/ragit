@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use ragit_types::ii_status::IIStatus;
 use ragit_types::query::QueryConfig;
 use ragit_types::api_config::ApiConfig;
-use ragit_config::BuildConfig;
+use ragit_types::build_config::BuildConfig;
 
 impl Index {
     pub fn dummy() -> Self {

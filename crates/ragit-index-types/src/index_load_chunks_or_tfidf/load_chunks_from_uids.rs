@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::{Uid, Chunk};
 
 impl Index {

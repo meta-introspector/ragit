@@ -1,5 +1,5 @@
 pub use anyhow::Result as AnyhowResult;
-pub use ragit_error::ApiError;
+pub use ragit_types::ApiError;
 pub use ragit_types::api_config::ApiConfig;
 pub use ragit_types::chunk::chunk_struct::{Chunk, ChunkBuildInfo};
 pub use ragit_types::file_schema::FileSchema;

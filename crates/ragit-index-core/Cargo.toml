@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 ragit-types = { path = "../ragit-types" }
-ragit-error = { path = "../ragit-error" }
+
 ragit-api = { path = "../api" }
 ragit-fs = { path = "../fs" } # For PathBuf operations in Index struct
 ragit-uid = { path = "../ragit-uid" } # For Uid in Index struct

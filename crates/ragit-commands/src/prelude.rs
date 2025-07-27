@@ -18,7 +18,7 @@
 // pub use url::ParseError;
 
 // pub use ragit_api::{get_model_by_name, Model, ModelRaw, Request};
-// pub use ragit_error::ApiError;
+pub use ragit_types::ApiError;
 // pub use ragit_fs::{create_dir_all, exists, extension, file_name, file_size, get_relative_path, into_abs_path, is_dir, join as fs_join, join3, join4, normalize, read_bytes, read_bytes_offset, read_dir, remove_dir_all, remove_file, set_extension, try_create_dir, write_bytes, write_string as fs_write_string, WriteMode as FsWriteMode, read_string as fs_read_string};
 // pub use ragit_pdl::{encode_base64, escape_pdl_tokens, parse_pdl as pdl_parse_pdl, parse_pdl_from_file, parse_schema as pdl_parse_schema, render_pdl_schema as pdl_render_pdl_schema, JsonType, Message, Pdl as PdlStruct, Role};
 // pub use ragit_types::{Chunk, ChunkBuildInfo, FileSchema, ImageSchema, Uid, TestModel, AuditRecordAt, QueryResponse, QueryTurn};

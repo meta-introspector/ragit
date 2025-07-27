@@ -7,7 +7,7 @@ edition = "2021"
 ragit-types = { path = "../ragit-types" }
 ragit-pdl = { path = "../pdl" }
 ragit-utils = { path = "../ragit-utils" }
-ragit-error = { path = "../ragit-error" }
+
 ragit-core-utils = { path = "../ragit-core-utils" }
 ragit-model-provider = { path = "../ragit-model-provider" }
 ragit-model-query-response = { path = "../ragit-model-query-response" }

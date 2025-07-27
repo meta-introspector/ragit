@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use ragit_error::ApiError as Error;
+use ragit_types::ApiError as Error;
 pub trait IntoChatResponse {
     fn into_chat_response(&self) -> Result<Response, Error>;
 }
@@ -52,7 +52,7 @@ impl Response {
                 let response: AnthropicResponse = serde_json::from_value(json)?;
                 response.into_chat_response()
             }
-            ApiProvider::Test(test_model) => {
+            ApiProvider::Test(_test_model) => {
                 let response_str = "dummy response".to_string();
                 Ok(Response::dummy(response_str))
             }

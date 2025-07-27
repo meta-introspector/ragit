@@ -40,6 +40,7 @@ members = [
     "crates/ragit-index-effects",
     "crates/ragit-chunk",
     "crates/ragit-file-error",
+    "crates/ragit-error-conversions",
 ]
 exclude = [
     "crates/server",

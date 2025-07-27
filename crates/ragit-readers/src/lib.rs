@@ -1,4 +1,4 @@
-use ragit_error::ApiError as Error;
+use ragit_types::ApiError as Error;
 use ragit_types::build_config::BuildConfig;
 use ragit_types::chunk::atomic_token::AtomicToken;
 use ragit_types::chunk::chunk_extra_info::ChunkExtraInfo;

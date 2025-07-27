@@ -9,7 +9,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use ragit_api::get_model_by_name;
 use ragit_api::list_models;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 
 pub async fn ls_models_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()

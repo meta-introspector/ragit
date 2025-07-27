@@ -1,7 +1,7 @@
 use ragit_types::uid::{Uid, UidError};
 use ragit_fs::{file_size, get_relative_path, read_bytes_offset, read_bytes};
 use sha3::{Digest, Sha3_256};
-use ragit_error::ApiError as Error;
+use ragit_types::ApiError as Error;
 
 pub fn uid_new_file(
     root_dir: &str,

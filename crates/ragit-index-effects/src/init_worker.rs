@@ -1,12 +1,12 @@
 use ragit_index_types::index_struct::Index;
 use ragit_index_types::load_mode::LoadMode;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use std::path::PathBuf;
 use tokio::sync::mpsc;
 use sha3::{Digest, Sha3_256};
 use crate::build_chunks::build_chunks;
-use crate::channel::Channel;
-use ragit_api::{Request, Response};
+
+use crate::channel::{Channel, WorkerRequest, WorkerResponse};
 use ragit_index_types::index_get_prompt;
 
 pub fn init_worker(root_dir: PathBuf) -> Channel {
@@ -18,13 +18,13 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
         // it too difficult to send the instance via mpsc channels.
         // So I'm just instantiating new ones here.
         // Be careful not to modify the index!
-        let index = match Index::load(
+        let mut index = match Index::load(
             root_dir,
             LoadMode::OnlyJson,
         ) {
             Ok(index) => index,
             Err(e) => {
-                let _ = tx_to_main.send(ragit_api::Response::Error(e));
+                let _ = tx_to_main.send(WorkerResponse::Error(e));
                 drop(tx_to_main);
                 return;
             },
@@ -32,7 +32,7 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
         let prompt = match index_get_prompt(&index,"summarize") {
             Ok(prompt) => prompt,
             Err(e) => {
-                let _ = tx_to_main.send(ragit_api::Response::Error(e));
+                let _ = tx_to_main.send(WorkerResponse::Error(e));
                 drop(tx_to_main);
                 return;
             },
@@ -43,7 +43,7 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
 
         while let Some(msg) = rx_from_main.recv().await {
             match msg {
-                ragit_api::Request::BuildChunks { file } => match build_chunks(
+                WorkerRequest::BuildChunks { file } => match build_chunks(
                     &mut index,
                     file,
                     prompt_hash.clone(),
@@ -51,13 +51,13 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
                 ).await {
                     Ok(_) => {},
                     Err(e) => {
-                        if tx_to_main.send(ragit_api::Response::Error(e)).is_err() {
+                        if tx_to_main.send(WorkerResponse::Error(e)).is_err() {
                             // the parent process is dead
                             break;
                         }
                     },
                 },
-                Request::Kill => { break; },
+                WorkerRequest::Kill => { break; },
             }
         }
 

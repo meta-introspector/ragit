@@ -1,7 +1,7 @@
 
 use anyhow::Result;
 use ragit_types::Chunk;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use std::path::PathBuf;
 use ragit_index_storage;
 use ragit_tfidf;

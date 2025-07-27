@@ -6,7 +6,8 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0"
 ragit-types = { path = "../ragit-types" }
-ragit-error = { path = "../ragit-error" }
+ragit-error-conversions = { path = "../ragit-error-conversions" }
+
 ragit-config = { path = "../ragit-config" }
 ragit-api = { path = "../api" }
 ragit-fs = { path = "../fs" }

@@ -12,7 +12,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use ragit_types::uid::Uid;
 use ragit_types::chunk::chunk_struct::Chunk;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 
 pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()

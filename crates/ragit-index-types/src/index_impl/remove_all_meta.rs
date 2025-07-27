@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 
 impl Index {
     pub fn remove_all_meta(&mut self) -> Result<(), ApiError> {

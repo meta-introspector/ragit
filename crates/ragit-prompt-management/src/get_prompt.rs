@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 
 pub fn get_prompt(prompts: &HashMap<String, String>, _root_dir: &PathBuf, prompt_name: &str) -> Result<String, ApiError> {
     match prompts.get(prompt_name) {

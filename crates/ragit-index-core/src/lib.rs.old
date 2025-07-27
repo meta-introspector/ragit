@@ -1,7 +1,7 @@
 mod prelude;
 pub use ragit_index_types::index_struct::Index;
 use std::path::PathBuf;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use serde_json;
 use ragit_types::add_mode::{AddMode, AddResult};
 use ragit_types::error::Error;

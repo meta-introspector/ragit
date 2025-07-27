@@ -9,7 +9,7 @@ pub mod error;
 pub mod message;
 pub mod rate_limit;
 pub mod request;
-pub mod response;
+
 
 #[cfg(test)]
 mod tests;

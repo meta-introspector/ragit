@@ -1,6 +1,6 @@
 
 use ragit_index_types::index_struct::Index;
-use ragit_error::ApiError;
+use ragit_types::ApiError;
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_pdl::{Pdl, parse_pdl};
 use ragit_api::request::Request;
