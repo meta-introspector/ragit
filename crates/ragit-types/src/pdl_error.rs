@@ -23,7 +23,7 @@ pub enum PdlError {
     #[error(transparent)]
     Base64(#[from] base64::DecodeError),
     #[error(transparent)]
-    File(#[from] ragit_fs::FileError),
+    File(#[from] ragit_file_error::FileError),
 }
 
 #[derive(Debug, Error)]

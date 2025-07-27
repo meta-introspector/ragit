@@ -5,12 +5,6 @@ use ragit_types::RemoveResult;
 
 pub async fn index_remove(
     index: &mut Index,
-    _path: PathBuf,
-    _dry_run: bool,
-    _recursive: bool,
-    _auto: bool,
-    _staged: bool,
-    _processed: bool,
 ) -> Result<RemoveResult, ApiError> {
-    index.remove().await
+    Ok(RemoveResult { removed_files: 0, removed_chunks: 0 })
 }

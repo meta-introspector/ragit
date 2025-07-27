@@ -1,5 +1,5 @@
 use crate::schema::SchemaParseError;
-use ragit_fs::FileError;
+use ragit_file_error::FileError;
 use std::string::FromUtf8Error;
 use ragit_types::JsonType;
 

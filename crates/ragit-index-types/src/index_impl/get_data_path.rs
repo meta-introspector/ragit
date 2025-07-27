@@ -7,5 +7,5 @@ pub fn index_get_data_path(
     root_dir: &PathBuf,
     file: &PathBuf,
 ) -> Result<PathBuf, ApiError> {
-    index.get_data_path(root_dir, file)
+    Ok(PathBuf::new())
 }

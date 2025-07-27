@@ -5,7 +5,8 @@ use std::path::PathBuf;
 use tokio::sync::mpsc;
 use sha3::{Digest, Sha3_256};
 use crate::build_chunks::build_chunks;
-use crate::channel::{Channel, Request, Response};
+use crate::channel::Channel;
+use ragit_api::{Request, Response};
 use ragit_index_types::index_get_prompt;
 
 pub fn init_worker(root_dir: PathBuf) -> Channel {
@@ -23,7 +24,7 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
         ) {
             Ok(index) => index,
             Err(e) => {
-                let _ = tx_to_main.send(Response::Error(e));
+                let _ = tx_to_main.send(ragit_api::Response::Error(e));
                 drop(tx_to_main);
                 return;
             },
@@ -31,7 +32,7 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
         let prompt = match index_get_prompt(&index,"summarize") {
             Ok(prompt) => prompt,
             Err(e) => {
-                let _ = tx_to_main.send(Response::Error(e));
+                let _ = tx_to_main.send(ragit_api::Response::Error(e));
                 drop(tx_to_main);
                 return;
             },
@@ -42,15 +43,15 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
 
         while let Some(msg) = rx_from_main.recv().await {
             match msg {
-                Request::BuildChunks { file } => match build_chunks(
-                    &index,
+                ragit_api::Request::BuildChunks { file } => match build_chunks(
+                    &mut index,
                     file,
                     prompt_hash.clone(),
                     tx_to_main.clone(),
                 ).await {
                     Ok(_) => {},
                     Err(e) => {
-                        if tx_to_main.send(Response::Error(e)).is_err() {
+                        if tx_to_main.send(ragit_api::Response::Error(e)).is_err() {
                             // the parent process is dead
                             break;
                         }

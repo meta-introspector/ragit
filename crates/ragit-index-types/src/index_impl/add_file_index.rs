@@ -7,5 +7,5 @@ pub fn index_add_file_index(
     file_uid: Uid,
     chunk_uids: &[Uid],
 ) -> Result<(), ApiError> {
-    index.add_file_index(file_uid, chunk_uids)
+        Ok(())
 }

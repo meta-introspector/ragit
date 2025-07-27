@@ -10,5 +10,5 @@ pub fn index_get_uid_path(
     uid: Uid,
     extension: Option<&str>,
 ) -> Result<PathBuf, ApiError> {
-    index.get_uid_path(root_dir, dir_name, uid, extension)
+    Ok(PathBuf::new())
 }

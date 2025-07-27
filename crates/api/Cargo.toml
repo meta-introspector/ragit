@@ -35,4 +35,5 @@ ragit-session-query = { path = "../ragit-session-query" }
 ragit-pdl = { path = "../pdl" }
 ragit-model-provider = { path = "../ragit-model-provider" }
 ragit-error = { path = "../ragit-error" }
+ragit-uid = { path = "../ragit-uid" }
 

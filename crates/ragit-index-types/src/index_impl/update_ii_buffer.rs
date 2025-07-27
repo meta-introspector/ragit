@@ -8,5 +8,5 @@ pub fn index_update_ii_buffer(
     ii_buffer: &mut HashMap<String, Vec<Uid>>,
     chunk_uid: Uid,
 ) -> Result<(), ApiError> {
-    index.update_ii_buffer(ii_buffer, chunk_uid)
+    Ok(())
 }

@@ -17,7 +17,7 @@ pub enum UidError {
     #[error(transparent)]
     Json(#[from] serde_json::Error),
     #[error(transparent)]
-    File(#[from] ragit_fs::FileError),
+    File(#[from] ragit_file_error::FileError),
 }
 
 fn u128_from_bytes(bytes: &[u8]) -> Result<u128, UidError> {

@@ -18,3 +18,5 @@ serde_json = "1.0"
 sha3 = "0.10.8"
 tokio = { version = "1.0", features = ["full"] }
 ragit-readers = { path = "../ragit-readers" }
+ragit-config = { path = "../ragit-config" }
+ragit-uid = { path = "../ragit-uid" }

@@ -3,7 +3,8 @@ use ragit_error::ApiError;
 use std::path::PathBuf;
 use tokio::sync::mpsc;
 use ragit_readers::FileReader;
-use ragit_types::ChunkBuildInfo;
+use ragit_types::{ChunkBuildInfo};
+use ragit_config::BuildConfig;
 use ragit_utils::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME};
 use ragit_fs::{remove_file, try_create_dir, write_bytes, WriteMode, exists, parent};
 use ragit_tfidf::save_to_file;
@@ -12,7 +13,7 @@ use ragit_utils::uid_new_file;
 use crate::response::Response;
 
 pub async fn build_chunks(
-    index: &Index,
+    index: &mut Index,
     file: PathBuf,
     prompt_hash: String,
     tx_to_main: mpsc::UnboundedSender<Response>,
@@ -22,15 +23,15 @@ pub async fn build_chunks(
         &file,
     )?;
     let mut fd = FileReader::new(
-        file.clone(),
+        file.to_string_lossy().into_owned(),
         real_path.to_string_lossy().into_owned(),
         index.root_dir.to_str().unwrap(),
         index.build_config.clone(),
-    )?;
+    ).await?;
     let build_info = ChunkBuildInfo::new(
         fd.file_reader_key(),
         prompt_hash.clone(),
-        index_get_model_by_name(index, &index.api_config.model)?.name,
+        index_get_model_by_name(index, &Model::from_name(&index.api_config.model))?.name,
     );
     let mut index_in_file = 0;
     let mut previous_summary = None;
@@ -69,7 +70,7 @@ pub async fn build_chunks(
                 bytes,
                 WriteMode::Atomic,
             )?;
-            index_add_image_description(index,*uid).await?;
+            index_add_image_description(index, *uid).await?;
         }
 
         save_to_file(
@@ -77,7 +78,7 @@ pub async fn build_chunks(
             &new_chunk,
             index.root_dir.to_str().unwrap(),
         )?;;
-        tx_to_main.send(Response::ChunkComplete {
+        tx_to_main.send(ragit_api::Response::ChunkComplete {
             file: file.clone(),
             index: index_in_file,
             chunk_uid: new_chunk_uid,
@@ -85,7 +86,7 @@ pub async fn build_chunks(
         index_in_file += 1;
     }
 
-    tx_to_main.send(Response::FileComplete {
+    tx_to_main.send(ragit_api::Response::FileComplete {
         file: file.clone(),
         chunk_count: index_in_file,
     }).map_err(|_| ApiError::MPSCError(String::from("Failed to send response to main"))).unwrap();

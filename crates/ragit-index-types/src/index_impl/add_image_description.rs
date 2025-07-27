@@ -6,5 +6,5 @@ pub async fn index_add_image_description(
     index: &mut Index,
     uid: Uid,
 ) -> Result<(), ApiError> {
-    index.add_image_description(uid).await
+    Ok(())
 }

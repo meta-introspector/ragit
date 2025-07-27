@@ -7,3 +7,4 @@ pub use ragit_session_query::response::{IntoChatResponse, Response};
 pub use ragit_types::pdl_types::{Message, MessageContent, Role};
 pub use ragit_types::JsonType;
 pub use ragit_model_provider::TestModel;
+pub use ragit_uid::Uid;

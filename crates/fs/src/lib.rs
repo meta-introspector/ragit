@@ -7,14 +7,14 @@ mod log;
 pub use crate::log::{initialize_log, write_log};
 
 use std::collections::hash_map;
-use std::ffi::OsString;
-use std::fmt;
+
+
 use std::fs::{self, File, OpenOptions};
 use std::hash::{Hash, Hasher};
 use std::io::{self, Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
-use ragit_types::{FileError, FileErrorKind};
+use ragit_file_error::FileError;
 
 /// ```nohighlight
 ///       File Already Exists    File Does not Exist
@@ -299,7 +299,8 @@ pub fn copy_dir(src: &str, dst: &str) -> Result<(), FileError> {
     create_dir_all(dst)?;
 
     // TODO: how about links?
-    for e in read_dir(src, false)? {
+    for e_string in read_dir(src, false)?.iter() {
+        let e = e_string.as_str();
         let new_dst = join(dst, &basename(&e)?)?;
 
         if is_dir(&e) {

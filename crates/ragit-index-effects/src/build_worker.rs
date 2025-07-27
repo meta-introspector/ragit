@@ -17,7 +17,8 @@ use ragit_types::ChunkBuildInfo;
 use ragit_readers::FileReader;
 use ragit_model::Model;
 use tokio::sync::mpsc;
-use crate::channel::{Channel, Request, Response};
+
+
 use crate::build_dashboard::render_build_dashboard;
 use crate::build::BuildResult;
 
@@ -31,7 +32,7 @@ pub async fn build_worker(
     let mut staged_files = index.staged_files.clone();
     let mut curr_completed_files = Vec::<PathBuf>::new();
     let mut success = 0;
-    let mut errors = vec![];
+    let mut errors: Vec<(PathBuf, String)> = vec![];
     let mut buffered_chunk_count = 0;
     let mut flush_count = 0;
 
@@ -54,7 +55,7 @@ pub async fn build_worker(
 
             buffer.insert(file.clone(), HashMap::new());
             curr_processing_file.insert(worker_index, file.clone());
-            worker.send(Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up")))?;
+            worker.send(ragit_api::Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up")))?;
         }
 
         else {
@@ -72,7 +73,7 @@ pub async fn build_worker(
                 index,
                 &buffer,
                 &curr_completed_files,
-                &errors,
+                &errors.iter().map(|(path, msg)| (path.to_string_lossy().into_owned(), msg.clone())).collect::<Vec<(String, String)>>(),
                 started_at.clone(),
                 flush_count,
                 has_to_erase_lines,
@@ -134,18 +135,18 @@ pub async fn build_worker(
                         if let Some(file) = staged_files.pop() {
                             buffer.insert(file.clone(), HashMap::new());
                             curr_processing_file.insert(worker_index, file.clone());
-                            worker.send(Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(ragit_api::Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                         }
 
                         else {
-                            worker.send(Request::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(ragit_api::Request::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                             killed_workers.push(worker_index);
                         }
 
                         curr_completed_files.push(file);
                         success += 1;
                     },
-                    Response::Error(e) => {
+                    ragit_api::Response::Error(e) => {
                         if let Some(file) = curr_processing_file.get(&worker_index) {
                             errors.push((file.clone(), format!("{e:?}")));
 
@@ -177,11 +178,11 @@ pub async fn build_worker(
                         if let Some(file) = staged_files.pop() {
                             buffer.insert(file.clone(), HashMap::new());
                             curr_processing_file.insert(worker_index, file.clone());
-                            worker.send(Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(ragit_api::Request::BuildChunks { file }).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                         }
 
                         else {
-                            worker.send(Request::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
+                            worker.send(ragit_api::Request::Kill).map_err(|_| ApiError::MPSCError(String::from("Build worker hung up.")))?;
                             killed_workers.push(worker_index);
                         }
                     },
@@ -210,14 +211,7 @@ pub async fn build_worker(
                 )?;
 
                 if index.processed_files.contains_key(file) {
-                    index_remove(index,
-                        real_path.clone().into(),
-                        false,  // dry run
-                        false,  // recursive
-                        false,  // auto
-                        false,  // staged
-                        true,   // processed
-                    ).await?;
+                    index_remove(index).await?;
                 }
 
                 let file_uid = uid_new_file(&index.root_dir.to_str().unwrap(), real_path.to_str().unwrap())?;
@@ -263,7 +257,7 @@ pub async fn build_worker(
                         index,
                         &buffer,
                         &curr_completed_files,
-                        &errors,
+                    &errors.iter().map(|(path, msg)| (path.to_string_lossy().into_owned(), msg.clone())).collect::<Vec<(String, String)>>(),
                         started_at.clone(),
                         flush_count,
                         has_to_erase_lines,

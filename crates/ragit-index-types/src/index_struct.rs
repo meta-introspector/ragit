@@ -4,7 +4,7 @@ use ragit_types::query::QueryConfig;
 use ragit_types::uid::Uid;
 use ragit_types::ii_status::IIStatus;
 use ragit_types::summary::Summary;
-use ragit_config::BuildConfig;
+use ragit_types::build_config::BuildConfig;
 
 use ragit_api::Model;
 use serde::{Deserialize, Serialize};

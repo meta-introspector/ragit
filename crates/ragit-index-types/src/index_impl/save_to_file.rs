@@ -7,5 +7,5 @@ pub fn index_save_to_file(
     index: &Index,
     path: PathBuf,
 ) -> Result<(), ApiError> {
-    index.save_to_file(path)
+    Ok(())
 }

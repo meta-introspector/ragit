@@ -1,5 +1,5 @@
 use thiserror::Error;
-use ragit_types::file_error::FileError;
+use ragit_file_error::FileError;
 use std::path::PathBuf;
 use ragit_types::JsonType;
 
