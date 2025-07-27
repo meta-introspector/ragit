@@ -4,8 +4,8 @@ The `bootstrap` command is a powerful tool for developers working on `ragit` its
 
 ## Usage
 
-```sh
-ragit bootstrap
+```bash
+cargo run --package ragit-commands -- bootstrap
 ```
 
 ## Workflow
@@ -22,5 +22,5 @@ ragit bootstrap
 If you encounter issues with the `bootstrap` command, you can use the `--verbose` flag to get more detailed output:
 
 ```sh
-ragit --verbose bootstrap
+cargo run --package ragit-commands -- --verbose bootstrap
 ```

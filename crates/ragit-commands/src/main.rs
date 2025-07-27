@@ -30,7 +30,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
-            bootstrap_index_self().await?;
+            bootstrap_index_self(args.verbose).await?;
         }
     }
 
