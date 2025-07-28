@@ -15,6 +15,8 @@ pub async fn add_bootstrap_files(
     temp_dir: &PathBuf,
     index: &mut Index,
     sys: &mut System,
+    max_memory_gb: Option<u64>,
+    last_process_memory_kb: Option<&mut u64>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag add");
@@ -42,13 +44,15 @@ pub async fn add_bootstrap_files(
     }).collect::<Vec<String>>();
     if verbose {
         println!("bootstrap_index_self: Before add_files_command");
-        print_memory_usage(sys, "Before add_files_command");
+        print_memory_usage(sys, "Before add_files_command", last_process_memory_kb);
     }
+    check_memory_limit(sys, max_memory_gb, "Before add_files_command")?;
     add_files_command(index, &relative_temp_files_to_add, None, false).await?;
     if verbose {
         println!("bootstrap_index_self: After add_files_command");
         println!("bootstrap_index_self: Added files to index");
-        print_memory_usage(sys, "After add_files_command");
+        print_memory_usage(sys, "After add_files_command", last_process_memory_kb);
     }
+    check_memory_limit(sys, max_memory_gb, "After add_files_command")?;
     Ok(())
 }

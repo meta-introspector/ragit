@@ -3,7 +3,19 @@ use std::fs;
 use std::path::PathBuf;
 use super::constants::PROMPTS_DIR_NAME;
 
-pub async fn copy_prompts(actual_root_dir: &PathBuf, temp_dir: &PathBuf, verbose: bool) -> Result<(), anyhow::Error> {
+pub async fn copy_prompts(
+    verbose: bool,
+    actual_root_dir: &PathBuf,
+    temp_dir: &PathBuf,
+    sys: &mut System,
+    max_memory_gb: Option<u64>,
+    last_process_memory_kb: Option<&mut u64>,
+) -> Result<(), anyhow::Error> {
+    if verbose {
+        println!("bootstrap_index_self: Copying prompts");
+        crate::bootstrap_commands::memory_utils::print_memory_usage(sys, "Before copy_prompts", last_process_memory_kb);
+    }
+    crate::bootstrap_commands::memory_utils::check_memory_limit(sys, max_memory_gb, "Before copy_prompts")?;
     let prompts_dir = actual_root_dir.join(PROMPTS_DIR_NAME);
     let temp_prompts_dir = temp_dir.join(PROMPTS_DIR_NAME);
     fs::create_dir_all(&temp_prompts_dir)?;
@@ -20,6 +32,10 @@ pub async fn copy_prompts(actual_root_dir: &PathBuf, temp_dir: &PathBuf, verbose
                 println!("DEBUG: summarize.pdl copied to: {:?}", dest_path);
             }
         }
+        crate::bootstrap_commands::memory_utils::check_memory_limit(sys, max_memory_gb, &format!("During copy_prompts loop for {:?}", path))?;
+    }
+    if verbose {
+        crate::bootstrap_commands::memory_utils::print_memory_usage(sys, "After copy_prompts", last_process_memory_kb);
     }
     Ok(())
 }

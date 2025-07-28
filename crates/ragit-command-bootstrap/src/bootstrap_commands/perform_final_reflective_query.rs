@@ -8,8 +8,12 @@ pub async fn perform_final_reflective_query(
     verbose: bool,
     index: &Index,
     sys: &mut System,
+    max_memory_gb: Option<u64>,
+    last_process_memory_kb: Option<&mut u64>,
 ) -> Result<(), anyhow::Error> {
-    log_start(verbose, sys);
-    execute_query(verbose, index, sys).await?;
+    log_start(verbose, sys, last_process_memory_kb);
+    check_memory_limit(sys, max_memory_gb, "Before execute_query (final reflective query)")?;
+    execute_query(verbose, index, sys, max_memory_gb, last_process_memory_kb).await?;
+    check_memory_limit(sys, max_memory_gb, "After execute_query (final reflective query)")?;
     Ok(())
 }

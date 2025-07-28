@@ -12,12 +12,15 @@ pub async fn build_index(
     index: &mut Index,
     max_iterations: Option<usize>,
     sys: &mut System,
+    max_memory_gb: Option<u64>,
+    last_process_memory_kb: Option<&mut u64>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag build");
         println!("bootstrap_index_self: Before ragit_index_effects::build");
-        print_memory_usage(sys, "Before ragit_index_effects::build");
+        print_memory_usage(sys, "Before ragit_index_effects::build", last_process_memory_kb);
     }
+    check_memory_limit(sys, max_memory_gb, "Before ragit_index_effects::build")?;
 
     let summary_prompt_path = temp_dir.join(PROMPTS_DIR_NAME).join(SUMMARIZE_PROMPT_FILE_NAME);
     if !summary_prompt_path.exists() {
@@ -28,7 +31,8 @@ pub async fn build_index(
     if verbose {
         println!("bootstrap_index_self: After ragit_index_effects::build");
         println!("bootstrap_index_self: Built index");
-        print_memory_usage(sys, "After ragit_index_effects::build");
+        print_memory_usage(sys, "After ragit_index_effects::build", last_process_memory_kb);
     }
+    check_memory_limit(sys, max_memory_gb, "After ragit_index_effects::build")?;
     Ok(())
 }
