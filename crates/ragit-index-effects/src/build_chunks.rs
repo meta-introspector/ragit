@@ -36,7 +36,6 @@ pub async fn build_chunks(
     ).await?;
     println!("build_chunks: FileReader initialized. Can generate chunk: {}", fd.can_generate_chunk());
     println!("build_chunks: Processing file: {:?}", file);
-    println!("build_chunks: File size: {} bytes", real_path.metadata()?.len());
     let build_info = ChunkBuildInfo::new(
         fd.file_reader_key(),
         prompt_hash.clone(),

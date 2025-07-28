@@ -30,11 +30,16 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
         //         return;
         //     },
         // };
-        let mut index = Index::new(root_dir);
+        let mut index = Index::new(root_dir.clone());
+        if let Err(e) = ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(&mut index, &root_dir.join("prompts")) {
+            let _ = tx_to_main.send(WorkerResponse::Error(e.into()));
+            drop(tx_to_main);
+            return;
+        }
         let prompt = match index_get_prompt(&index,"summarize") {
             Ok(prompt) => prompt,
             Err(e) => {
-                let _ = tx_to_main.send(WorkerResponse::Error(e));
+                let _ = tx_to_main.send(WorkerResponse::Error(e.into()));
                 drop(tx_to_main);
                 return;
             },
@@ -54,7 +59,7 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
                 ).await {
                     Ok(_) => {},
                     Err(e) => {
-                        if tx_to_main.send(WorkerResponse::Error(e)).is_err() {
+                        if tx_to_main.send(WorkerResponse::Error(e.into())).is_err() {
                             // the parent process is dead
                             break;
                         }

@@ -54,7 +54,7 @@ impl FileReaderImpl for PlainTextReader {
     }
 
     fn has_more_to_read(&self) -> bool {
-        false
+        !self._tokens.is_empty()
     }
 
     fn key(&self) -> String {

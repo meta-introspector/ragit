@@ -28,16 +28,17 @@ The `bootstrap` command follows a pipeline of operations, each of which is broke
 ### 2. Copy Prompts
 
 *   **Copies prompts:** It copies the `prompts` directory, which is essential for building the index.
+*   **Loads prompts into index:** The copied prompts are loaded into the in-memory `Index` structure for use during the build process.
 
 ### 3. Add Bootstrap Files
 
-*   **Finds files:** It finds all the files in the `ragit-command-bootstrap` package.
-*   **Copies files:** It copies the files to the temporary directory.
+*   **Finds files:** It finds all the `.rs` files in the `ragit-command-bootstrap` package using `glob`.
+*   **Copies files:** It copies the content of these files to the temporary directory.
 *   **Adds files to index:** It adds the files to the index.
 
 ### 4. Build Index
 
-*   **Builds the index:** It builds a new index from the source code.
+*   **Builds the index:** It builds a new index from the source code. This step now correctly processes the content of the copied `.rs` files.
 
 ### 5. Write Chunks to Markdown
 
