@@ -10,3 +10,4 @@ pub use crate::memory_utils;
 
 pub mod self_improvement;
 pub mod final_reflective_query;
+pub mod configure_memory_settings;

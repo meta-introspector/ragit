@@ -27,6 +27,14 @@ struct Args {
     /// Maximum memory in GB for the bootstrap process
     #[arg(long, global = true)]
     max_memory_gb: Option<u64>,
+
+    /// Maximum number of files to process during bootstrap
+    #[arg(long, global = true)]
+    max_files_to_process: Option<usize>,
+
+    /// Disable writing chunks to markdown file
+    #[arg(long, global = true)]
+    disable_write_markdown: bool,
 }
 
 #[derive(Parser, Debug)]
@@ -45,7 +53,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
-            bootstrap_index_self(args.verbose, args.timeout, args.max_iterations, args.max_memory_gb).await?;
+            bootstrap_index_self(args.verbose, args.timeout, args.max_iterations, args.max_memory_gb, args.max_files_to_process, args.disable_write_markdown).await?;
         }
     }
 

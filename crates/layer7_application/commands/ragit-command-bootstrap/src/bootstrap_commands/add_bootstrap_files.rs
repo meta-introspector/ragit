@@ -17,6 +17,7 @@ pub async fn add_bootstrap_files(
     sys: &mut System,
     max_memory_gb: Option<u64>,
     last_process_memory_kb: &mut Option<u64>,
+    max_files_to_process: Option<usize>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag add");
@@ -28,7 +29,12 @@ pub async fn add_bootstrap_files(
         package_name: BOOTSTRAP_PACKAGE_NAME.to_string(),
         project_root: actual_root_dir.to_str().unwrap().to_string(),
     };
-    let original_files_to_add = bootstrap_source.get_files()?;
+    let mut original_files_to_add = bootstrap_source.get_files()?;
+    if let Some(max_files) = max_files_to_process {
+        if original_files_to_add.len() > max_files {
+            original_files_to_add.truncate(max_files);
+        }
+    }
     if verbose {
         println!("bootstrap_index_self: Found {} files to add", original_files_to_add.len());
     }
