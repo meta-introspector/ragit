@@ -1,34 +1,90 @@
-# Bootstrap Command - Phase 1: Minimal Single-Threaded Worker
+# Bootstrap Phase 1: Environment Setup, File Staging, and Placeholder Index Building
 
-This document outlines the initial phase of creating a minimal, single-threaded build index worker (`ragit-build-index-worker-single-file`) to understand and profile memory usage during the `ragit` bootstrap process.
+This document outlines the current state and key components of the `ragit` bootstrap process, focusing on the initial phase of environment setup, file staging, and the placeholder index building. The primary goal of this phase is to establish a robust framework for the self-improving bootstrap, with a strong emphasis on modularity and observability, particularly regarding memory usage.
 
-## Objectives Achieved:
+## Key Components and Workflow:
 
-*   **Crate Creation**: A new Rust crate (`ragit-build-index-worker-single-file`) was created under `crates/layer7_application/`.
-*   **Synchronous Execution**: The worker is designed to be strictly synchronous, avoiding `async/await` and `tokio` to simplify profiling.
-*   **Memory Profiling Integration**:
-    *   Initial attempts with `tikv-jemallocator` were made but abandoned due to linking issues and complexity.
-    *   A custom memory profiling utility (`ragit_utils::memory_utils`) was integrated to provide real-time memory usage statistics (Total, Used, Process RSS, Delta).
-    *   The memory output is now formatted for human readability (KB, MB, GB).
-    *   A "poor man's profiler" was implemented to collect memory snapshots at various stages and present them in a summary table at the end of execution.
-*   **Bootstrap Function Integration (Synchronous Placeholders)**:
-    *   `setup_environment`: Integrated to handle temporary directory creation and initial index setup.
-    *   `copy_prompts`: Integrated to copy prompt files to the temporary directory.
-    *   `add_bootstrap_files`: Integrated with a synchronous placeholder for adding files to the index. This involved creating a local `add_files_sync` function to replace the original asynchronous `add_files_command`.
-    *   `build_index`: Integrated with a synchronous placeholder that iterates through staged files.
+The `bootstrap` command's execution flow is orchestrated within `crates/layer7_application/ragit-build-index-worker-single-file/src/main.rs`. It follows a sequential process, with each major step encapsulated in its own function, adhering to the "one declaration per file" principle for enhanced modularity and maintainability.
 
-## Challenges Encountered:
+1.  **Environment Setup (`setup_environment`):**
+    *   Initializes the system for memory monitoring using `sysinfo`.
+    *   Creates a temporary directory (`tmp_bootstrap`) where all intermediate files (like copied prompts and the generated index) will reside.
+    *   Determines the actual root directory of the project.
+    *   An `Index` struct is initialized within this function.
 
-*   **Asynchronous to Synchronous Conversion**: The primary challenge was adapting asynchronous functions from the `ragit-command-bootstrap` and `ragit-index-core` crates to a synchronous context. This required re-implementing core logic or creating synchronous placeholders.
-*   **Macro Usage**: Rust's macro system proved challenging, particularly with `println!` and `format!` expecting string literals. This was resolved by creating a dedicated `print_memory_table` function in `memory_profiler.rs` and removing the problematic macro definitions from `constants.rs`.
-*   **String Literal Handling**: Repeated issues with `write_file` due to incorrect handling of multi-line string literals and escaped characters. This highlighted the need for extreme precision when using this tool.
-*   **Dependency Management**: Ensuring correct relative paths for inter-crate dependencies within the workspace.
+2.  **Prompt Copying (`copy_prompts`):**
+    *   Copies all necessary prompt definition language (`.pdl`) files from the project's `prompts/` directory to the temporary `tmp_bootstrap/prompts/` directory. This ensures that the bootstrap process has access to the required prompts for operations like summarization.
 
-## Next Steps (Phase 2):
+3.  **File Staging (`add_bootstrap_files`):**
+    *   Identifies and stages files that will be included in the index. This process leverages the `FileSource` trait defined in `crates/layer7_application/ragit-build-index-worker-single-file/src/bootstrap_commands/file_source.rs`.
+    *   **`FileSource` Implementations:**
+        *   `StaticFileSource`: For providing a predefined, static list of files.
+        *   `CargoPackageFileSource`: Designed to automatically discover and stage all `.rs` source files within a specified Cargo package (e.g., the `ragit-command-bootstrap` package itself, enabling self-indexing).
+        *   `GlobFileSource`: For staging files based on a given glob pattern.
+    *   The staged files are added to the `Index` struct.
 
-*   **Implement Actual Index Building**: Replace the placeholder `build_index` logic with a minimal, synchronous implementation of the actual index building process. This will involve understanding the chunking and indexing logic from `ragit-index-core`.
-*   **Further Memory Analysis**: Continue to monitor and analyze memory usage as more complex logic is integrated.
+4.  **Placeholder Index Building (`build_index`):**
+    *   Located in `crates/layer7_application/ragit-build-index-worker-single-file/src/bootstrap_commands/build_index.rs`.
+    *   **Current State:** This function is currently a **placeholder**. It iterates through the `index.staged_files` but does not yet implement the actual logic for chunking, embedding, or adding content to the index. Its primary role in this phase is to simulate the build process and integrate with memory profiling.
+    *   It includes checks for the `summarize.pdl` prompt in the temporary directory, although its absence is currently only a warning, not an error, due to the placeholder nature.
 
-## KitKat Time!
+5.  **Cleanup:**
+    *   After the bootstrap process, the temporary directory and its contents are removed to ensure a clean state.
 
-We've made significant progress in setting up our minimal worker and profiling infrastructure. It's time for a well-deserved break.
+## Observability and Memory Profiling:
+
+A significant enhancement in this phase is the integration of comprehensive memory profiling. The `main.rs` utilizes `sysinfo` and custom `memory_profiler` utilities to capture and log memory snapshots at critical junctures of the bootstrap process. This provides detailed insights into memory consumption, aiding in debugging and optimization, especially when dealing with large codebases or memory-intensive operations.
+
+*   Memory snapshots are captured and logged before and after `setup_environment`, `copy_prompts`, `add_bootstrap_files`, and `build_index`.
+*   Constants defined in `crates/layer7_application/ragit-build-index-worker-single-file/src/bootstrap_commands/constants.rs` are used for consistent logging messages related to memory usage.
+
+## Current Discrepancy: `Index` Mutability
+
+A notable inconsistency exists in how the `Index` struct is handled:
+*   In `crates/layer7_application/ragit-build-index-worker-single-file/src/main.rs`, the `&mut index` argument is commented out when calling `add_bootstrap_files` and `build_index`.
+*   However, the `build_index` function (and likely `add_bootstrap_files` internally) still expects a mutable `Index` (`index: &mut Index`).
+
+This discrepancy needs to be resolved to ensure the `Index` struct is correctly modified and persisted throughout the bootstrap process when the actual indexing logic is implemented. The current setup suggests that the `Index` is created in `setup_environment` but its subsequent modification is not consistently reflected in the function calls in `main.rs`.
+
+## Comparison: Old `ragit-commands` Bootstrap vs. New Single-File Bootstrap
+
+This section outlines the key differences and architectural shifts between the original `bootstrap` command found in `ragit-commands` and the new, synchronous, single-threaded implementation located in `crates/layer7_application/ragit-build-index-worker-single-file/`.
+
+### Old `ragit-commands` Bootstrap (as per `docs/bootstrap.md`)
+
+*   **Location:** Primarily within `crates/layer7_application/commands/ragit-command-bootstrap/`.
+*   **Concurrency:** Implied to be potentially multi-threaded (e.g., `--workers` flag), though `docs/bootstrap.md` notes it defaults to 1 worker due to ongoing refactoring.
+*   **Purpose:** A comprehensive, self-improving tool that not only builds an index but also uses it to analyze and improve the `ragit` codebase itself. It includes steps for self-improvement and final reflective queries.
+*   **Workflow:**
+    1.  Setup Environment (creates temp dir, initializes repo/index)
+    2.  Copy Prompts (copies and loads prompts into index)
+    3.  Add Bootstrap Files (identifies and copies files, adds to index)
+    4.  Build Index (builds index from source)
+    5.  Write Chunks to Markdown
+    6.  Self-Improvement (analyzes and improves code)
+    7.  Final Reflective Query
+*   **Memory Management:** Mentions flags like `--max-memory-gb` for graceful exit and debugging OOM issues, along with `jemalloc` profiling.
+*   **Modularity:** While functions are separated, the overall structure is a single command crate.
+
+### New Single-File Bootstrap (`ragit-build-index-worker-single-file`)
+
+*   **Location:** `crates/layer7_application/ragit-build-index-worker-single-file/`.
+*   **Concurrency:** Explicitly designed as synchronous and single-threaded, focusing on a controlled, step-by-step execution.
+*   **Purpose:** Focused on the core task of building an index from source files, with robust memory profiling and environment setup. It currently acts as a foundational step for future self-improvement logic, but does not yet include the self-improvement or reflective query steps.
+*   **Workflow (Current Implementation):**
+    1.  `setup_environment`: Initializes system, creates temp directory, determines root, initializes `Index` struct.
+    2.  `copy_prompts`: Copies prompts to the temporary directory.
+    3.  `add_bootstrap_files`: Identifies and stages files using the `FileSource` trait (Static, CargoPackage, Glob).
+    4.  `build_index`: **Placeholder** for actual index building logic; currently iterates staged files.
+    5.  Cleanup: Removes the temporary directory.
+*   **Memory Management:** Integrates comprehensive memory profiling using `sysinfo` and custom utilities, capturing snapshots at each major step. This is a core feature for observability and debugging.
+*   **Modularity:** Adheres strictly to the "one declaration per file" principle, leading to a highly modular and granular codebase. This makes individual components easier to understand, test, and maintain.
+*   **`Index` Mutability Discrepancy:** As noted previously, there's an inconsistency where `main.rs` comments out the mutable `Index` argument for `add_bootstrap_files` and `build_index`, while these functions still expect it. This needs resolution for proper index modification.
+
+### Key Architectural Shifts
+
+1.  **Focus:** The new bootstrap shifts focus from a full self-improvement loop to a more granular, robust, and observable index-building foundation. The self-improvement and reflective query aspects are currently omitted, implying they will be built on top of this stable base.
+2.  **Modularity and Granularity:** The "one declaration per file" principle in the new bootstrap significantly increases modularity, making the codebase more maintainable and easier to reason about.
+3.  **Explicit Memory Profiling:** The new bootstrap integrates memory profiling as a first-class citizen, providing detailed insights into memory usage at each stage, which is crucial for optimizing performance and preventing OOM errors in a controlled manner.
+4.  **Synchronous Execution:** By being synchronous and single-threaded, the new bootstrap aims for predictable behavior and easier debugging, contrasting with the potential complexities of multi-threaded execution in the old approach.
+5.  **`FileSource` Abstraction:** The introduction of the `FileSource` trait provides a flexible and extensible way to define how files are identified and staged for indexing, allowing for different input sources (static, Cargo packages, glob patterns).
