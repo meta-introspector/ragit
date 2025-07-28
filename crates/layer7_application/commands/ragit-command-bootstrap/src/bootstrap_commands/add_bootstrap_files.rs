@@ -7,7 +7,7 @@ use crate::file_source::FileSource;
 use crate::file_copy_utils;
 use super::constants::BOOTSTRAP_PACKAGE_NAME;
 
-use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+use crate::memory_utils::{print_memory_usage, check_memory_limit};
 
 pub async fn add_bootstrap_files(
     verbose: bool,

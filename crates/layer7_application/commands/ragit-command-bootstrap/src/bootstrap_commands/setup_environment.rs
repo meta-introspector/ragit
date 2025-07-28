@@ -6,7 +6,7 @@ use ragit_index_types::index_struct::Index;
 use ragit_index_save_to_file::save_index_to_file;
 use super::constants::{TEMP_DIR_NAME, RAGIT_DIR_NAME, INDEX_FILE_NAME};
 
-use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
 
 pub async fn setup_environment(
     verbose: bool,
