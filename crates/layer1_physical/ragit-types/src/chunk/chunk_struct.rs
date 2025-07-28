@@ -1,7 +1,7 @@
 use crate::chunk::chunk_source::ChunkSource;
 use crate::uid::Uid;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+//use std::collections::HashMap;
 
 use crate::processed_doc::ProcessedDoc;
 
@@ -40,7 +40,7 @@ pub struct Chunk {
     pub image_count: usize,
     pub title: String,
     pub summary: String,
-    pub muse_summaries: HashMap<String, String>,
+    // pub muse_summaries: HashMap<String, String>,
     pub file: String,
     pub index: usize,
     pub source: ChunkSource,
@@ -65,7 +65,7 @@ impl Chunk {
             image_count: 0,
             title: String::new(),
             summary: String::new(),
-            muse_summaries: HashMap::new(),
+//            muse_summaries: HashMap::new(),
             file: String::new(),
             index: 0,
             source: ChunkSource::default(),
@@ -88,7 +88,7 @@ impl From<ProcessedDoc> for Chunk {
             image_count: 0,
             title: String::new(),
             summary: String::new(),
-            muse_summaries: HashMap::new(),
+//            muse_summaries: HashMap::new(),
             file: String::new(),
             index: 0,
             source: ChunkSource::default(),
@@ -96,5 +96,25 @@ impl From<ProcessedDoc> for Chunk {
             timestamp: 0,
             searchable: false,
         }
+    }
+}
+
+use super::chunk_trait::ChunkLike;
+
+impl ChunkLike for Chunk {
+    fn uid(&self) -> &Uid {
+        &self.uid
+    }
+
+    fn char_len(&self) -> usize {
+        self.char_len
+    }
+
+    fn image_count(&self) -> usize {
+        self.image_count
+    }
+
+    fn render_source(&self) -> String {
+        self.render_source()
     }
 }

@@ -10,3 +10,5 @@ pub mod chunk_schema;
 pub mod chunk_source;
 pub mod chunk_struct;
 pub mod rendered_chunk;
+//pub mod fixed_chunk_struct;
+pub mod chunk_trait;
