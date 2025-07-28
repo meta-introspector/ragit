@@ -33,7 +33,8 @@ use crate::channel::{Channel, WorkerRequest, WorkerResponse};
 use crate::build_dashboard::render_build_dashboard;
 use crate::build::BuildResult;
 
-use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+use ragit_command_bootstrap::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+use sysinfo::System;
 
 pub async fn build_worker(
     index: &mut Index,
