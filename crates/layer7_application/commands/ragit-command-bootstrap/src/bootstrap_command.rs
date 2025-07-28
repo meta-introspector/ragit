@@ -49,6 +49,7 @@ pub async fn bootstrap_index_self(
         check_memory_limit(&mut sys, max_memory_gb, "Before perform_final_reflective_query")?;
         perform_final_reflective_query(verbose, &index, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
+        check_memory_limit(&mut sys, max_memory_gb, "Before final return")?;
         Ok(())
     };
 
