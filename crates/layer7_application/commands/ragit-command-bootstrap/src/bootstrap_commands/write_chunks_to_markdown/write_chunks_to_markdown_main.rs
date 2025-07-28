@@ -65,6 +65,11 @@ pub async fn write_chunks_to_markdown(
         println!("bootstrap_index_self: Finalizing markdown output to temp_dir: {:?}", temp_dir);
         println!("bootstrap_index_self: Markdown output content length: {}", markdown_output.len());
     }
+
+    if verbose {
+        println!("bootstrap_index_self: Finalizing markdown output to temp_dir: {:?}", temp_dir);
+        println!("bootstrap_index_self: Markdown output content length: {}", markdown_output.len());
+    }
     finalize_call_count += 1;
     finalize_markdown_output::finalize_markdown_output(
         verbose,
