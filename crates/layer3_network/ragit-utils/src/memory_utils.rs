@@ -4,31 +4,57 @@ use sysinfo::{Pid, System};
 
 pub fn print_memory_usage(sys: &mut System, message: &str, last_process_memory_kb: &mut Option<u64>) {
     sys.refresh_memory();
+
+    let format_memory = |kb: u64| -> String {
+        if kb >= 1024 * 1024 { // If 1GB or more
+            format!("{:.2} GB", kb as f64 / 1024.0 / 1024.0)
+        } else if kb >= 1024 { // If 1MB or more
+            format!("{:.2} MB", kb as f64 / 1024.0)
+        } else {
+            format!("{} KB", kb)
+        }
+    };
+
     if let Some(process) = sys.process(Pid::from_u32(std::process::id())) {
         let current_process_memory_kb = process.memory() / 1024;
         let total_memory_kb = sys.total_memory() / 1024;
         let used_memory_kb = sys.used_memory() / 1024;
 
-        if let Some(last_mem_val) = last_process_memory_kb {
-            let delta = current_process_memory_kb as i64 - *last_mem_val as i64;
+        if let Some(last_mem_val_kb) = last_process_memory_kb {
+            let delta_kb = current_process_memory_kb as i64 - *last_mem_val_kb as i64;
+            let delta_str = if delta_kb >= 1024 * 1024 { // If 1GB or more
+                format!("{:.2} GB", delta_kb as f64 / 1024.0 / 1024.0)
+            } else if delta_kb >= 1024 { // If 1MB or more
+                format!("{:.2} MB", delta_kb as f64 / 1024.0)
+            } else {
+                format!("{} KB", delta_kb)
+            };
+
             println!(
-                "Memory Usage ({}): Total: {} KB, Used: {} KB, Process RSS: {} KB (Delta: {} KB)",
-                message, total_memory_kb, used_memory_kb, current_process_memory_kb, delta
+                "Memory Usage ({}): Total: {}, Used: {}, Process RSS: {} (Delta: {})",
+                message,
+                format_memory(total_memory_kb),
+                format_memory(used_memory_kb),
+                format_memory(current_process_memory_kb),
+                delta_str
             );
             *last_process_memory_kb = Some(current_process_memory_kb);
         } else {
             println!(
-                "Memory Usage ({}): Total: {} KB, Used: {} KB, Process RSS: {} KB",
-                message, total_memory_kb, used_memory_kb, current_process_memory_kb
+                "Memory Usage ({}): Total: {}, Used: {}, Process RSS: {}",
+                message,
+                format_memory(total_memory_kb),
+                format_memory(used_memory_kb),
+                format_memory(current_process_memory_kb)
             );
             *last_process_memory_kb = Some(current_process_memory_kb);
         }
     } else {
         println!(
-            "Memory Usage ({}): Total: {} KB, Used: {} KB",
+            "Memory Usage ({}): Total: {}, Used: {}",
             message,
-            sys.total_memory() / 1024,
-            sys.used_memory() / 1024
+            format_memory(sys.total_memory() / 1024),
+            format_memory(sys.used_memory() / 1024)
         );
     }
     io::stdout().flush().unwrap();
