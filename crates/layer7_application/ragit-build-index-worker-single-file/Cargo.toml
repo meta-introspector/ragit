@@ -1,0 +1,8 @@
+[package]
+name = "ragit-build-index-worker-single-file"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }
