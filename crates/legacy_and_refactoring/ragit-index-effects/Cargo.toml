@@ -21,3 +21,4 @@ ragit-readers = { path = "../../layer4_transport/ragit-readers" }
 ragit-config = { path = "../../layer5_session/ragit-config" }
 ragit-uid = { path = "../../layer2_data_link/ragit-uid" }
 sysinfo = "0.30.13"
+ragit-command-bootstrap = { path = "../../layer7_application/commands/ragit-command-bootstrap" }
