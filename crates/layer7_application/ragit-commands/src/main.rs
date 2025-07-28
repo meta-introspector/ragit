@@ -35,6 +35,30 @@ struct Args {
     /// Disable writing chunks to markdown file
     #[arg(long, global = true)]
     disable_write_markdown: bool,
+
+    /// Disable memory configuration
+    #[arg(long, global = true)]
+    disable_memory_config: bool,
+
+    /// Disable prompt copying
+    #[arg(long, global = true)]
+    disable_prompt_copy: bool,
+
+    /// Disable file adding
+    #[arg(long, global = true)]
+    disable_file_add: bool,
+
+    /// Disable index building
+    #[arg(long, global = true)]
+    disable_index_build: bool,
+
+    /// Disable self-improvement
+    #[arg(long, global = true)]
+    disable_self_improvement: bool,
+
+    /// Disable final reflective query
+    #[arg(long, global = true)]
+    disable_final_query: bool,
 }
 
 #[derive(Parser, Debug)]
@@ -53,7 +77,20 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
-            bootstrap_index_self(args.verbose, args.timeout, args.max_iterations, args.max_memory_gb, args.max_files_to_process, args.disable_write_markdown).await?;
+            bootstrap_index_self(
+                args.verbose,
+                args.timeout,
+                args.max_iterations,
+                args.max_memory_gb,
+                args.max_files_to_process,
+                args.disable_write_markdown,
+                args.disable_memory_config,
+                args.disable_prompt_copy,
+                args.disable_file_add,
+                args.disable_index_build,
+                args.disable_self_improvement,
+                args.disable_final_query,
+            ).await?;
         }
     }
 

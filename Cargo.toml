@@ -49,6 +49,7 @@ members = [
     "crates/layer7_application/ragit-muse",
     "crates/layer7_application/server",
     "crates/layer7_application/commands/*",
+    "crates/layer7_application/ragit-build-index-worker-single-file",
 
     # Legacy & Refactoring
     "crates/legacy_and_refactoring/ragit-agent",

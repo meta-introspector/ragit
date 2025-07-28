@@ -58,3 +58,36 @@ pub fn check_memory_limit(
     }
     Ok(())
 }
+
+use std::collections::HashMap;
+
+pub fn print_process_list(sys: &mut System, message: &str) {
+    sys.refresh_processes();
+    println!("--- Process List ({}) ---", message);
+    let mut process_memory_summary: HashMap<String, u64> = HashMap::new();
+
+    for (pid, process) in sys.processes() {
+        let mem_kb = process.memory() / 1024;
+        println!(
+            "PID: {}, Name: {}, CPU: {}%, Memory: {} KB",
+            pid,
+            process.name(),
+            process.cpu_usage(),
+            mem_kb
+        );
+        *process_memory_summary.entry(process.name().to_string()).or_insert(0) += mem_kb;
+    }
+    println!("------------------------");
+
+    println!("\n--- Process Memory Summary ({}) ---", message);
+    println!("{:<20} {:>15}", "Process Name", "Total Memory (MB)");
+    println!("{:-<20} {:-<15}", "", "");
+    let mut sorted_summary: Vec<(&String, &u64)> = process_memory_summary.iter().collect();
+    sorted_summary.sort_by(|a, b| b.1.cmp(a.1));
+
+    for (name, &total_mem_kb) in sorted_summary {
+        println!("{:<20} {:>15.2}", name, (total_mem_kb as f64) / 1024.0);
+    }
+    println!("-------------------------------------");
+    io::stdout().flush().unwrap();
+}
