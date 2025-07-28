@@ -1,0 +1,15 @@
+[package]
+name = "ragit-session-query"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-pdl = { path = "../../layer6_presentation/pdl" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+
+ragit-core-utils = { path = "../../layer4_transport/ragit-core-utils" }
+ragit-model-provider = { path = "../../layer7_application/ragit-model-provider" }
+ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

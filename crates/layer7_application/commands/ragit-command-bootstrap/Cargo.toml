@@ -1,0 +1,26 @@
+[package]
+name = "ragit-command-bootstrap"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+glob = "0.3"
+ragit-command-init = { path = "../ragit-command-init" }
+ragit-fs = { path = "../../../layer2_data_link/fs" }
+ragit-index-core = { path = "../../../legacy_and_refactoring/ragit-index-core" }
+ragit-index-effects = { path = "../../../legacy_and_refactoring/ragit-index-effects" }
+ragit-index-io = { path = "../../../legacy_and_refactoring/ragit-index-io" }
+ragit-index-query = { path = "../../../legacy_and_refactoring/ragit-index-query" }
+ragit-index-save-to-file = { path = "../../../legacy_and_refactoring/ragit-index-save-to-file" }
+ragit-index-storage = { path = "../../../legacy_and_refactoring/ragit-index-storage" }
+ragit-index-types = { path = "../../../legacy_and_refactoring/ragit-index-types" }
+ragit-tfidf = { path = "../../../legacy_and_refactoring/ragit-tfidf" }
+ragit-types = { path = "../../../layer1_physical/ragit-types" }
+ragit-utils = { path = "../../../layer3_network/ragit-utils" }
+serde_json = "1.0"
+sysinfo = "0.30.5"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[dev-dependencies]
+tempfile = "3.3.0"

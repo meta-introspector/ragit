@@ -1,0 +1,23 @@
+[package]
+name = "ragit-index-effects"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-index-types = { path = "../ragit-index-types" }
+
+ragit-fs = { path = "../../layer2_data_link/fs" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-model = { path = "../../layer7_application/ragit-model" }
+ragit-tfidf = { path = "../ragit-tfidf" }
+ragit-api = { path = "../../layer7_application/api" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha3 = "0.10.8"
+tokio = { version = "1.0", features = ["full"] }
+ragit-readers = { path = "../../layer4_transport/ragit-readers" }
+ragit-config = { path = "../../layer5_session/ragit-config" }
+ragit-uid = { path = "../../layer2_data_link/ragit-uid" }
+sysinfo = "0.30.13"

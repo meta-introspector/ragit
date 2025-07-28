@@ -1,0 +1,14 @@
+[package]
+name = "ragit-query"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-index = { path = "../../layer3_network/ragit-index" }
+ragit-index-io = { path = "../../legacy_and_refactoring/ragit-index-io" }
+ragit-uid = { path = "../../layer2_data_link/ragit-uid" }
+ragit-error = { path = "../../legacy_and_refactoring/ragit-error" }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-index-types = { path = "../../legacy_and_refactoring/ragit-index-types" }
+lazy_static = "1.5.0"
+regex = "1.11.1"

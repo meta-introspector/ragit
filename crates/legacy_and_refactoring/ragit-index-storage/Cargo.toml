@@ -1,0 +1,12 @@
+[package]
+name = "ragit-index-storage"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+
+ragit-fs = { path = "../../layer2_data_link/fs" }
+ragit-index-types = { path = "../ragit-index-types" }

@@ -1,9 +1,0 @@
-[package]
-name = "ragit-command-help"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-ragit-cli = { path = "../cli" }
-ragit-utils = { path = "../ragit-utils" }
-anyhow = "1.0"

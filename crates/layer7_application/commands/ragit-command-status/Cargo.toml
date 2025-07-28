@@ -1,0 +1,11 @@
+[package]
+name = "ragit-command-status"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-cli = { path = "../../cli" }
+ragit-utils = { path = "../../../layer3_network/ragit-utils" }
+ragit-index-io = { path = "../../../legacy_and_refactoring/ragit-index-io" }
+ragit-index-core = { path = "../../../legacy_and_refactoring/ragit-index-core" }
+anyhow = "1.0"

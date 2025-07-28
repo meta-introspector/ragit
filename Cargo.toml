@@ -9,38 +9,72 @@ documentation = "https://docs.rs/ragit"
 
 [workspace]
 members = [
-    "crates/cli",
-    "crates/fs",
-    "crates/ignore",
-    "crates/korean",
-    "crates/pdl",
+    # Layer 1
+    "crates/layer1_physical/ragit-core",
+    "crates/layer1_physical/ragit-types",
+    "crates/layer1_physical/ragit-file-error",
+
+    # Layer 2
+    "crates/layer2_data_link/fs",
+    "crates/layer2_data_link/ignore",
+    "crates/layer2_data_link/ragit-uid",
+
+    # Layer 3
+    "crates/layer3_network/ragit-index",
+    "crates/layer3_network/ragit-utils",
+
+    # Layer 4
+    "crates/layer4_transport/ragit-core-utils",
+    "crates/layer4_transport/ragit-query",
+    "crates/layer4_transport/ragit-readers",
+
+    # Layer 5
+    "crates/layer5_session/ragit-config",
+    "crates/layer5_session/ragit-rate-limit",
+    "crates/layer5_session/ragit-session-query",
+
+    # Layer 6
+    "crates/layer6_presentation/korean",
+    "crates/layer6_presentation/pdl",
+    "crates/layer6_presentation/ragit-model-query-response",
+    "crates/layer6_presentation/ragit-schema",
+
+    # Layer 7
+    "crates/layer7_application/api",
+    "crates/layer7_application/cli",
+    "crates/layer7_application/ragit-commands",
+    "crates/layer7_application/ragit-groq-data",
+    "crates/layer7_application/ragit-model",
+    "crates/layer7_application/ragit-model-provider",
+    "crates/layer7_application/ragit-muse",
+    "crates/layer7_application/server",
+    "crates/layer7_application/commands/*",
+
+    # Legacy & Refactoring
+    "crates/legacy_and_refactoring/ragit-agent",
+    "crates/legacy_and_refactoring/ragit-agent-action",
+    "crates/legacy_and_refactoring/ragit-chunk",
+    "crates/legacy_and_refactoring/ragit-config-commands",
+    "crates/legacy_and_refactoring/ragit-error-conversions",
+    "crates/legacy_and_refactoring/ragit-index-core",
+    "crates/legacy_and_refactoring/ragit-index-effects",
+    "crates/legacy_and_refactoring/ragit-index-io",
+    "crates/legacy_and_refactoring/ragit-index-model-management",
+    "crates/legacy_and_refactoring/ragit-index-query",
+    "crates/legacy_and_refactoring/ragit-index-save-to-file",
+    "crates/legacy_and_refactoring/ragit-index-storage",
+    "crates/legacy_and_refactoring/ragit-index-types",
+    "crates/legacy_and_refactoring/ragit-legacy-agent",
+    "crates/legacy_and_refactoring/ragit-legacy-api-config",
+    "crates/legacy_and_refactoring/ragit-legacy-chunk",
+    "crates/legacy_and_refactoring/ragit-legacy-error",
+    "crates/legacy_and_refactoring/ragit-legacy-log-qa-results",
+    "crates/legacy_and_refactoring/ragit-legacy-uid",
+    "crates/legacy_and_refactoring/ragit-muse-logic",
     
-    "crates/ragit-schema",
-    "crates/ragit-uid",
-    "crates/ragit-core-utils",
-    "crates/ragit-types",
-    "crates/ragit-core",
-    "crates/ragit-index",
-    "crates/ragit-config",
-    "crates/ragit-readers",
-    "crates/ragit-query",
-    "crates/ragit-index-types",
-    "crates/ragit-prompt-management",
-    "crates/ragit-tfidf",
-    "crates/ragit-index-model-management",
-    "crates/ragit-index-io",
-    "crates/ragit-agent",
-    "crates/ragit-index-query",
-    "crates/ragit-config-commands",
-    "crates/ragit-command-add",
-    "crates/ragit-command-build",
-    "crates/ragit-command-init",
-    "crates/ragit-command-query",
-    "crates/ragit-command-bootstrap",
-    "crates/ragit-index-effects",
-    "crates/ragit-chunk",
-    "crates/ragit-file-error",
-    "crates/ragit-error-conversions",
+    "crates/legacy_and_refactoring/ragit-prompt-management",
+    "crates/legacy_and_refactoring/ragit-qa-system",
+    "crates/legacy_and_refactoring/ragit-tfidf",
 ]
 exclude = [
     "crates/server",
@@ -92,22 +126,22 @@ lazy_static = "1.5.0"
 mupdf = { version = "0.5.0", optional = true }
 png = { version = "0.17.16", optional = true }  # `resvg`'s function returns `png::EncodingError`
 
-ragit-ignore = { path = "./crates/ignore", version = "0.4.2" }
-ragit-korean = { path = "./crates/korean", version = "0.4.2", optional = true }
-ragit-model = { path = "./crates/ragit-model" }
-ragit-pdl = { path = "./crates/pdl", version = "0.4.2" }
-ragit-uid = { path = "./crates/ragit-uid", version = "0.1.0" }
-ragit-utils = { path = "./crates/ragit-utils", version = "0.1.0" }
-ragit-schema = { path = "./crates/ragit-schema", version = "0.1.0" }
-ragit-commands = { path = "./crates/ragit-commands", version = "0.1.0" }
-ragit-agent = { path = "./crates/ragit-agent" }
-ragit-types = { path = "./crates/ragit-types" }
-ragit-index-query = { path = "./crates/ragit-index-query" }
-ragit-index = { path = "./crates/ragit-index" }
-ragit-index-types = { path = "./crates/ragit-index-types" }
-ragit-tfidf = { path = "./crates/ragit-tfidf" }
-ragit-index-io = { path = "./crates/ragit-index-io" }
-ragit-model-query-response = { path = "./crates/ragit-model-query-response" }
+ragit-ignore = { path = "./crates/layer2_data_link/ignore", version = "0.4.2" }
+ragit-korean = { path = "./crates/layer6_presentation/korean", version = "0.4.2", optional = true }
+ragit-model = { path = "./crates/layer7_application/ragit-model" }
+ragit-pdl = { path = "./crates/layer6_presentation/pdl", version = "0.4.2" }
+ragit-uid = { path = "./crates/layer2_data_link/ragit-uid", version = "0.1.0" }
+ragit-utils = { path = "./crates/layer3_network/ragit-utils", version = "0.1.0" }
+ragit-schema = { path = "./crates/layer6_presentation/ragit-schema", version = "0.1.0" }
+ragit-commands = { path = "./crates/layer7_application/ragit-commands", version = "0.1.0" }
+ragit-agent = { path = "./crates/legacy_and_refactoring/ragit-agent" }
+ragit-types = { path = "./crates/layer1_physical/ragit-types" }
+ragit-index-query = { path = "./crates/legacy_and_refactoring/ragit-index-query" }
+ragit-index = { path = "./crates/layer3_network/ragit-index" }
+ragit-index-types = { path = "./crates/legacy_and_refactoring/ragit-index-types" }
+ragit-tfidf = { path = "./crates/legacy_and_refactoring/ragit-tfidf" }
+ragit-index-io = { path = "./crates/legacy_and_refactoring/ragit-index-io" }
+ragit-model-query-response = { path = "./crates/layer6_presentation/ragit-model-query-response" }
 regex = "1.11.1"
 reqwest = { version = "0.12.12", features = ["multipart"] }
 resvg = { version = "0.45.1", optional = true }

@@ -1,8 +1,0 @@
-[package]
-name = "ragit-error-conversions"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-ragit-types = { path = "../ragit-types" }
-ragit-pdl = { path = "../pdl" }
