@@ -78,17 +78,24 @@ Additional relevant files:
 - `./crates/layer7_application/commands/ragit-command-bootstrap/src/file_source.rs`
 - `./crates/layer7_application/commands/ragit-command-bootstrap/src/bootstrap_commands/constants.rs`
 
-## Debugging
+## Debugging and Memory Management
 
-If you encounter issues with the `bootstrap` command, you can use the `--verbose` flag to get more detailed output. The build dashboard now includes more detailed memory usage metrics, such as the delta since the beginning of the process and the average memory usage per loop.
+If you encounter issues with the `bootstrap` command, especially Out-Of-Memory (OOM) errors, here's what we've learned and how to approach debugging:
 
-Additionally, for debugging purposes, the `render_build_dashboard` function in `crates/ragit-index-effects/src/build_dashboard.rs` can be configured to exit gracefully after a certain number of iterations. This `max_iterations` parameter can be passed to the `bootstrap` command.
+### Flags for Debugging
 
-```sh
-cargo run --package ragit-commands -- --verbose bootstrap --max-iterations <NUMBER>
-```
+*   `--verbose`: Enables verbose output, which is useful for debugging. The build dashboard now includes more detailed memory usage metrics, such as the delta since the beginning of the process and the average memory usage per loop.
+*   `--max-iterations <NUMBER>`: Exits gracefully after a certain number of iterations. This is primarily for debugging and will cause the process to exit gracefully once the specified number of iterations is reached.
+*   `--max-memory-gb <NUMBER>`: Sets a maximum memory limit in gigabytes for the bootstrap operation. **Important Note:** This flag is designed for the `ragit` application to *gracefully exit* if its memory usage exceeds the specified limit. It does **not** prevent the operating system from terminating the process due to an Out-Of-Memory (OOM) condition if the system's overall memory is exhausted. If you're experiencing OOM kills (exit code 137), it means the process is consuming memory faster than the application can detect and react, or the system's memory is simply too constrained.
 
-Note: The `max_iterations` parameter is primarily for debugging and will cause the process to exit gracefully once the specified number of iterations is reached.
+### Understanding OOM Kills (Exit Code 137)
+
+An exit code of 137 typically indicates that the process was terminated by the operating system due to an Out-Of-Memory (OOM) condition. This can happen even if the application is attempting to shut down gracefully, as the system may run out of memory before the application completes its cleanup.
+
+To mitigate persistent OOM issues:
+1.  **Increase available RAM:** Ensure your system has sufficient free RAM.
+2.  **Run on a more powerful system:** Consider executing the command on a machine with more memory.
+3.  **Reduce the scope:** If possible, try to process fewer files or smaller files during the bootstrap process (e.g., by adjusting the `CHUNK_PROCESSING_LIMIT` if applicable, or by targeting specific subsets of files).
 
 ### Full Backtrace
 
@@ -136,3 +143,7 @@ To generate a memory profile using `jemalloc`, you need to set the `MALLOC_CONF`
     *   `profile.svg`: The output SVG file with the call graph.
 
     This will generate an SVG file showing the memory allocation call graph, helping you identify memory leaks or high memory usage areas.
+
+### Internal Module Structure and Imports
+
+During development, the `memory_utils` module was moved from `ragit-command-bootstrap` to `ragit-utils` to resolve cyclic dependencies and improve modularity. To maintain compatibility with existing `use` statements within `ragit-command-bootstrap`, a shim was introduced in `crates/layer7_application/commands/ragit-command-bootstrap/src/bootstrap_commands/mod.rs` (specifically, `pub use crate::memory_utils;`). This allows other modules within `ragit-command-bootstrap` to continue using `crate::bootstrap_commands::memory_utils` without needing to update every single import path. This approach prioritizes functionality and avoids extensive refactoring when a simpler solution is available.
