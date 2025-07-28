@@ -17,43 +17,65 @@ cargo run --package ragit-commands -- bootstrap
 
 ## Workflow
 
-The `bootstrap` command follows a pipeline of operations, each of which is broken down into a separate module.
+The `bootstrap` command executes a series of operations, each managed by a dedicated function within the `bootstrap_commands` module. Memory usage is checked before each major step.
 
-### 1. Setup Environment
+### 1. Setup Environment (`setup_environment`)
 
-*   **Creates a temporary directory:** The `bootstrap` command starts by creating a temporary directory to work in.
-*   **Initializes a new repository:** It initializes a new `ragit` repository in the temporary directory.
-*   **Initializes a new index:** It creates a new index and saves it to a file.
+*   **Creates a temporary directory:** A temporary working directory is created.
+*   **Initializes a new repository:** A new `ragit` repository is initialized within the temporary directory.
+*   **Initializes a new index:** A new `Index` structure is created and prepared for use.
 
-### 2. Copy Prompts
+### 2. Copy Prompts (`copy_prompts`)
 
-*   **Copies prompts:** It copies the `prompts` directory, which is essential for building the index.
-*   **Loads prompts into index:** The copied prompts are loaded into the in-memory `Index` structure for use during the build process.
+*   **Copies prompts:** The `prompts` directory from the actual root is copied to the temporary directory.
+*   **Loads prompts into index:** The copied prompts are loaded into the in-memory `Index` structure.
 
-### 3. Add Bootstrap Files
+### 3. Add Bootstrap Files (`add_bootstrap_files`)
 
-*   **Finds files:** It finds all the `.rs` files in the `ragit-command-bootstrap` package using `glob`.
-*   **Copies files:** It copies the content of these files to the temporary directory.
-*   **Adds files to index:** It adds the files to the index.
+*   **Identifies and copies files:** Relevant `.rs` files from the `ragit-command-bootstrap` package are identified and copied to the temporary directory.
+*   **Adds files to index:** The copied files are added to the `Index`.
 
-### 4. Build Index
+### 4. Build Index (`build_index`)
 
-*   **Builds the index:** It builds a new index from the source code. This step now correctly processes the content of the copied `.rs` files.
+*   **Builds the index:** The `Index` is built from the source code, processing the content of the added `.rs` files.
 
-### 5. Write Chunks to Markdown
+### 5. Write Chunks to Markdown (`write_chunks_to_markdown`)
 
-*   **Writes chunks to markdown:** It writes the chunks to a markdown file for inspection.
+*   **Generates markdown:** The processed chunks are written to a markdown file for review.
 
-### 6. Self-Improvement
+### 6. Self-Improvement (`perform_self_improvement`)
 
-*   **Gets its own source code:** It reads the `lib.rs` file of the `ragit-command-bootstrap` crate.
-*   **Formats a prompt:** It creates a prompt with the source code.
-*   **Executes a query:** It executes a query with the prompt.
-*   **Handles the improved code:** It writes the improved code to a file in the temporary directory.
+*   **Analyzes and improves code:** The command reads its own source code, generates a prompt, executes a query, and writes the improved code to a file.
 
-### 7. Final Reflective Query
+### 7. Final Reflective Query (`perform_final_reflective_query`)
 
-*   **Executes a hardcoded query:** It executes a hardcoded query and prints the response.
+*   **Executes a reflective query:** A hardcoded query is executed against the built index, and the response is printed.
+
+## File Locations
+
+The core `bootstrap_index_self` function is located at:
+- `./crates/layer7_application/commands/ragit-command-bootstrap/src/bootstrap_command.rs`
+
+Supporting functions for adding bootstrap files are located at:
+- `./crates/layer7_application/commands/ragit-command-bootstrap/src/bootstrap_commands/add_bootstrap_files.rs`
+
+Unit tests for the bootstrap command can be found at:
+- `./crates/layer7_application/commands/ragit-command-bootstrap/tests/bootstrap_test.rs`
+
+## File Locations
+
+The core `bootstrap_index_self` function is located at:
+- `./crates/layer7_application/commands/ragit-command-bootstrap/src/bootstrap_command.rs`
+
+Supporting functions for adding bootstrap files are located at:
+- `./crates/layer7_application/commands/ragit-command-bootstrap/src/bootstrap_commands/add_bootstrap_files.rs`
+
+Unit tests for the bootstrap command can be found at:
+- `./crates/layer7_application/commands/ragit-command-bootstrap/tests/bootstrap_test.rs`
+
+Additional relevant files:
+- `./crates/layer7_application/commands/ragit-command-bootstrap/src/file_source.rs`
+- `./crates/layer7_application/commands/ragit-command-bootstrap/src/bootstrap_commands/constants.rs`
 
 ## Debugging
 
@@ -66,6 +88,17 @@ cargo run --package ragit-commands -- --verbose bootstrap --max-iterations <NUMB
 ```
 
 Note: The `max_iterations` parameter is primarily for debugging and will cause the process to exit gracefully once the specified number of iterations is reached.
+
+### Full Backtrace
+
+To get a detailed backtrace in case of a crash, set the `RUST_BACKTRACE` environment variable to `full`:
+
+```bash
+export RUST_BACKTRACE=full
+cargo run --package ragit-commands -- bootstrap
+```
+
+This will provide a more comprehensive stack trace, which can be invaluable for debugging panics and other runtime errors.
 
 ### Memory Profiling with jemalloc
 

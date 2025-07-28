@@ -23,7 +23,7 @@ pub struct CargoPackageFileSource {
 
 impl FileSource for CargoPackageFileSource {
     fn get_files(&self) -> Result<Vec<String>> {
-        let package_path = PathBuf::from(&self.project_root).join("crates").join(&self.package_name);
+        let package_path = PathBuf::from(&self.project_root).join("crates").join("layer7_application").join("commands").join(&self.package_name);
         let pattern = format!("{}/**/*.rs", package_path.to_string_lossy());
         let mut files = Vec::new();
         for entry in glob::glob(&pattern)? {
