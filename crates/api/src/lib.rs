@@ -27,7 +27,7 @@ pub use ragit_types::JsonType;
 
 pub fn load_models(json_path: &str) -> Result<Vec<Model>, Error> {
     let models = read_string(json_path)?;
-    let models: Vec<ModelRaw> = serde_json::from_str(&models)?;
+    let models: Vec<ModelRaw> = map_serde_json_error(serde_json::from_str(&models))?;
     let mut result = Vec::with_capacity(models.len());
 
     for model in models.iter() {
@@ -41,7 +41,7 @@ pub fn save_models(models: &[Model], path: &str) -> Result<(), Error> {
     let models: Vec<ModelRaw> = models.iter().map(|model| model.into()).collect();
     Ok(write_string(
         path,
-        &serde_json::to_string_pretty(&models)?,
+        &map_serde_json_error(serde_json::to_string_pretty(&models))?,
         WriteMode::CreateOrTruncate,
     )?)
 }

@@ -149,6 +149,12 @@ fn records_from_json(j: &Value) -> Result<HashMap<String, AuditRecord>, Error> {
 #[derive(Clone)]
 pub struct Tracker(pub HashMap<String, HashMap<String, AuditRecord>>); // user_name -> usage
 
+use std::sync::Arc;
+
+fn map_serde_json_error<T>(result: Result<T, serde_json::Error>) -> Result<T, Error> {
+    result.map_err(|e| Error::JsonSerdeError(Arc::new(e)))
+}
+
 impl Tracker {
     pub fn new() -> Self {
         Tracker(HashMap::new())
@@ -163,7 +169,7 @@ impl Tracker {
     pub fn save_to_file(&self, path: &str) -> Result<(), Error> {
         Ok(write_string(
             path,
-            &serde_json::to_string_pretty(&Value::from(self)).map_err(Error::JsonSerdeError)?,
+            &map_serde_json_error(serde_json::to_string_pretty(&Value::from(self)))?,
             WriteMode::Atomic,
         ).map_err(Error::FileError)?)
     }

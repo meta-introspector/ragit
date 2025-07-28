@@ -7,6 +7,7 @@ pub mod init_worker;
 pub mod init_workers;
 pub mod request;
 pub mod uid_helpers;
+pub mod run_worker_task;
 
 pub use build_chunks::*;
 //pub use build_dashboard::*;

@@ -10,12 +10,12 @@ pub fn print_memory_usage(sys: &mut System, message: &str, last_process_memory_k
         let used_memory_kb = sys.used_memory() / 1024;
 
         if let Some(last_mem) = last_process_memory_kb {
-            let delta = current_process_memory_kb as i64 - *last_mem as i64;
+            let delta = current_process_memory_kb as i64 - last_mem.unwrap_or(0) as i64;
             println!(
                 "Memory Usage ({}): Total: {} KB, Used: {} KB, Process RSS: {} KB (Delta: {} KB)",
                 message, total_memory_kb, used_memory_kb, current_process_memory_kb, delta
             );
-            *last_mem = current_process_memory_kb;
+            *last_process_memory_kb = Some(current_process_memory_kb);
         } else {
             println!(
                 "Memory Usage ({}): Total: {} KB, Used: {} KB, Process RSS: {} KB",

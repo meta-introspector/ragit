@@ -88,6 +88,10 @@ The "Have a KitKat" meta-program is a user-defined workflow for pausing the curr
 - Addressed issues with `format!` and `writeln!` macros when using constants by switching to `format_args!`.
 - Ensured `use std::io::Write;` is present in all files using `flush()`.
 - Made `copy_prompts` an `async` function.
+- **Refactored `init_worker`:** The `init_worker` function in `ragit-index-effects` has been split into `init_worker` (for channel setup and spawning the worker task) and `run_worker_task` (containing the main worker logic).
+- **Resolved `ApiError` cloning issues:** `ApiError` now correctly derives `Clone` by wrapping non-`Clone`able inner error types in `Arc`. Error handling in `run_worker_task.rs` and `ragit-model-provider/src/lib.rs` has been adjusted to use `ApiError::from(e)` and `map_err` with `Arc::new(e)` where necessary, and to clone `ApiError` instances when sending them through MPSC channels.
+- **Removed conflicting `From` implementation:** The custom `impl From<ApiError> for anyhow::Error` was removed from `ragit-types/src/api_error.rs` to resolve conflicts with `anyhow`'s built-in implementation.
+- **Fixed `thiserror` prefix errors:** Added whitespace to error messages in `ApiError` to resolve `thiserror` prefix warnings.
 
 **New Critical Path:**
 The next phase is to successfully run the `bootstrap` command without compilation errors or runtime panics. This involves:
@@ -101,3 +105,4 @@ The next phase is to successfully run the `bootstrap` command without compilatio
 - **Asynchronous Operations and Ownership:** When refactoring, pay close attention to `async` functions and how data is passed between them (e.g., `&mut System` vs. `&System`). Incorrect handling can lead to lifetime or ownership errors.
 - **Systematic Debugging:** When encountering multiple errors, address them systematically, starting with the most fundamental ones (e.g., module imports, basic syntax) and progressively moving to more complex issues.
 - **Importance of `std::io::Write`:** The `flush()` method requires the `std::io::Write` trait to be in scope. This is a common oversight when refactoring I/O operations.
+- **Error Handling with `anyhow` and `thiserror`:** When using `anyhow` and `thiserror` together, ensure that custom error types correctly implement `Clone` (if needed) and that `From` implementations are not conflicting with `anyhow`'s blanket implementations. Explicitly converting errors to `Arc` before wrapping them in `ApiError` can resolve ownership issues.

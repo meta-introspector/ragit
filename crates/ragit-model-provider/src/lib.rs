@@ -1,5 +1,6 @@
 use ragit_types::ApiError as Error;
 use std::fmt;
+use std::sync::Arc;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum TestModel {
@@ -16,7 +17,7 @@ pub fn get_dummy_response(&self, _messages: &[Message]) -> Result<String, Error>
             TestModel::Dummy => Ok(String::from("dummy response from TestModel::Dummy")),
             TestModel::Stdin => {
                 let mut input = String::new();
-                std::io::stdin().read_line(&mut input)?;
+                std::io::stdin().read_line(&mut input).map_err(|e| Error::StdIoError(Arc::new(e)))?;
                 Ok(input.trim().to_string())
             },
             TestModel::Error => Err(Error::TestModelError),
@@ -40,7 +41,7 @@ pub enum ModelProvider {
 
 impl ModelProvider {
     pub fn parse_chat_response(&self, s: &str) -> Result<serde_json::Value, Error> {
-        Ok(serde_json::from_str(s)?)
+        serde_json::from_str(s).map_err(|e| Error::JsonSerdeError(Arc::new(e)))
     }
 
     pub fn parse(s: &str, url: &Option<String>) -> Result<Self, Error> {

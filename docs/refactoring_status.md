@@ -16,18 +16,16 @@ We've made significant progress on the `Index` struct refactoring:
 
 **Current State:**
 
-The project still has compilation errors that need to be addressed:
+We have addressed several compilation errors and refactored parts of the codebase:
 
-1.  **Syntax Error:** There's still an `unexpected closing delimiter: `)` in `crates/ragit-index-io/src/load_chunks_from_uids.rs`. This is a critical blocking issue.
-2.  **Missing `Chunk::dummy()`:** The `ragit_types::Chunk` struct is missing a `dummy()` method, causing errors in `ragit-agent-action`.
-3.  **Incorrect `Index` Method Calls:** The temporary placeholders in `ragit-agent-action/src/action_run.rs` are causing errors because the methods they call (`get_chunks_of_file`, `get_chunk_by_uid`, `chunk_count`, `get_config_by_key`, `get_all_meta`, `get_summary`, `query`) are no longer directly on the `Index` struct. These need to be updated to call the appropriate manager methods as per our refactoring plan.
-4.  **`ragit-query/src/query_helpers.rs` Error Type:** The `uid_query` function still references `Error` instead of `ApiError`.
-5.  **Unresolved Imports in Command Crates:** Several command crates (`ragit-command-audit`, `ragit-command-config`, `ragit-command-ii-reset`, `ragit-command-gc`, `ragit-command-archive`, `ragit-command-model`, `ragit-command-init`, `ragit-index-query`) have incorrect `use` statements for `Index` and `load_index_from_path`.
+1.  **`init_worker` Refactoring:** The `init_worker` function in `ragit-index-effects` has been split into `init_worker` (for channel setup and spawning the worker task) and `run_worker_task` (containing the main worker logic).
+2.  **`ApiError` Cloning Issues:** `ApiError` now correctly derives `Clone` by wrapping non-`Clone`able inner error types in `Arc`. Error handling in `run_worker_task.rs` and `ragit-model-provider/src/lib.rs` has been adjusted to use `ApiError::from(e)` and `map_err` with `Arc::new(e)` where necessary, and to clone `ApiError` instances when sending them through MPSC channels.
+3.  **Conflicting `From` Implementation Removed:** The custom `impl From<ApiError> for anyhow::Error` was removed from `ragit-types/src/api_error.rs` to resolve conflicts with `anyhow`'s built-in implementation.
+4.  **`thiserror` Prefix Errors Fixed:** Added whitespace to error messages in `ApiError` to resolve `thiserror` prefix warnings.
+5.  **`ragit-tfidf` Error Handling:** Updated `ragit-tfidf/src/io.rs` to explicitly convert `std::io::Error` and `serde_json::Error` to `Arc` before converting them to `ApiError`.
 
 **Next Immediate Steps:**
 
-1.  **Fix the syntax error in `crates/ragit-index-io/src/load_chunks_from_uids.rs`**.
-2.  **Define a `dummy()` method for `ragit_types::Chunk`**.
-3.  **Update `Index` method calls in `ragit-agent-action/src/action_run.rs`** to use the new manager-based approach (even if the managers are just stubs for now).
-4.  **Correct the error type in `ragit-query/src/query_helpers.rs`**.
-5.  **Update `Index` and `load_index_from_path` imports** in all affected command crates.
+1.  **Verify Compilation:** The primary goal is to achieve a successful build of the `bootstrap` command without any compilation errors.
+2.  **Test `bootstrap` Command:** Once compiled, thoroughly test the `bootstrap` command with various parameters (e.g., `--max-memory-gb`, `--max-iterations`) to ensure it functions as expected and does not encounter OOM errors or other runtime panics.
+3.  **Address Remaining Warnings:** Clean up any remaining compiler warnings, especially unused imports.

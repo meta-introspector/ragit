@@ -2,9 +2,10 @@ use thiserror::Error;
 use ragit_file_error::FileError;
 use std::path::PathBuf;
 use crate::json_type::JsonType;
+use std::sync::Arc;
 
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, Clone)]
 pub enum ApiError {
     #[error("json type error: expected {expected}, got {got}")]
     JsonTypeError { expected: JsonType, got: JsonType },
@@ -24,7 +25,7 @@ pub enum ApiError {
     #[error("api key not found: {env_var:?}")]
     ApiKeyNotFound { env_var: Option<String> },
     #[error(transparent)]
-    StdIoError(#[from] std::io::Error),
+    StdIoError(#[from] Arc<std::io::Error>),
     #[error("cannot read image: {0}") ]
     CannotReadImage(String /* model name */),
     #[error("invalid config key: {0}")]
@@ -38,10 +39,9 @@ pub enum ApiError {
     #[error("reqwest error: {0}")]
     ReqwestError(String),
     #[error(transparent)]
-    JsonSerdeError(#[from] serde_json::Error),
+    JsonSerdeError(#[from] Arc<serde_json::Error>),
     #[error(transparent)]
-    UidError(#[from] crate::uid::UidError),
-    
+    UidError(#[from] Arc<crate::uid::UidError>),
     
 
     #[error("wrong schema: {0}")]
@@ -60,7 +60,7 @@ pub enum ApiError {
     #[error("insufficient models")]
     InsufficientModels,
     #[error(transparent)]
-    AnyhowError(#[from] anyhow::Error),
+    AnyhowError(#[from] Arc<anyhow::Error>),
     #[error(transparent)]
     ParseIntError(#[from] std::num::ParseIntError),
     #[error(transparent)]
@@ -93,3 +93,5 @@ pub enum ApiError {
     #[error("invalid request")]
     InvalidRequest,
 }
+
+

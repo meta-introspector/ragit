@@ -37,6 +37,8 @@ pub async fn copy_files_to_temp_dir(
         }
         let content = fs::read(&original_file_path)
             .context(format!("Failed to read original file: {:?}", original_file_path))?;
+        let content = fs::read(&original_file_path)
+            .context(format!("Failed to read original file: {:?}", original_file_path))?;
         fs::write(&temp_file_path, content)
             .context(format!("Failed to write to temporary file: {:?}", temp_file_path))?;
         temp_files_to_add.push(temp_file_path);

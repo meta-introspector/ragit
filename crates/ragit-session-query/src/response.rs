@@ -1,5 +1,7 @@
 use crate::prelude::*;
 use ragit_types::ApiError as Error;
+use std::fmt;
+use std::sync::Arc;
 pub trait IntoChatResponse {
     fn into_chat_response(&self) -> Result<Response, Error>;
 }
@@ -22,6 +24,12 @@ pub struct Response {
     pub total_tokens: usize,
 }
 
+use serde::de::DeserializeOwned;
+
+fn parse_json_value_to_response<T: DeserializeOwned>(json: serde_json::Value) -> Result<T, Error> {
+    serde_json::from_value(json).map_err(|e| Error::JsonSerdeError(Arc::new(e)))
+}
+
 impl Response {
     pub fn dummy(s: String) -> Self {
         Response {
@@ -37,19 +45,19 @@ impl Response {
         let json: serde_json::Value = api_provider.parse_chat_response(s)?;
         match api_provider {
             ApiProvider::OpenAi { .. } => {
-                let response: OpenAiResponse = serde_json::from_value(json)?;
+                let response: OpenAiResponse = parse_json_value_to_response(json)?;
                 response.into_chat_response()
             }
             ApiProvider::Google => {
-                let response: GoogleResponse = serde_json::from_value(json)?;
+                let response: GoogleResponse = serde_json::from_value(json).map_err(|e| Error::JsonSerdeError(Arc::new(e)))?;
                 response.into_chat_response()
             }
             ApiProvider::Cohere => {
-                let response: CohereResponse = serde_json::from_value(json)?;
+                let response: CohereResponse = serde_json::from_value(json).map_err(|e| Error::JsonSerdeError(Arc::new(e)))?;
                 response.into_chat_response()
             }
             ApiProvider::Anthropic => {
-                let response: AnthropicResponse = serde_json::from_value(json)?;
+                let response: AnthropicResponse = parse_json_value_to_response(json)?;
                 response.into_chat_response()
             }
             ApiProvider::Test(_test_model) => {

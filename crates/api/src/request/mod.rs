@@ -14,6 +14,7 @@ use serde_json::{Map, Value};
 use std::time::{Duration, Instant};
 use ragit_types::pdl_types::Role;
 use ragit_model::ModelRaw;
+use crate::map_serde_json_error;
 
 #[derive(Debug)]
 pub enum Request {
@@ -486,7 +487,7 @@ impl Request {
             )?;
             write_string(
                 &path,
-                &serde_json::to_string_pretty(j)?,
+                &map_serde_json_error(serde_json::to_string_pretty(j))?,
                 WriteMode::AlwaysCreate,
             )?;
         }
