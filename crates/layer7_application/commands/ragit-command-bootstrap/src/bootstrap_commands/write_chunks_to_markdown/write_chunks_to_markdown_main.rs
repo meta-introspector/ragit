@@ -33,6 +33,10 @@ pub async fn write_chunks_to_markdown(
         ).await?
     };
 
+    if verbose {
+        println!("bootstrap_index_self: Total chunks to process: {}", total_chunks);
+    }
+
     for chunk in all_chunks {
         if let Some(max_iter) = max_iterations {
             if processed_chunks_count >= max_iter {
