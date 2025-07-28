@@ -27,7 +27,7 @@ pub async fn build_index(
         return Err(anyhow::anyhow!("summarize.pdl not found in temporary directory!"));
     }
 
-    ragit_index_effects::build(index, 1, false, true, max_iterations).await?;
+    ragit_index_effects::build(index, 1, false, true, max_iterations, sys, max_memory_gb).await?;
     if verbose {
         println!("bootstrap_index_self: After ragit_index_effects::build");
         println!("bootstrap_index_self: Built index");

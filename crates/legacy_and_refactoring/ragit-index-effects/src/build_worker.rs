@@ -33,6 +33,8 @@ use crate::channel::{Channel, WorkerRequest, WorkerResponse};
 use crate::build_dashboard::render_build_dashboard;
 use crate::build::BuildResult;
 
+use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+
 pub async fn build_worker(
     index: &mut Index,
     workers: &mut Vec<Channel>,
@@ -40,6 +42,8 @@ pub async fn build_worker(
     quiet: bool,
     dry_run_llm: bool,
     max_iterations: Option<usize>,
+    sys: &mut System,
+    max_memory_gb: Option<u64>,
 ) -> Result<BuildResult, ApiError> {
     println!("build_worker: Starting");
     let mut killed_workers = vec![];
