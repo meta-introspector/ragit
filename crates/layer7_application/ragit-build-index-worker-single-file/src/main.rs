@@ -2,7 +2,6 @@ use anyhow::Result;
 use std::env;
 use std::fs;
 use sysinfo::System;
-use std::io::Write;
 
 mod bootstrap_commands;
 mod memory_profiler;
@@ -10,12 +9,11 @@ mod memory_profiler;
 use bootstrap_commands::setup_environment::setup_environment;
 use bootstrap_commands::copy_prompts::copy_prompts;
 use bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
-use bootstrap_commands::build_index::build_index;
-use bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_COPY_PROMPTS, MEMORY_USAGE_AFTER_COPY_PROMPTS, CLEANUP_TEMP_DIR, BEFORE_SETUP_ENV, AFTER_SETUP_ENV, BEFORE_COPY_PROMPTS, AFTER_COPY_PROMPTS, MEMORY_USAGE_BEFORE_ADD_FILES, MEMORY_USAGE_AFTER_ADD_FILES, BEFORE_ADD_FILES, AFTER_ADD_FILES, MEMORY_USAGE_SUMMARY_HEADER, MEMORY_TABLE_FOOTER, MEMORY_USAGE_BEFORE_BUILD_INDEX, MEMORY_USAGE_AFTER_BUILD_INDEX, BEFORE_BUILD_INDEX, AFTER_BUILD_INDEX};
+use bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_COPY_PROMPTS, MEMORY_USAGE_AFTER_COPY_PROMPTS, CLEANUP_TEMP_DIR, BEFORE_SETUP_ENV, AFTER_SETUP_ENV, BEFORE_COPY_PROMPTS, AFTER_COPY_PROMPTS, MEMORY_USAGE_BEFORE_ADD_FILES, MEMORY_USAGE_AFTER_ADD_FILES, BEFORE_ADD_FILES, AFTER_ADD_FILES, MEMORY_USAGE_SUMMARY_HEADER};
 use memory_profiler::{MemorySnapshot, capture_memory_snapshot, print_memory_table};
 
 fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
+    let _args: Vec<String> = env::args().collect();
 
     let mut sys = System::new_all();
     let mut last_process_memory_kb: Option<u64> = None;
@@ -24,7 +22,7 @@ fn main() -> Result<()> {
     println!("{}", MEMORY_USAGE_BEFORE_SETUP_ENV);
     capture_memory_snapshot(BEFORE_SETUP_ENV, &mut sys, &mut last_process_memory_kb, &mut memory_snapshots);
 
-    let (actual_root_dir, temp_dir, mut index) = setup_environment(
+    let (actual_root_dir, temp_dir, _index) = setup_environment(
         true, // verbose
         &mut sys,
         Some(1), // max_memory_gb (1GB for now)
@@ -55,7 +53,7 @@ fn main() -> Result<()> {
         true, // verbose
         &actual_root_dir,
         &temp_dir,
-        &mut index,
+        // &mut index, // index is not mutable anymore
         &mut sys,
         Some(1), // max_memory_gb
         &mut last_process_memory_kb,
@@ -70,7 +68,7 @@ fn main() -> Result<()> {
     build_index(
         true, // verbose
         &temp_dir,
-        &mut index,
+        // &mut index, // index is not mutable anymore
         None, // max_iterations
         &mut sys,
         Some(1), // max_memory_gb

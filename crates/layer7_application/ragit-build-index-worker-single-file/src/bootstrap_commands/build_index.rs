@@ -10,7 +10,7 @@ pub fn build_index(
     verbose: bool,
     temp_dir: &PathBuf,
     index: &mut Index,
-    max_iterations: Option<usize>,
+    _max_iterations: Option<usize>,
     sys: &mut System,
     max_memory_gb: Option<u64>,
     last_process_memory_kb: &mut Option<u64>,
