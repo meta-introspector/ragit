@@ -39,6 +39,7 @@ pub async fn build_worker(
     started_at: Instant,
     quiet: bool,
     dry_run_llm: bool,
+    max_iterations: Option<usize>,
 ) -> Result<BuildResult, ApiError> {
     println!("build_worker: Starting");
     let mut killed_workers = vec![];
@@ -87,7 +88,7 @@ pub async fn build_worker(
     println!("build_worker: Entering main loop");
     loop {
         if !quiet {
-            render_build_dashboard(
+            if !render_build_dashboard(
                 index,
                 &buffer,
                 &curr_completed_files,
@@ -95,7 +96,10 @@ pub async fn build_worker(
                 started_at.clone(),
                 flush_count,
                 has_to_erase_lines,
-            );
+                max_iterations,
+            ) {
+                break;
+            }
             has_to_erase_lines = true;
         }
 
@@ -291,6 +295,7 @@ pub async fn build_worker(
                         started_at.clone(),
                         flush_count,
                         has_to_erase_lines,
+                        max_iterations,
                     );
                 }
 

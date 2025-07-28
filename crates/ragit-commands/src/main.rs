@@ -1,5 +1,8 @@
 use anyhow::Result;
 use clap::Parser;
+
+// #[global_allocator]
+// static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 use ragit_command_bootstrap::bootstrap_index_self;
 
 
@@ -16,6 +19,10 @@ struct Args {
     /// Timeout for the bootstrap process in seconds
     #[arg(long, global = true)]
     timeout: Option<u64>,
+
+    /// Max iterations for debugging the build dashboard
+    #[arg(long, global = true)]
+    max_iterations: Option<usize>,
 }
 
 #[derive(Parser, Debug)]
@@ -34,7 +41,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
-            bootstrap_index_self(args.verbose, args.timeout).await?;
+            bootstrap_index_self(args.verbose, args.timeout, args.max_iterations).await?;
         }
     }
 

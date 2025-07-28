@@ -5,6 +5,14 @@ use ragit_types::uid::Uid;
 use std::time::Instant;
 use ragit_api::audit::AuditRecord;
 use ragit_index_types::index_impl::index_api_config_get_api_usage;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use sysinfo::System;
+
+
+static ITERATION_COUNT: AtomicUsize = AtomicUsize::new(0);
+static mut LAST_USED_MEMORY: u64 = 0;
+static mut INITIAL_USED_MEMORY: u64 = 0;
+static mut ACCUMULATED_MEMORY_DELTA: i64 = 0;
 
 pub fn render_build_dashboard(
     index: &Index,
@@ -14,7 +22,15 @@ pub fn render_build_dashboard(
     started_at: Instant,
     flush_count: usize,
     has_to_erase_lines: bool,
-) {
+    max_iterations: Option<usize>,
+) -> bool {
+    let current_iterations = ITERATION_COUNT.fetch_add(1, Ordering::SeqCst);
+    if let Some(max_iter) = max_iterations {
+        if current_iterations >= max_iter {
+            println!("Breaking after {} iterations for debugging.", max_iter);
+            return false;
+        }
+    }
     if has_to_erase_lines {
         // erase_lines(9);
     }
@@ -28,21 +44,45 @@ pub fn render_build_dashboard(
         }
     }
 
+    let mut system = System::new_all();
+    system.refresh_all();
+
     println!("---");
     println!("elapsed time: {:02}:{:02}", elapsed_time / 60, elapsed_time % 60);
     println!("staged files: {}, processed files: {}", index.staged_files.len(), index.processed_files.len());
     println!("errors: {}", errors.len());
     println!("committed chunks: {}", index.chunk_count);
+    let total_memory = system.total_memory() / 1024;
+    let used_memory = system.used_memory() / 1024;
+
+    unsafe {
+        if current_iterations == 0 {
+            INITIAL_USED_MEMORY = used_memory;
+        }
+        let memory_delta = used_memory as i64 - LAST_USED_MEMORY as i64;
+        ACCUMULATED_MEMORY_DELTA += memory_delta;
+        LAST_USED_MEMORY = used_memory;
+
+        let memory_delta_since_beginning = used_memory as i64 - INITIAL_USED_MEMORY as i64;
+        let average_memory_delta_per_loop = if current_iterations > 0 {
+            ACCUMULATED_MEMORY_DELTA / current_iterations as i64
+        } else {
+            0
+        };
+
+        println!("Iteration {}: Memory Usage: Total: {} KB, Used: {} KB (Delta: {} KB, Delta Since Beginning: {} KB, Avg Delta Per Loop: {} KB)",
+            current_iterations, total_memory, used_memory, memory_delta, memory_delta_since_beginning, average_memory_delta_per_loop);
+    }
 
     // It messes up with `erase_lines`
-    // println!(
-    //     "currently processing files: {}",
-    //     if curr_processing_files.is_empty() {
-    //         String::from("null")
-    //     } else {
-    //         curr_processing_files.join(", ")
-    //     },
-    // );
+     println!(
+         "currently processing files: {}",
+         if curr_processing_files.is_empty() {
+             String::from("null")
+         } else {
+             curr_processing_files.join(", ")
+       },
+     );
 
     println!(
         "buffered files: {}, buffered chunks: {}",
@@ -76,4 +116,5 @@ pub fn render_build_dashboard(
             println!("input tokens: ??? (????$), output tokens: ??? (????$)");
         },
     }
+    true
 }

@@ -30,7 +30,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 ## More documents
 
 - [Build](./docs/build.md)
-- [Bootstrap](./docs/bootstrap.md)
+- [Bootstrap](./docs/bootstrap.md): A self-improving command for developers working on `ragit` itself.
 - [Chunks](./docs/chunks.md)
 - [Configuration](./docs/config.md)
 - [Contribution](./docs/contribution.md)

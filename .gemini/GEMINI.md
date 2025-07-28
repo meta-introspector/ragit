@@ -63,7 +63,7 @@ Applying the prime-number-based decomposition to the `ragit` project structure, 
 
 -   **5 (Quintessence/Organization):** Grouping 3s into 5s, representing organized functional areas.
     -   A crate (e.g., `ragit-utils`) conceptually divided into 5 main functional areas (e.g., `path_utils`, `string_utils`, `chunk`, `index`, `uid`).
-    -   The five core commands of the CLI (e.g., `add`, `audit`, `build`, `query`, `ls`).
+    -   The five core commands of the CLI (`add`, `audit`, `build`, `query`, `ls`).
 
 -   **7 (Completion/Overarching Goal):** Grouping 5s into 7s, representing major functional areas or architectural layers.
     -   A major functional area of the project, like "Indexing," encompassing several related crates or modules.
@@ -83,7 +83,21 @@ The "Have a KitKat" meta-program is a user-defined workflow for pausing the curr
 - Implemented a `--verbose` flag for debugging purposes.
 - Traced a build failure to a `PromptMissing("summarize")` error.
 - The `bootstrap_index_self` command now copies the `prompts` directory to the temporary directory.
-- The root cause of the `PromptMissing` error is still under investigation, but it's believed to be in the `ragit-index` crate.
+- The root cause of the `PromptMissing` error was identified: the `Index` struct's `prompts` field was not being populated correctly because the prompts were copied *after* the index was initialized.
+- Refactored `bootstrap_command.rs` into smaller, single-purpose functions, each in its own file, adhering to the "One Declaration Per File" principle.
+- Addressed issues with `format!` and `writeln!` macros when using constants by switching to `format_args!`.
+- Ensured `use std::io::Write;` is present in all files using `flush()`.
+- Made `copy_prompts` an `async` function.
 
 **New Critical Path:**
-The next phase is to fix the prompt loading mechanism within the `ragit-index` crate, remove the debugging code, and ensure the `bootstrap` command runs successfully. The detailed plan for this is documented in `docs/metaprogram_kitkat_plan.md`.
+The next phase is to successfully run the `bootstrap` command without compilation errors or runtime panics. This involves:
+1.  Verifying all compilation errors are resolved.
+2.  Confirming the graceful exit behavior with `max_iterations`.
+3.  Ensuring the `PromptMissing` error is resolved by correctly populating the `Index`'s `prompts` field.
+
+**Generalization of Learning:**
+- **"One Declaration Per File" Principle:** This principle, while increasing the number of files, significantly improves modularity, testability, and reusability. It forces a clear separation of concerns and makes code easier to navigate and understand.
+- **Macro Peculiarities in Rust:** Rust's macros, especially `format!` and `writeln!`, have strict requirements for their first argument (must be a string literal). When using constants for formatting, `format_args!` is the correct approach to ensure compile-time string literal behavior.
+- **Asynchronous Operations and Ownership:** When refactoring, pay close attention to `async` functions and how data is passed between them (e.g., `&mut System` vs. `&System`). Incorrect handling can lead to lifetime or ownership errors.
+- **Systematic Debugging:** When encountering multiple errors, address them systematically, starting with the most fundamental ones (e.g., module imports, basic syntax) and progressively moving to more complex issues.
+- **Importance of `std::io::Write`:** The `flush()` method requires the `std::io::Write` trait to be in scope. This is a common oversight when refactoring I/O operations.

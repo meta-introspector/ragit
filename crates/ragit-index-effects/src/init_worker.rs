@@ -1,5 +1,5 @@
 use ragit_index_types::index_struct::Index;
-use ragit_index_types::load_mode::LoadMode;
+
 //use ragit_types::ApiError;
 use std::path::PathBuf;
 use tokio::sync::mpsc;
@@ -18,17 +18,19 @@ pub fn init_worker(root_dir: PathBuf) -> Channel {
         // it too difficult to send the instance via mpsc channels.
         // So I'm just instantiating new ones here.
         // Be careful not to modify the index!
-        let mut index = match Index::load(
-            root_dir,
-            LoadMode::OnlyJson,
-        ) {
-            Ok(index) => index,
-            Err(e) => {
-                let _ = tx_to_main.send(WorkerResponse::Error(e));
-                drop(tx_to_main);
-                return;
-            },
-        };
+        // Temporarily creating a new Index instead of loading from disk to debug memory usage.
+        // let mut index = match Index::load(
+        //     root_dir,
+        //     LoadMode::OnlyJson,
+        // ) {
+        //     Ok(index) => index,
+        //     Err(e) => {
+        //         let _ = tx_to_main.send(WorkerResponse::Error(e));
+        //         drop(tx_to_main);
+        //         return;
+        //     },
+        // };
+        let mut index = Index::new(root_dir);
         let prompt = match index_get_prompt(&index,"summarize") {
             Ok(prompt) => prompt,
             Err(e) => {
