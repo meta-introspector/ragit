@@ -9,7 +9,7 @@ pub async fn execute_query(
     prompt: &str,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<String, anyhow::Error> {
     if verbose {
         print_memory_usage(sys, "Before self-improvement query", last_process_memory_kb);

@@ -7,7 +7,7 @@ use crate::file_source::FileSource;
 use crate::file_copy_utils;
 use super::constants::BOOTSTRAP_PACKAGE_NAME;
 
-use crate::bootstrap_commands::memory_utils::print_memory_usage;
+use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
 
 pub async fn add_bootstrap_files(
     verbose: bool,
@@ -16,7 +16,7 @@ pub async fn add_bootstrap_files(
     index: &mut Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag add");

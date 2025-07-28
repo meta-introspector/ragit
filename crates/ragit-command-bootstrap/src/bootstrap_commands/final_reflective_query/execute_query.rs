@@ -9,7 +9,7 @@ pub async fn execute_query(
     index: &Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<(), anyhow::Error> {
     check_memory_limit(sys, max_memory_gb, "Before final reflective query")?;
     let response = ragit_index_query::query(index, FINAL_REFLECTIVE_QUERY_PROMPT, vec![], None).await?;

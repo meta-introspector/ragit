@@ -4,7 +4,7 @@ use sysinfo::System;
 use ragit_index_types::index_struct::Index;
 use super::constants::{PROMPTS_DIR_NAME, SUMMARIZE_PROMPT_FILE_NAME};
 
-use crate::bootstrap_commands::memory_utils::print_memory_usage;
+use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
 
 pub async fn build_index(
     verbose: bool,
@@ -13,7 +13,7 @@ pub async fn build_index(
     max_iterations: Option<usize>,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag build");

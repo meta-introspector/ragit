@@ -16,7 +16,7 @@ pub async fn write_chunks_to_markdown(
     index: &Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Writing chunks to markdown file");

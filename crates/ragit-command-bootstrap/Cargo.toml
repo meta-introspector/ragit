@@ -18,6 +18,8 @@ ragit-index-io = { path = "../ragit-index-io" }
 ragit-index-effects = { path = "../ragit-index-effects" }
 ragit-index-query = { path = "../ragit-index-query" }
 ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }
+ragit-index-storage = { path = "../ragit-index-storage" }
+ragit-tfidf = { path = "../ragit-tfidf" }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [dev-dependencies]

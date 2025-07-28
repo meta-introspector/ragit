@@ -1,7 +1,10 @@
 use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
+use sysinfo::System;
 use super::constants::PROMPTS_DIR_NAME;
+
+use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
 
 pub async fn copy_prompts(
     verbose: bool,
@@ -9,7 +12,7 @@ pub async fn copy_prompts(
     temp_dir: &PathBuf,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Copying prompts");

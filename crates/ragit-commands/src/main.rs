@@ -23,6 +23,10 @@ struct Args {
     /// Max iterations for debugging the build dashboard
     #[arg(long, global = true)]
     max_iterations: Option<usize>,
+
+    /// Maximum memory in GB for the bootstrap process
+    #[arg(long, global = true)]
+    max_memory_gb: Option<u64>,
 }
 
 #[derive(Parser, Debug)]
@@ -41,7 +45,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
-            bootstrap_index_self(args.verbose, args.timeout, args.max_iterations).await?;
+            bootstrap_index_self(args.verbose, args.timeout, args.max_iterations, args.max_memory_gb).await?;
         }
     }
 

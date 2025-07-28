@@ -4,12 +4,14 @@ use ragit_index_types::index_struct::Index;
 use super::final_reflective_query::log_start::log_start;
 use super::final_reflective_query::execute_query::execute_query;
 
+use crate::bootstrap_commands::memory_utils::check_memory_limit;
+
 pub async fn perform_final_reflective_query(
     verbose: bool,
     index: &Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<(), anyhow::Error> {
     log_start(verbose, sys, last_process_memory_kb);
     check_memory_limit(sys, max_memory_gb, "Before execute_query (final reflective query)")?;

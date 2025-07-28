@@ -8,6 +8,8 @@ use super::self_improvement::format_prompt::format_prompt;
 use super::self_improvement::execute_query::execute_query;
 use super::self_improvement::handle_improved_code::handle_improved_code;
 
+use crate::bootstrap_commands::memory_utils::check_memory_limit;
+
 pub async fn perform_self_improvement(
     verbose: bool,
     actual_root_dir: &PathBuf,
@@ -15,7 +17,7 @@ pub async fn perform_self_improvement(
     index: &Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: Option<&mut u64>,
+    last_process_memory_kb: &mut Option<u64>,
 ) -> Result<(), anyhow::Error> {
     log_start(verbose, sys, last_process_memory_kb);
     check_memory_limit(sys, max_memory_gb, "Before get_self_code")?;

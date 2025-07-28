@@ -2,7 +2,7 @@ use anyhow::{anyhow, Result};
 use std::io::{self, Write};
 use sysinfo::{Pid, System};
 
-pub fn print_memory_usage(sys: &mut System, message: &str, last_process_memory_kb: Option<&mut u64>) {
+pub fn print_memory_usage(sys: &mut System, message: &str, last_process_memory_kb: &mut Option<u64>) {
     sys.refresh_memory();
     if let Some(process) = sys.process(Pid::from_u32(std::process::id())) {
         let current_process_memory_kb = process.memory() / 1024;
@@ -21,6 +21,7 @@ pub fn print_memory_usage(sys: &mut System, message: &str, last_process_memory_k
                 "Memory Usage ({}): Total: {} KB, Used: {} KB, Process RSS: {} KB",
                 message, total_memory_kb, used_memory_kb, current_process_memory_kb
             );
+            *last_process_memory_kb = Some(current_process_memory_kb);
         }
     } else {
         println!(

@@ -20,35 +20,35 @@ pub async fn bootstrap_index_self(
     max_memory_gb: Option<u64>,
 ) -> Result<(), anyhow::Error> {
     let mut sys = System::new_all();
-    let mut last_process_memory_kb: u64 = 0;
+    let mut last_process_memory_kb: Option<u64> = None;
 
     if verbose {
         println!("bootstrap_index_self: Starting");
-        print_memory_usage(&mut sys, "Initial", Some(&mut last_process_memory_kb));
+        print_memory_usage(&mut sys, "Initial", &mut last_process_memory_kb);
     }
 
     let bootstrap_task = async move {
         check_memory_limit(&mut sys, max_memory_gb, "Before setup_environment")?;
-        let (actual_root_dir, temp_dir, mut index) = setup_environment(verbose, &mut sys, max_memory_gb, Some(&mut last_process_memory_kb)).await?;
+        let (actual_root_dir, temp_dir, mut index) = setup_environment(verbose, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before copy_prompts")?;
-        copy_prompts(verbose, &actual_root_dir, &temp_dir, &mut sys, max_memory_gb, Some(&mut last_process_memory_kb)).await?;
+        copy_prompts(verbose, &actual_root_dir, &temp_dir, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
         ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(&mut index, &temp_dir.join("prompts"))?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before add_bootstrap_files")?;
-        add_bootstrap_files(verbose, &actual_root_dir, &temp_dir, &mut index, &mut sys, max_memory_gb, Some(&mut last_process_memory_kb)).await?;
+        add_bootstrap_files(verbose, &actual_root_dir, &temp_dir, &mut index, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before build_index")?;
-        build_index(verbose, &temp_dir, &mut index, max_iterations, &mut sys, max_memory_gb, Some(&mut last_process_memory_kb)).await?;
+        build_index(verbose, &temp_dir, &mut index, max_iterations, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before write_chunks_to_markdown")?;
-        write_chunks_to_markdown(verbose, &temp_dir, &index, &mut sys, max_memory_gb, Some(&mut last_process_memory_kb)).await?;
+        write_chunks_to_markdown(verbose, &temp_dir, &index, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before perform_self_improvement")?;
-        perform_self_improvement(verbose, &actual_root_dir, &temp_dir, &index, &mut sys, max_memory_gb, Some(&mut last_process_memory_kb)).await?;
+        perform_self_improvement(verbose, &actual_root_dir, &temp_dir, &index, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before perform_final_reflective_query")?;
-        perform_final_reflective_query(verbose, &index, &mut sys, max_memory_gb, Some(&mut last_process_memory_kb)).await?;
+        perform_final_reflective_query(verbose, &index, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
         Ok(())
     };
