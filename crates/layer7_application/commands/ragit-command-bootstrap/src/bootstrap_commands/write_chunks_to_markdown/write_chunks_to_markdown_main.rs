@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 use sysinfo::System;
 use ragit_index_types::index_struct::Index;
-use crate::bootstrap_commands::constants::CHUNK_PROCESSING_LIMIT;
+
 // use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
 use crate::bootstrap_commands::write_chunks_to_markdown::initialize_markdown_output;
 use crate::bootstrap_commands::write_chunks_to_markdown::process_single_chunk;
