@@ -7,6 +7,7 @@ use ragit_chunk;
 use ragit_index_types::index_get_prompt;
 use anyhow::Context;
 
+
 use ragit_types::uid::Uid;
 use ragit_types::image::Image;
 

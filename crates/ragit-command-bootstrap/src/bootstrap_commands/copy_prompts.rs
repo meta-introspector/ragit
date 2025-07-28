@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use sysinfo::System;
 use super::constants::PROMPTS_DIR_NAME;
 
-use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+
 
 pub async fn copy_prompts(
     verbose: bool,

@@ -94,4 +94,10 @@ pub enum ApiError {
     InvalidRequest,
 }
 
+impl From<anyhow::Error> for ApiError {
+    fn from(err: anyhow::Error) -> Self {
+        ApiError::AnyhowError(Arc::new(err))
+    }
+}
+
 

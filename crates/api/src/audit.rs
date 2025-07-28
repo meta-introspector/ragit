@@ -1,4 +1,5 @@
-use crate::Error;
+use ragit_types::ApiError as Error;
+use crate::error::{map_serde_json_error, map_serde_json_from_str_error};
 use chrono::{DateTime, Datelike, Local, Utc};
 use ragit_fs::{WriteMode, create_dir_all, exists, parent, read_string, write_string};
 use ragit_types::{JsonType, pdl_types::Message};
@@ -149,11 +150,7 @@ fn records_from_json(j: &Value) -> Result<HashMap<String, AuditRecord>, Error> {
 #[derive(Clone)]
 pub struct Tracker(pub HashMap<String, HashMap<String, AuditRecord>>); // user_name -> usage
 
-use std::sync::Arc;
 
-fn map_serde_json_error<T>(result: Result<T, serde_json::Error>) -> Result<T, Error> {
-    result.map_err(|e| Error::JsonSerdeError(Arc::new(e)))
-}
 
 impl Tracker {
     pub fn new() -> Self {
@@ -162,7 +159,7 @@ impl Tracker {
 
     pub fn load_from_file(path: &str) -> Result<Self, Error> {
         let content = read_string(path).map_err(Error::FileError)?;
-        let j: Value = serde_json::from_str(&content).map_err(Error::JsonSerdeError)?;
+        let j: Value = map_serde_json_from_str_error(&content)?;
         Tracker::try_from(&j)
     }
 

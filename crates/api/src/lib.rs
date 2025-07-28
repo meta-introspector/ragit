@@ -15,6 +15,7 @@ pub mod request;
 mod tests;
 
 pub use crate::audit::AuditRecord;
+pub use crate::error::map_serde_json_error;
 pub use crate::message::message_contents_to_json_array;
 
 pub struct FetchResult {
@@ -23,6 +24,7 @@ pub struct FetchResult {
 }
 
 pub use ragit_types::pdl_types::ImageType;
+pub use ragit_types::ApiError as Error;
 pub use ragit_types::JsonType;
 
 pub fn load_models(json_path: &str) -> Result<Vec<Model>, Error> {

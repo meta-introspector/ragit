@@ -3,8 +3,8 @@ use sha3::{Digest, Sha3_256};
 use std::fmt;
 use thiserror::Error;
 use std::str::FromStr;
-//#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-//pub struct Uid(pub String);
+use std::sync::Arc;
+use crate::ApiError;
 
 #[derive(Error, Debug)]
 pub enum UidError {
@@ -31,6 +31,11 @@ fn u128_from_bytes(bytes: &[u8]) -> Result<u128, UidError> {
         16 => Ok(u128::from_be_bytes(bytes.try_into().unwrap())),
         _ => Err(UidError::DecodeError),
     }
+}
+
+pub fn uid_from_hash(hash: &[u8; 32]) -> Result<Uid, ApiError> {
+    let hex_string: String = hash.iter().map(|b| format!("{:02x}", b)).collect();
+    Uid::from_str(&hex_string).map_err(|e| ApiError::UidError(Arc::new(e)))
 }
 
 /// Each chunk, image and file has uid.
@@ -407,8 +412,3 @@ impl From<String> for Uid {
         Uid::from_str(&s).unwrap_or_else(|_| Uid::dummy())
     }
 }
-
-
-
-
-

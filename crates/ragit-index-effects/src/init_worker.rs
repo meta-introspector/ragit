@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 use tokio::sync::mpsc;
-use crate::channel::{Channel, WorkerRequest, WorkerResponse};
+use crate::channel::Channel;
 use crate::run_worker_task::run_worker_task;
 
 pub fn init_worker(root_dir: PathBuf) -> Channel {

@@ -1,4 +1,4 @@
-pub use crate::error::Error;
+pub use ragit_types::api_error::ApiError;
 pub use crate::request::Request;
 pub use ragit_model::{get_model_by_name, Model, ModelRaw, QualityExpectations};
 pub use ragit_model_provider::ModelProvider as ApiProvider;

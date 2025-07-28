@@ -1,5 +1,5 @@
 use crate::index_struct::Index;
-use ragit_types::ApiError;
+use ragit_types::{ApiError, read_dir_to_api_error, read_to_string_to_api_error, map_serde_json_error, map_io_error};
 use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use ragit_api::AuditRecord;
@@ -18,8 +18,8 @@ impl Index {
         if !audit_path.exists() {
             return Ok(result);
         }
-        for entry in std::fs::read_dir(audit_path)? {
-            let entry = entry?;
+        for entry in read_dir_to_api_error(&audit_path)? {
+            let entry = map_io_error(entry)?;
             let path = entry.path();
             if path.is_dir() {
                 continue;
@@ -36,7 +36,7 @@ impl Index {
                     continue;
                 }
             }
-            let audit: AuditRecord = serde_json::from_str(&std::fs::read_to_string(&path)?)?;
+            let audit: AuditRecord = map_serde_json_error(serde_json::from_str(&read_to_string_to_api_error(&path)?))?;
             *result.entry(category).or_default() += audit;
         }
         Ok(result)

@@ -1,6 +1,5 @@
 use crate::prelude::*;
 use ragit_types::ApiError as Error;
-use std::fmt;
 use std::sync::Arc;
 pub trait IntoChatResponse {
     fn into_chat_response(&self) -> Result<Response, Error>;

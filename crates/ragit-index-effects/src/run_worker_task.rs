@@ -3,8 +3,6 @@ use tokio::sync::mpsc;
 use sha3::{Digest, Sha3_256};
 use crate::build_chunks::build_chunks;
 use crate::channel::{WorkerRequest, WorkerResponse};
-use ragit_index_types::index_struct::Index;
-use ragit_index_types::load_mode::LoadMode;
 use ragit_types::ApiError;
 
 pub async fn run_worker_task(

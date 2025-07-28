@@ -1,4 +1,5 @@
 use super::{AtomicToken, BuildConfig, Error, FileReaderImpl};
+use ragit_types::map_anyhow_error;
 use std::collections::VecDeque;
 
 pub struct PlainTextReader {
@@ -29,11 +30,9 @@ impl FileReaderImpl for PlainTextReader {
         use std::io::Read;
         use anyhow::Context;
 
-        let mut file = fs::File::open(&self._path)
-            .context(format!("Failed to open plain text file: {}", self._path))?;
+        let mut file = map_anyhow_error(fs::File::open(&self._path).context(format!("Failed to open plain text file: {}", self._path)))?;
         let mut contents = String::new();
-        file.read_to_string(&mut contents)
-            .context(format!("Failed to read plain text file: {}", self._path))?;
+        map_anyhow_error(file.read_to_string(&mut contents).context(format!("Failed to read plain text file: {}", self._path)))?;
 
         let chunk_size = self._config.chunk_size;
         let mut current_char_index = 0;

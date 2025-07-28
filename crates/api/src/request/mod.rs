@@ -119,7 +119,7 @@ impl Request {
                     return Ok(Response::dummy(response));
                 }
 
-                let body = serde_json::to_string(&body)?;
+                let body = map_serde_json_error(serde_json::to_string(&body))?;
                 let api_key = model.get_api_key()?;
                 write_log(
                     "chat_request::send",
@@ -164,7 +164,7 @@ impl Request {
                         Ok(response) => match response.status().as_u16() {
                             200 => match response.text().await {
                                 Ok(text) => {
-                                    match serde_json::from_str::<Value>(&text) {
+                                    match map_serde_json_error(serde_json::from_str::<Value>(&text)) {
                                         Ok(v) => match Request::dump_json(&v, "response", dump_json_at) {
                                             Err(e) => {
                                                 write_log(
@@ -351,7 +351,7 @@ impl Request {
 
                     match schema.as_ref().unwrap().validate(&response) {
                         Ok(v) => {
-                            return Ok(serde_json::from_value::<T>(v)?);
+                            return Ok(map_serde_json_error(serde_json::from_value::<T>(v))?);
                         }
                         Err(error_message) => {
                             state_messages.push(Message::simple_message(

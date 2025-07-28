@@ -12,8 +12,7 @@ use ragit_types::pdl_types::{
 use ragit_fs::{normalize};
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_types::chunk::chunk_source::ChunkSource;
-use ragit_types::uid::Uid;
-use std::str::FromStr;
+use ragit_types::uid::uid_from_hash;
 use std::collections::HashMap;
 //use ragit_api::Request;
 use ragit_model::Model;
@@ -122,6 +121,7 @@ pub async fn create_chunk_from(
     hasher.update(summary.as_bytes());
     let uid = hasher.finalize();
 
+    let uid_array: [u8; 32] = uid.into();
     Ok(Chunk {
         data,
         images,
@@ -131,7 +131,7 @@ pub async fn create_chunk_from(
         summary,
         file: normalize(&file)?,
         index: file_index,
-        uid: Uid::from_str(&format!("{:064x}", uid))?,
+        uid: uid_from_hash(&uid_array)?,
         build_info,
         timestamp: 0, // Placeholder, needs to be set correctly
         searchable: true, // Placeholder, needs to be set correctly

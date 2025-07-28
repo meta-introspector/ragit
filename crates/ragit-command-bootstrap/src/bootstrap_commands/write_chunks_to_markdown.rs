@@ -7,8 +7,6 @@ use ragit_fs::{write_string, WriteMode};
 use ragit_index_storage;
 use ragit_tfidf;
 use ragit_types::Chunk;
-use ragit_tfidf;
-use ragit_types::Chunk;
 use super::constants::{CHUNK_PROCESSING_LIMIT, CHUNKS_OUTPUT_FILE_NAME};
 use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
 

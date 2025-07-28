@@ -1,4 +1,5 @@
 use super::{AtomicToken, BuildConfig, Error, FileReaderImpl};
+use ragit_types::map_anyhow_error;
 use std::collections::VecDeque;
 
 pub struct MarkdownReader {
@@ -30,11 +31,9 @@ impl FileReaderImpl for MarkdownReader {
         use std::io::Read;
         use anyhow::Context;
 
-        let mut file = fs::File::open(&self._path)
-            .context(format!("Failed to open markdown file: {}", self._path))?;
+        let mut file = map_anyhow_error(fs::File::open(&self._path).context(format!("Failed to open markdown file: {}", self._path)))?;
         let mut contents = String::new();
-        file.read_to_string(&mut contents)
-            .context(format!("Failed to read markdown file: {}", self._path))?;
+        map_anyhow_error(file.read_to_string(&mut contents).context(format!("Failed to read markdown file: {}", self._path)))?;
 
         // For now, just add the whole content as a single token
         self._tokens.push_back(AtomicToken::String {

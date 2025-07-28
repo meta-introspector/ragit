@@ -34,3 +34,5 @@ pub mod build_config;
 pub mod query_config;
 pub mod query_turn;
 pub use query_turn::{QueryTurn, QueryResponse};
+pub mod error_helpers;
+pub use error_helpers::{map_io_error, map_serde_json_error, map_anyhow_error, read_dir_to_api_error, read_to_string_to_api_error};

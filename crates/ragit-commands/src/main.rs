@@ -27,10 +27,6 @@ struct Args {
     /// Maximum memory in GB for the bootstrap process
     #[arg(long, global = true)]
     max_memory_gb: Option<u64>,
-
-    /// Maximum memory in GB for the bootstrap process
-    #[arg(long, global = true)]
-    max_memory_gb: Option<u64>,
 }
 
 #[derive(Parser, Debug)]

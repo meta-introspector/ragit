@@ -1,4 +1,4 @@
-use crate::error::Error;
+use ragit_types::api_error::ApiError as Error;
 use ragit_model::{Model, ModelRaw, QualityExpectations};
 use serde::Deserialize;
 use std::fs;
