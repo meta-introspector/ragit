@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
+sysinfo = "0.30.5"
 serde_json = "1.0"
 ragit-index-core = { path = "../ragit-index-core" }
 ragit-types = { path = "../ragit-types" }
@@ -16,7 +17,8 @@ ragit-index-types = { path = "../ragit-index-types" }
 ragit-index-io = { path = "../ragit-index-io" }
 ragit-index-effects = { path = "../ragit-index-effects" }
 ragit-index-query = { path = "../ragit-index-query" }
+ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [dev-dependencies]
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 tempfile = "3.3.0"

@@ -12,6 +12,10 @@ struct Args {
     /// Enable verbose logging
     #[arg(short, long, global = true)]
     verbose: bool,
+
+    /// Timeout for the bootstrap process in seconds
+    #[arg(long, global = true)]
+    timeout: Option<u64>,
 }
 
 #[derive(Parser, Debug)]
@@ -30,7 +34,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
-            bootstrap_index_self(args.verbose).await?;
+            bootstrap_index_self(args.verbose, args.timeout).await?;
         }
     }
 

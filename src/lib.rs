@@ -1,3 +1,7 @@
+#[cfg(feature = "jemalloc")]
+#[global_allocator]
+static ALLOC: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
 //use serde::{Deserialize, Serialize};
 //use std::collections::HashMap;
 //use std::path::PathBuf;

@@ -119,13 +119,14 @@ strum = { version = "0.26", features = ["derive"] }
 tera = "1.20.0"
 thiserror = "1.0"
 anyhow = "1.0"
+tikv-jemallocator = { version = "0.5", optional = true }
 tokio = { version = "1.43.0", features = ["full"] }
 url = "2.5.4"
 zstd = "0.13.3"
 
 [features]
 # `csv` is small enough and is purely in Rust.
-default = ["csv"]
+default = ["csv", "jemalloc"]
 full = ["csv", "korean"]
 
 csv = ["dep:csv"]
@@ -136,6 +137,8 @@ svg = ["dep:resvg", "dep:png"]
 # This feature only affects `rag version --build-options`.
 # Please make sure to enable this when you build ragit with "production" profile.
 production = []
+jemalloc = ["dep:tikv-jemallocator"]
+
 
 [profile.production]
 inherits = "release"
