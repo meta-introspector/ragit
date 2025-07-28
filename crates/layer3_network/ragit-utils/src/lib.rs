@@ -16,4 +16,5 @@ pub mod uid_helpers;
 pub use uid_helpers::uid_new_file;
 
 pub mod version_info;
+pub mod memory_utils;
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
