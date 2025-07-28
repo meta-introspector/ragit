@@ -307,9 +307,20 @@ pub async fn build_worker(
     }
 
     println!("build_worker: Finishing");
+    check_memory_limit(sys, max_memory_gb, "Before clearing curr_processing_file")?;
+    println!("build_worker: Clearing curr_processing_file");
     index.curr_processing_file = None;
+    println!("build_worker: curr_processing_file cleared");
+
+    check_memory_limit(sys, max_memory_gb, "Before saving index state (final)")?;
+    println!("build_worker: Saving index state (final)");
     index_save_to_file(index, index.root_dir.join(INDEX_FILE_NAME).into())?;
+    println!("build_worker: Index state saved (final)");
+
+    check_memory_limit(sys, max_memory_gb, "Before calculating and saving UID")?;
+    println!("build_worker: Calculating and saving UID");
     index_calculate_and_save_uid(index)?;
+    println!("build_worker: UID calculated and saved");
 
     // 1. If there's an error, the knowledge-base is incomplete. We should not create a summary.
     // 2. If there's no success and no error and we already have a summary, then
@@ -317,13 +328,17 @@ pub async fn build_worker(
     // 3. If there's no success and no error but we don't have a summary yet, we have to create one
     //    because a successful `rag build` must create a summary.
     if index.build_config.summary_after_build && index.get_summary().is_none() && errors.is_empty() {
+        check_memory_limit(sys, max_memory_gb, "Before creating summary")?;
         if !quiet {
-            println!("Creating a summary of the knowledge-base...");
+            println!("build_worker: Creating a summary of the knowledge-base...");
         }
 
         index.get_summary();
+        println!("build_worker: Summary created");
     }
 
+    check_memory_limit(sys, max_memory_gb, "Before returning BuildResult")?;
+    println!("build_worker: Returning BuildResult");
     Ok(BuildResult {
         success,
         errors,
