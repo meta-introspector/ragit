@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
-use crate::fixed_types::fixed_string::FixedString;
+use crate::fixed_types::fixed_string_struct::FixedString;
 use crate::fixed_types::fixed_vec::FixedVec;
 
 // Define constants for FixedHashMap sizes

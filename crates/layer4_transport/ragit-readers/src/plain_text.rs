@@ -1,59 +1,61 @@
 use super::{AtomicToken, BuildConfig, Error, FileReaderImpl};
 use ragit_types::map_anyhow_error;
 use std::collections::VecDeque;
+use std::io::{BufReader, Read};
+use std::fs::File;
+use anyhow::Context;
 
 pub struct PlainTextReader {
-    _path: String,
+    path: String,
     _root_dir: String,
-    _config: BuildConfig,
-    _tokens: VecDeque<AtomicToken>,
+    config: BuildConfig,
+    tokens: VecDeque<AtomicToken>,
+    file: Option<BufReader<File>>,
+    file_size: u64,
+    bytes_read: u64,
 }
 
 impl FileReaderImpl for PlainTextReader {
     fn new(path: &str, root_dir: &str, config: &BuildConfig) -> Result<Self, Error> {
-        let mut reader = PlainTextReader {
-            _path: path.to_string(),
+        let file = map_anyhow_error(File::open(path).context(format!("Failed to open plain text file: {}", path)))?;
+        let file_size = map_anyhow_error(file.metadata().context("Failed to get file metadata"))?.len();
+        let reader = PlainTextReader {
+            path: path.to_string(),
             _root_dir: root_dir.to_string(),
-            _config: config.clone(),
-            _tokens: VecDeque::new(),
+            config: config.clone(),
+            tokens: VecDeque::new(),
+            file: Some(BufReader::new(file)),
+            file_size,
+            bytes_read: 0,
         };
-        reader.load_tokens()?;
         Ok(reader)
     }
 
     fn pop_all_tokens(&mut self) -> Result<Vec<AtomicToken>, Error> {
-        Ok(self._tokens.drain(..).collect())
+        Ok(self.tokens.drain(..).collect())
     }
 
     fn load_tokens(&mut self) -> Result<(), Error> {
-        use std::fs;
-        use std::io::Read;
-        use anyhow::Context;
+        let mut file = self.file.take().context("File not available")?;
+        let chunk_size_bytes = self.config.chunk_size * 4; // Approximate bytes for UTF-8 chars
+        let mut buffer = vec![0; chunk_size_bytes];
 
-        let mut file = map_anyhow_error(fs::File::open(&self._path).context(format!("Failed to open plain text file: {}", self._path)))?;
-        let mut contents = String::new();
-        map_anyhow_error(file.read_to_string(&mut contents).context(format!("Failed to read plain text file: {}", self._path)))?;
+        let bytes_read_this_call = map_anyhow_error(file.read(&mut buffer).context("Failed to read from file"))?;
+        self.bytes_read += bytes_read_this_call as u64;
 
-        let chunk_size = self._config.chunk_size;
-        let mut current_char_index = 0;
-        let chars: Vec<char> = contents.chars().collect();
-
-        while current_char_index < chars.len() {
-            let end_index = (current_char_index + chunk_size).min(chars.len());
-            let chunk_chars = &chars[current_char_index..end_index];
-            let chunk_string: String = chunk_chars.iter().collect();
-
-            self._tokens.push_back(AtomicToken::String {
-                data: chunk_string.clone(),
-                char_len: chunk_string.chars().count(),
+        if bytes_read_this_call > 0 {
+            let content = String::from_utf8_lossy(&buffer[..bytes_read_this_call]).to_string();
+            self.tokens.push_back(AtomicToken::String {
+                data: content.clone(),
+                char_len: content.chars().count(),
             });
-            current_char_index = end_index;
         }
+        self.file = Some(file);
         Ok(())
     }
 
     fn has_more_to_read(&self) -> bool {
-        !self._tokens.is_empty()
+        !self.tokens.is_empty() || self.bytes_read < self.file_size
     }
 
     fn key(&self) -> String {

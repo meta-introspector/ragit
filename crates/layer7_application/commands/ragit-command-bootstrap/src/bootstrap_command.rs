@@ -4,7 +4,7 @@ use sysinfo::System;
 use tokio::time::timeout;
 
 use crate::bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
-use crate::bootstrap_commands::build_index::build_index;
+use crate::bootstrap_commands::build_index_logic::main_build_index::build_index;
 use crate::bootstrap_commands::copy_prompts::copy_prompts;
 use crate::bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
 use crate::bootstrap_commands::perform_self_improvement::perform_self_improvement;
@@ -26,10 +26,11 @@ pub async fn bootstrap_index_self(
     disable_index_build: bool,
     disable_self_improvement: bool,
     disable_final_query: bool,
+    disable_cleanup: bool,
 ) -> Result<(), anyhow::Error> {
     let max_iterations = max_iterations.or(Some(1));
     let max_files_to_process = max_files_to_process.or(Some(1));
-    let disable_write_markdown = disable_write_markdown || true; // Ensure it's true if not explicitly false
+    let disable_write_markdown = disable_write_markdown;
     let max_memory_gb = max_memory_gb.or(Some(1));
     let mut sys = System::new_all();
     let mut last_process_memory_kb: Option<u64> = None;
@@ -67,7 +68,7 @@ pub async fn bootstrap_index_self(
         if !disable_index_build {
             check_memory_limit(&mut sys, max_memory_gb, "Before build_index")?;
             print_process_list(&mut sys, "Before build_index");
-            build_index(verbose, &temp_dir, &mut index, max_iterations, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
+            build_index(verbose, &temp_dir, &actual_root_dir, &mut index, max_iterations, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
         }
 
         if !disable_write_markdown {

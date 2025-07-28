@@ -24,6 +24,7 @@ impl Index {
             api_config: ApiConfig::default(),
             prompts: HashMap::new(),
             models: vec![],
+            chunks: Vec::new(),
         }
     }
 

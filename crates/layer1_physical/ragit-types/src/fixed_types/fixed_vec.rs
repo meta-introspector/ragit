@@ -1,11 +1,6 @@
-use serde::de::SeqAccess;
 use std::ops::Deref;
 use std::ops::DerefMut;
-use serde::Deserialize;
-use serde::Deserializer;
-use serde::de::Visitor;
 use std::fmt;
-use serde::de;
 #[derive(Clone, Debug, PartialEq)]
 pub struct FixedVec<T, const N: usize> {
     data: [T; N],
@@ -91,7 +86,7 @@ impl<T: Default + Clone, const N: usize> DerefMut for FixedVec<T, N> {
 }
 
 use serde::ser::{Serialize, Serializer};
-use serde::de::{self, Deserialize, Deserializer, Visitor, SeqAccess};
+use serde::de::{Deserialize, Deserializer, Visitor, SeqAccess};
 use std::marker::PhantomData;
 
 impl<T, const N: usize> Serialize for FixedVec<T, N>

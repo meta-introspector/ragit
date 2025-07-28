@@ -4,7 +4,7 @@ use crate::chunk::chunk_source::ChunkSource;
 use crate::processed_doc::ProcessedDoc;
 use crate::uid::Uid;
 
-use crate::fixed_types::fixed_string::FixedString;
+use crate::fixed_types::fixed_string_struct::FixedString;
 use crate::fixed_types::fixed_vec::FixedVec;
 
 // Constants for FixedChunkBuildInfo string sizes
@@ -54,9 +54,9 @@ const CHUNK_DATA_SIZE: usize = 2048; // 25 lines * 80 chars + buffer
 const CHUNK_IMAGES_CAPACITY: usize = 16;
 const CHUNK_TITLE_SIZE: usize = 256;
 const CHUNK_SUMMARY_SIZE: usize = 256;
-const CHUNK_MUSE_SUMMARY_KEY_SIZE: usize = 128;
-const CHUNK_MUSE_SUMMARY_VALUE_SIZE: usize = 128;
-const CHUNK_MUSE_SUMMARY_CAPACITY: usize = 8;
+// const CHUNK_MUSE_SUMMARY_KEY_SIZE: usize = 128;
+// const CHUNK_MUSE_SUMMARY_VALUE_SIZE: usize = 128;
+// const CHUNK_MUSE_SUMMARY_CAPACITY: usize = 8;
 const CHUNK_FILE_SIZE: usize = 512;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -67,7 +67,7 @@ pub struct FixedChunk {
     pub image_count: usize,
     pub title: FixedString<CHUNK_TITLE_SIZE>,
     pub summary: FixedString<CHUNK_SUMMARY_SIZE>,
-    // pub muse_summaries: FixedHashMap<CHUNK_MUSE_SUMMARY_KEY_SIZE, CHUNK_MUSE_SUMMARY_VALUE_SIZE, CHUNK_MUSE_SUMMARY_CAPACITY>,
+    
     pub file: FixedString<CHUNK_FILE_SIZE>,
     pub index: usize,
     pub source: ChunkSource,
@@ -111,7 +111,7 @@ impl From<crate::chunk::chunk_struct::Chunk> for FixedChunk {
             image_count: chunk.image_count,
             title: chunk.title.into(),
             summary: chunk.summary.into(),
-            muse_summaries: chunk.muse_summaries.into(),
+            //            muse_summaries: chunk.muse_summaries.into(),
             file: chunk.file.into(),
             index: chunk.index,
             source: chunk.source,

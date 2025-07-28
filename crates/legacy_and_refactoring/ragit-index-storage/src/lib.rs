@@ -38,8 +38,8 @@ pub fn get_files_from_index_subdir(
     Ok(result)
 }
 
-pub fn get_all_chunk_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>, ApiError> {
-    get_files_from_index_subdir(root_dir, CHUNK_DIR_NAME, Some("chunk"))
+pub fn get_all_chunk_files(index: &Index) -> Result<Vec<FixedChunk>, ApiError> {
+    Ok(index.chunks.clone())
 }
 
 pub fn get_all_tfidf_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>, ApiError> {

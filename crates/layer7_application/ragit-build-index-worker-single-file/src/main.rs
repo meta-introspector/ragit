@@ -14,7 +14,10 @@ use bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_
 use memory_profiler::{MemorySnapshot, capture_memory_snapshot, print_memory_table};
 
 fn main() -> Result<()> {
-    let _args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().collect();
+    let disable_cleanup = args.contains(&"--disable-cleanup".to_string());
+    let args: Vec<String> = env::args().collect();
+    let disable_cleanup = args.contains(&"--disable-cleanup".to_string());
 
     let mut sys = System::new_all();
     let mut last_process_memory_kb: Option<u64> = None;
@@ -80,8 +83,12 @@ fn main() -> Result<()> {
     capture_memory_snapshot(AFTER_BUILD_INDEX, &mut sys, &mut last_process_memory_kb, &mut memory_snapshots);
 
     // Clean up the temporary directory
-    fs::remove_dir_all(&temp_dir)?;
-    println!("{}{:?}", CLEANUP_TEMP_DIR, temp_dir);
+    if !disable_cleanup {
+        fs::remove_dir_all(&temp_dir)?;
+        println!("{}{:?}", CLEANUP_TEMP_DIR, temp_dir);
+    } else if true { // verbose
+        println!("bootstrap_index_self: Skipping cleanup of temporary directory as requested.");
+    }
 
     // Print memory usage table
     println!("{}", MEMORY_USAGE_SUMMARY_HEADER);

@@ -5,7 +5,7 @@ use ragit_types::uid::Uid;
 use ragit_types::ii_status::IIStatus;
 use ragit_types::summary::Summary;
 use ragit_types::build_config::BuildConfig;
-use ragit_types::chunk::ChunkSource;
+
 use ragit_types::chunk::chunk_trait::ChunkLike;
 
 //use ragit_model::Model;
@@ -57,6 +57,7 @@ pub struct Index {
     pub prompts: HashMap<String, String>,
     #[serde(skip)]
     pub models: Vec<ragit_model::Model>,
+    pub chunks: Vec<ragit_types::fixed_types::fixed_chunk_struct::FixedChunk>,
 }
 
 impl Index {
@@ -77,12 +78,12 @@ impl Index {
             api_config: ApiConfig::default(),
             prompts: HashMap::new(),
             models: Vec::new(),
+            chunks: Vec::new(),
         }
     }
 
-    pub fn add_chunk<T: ChunkLike>(&mut self, _chunk: T) {
+    pub fn add_chunk(&mut self, chunk: ragit_types::fixed_types::fixed_chunk_struct::FixedChunk) {
         self.chunk_count += 1;
-        // In a later phase, this will involve storing the chunk data
-        // and potentially updating other index structures.
+        self.chunks.push(chunk);
     }
 }

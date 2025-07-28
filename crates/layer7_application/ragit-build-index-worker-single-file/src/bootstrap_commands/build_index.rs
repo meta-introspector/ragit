@@ -5,7 +5,7 @@ use ragit_index_types::index_struct::Index;
 use super::constants::{PROMPTS_DIR_NAME, SUMMARIZE_PROMPT_FILE_NAME};
 use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
 use ragit_types::build_config::BuildConfig;
-use super::process_staged_file::process_staged_file;
+use super::process_staged_file_logic::main_process_staged_file::process_staged_file;
 
 pub fn build_index(
     verbose: bool,

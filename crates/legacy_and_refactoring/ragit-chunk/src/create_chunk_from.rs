@@ -13,7 +13,7 @@ use ragit_fs::{normalize};
 use ragit_types::chunk::chunk_struct::Chunk;
 use ragit_types::chunk::chunk_source::ChunkSource;
 use ragit_types::uid::uid_from_hash;
-use std::collections::HashMap;
+
 //use ragit_api::Request;
 use ragit_model::Model;
 //use ragit_pdl::{Pdl, parse_pdl};
@@ -135,7 +135,7 @@ pub async fn create_chunk_from(
         build_info,
         timestamp: 0, // Placeholder, needs to be set correctly
         searchable: true, // Placeholder, needs to be set correctly
-        muse_summaries: HashMap::new(), // Placeholder
+        
         source: ChunkSource::default(), // Placeholder
     })
 }
