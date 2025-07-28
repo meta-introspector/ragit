@@ -69,6 +69,7 @@ fn main() -> Result<()> {
     build_index(
         true, // verbose
         &temp_dir,
+        &actual_root_dir,
         &mut index, // index is not mutable anymore
         None, // max_iterations
         &mut sys,

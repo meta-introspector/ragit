@@ -3,12 +3,14 @@ use std::path::PathBuf;
 use sysinfo::System;
 use ragit_index_types::index_struct::Index;
 use super::constants::{PROMPTS_DIR_NAME, SUMMARIZE_PROMPT_FILE_NAME};
-
 use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
+use ragit_types::build_config::BuildConfig;
+use super::process_staged_file::process_staged_file;
 
 pub fn build_index(
     verbose: bool,
     temp_dir: &PathBuf,
+    actual_root_dir: &PathBuf,
     index: &mut Index,
     _max_iterations: Option<usize>,
     sys: &mut System,
@@ -31,16 +33,20 @@ pub fn build_index(
         }
     }
 
-    // Placeholder for actual index building logic
+    let build_config = BuildConfig::default();
+
     if verbose {
-        println!("bootstrap_index_self: Iterating through staged files (placeholder for build logic)");
+        println!("bootstrap_index_self: Iterating through staged files for chunking and indexing.");
     }
-    for file_path in &index.staged_files {
-        if verbose {
-            println!("bootstrap_index_self: Processing staged file: {:?}", file_path);
-        }
-        // Simulate some work or memory allocation if needed for profiling
-        // For now, just iterating.
+    let staged_files_cloned = index.staged_files.clone();
+    for file_path_buf in &staged_files_cloned {
+        process_staged_file(
+            verbose,
+            file_path_buf,
+            actual_root_dir,
+            &build_config,
+            index,
+        )?;
     }
 
     if verbose {
