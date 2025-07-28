@@ -14,6 +14,7 @@ cargo run --package ragit-commands -- bootstrap
 *   `--verbose`: Enables verbose output, which is useful for debugging.
 *   `--timeout <SECONDS>`: Sets a timeout for the bootstrap operation.
 *   `--max-iterations <NUMBER>`:  Exits gracefully after a certain number of iterations. This is primarily for debugging.
+*   `--max-memory-gb <NUMBER>`: Sets a maximum memory limit in gigabytes for the bootstrap operation.
 
 ## Workflow
 

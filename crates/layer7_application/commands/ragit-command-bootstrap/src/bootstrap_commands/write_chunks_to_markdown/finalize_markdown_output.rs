@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use sysinfo::System;
 use ragit_fs::{write_string, WriteMode};
 use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
-use super::constants::CHUNKS_OUTPUT_FILE_NAME;
+use crate::bootstrap_commands::constants::CHUNKS_OUTPUT_FILE_NAME;
 
 pub async fn finalize_markdown_output(
     verbose: bool,

@@ -9,7 +9,7 @@ use crate::bootstrap_commands::copy_prompts::copy_prompts;
 use crate::bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
 use crate::bootstrap_commands::perform_self_improvement::perform_self_improvement;
 use crate::bootstrap_commands::setup_environment::setup_environment;
-use crate::bootstrap_commands::write_chunks_to_markdown::write_chunks_to_markdown;
+use crate::bootstrap_commands::write_chunks_to_markdown::write_chunks_to_markdown_main::write_chunks_to_markdown;
 use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
 
 pub async fn bootstrap_index_self(
@@ -41,7 +41,7 @@ pub async fn bootstrap_index_self(
         build_index(verbose, &temp_dir, &mut index, max_iterations, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before write_chunks_to_markdown")?;
-        write_chunks_to_markdown(verbose, &temp_dir, &index, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;
+        write_chunks_to_markdown(verbose, &temp_dir, &index, &mut sys, max_memory_gb, &mut last_process_memory_kb, max_iterations).await?;
 
         check_memory_limit(&mut sys, max_memory_gb, "Before perform_self_improvement")?;
         perform_self_improvement(verbose, &actual_root_dir, &temp_dir, &index, &mut sys, max_memory_gb, &mut last_process_memory_kb).await?;

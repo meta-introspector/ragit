@@ -2,9 +2,11 @@ use anyhow::Result;
 use std::path::PathBuf;
 use sysinfo::System;
 use ragit_index_types::index_struct::Index;
-use super::constants::CHUNK_PROCESSING_LIMIT;
-use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
-use crate::bootstrap_commands::write_chunks_to_markdown::{initialize_markdown_output, process_single_chunk, finalize_markdown_output};
+use crate::bootstrap_commands::constants::CHUNK_PROCESSING_LIMIT;
+// use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+use crate::bootstrap_commands::write_chunks_to_markdown::initialize_markdown_output;
+use crate::bootstrap_commands::write_chunks_to_markdown::process_single_chunk;
+use crate::bootstrap_commands::write_chunks_to_markdown::finalize_markdown_output;
 
 pub async fn write_chunks_to_markdown(
     verbose: bool,
@@ -13,6 +15,7 @@ pub async fn write_chunks_to_markdown(
     sys: &mut System,
     max_memory_gb: Option<u64>,
     last_process_memory_kb: &mut Option<u64>,
+    max_iterations: Option<usize>,
 ) -> Result<(), anyhow::Error> {
     let mut initialize_call_count = 0;
     let mut process_call_count = 0;
@@ -31,9 +34,11 @@ pub async fn write_chunks_to_markdown(
     };
 
     for chunk_path in all_chunk_files {
-        if processed_chunks_count >= CHUNK_PROCESSING_LIMIT { // Stop after CHUNK_PROCESSING_LIMIT chunks
-            println!("bootstrap_index_self: Stopping chunk processing after {} chunks.", CHUNK_PROCESSING_LIMIT);
-            break;
+        if let Some(max_iter) = max_iterations {
+            if processed_chunks_count >= max_iter {
+                println!("bootstrap_index_self: Stopping chunk processing after {} chunks due to max_iterations limit.", max_iter);
+                break;
+            }
         }
 
         process_call_count += 1;
