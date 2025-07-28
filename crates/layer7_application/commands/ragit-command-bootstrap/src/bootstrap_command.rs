@@ -10,7 +10,7 @@ use crate::bootstrap_commands::perform_final_reflective_query::perform_final_ref
 use crate::bootstrap_commands::perform_self_improvement::perform_self_improvement;
 use crate::bootstrap_commands::setup_environment::setup_environment;
 use crate::bootstrap_commands::write_chunks_to_markdown::write_chunks_to_markdown_main::write_chunks_to_markdown;
-use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
 
 pub async fn bootstrap_index_self(
     verbose: bool,

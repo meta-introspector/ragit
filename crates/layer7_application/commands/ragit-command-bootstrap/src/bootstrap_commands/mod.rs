@@ -6,6 +6,6 @@ pub mod write_chunks_to_markdown;
 pub mod perform_self_improvement;
 pub mod perform_final_reflective_query;
 pub mod constants;
-pub mod memory_utils;
+
 pub mod self_improvement;
 pub mod final_reflective_query;
