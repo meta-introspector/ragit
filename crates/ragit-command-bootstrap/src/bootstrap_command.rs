@@ -48,6 +48,7 @@ pub async fn bootstrap_index_self(
         let (actual_root_dir, temp_dir, mut index) = setup_environment(verbose, &mut sys).await?;
 
         copy_prompts(&actual_root_dir, &temp_dir, verbose).await?;
+        ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(&mut index, &temp_dir.join("prompts"))?;
 
         add_bootstrap_files(verbose, &actual_root_dir, &temp_dir, &mut index, &mut sys).await?;
 

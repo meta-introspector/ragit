@@ -28,6 +28,8 @@ pub mod api_config_get_api_usage;
 pub use api_config_get_api_usage::index_api_config_get_api_usage;
 pub mod set_config_by_key;
 pub use set_config_by_key::index_set_config_by_key;
+pub mod load_prompts;
+pub use load_prompts::load_prompts_from_directory;
 
 pub mod audit;
 pub mod build;
