@@ -7,6 +7,9 @@ use crate::bootstrap_commands::build_index_logic::get_staged_files::get_staged_f
 use text_splitter::TextSplitter;
 use std::fs;
 use ragit_types::build_config::BuildConfig;
+use ragit_types::fixed_types::fixed_chunk_struct::FixedChunk;
+use ragit_types::uid::Uid;
+use ragit_types::chunk::chunk_source::ChunkSource;
 
 pub async fn build_index(
     verbose: bool,
@@ -36,13 +39,20 @@ pub async fn build_index(
     for file_path_buf in &staged_files_cloned {
         let content = fs::read_to_string(file_path_buf)?;
         let chunks = splitter.chunks(&content, build_config.chunk_size);
-        for chunk in chunks {
-            // Here you would typically create a Chunk object and add it to the index.
-            // For now, we'll just print the chunk to simulate the process.
-            if verbose {
-                println!("--- New Chunk ---");
-                println!("{}", chunk);
-            }
+        let file_path_str = file_path_buf.to_string_lossy().to_string();
+        let mut chunk_index = 0;
+        for chunk_data in chunks {
+            let new_chunk = FixedChunk {
+                data: chunk_data.into(),
+                file: file_path_str.clone().into(),
+                index: chunk_index,
+                uid: Uid::new_from_slice(chunk_data.as_bytes()), // Generate UID from chunk data
+                char_len: chunk_data.len(),
+                source: ChunkSource::File { path: file_path_str.clone(), index: chunk_index, page: None },
+                ..FixedChunk::dummy()
+            };
+            index.add_chunk(new_chunk);
+            chunk_index += 1;
         }
     }
 

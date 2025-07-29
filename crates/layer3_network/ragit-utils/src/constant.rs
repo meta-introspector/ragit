@@ -29,3 +29,17 @@ pub const INVALID_IMAGE_UID: &str = "Invalid image UID: {}.";
 pub const IMAGE_DESCRIPTION_MISSING: &str = "{} exists, but {} does not exist.";
 pub const CONFIG_KEY_CONFLICT: &str = "Key conflict in config file '{}': '{}'.";
 pub const UID_MISMATCH: &str = "self.uid is {}, but the calculated uid is {}.";
+
+// Memory Usage Constants
+pub const MEMORY_USAGE_FORMAT: &str = r"Memory Usage ({})\: System Total\: {}, System Used\: {}, Process RSS\: {} (Delta\: {})";
+pub const MEMORY_USAGE_NO_PROCESS_FORMAT: &str = r"Memory Usage ({})\: System Total\: {}, System Used\: {}";
+pub const DETAILED_MEMORY_USAGE_FORMAT: &str = r"  Process Physical\: {:.2} MB, Process Virtual\: {:.2} MB";
+pub const DETAILED_MEMORY_USAGE_NOT_AVAILABLE: &str = r"Detailed Memory Usage ({})\: Not available";
+pub const MEMORY_LIMIT_EXCEEDED_FORMAT: &str = r"Memory limit exceeded at {}\: Process RSS {} KB > Limit {} KB ({} GB)";
+pub const PROCESS_LIST_HEADER: &str = "--- Process List ({}) ---";
+pub const PROCESS_INFO_FORMAT: &str = r"PID\: {}, Name\: {}, CPU\: {}%, Memory\: {} KB";
+pub const PROCESS_LIST_SEPARATOR: &str = "------------------------";
+pub const PROCESS_SUMMARY_HEADER: &str = "\n--- Process Memory Summary ({}) ---";
+pub const PROCESS_SUMMARY_TABLE_HEADER: &str = "{:<20} {:>15}";
+pub const PROCESS_SUMMARY_TABLE_SEPARATOR: &str = "{:-<20} {:-<15}";
+pub const PROCESS_SUMMARY_TABLE_FOOTER: &str = "-------------------------------------";
