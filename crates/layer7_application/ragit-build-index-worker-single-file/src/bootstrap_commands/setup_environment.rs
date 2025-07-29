@@ -12,7 +12,7 @@ use ragit_memory_monitor::MemoryMonitor;
 
 pub fn setup_environment(
     verbose: bool,
-    max_memory_gb: Option<u64>,
+    _max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
 ) -> Result<(PathBuf, PathBuf, Index), anyhow::Error> {
     let actual_root_dir = ragit_utils::project_root::find_root()?;

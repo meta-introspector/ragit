@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
 use super::constants::PROMPTS_DIR_NAME;
-use crate::memory_profiler::memory_monitor::MemoryMonitor;
+use ragit_memory_monitor::MemoryMonitor;
 
 pub fn copy_prompts(
     verbose: bool,
