@@ -38,7 +38,7 @@ pub fn copy_prompts(
         check_memory_limit(sys, max_memory_gb, &format!("During copy_prompts loop for {:?}", path))?;
     }
     if verbose {
-        print_memory_usage(sys, "After copy_prompts", last_process_memory_kb);
+        print_memory_usage(sys, "After copy_prompts", last_snapshot_data);
     }
     Ok(())
 }
