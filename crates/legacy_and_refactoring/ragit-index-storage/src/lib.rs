@@ -3,6 +3,8 @@ use ragit_utils::constant::{CHUNK_DIR_NAME, FILE_INDEX_DIR_NAME, IMAGE_DIR_NAME,
 use ragit_types::ApiError;
 use ragit_utils::ragit_path_utils::join3_paths;
 use ragit_fs::{extension, is_dir, read_dir};
+use ragit_index_types::index_struct::Index;
+use ragit_types::fixed_types::fixed_chunk_struct::FixedChunk;
 
 pub fn get_files_from_index_subdir(
     root_dir: &PathBuf,

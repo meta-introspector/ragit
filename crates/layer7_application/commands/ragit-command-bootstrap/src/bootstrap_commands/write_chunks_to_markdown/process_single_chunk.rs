@@ -40,7 +40,7 @@ pub async fn process_single_chunk(
     if verbose { println!("bootstrap_index_self: Appended Source: {:?}", chunk.source); }
 
     writeln!(markdown_output, "Code Block: {}", chunk.data)?;
-    if verbose { println!("bootstrap_index_self: Appended Code Block (length: {}): {}", chunk.data.len(), &chunk.data[..std::cmp::min(chunk.data.len(), 50)]); }
+    if verbose { println!("bootstrap_index_self: Appended Code Block (length: {}): {}", chunk.data.len(), &chunk.data.as_str()[..std::cmp::min(chunk.data.len(), 50)]); }
 
     if verbose {
         print_memory_usage(sys, &format!("After appending chunk (chunk {}) (Call: {})", processed_chunks_count + 1, call_count), last_process_memory_kb);

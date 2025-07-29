@@ -21,6 +21,7 @@ ragit-utils = { path = "../../../layer3_network/ragit-utils" }
 serde_json = "1.0"
 sysinfo = "0.30.5"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+text-splitter = "0.3"
 
 [dev-dependencies]
 tempfile = "3.3.0"

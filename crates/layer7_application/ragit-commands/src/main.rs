@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
+use std::process::Command;
 
 // #[global_allocator]
 // static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
@@ -59,12 +60,18 @@ struct Args {
     /// Disable final reflective query
     #[arg(long, global = true)]
     disable_final_query: bool,
+
+    /// Disable cleanup of temporary directory
+    #[arg(long, global = true)]
+    disable_cleanup: bool,
 }
 
 #[derive(Parser, Debug)]
 enum Commands {
     /// Run the bootstrap process
     Bootstrap,
+    /// Run the new bootstrap process (fixed-size chunking)
+    BootstrapNew,
 }
 
 #[tokio::main]
@@ -90,7 +97,60 @@ async fn main() -> Result<()> {
                 args.disable_index_build,
                 args.disable_self_improvement,
                 args.disable_final_query,
+                args.disable_cleanup,
             ).await?;
+        },
+        Commands::BootstrapNew => {
+            let mut cmd = Command::new("cargo");
+            cmd.arg("run");
+            cmd.arg("--package");
+            cmd.arg("ragit-build-index-worker-single-file");
+            cmd.arg("--"); // Pass arguments to the binary
+
+            if args.verbose {
+                cmd.arg("--verbose");
+            }
+            if let Some(timeout) = args.timeout {
+                cmd.arg("--timeout").arg(timeout.to_string());
+            }
+            if let Some(max_iterations) = args.max_iterations {
+                cmd.arg("--max-iterations").arg(max_iterations.to_string());
+            }
+            if let Some(max_memory_gb) = args.max_memory_gb {
+                cmd.arg("--max-memory-gb").arg(max_memory_gb.to_string());
+            }
+            if let Some(max_files_to_process) = args.max_files_to_process {
+                cmd.arg("--max-files-to-process").arg(max_files_to_process.to_string());
+            }
+            if args.disable_write_markdown {
+                cmd.arg("--disable-write-markdown");
+            }
+            if args.disable_memory_config {
+                cmd.arg("--disable-memory-config");
+            }
+            if args.disable_prompt_copy {
+                cmd.arg("--disable-prompt-copy");
+            }
+            if args.disable_file_add {
+                cmd.arg("--disable-file-add");
+            }
+            if args.disable_index_build {
+                cmd.arg("--disable-index-build");
+            }
+            if args.disable_self_improvement {
+                cmd.arg("--disable-self-improvement");
+            }
+            if args.disable_final_query {
+                cmd.arg("--disable-final-query");
+            }
+            if args.disable_cleanup {
+                cmd.arg("--disable-cleanup");
+            }
+
+            let status = cmd.status()?;
+            if !status.success() {
+                anyhow::bail!("ragit-build-index-worker-single-file failed with status: {}", status);
+            }
         }
     }
 

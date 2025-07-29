@@ -17,3 +17,4 @@ ragit-index-effects = { path = "../../legacy_and_refactoring/ragit-index-effects
 ragit-readers = { path = "../../layer4_transport/ragit-readers" }
 chrono = "0.4"
 serde_json = "1.0"
+text-splitter = "0.3"

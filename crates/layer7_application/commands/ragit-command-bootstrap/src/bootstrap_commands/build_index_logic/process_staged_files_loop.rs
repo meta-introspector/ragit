@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use sysinfo::System;
 use ragit_index_types::index_struct::Index;
 use ragit_types::build_config::BuildConfig;
-use crate::bootstrap_commands::process_staged_file_logic::main_process_staged_file::process_staged_file;
+// use crate::bootstrap_commands::process_staged_file_logic::main_process_staged_file::process_staged_file;
 
 pub fn process_staged_files_loop(
     verbose: bool,
@@ -16,13 +16,13 @@ pub fn process_staged_files_loop(
     }
 
     for file_path_buf in staged_files {
-        process_staged_file(
-            verbose,
-            &file_path_buf,
-            actual_root_dir,
-            &index.build_config,
-            index,
-        )?;
+        // process_staged_file(
+        //     verbose,
+        //     &file_path_buf,
+        //     actual_root_dir,
+        //     &index.build_config,
+        //     index,
+        // )?;
     }
     Ok(())
 }
