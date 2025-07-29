@@ -38,42 +38,42 @@ pub async fn bootstrap_index_self(
     if verbose {
         println!("bootstrap_index_self: Starting");
         memory_monitor.capture_and_log_snapshot("Initial");
-        print_process_list(&mut memory_monitor.sys, "Initial");
+        
     }
 
     let bootstrap_task = async move {
         memory_monitor.check_memory_limit(max_memory_gb, "Before setup_environment")?;
-        print_process_list(&mut memory_monitor.sys, "Before setup_environment");
+        
         let (actual_root_dir, temp_dir, mut index) = setup_environment(verbose, max_memory_gb, &mut memory_monitor).await?;
 
         if !disable_memory_config {
             memory_monitor.check_memory_limit(max_memory_gb, "Before configure_memory_settings")?;
-            print_process_list(&mut memory_monitor.sys, "Before configure_memory_settings");
+            
             configure_memory_settings(verbose, &mut index, max_memory_gb, &mut memory_monitor).await?;
         }
 
         if !disable_prompt_copy {
             memory_monitor.check_memory_limit(max_memory_gb, "Before copy_prompts")?;
-            print_process_list(&mut memory_monitor.sys, "Before copy_prompts");
+            
             copy_prompts(verbose, &actual_root_dir, &temp_dir, max_memory_gb, &mut memory_monitor).await?;
             ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(&mut index, &temp_dir.join("prompts"))?;
         }
 
         if !disable_file_add {
             memory_monitor.check_memory_limit(max_memory_gb, "Before add_bootstrap_files")?;
-            print_process_list(&mut memory_monitor.sys, "Before add_bootstrap_files");
+            
             add_bootstrap_files(verbose, &actual_root_dir, &temp_dir, &mut index, max_memory_gb, &mut memory_monitor, max_files_to_process).await?;
         }
 
         if !disable_index_build {
             memory_monitor.check_memory_limit(max_memory_gb, "Before build_index")?;
-            print_process_list(&mut memory_monitor.sys, "Before build_index");
+            
             build_index(verbose, &temp_dir, &actual_root_dir, &mut index, max_iterations, max_memory_gb, &mut memory_monitor).await?;
         }
 
         if !disable_write_markdown {
             memory_monitor.check_memory_limit(max_memory_gb, "Before write_chunks_to_markdown")?;
-            print_process_list(&mut memory_monitor.sys, "Before write_chunks_to_markdown");
+            
             write_chunks_to_markdown(verbose, &temp_dir, &index, max_memory_gb, &mut memory_monitor, max_iterations).await?;
         } else if verbose {
             println!("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
@@ -81,18 +81,18 @@ pub async fn bootstrap_index_self(
 
         if !disable_self_improvement {
             memory_monitor.check_memory_limit(max_memory_gb, "Before perform_self_improvement")?;
-            print_process_list(&mut memory_monitor.sys, "Before perform_self_improvement");
+            
             perform_self_improvement(verbose, &actual_root_dir, &temp_dir, &index, max_memory_gb, &mut memory_monitor).await?;
         }
 
         if !disable_final_query {
             memory_monitor.check_memory_limit(max_memory_gb, "Before perform_final_reflective_query")?;
-            print_process_list(&mut memory_monitor.sys, "Before perform_final_reflective_query");
+            
             perform_final_reflective_query(verbose, &index, max_memory_gb, &mut memory_monitor).await?;
         }
 
         memory_monitor.check_memory_limit(max_memory_gb, "Before final return")?;
-        print_process_list(&mut memory_monitor.sys, "Final");
+        
         Ok(())
     };
 

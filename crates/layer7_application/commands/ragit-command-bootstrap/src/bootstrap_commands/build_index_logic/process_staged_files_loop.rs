@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 
 use ragit_index_types::index_struct::Index;
-use ragit_types::build_config::BuildConfig;
+
 // use crate::bootstrap_commands::process_staged_file_logic::main_process_staged_file::process_staged_file;
 
 pub fn process_staged_files_loop(

@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 
 use ragit_fs::{write_string, WriteMode};
-use ragit_utils::memory_utils::{check_memory_limit};
+
 use ragit_memory_monitor::MemoryMonitor;
 use crate::bootstrap_commands::constants::CHUNKS_OUTPUT_FILE_NAME;
 

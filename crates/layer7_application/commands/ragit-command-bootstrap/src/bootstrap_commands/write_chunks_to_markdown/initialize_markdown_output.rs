@@ -2,7 +2,7 @@ use anyhow::Result;
 //use std::path::PathBuf;
 
 use ragit_index_types::index_struct::Index;
-use ragit_utils::memory_utils::{check_memory_limit};
+
 use ragit_memory_monitor::MemoryMonitor;
 use ragit_types::fixed_types::fixed_chunk_struct::FixedChunk;
 

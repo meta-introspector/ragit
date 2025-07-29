@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::fmt::Write as FmtWrite;
 
 use ragit_types::fixed_types::fixed_chunk_struct::FixedChunk;
-use ragit_utils::memory_utils::{check_memory_limit};
+
 use ragit_memory_monitor::MemoryMonitor;
 
 pub async fn process_single_chunk(

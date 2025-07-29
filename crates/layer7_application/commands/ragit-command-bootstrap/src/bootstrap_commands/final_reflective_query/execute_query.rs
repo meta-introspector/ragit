@@ -1,7 +1,7 @@
 use anyhow::Result;
 
 use ragit_index_types::index_struct::Index;
-use memory_profiler::memory_monitor::MemoryMonitor;
+use ragit_memory_monitor::MemoryMonitor;
 use super::super::constants::{FINAL_REFLECTIVE_QUERY_PROMPT, LOG_AFTER_FINAL_REFLECTIVE_QUERY};
 
 pub async fn execute_query(

@@ -11,7 +11,7 @@ pub async fn perform_final_reflective_query(
     memory_monitor: &mut MemoryMonitor,
 ) -> Result<(), anyhow::Error> {
     memory_monitor.check_memory_limit(max_memory_gb, "Before execute_query (final reflective query)")?;
-    execute_query(verbose, index, &mut memory_monitor.sys, max_memory_gb, &mut memory_monitor.last_snapshot_data).await?;
+    execute_query(verbose, index, max_memory_gb, memory_monitor).await?;
     memory_monitor.check_memory_limit(max_memory_gb, "After execute_query (final reflective query)")?;
     Ok(())
 }
