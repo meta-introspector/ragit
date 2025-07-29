@@ -24,6 +24,7 @@ serde_json = "1.0"
 ragit-memory-monitor = { path = "../../../layer1_physical/ragit-memory-monitor" }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 text-splitter = "0.3"
+sha3 = "0.10.8"
 
 [dev-dependencies]
 tempfile = "3.3.0"

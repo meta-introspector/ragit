@@ -46,6 +46,7 @@ pub async fn write_chunks_to_markdown(
         process_call_count += 1;
         process_single_chunk::process_single_chunk(
             verbose,
+            temp_dir,
             &chunk,
             &mut markdown_output,
             processed_chunks_count,

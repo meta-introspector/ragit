@@ -1,12 +1,15 @@
 use anyhow::Result;
 use std::fmt::Write as FmtWrite;
+use std::path::PathBuf;
 
 use ragit_types::fixed_types::fixed_chunk_struct::FixedChunk;
 
 use ragit_memory_monitor::MemoryMonitor;
+use crate::bootstrap_commands::write_chunk_object;
 
 pub async fn process_single_chunk(
     verbose: bool,
+    temp_dir: &PathBuf,
     chunk: &FixedChunk,
     markdown_output: &mut String,
     processed_chunks_count: usize,
@@ -21,6 +24,16 @@ pub async fn process_single_chunk(
     }
     memory_monitor.check_memory_limit(max_memory_gb, &format!("Before loading chunk (chunk {}) (Call: {})", processed_chunks_count + 1, call_count))?;
 
+    let chunk_object_path = write_chunk_object::write_chunk_object(
+        verbose,
+        temp_dir,
+        chunk,
+        max_memory_gb,
+        memory_monitor,
+    ).await?;
+
+    let relative_chunk_object_path = chunk_object_path.strip_prefix(temp_dir).unwrap().to_string_lossy().into_owned();
+
     if verbose {
         memory_monitor.capture_and_log_snapshot(&format!("After loading chunk (chunk {}) (Call: {})", processed_chunks_count + 1, call_count));
         println!("bootstrap_index_self: Appending chunk {} to markdown_output (Call: {})", processed_chunks_count + 1, call_count);
@@ -29,6 +42,9 @@ pub async fn process_single_chunk(
 
     writeln!(markdown_output, "Chunk UID: {}", chunk.uid)?;
     if verbose { println!("bootstrap_index_self: Appended UID: {}", chunk.uid); }
+
+    writeln!(markdown_output, "Object Path: {}", relative_chunk_object_path)?;
+    if verbose { println!("bootstrap_index_self: Appended Object Path: {}", relative_chunk_object_path); }
 
     writeln!(markdown_output, "Title: {}", chunk.title)?;
     if verbose { println!("bootstrap_index_self: Appended Title: {}", chunk.title); }
