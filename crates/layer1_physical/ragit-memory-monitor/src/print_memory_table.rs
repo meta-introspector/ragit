@@ -1,10 +1,13 @@
-use crate::memory_profiler::memory_snapshot::MemorySnapshot;
-use crate::memory_profiler::format_bytes::format_bytes;
-use crate::memory_profiler::format_signed_bytes::format_signed_bytes;
-use crate::memory_profiler::table::Table;
-use crate::memory_profiler::column::Column;
-
-
+//use crate::memory_profiler::memory_snapshot::MemorySnapshot;
+//use crate::memory_profiler::format_bytes::format_bytes;
+//use crate::memory_profiler::format_signed_bytes::format_signed_bytes;
+//use crate::memory_profiler::table::Table;
+//use crate::memory_profiler::column::Column;
+use crate::MemorySnapshot;
+use crate::table::Table;
+use crate::column::Column;
+use crate::format_bytes::format_bytes;
+use crate::format_signed_bytes::format_signed_bytes;
 pub fn print_memory_table(snapshots: Vec<MemorySnapshot>) {
     let mut table = Table::new(Vec::new());
 

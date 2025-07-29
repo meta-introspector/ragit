@@ -1,23 +1,23 @@
 use anyhow::Result;
 use std::path::PathBuf;
-use sysinfo::System;
+
 use ragit_fs::{write_string, WriteMode};
-use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
+use ragit_utils::memory_utils::{check_memory_limit};
+use ragit_memory_monitor::MemoryMonitor;
 use crate::bootstrap_commands::constants::CHUNKS_OUTPUT_FILE_NAME;
 
 pub async fn finalize_markdown_output(
     verbose: bool,
     temp_dir: &PathBuf,
     markdown_output: &String,
-    sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_snapshot_data: &mut Option<(u64, u64, u64)>,
+    memory_monitor: &mut MemoryMonitor,
     call_count: usize,
 ) -> Result<(), anyhow::Error> {
     if verbose {
-        ragit_utils::memory_utils::print_memory_usage(sys, &format!("After chunk processing loop (Call: {})", call_count), last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot(&format!("After chunk processing loop (Call: {})", call_count));
     }
-    check_memory_limit(sys, max_memory_gb, &format!("After chunk processing loop (Call: {})", call_count))?;
+    memory_monitor.check_memory_limit(max_memory_gb, &format!("After chunk processing loop (Call: {})", call_count))?;
 
     let chunks_file_path = temp_dir.join(CHUNKS_OUTPUT_FILE_NAME);
     write_string(chunks_file_path.to_str().unwrap(), markdown_output, WriteMode::CreateOrTruncate)?;

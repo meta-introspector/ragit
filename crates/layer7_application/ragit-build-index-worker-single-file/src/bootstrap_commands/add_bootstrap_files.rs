@@ -5,8 +5,7 @@ use ragit_index_types::index_struct::Index;
 use super::file_source::FileSource;
 use super::file_copy_utils;
 use super::constants::BOOTSTRAP_PACKAGE_NAME;
-
-use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
+use crate::memory_profiler::memory_monitor::MemoryMonitor;
 
 // Define AddResult and AddMode locally for synchronous operation
 pub struct AddResult {
@@ -45,9 +44,8 @@ pub fn add_bootstrap_files(
     actual_root_dir: &PathBuf,
     temp_dir: &PathBuf,
     index: &mut Index,
-    sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_snapshot_data: &mut Option<(u64, u64, u64)>,
+    memory_monitor: &mut MemoryMonitor,
     max_files_to_process: Option<usize>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
@@ -81,15 +79,15 @@ pub fn add_bootstrap_files(
     }).collect::<Vec<String>>();
     if verbose {
         println!("bootstrap_index_self: Before add_files_command");
-        print_memory_usage(sys, "Before add_files_command", last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot("Before add_files_command");
     }
-    check_memory_limit(sys, max_memory_gb, "Before add_files_command")?;
+    memory_monitor.check_memory_limit(max_memory_gb, "Before add_files_command")?;
     add_files_sync(index, &relative_temp_files_to_add, None, false)?;
     if verbose {
         println!("bootstrap_index_self: After add_files_command");
         println!("bootstrap_index_self: Added files to index");
-        print_memory_usage(sys, "After add_files_command", last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot("After add_files_command");
     }
-    check_memory_limit(sys, max_memory_gb, "After add_files_command")?;
+    memory_monitor.check_memory_limit(max_memory_gb, "After add_files_command")?;
     Ok(())
 }

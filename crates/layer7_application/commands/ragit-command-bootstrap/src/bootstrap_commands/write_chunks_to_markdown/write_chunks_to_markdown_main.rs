@@ -1,6 +1,6 @@
 use anyhow::Result;
 use std::path::PathBuf;
-use sysinfo::System;
+use ragit_memory_monitor::MemoryMonitor;
 use ragit_index_types::index_struct::Index;
 
 // use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
@@ -12,9 +12,8 @@ pub async fn write_chunks_to_markdown(
     verbose: bool,
     temp_dir: &PathBuf,
     index: &Index,
-    sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_snapshot_data: &mut Option<(u64, u64, u64)>,
+    memory_monitor: &mut MemoryMonitor,
     max_iterations: Option<usize>,
 ) -> Result<(), anyhow::Error> {
     let mut initialize_call_count = 0;
@@ -26,9 +25,8 @@ pub async fn write_chunks_to_markdown(
         initialize_markdown_output::initialize_markdown_output(
             verbose,
             index,
-            sys,
             max_memory_gb,
-            last_snapshot_data,
+            memory_monitor,
             initialize_call_count,
         ).await?
     };
@@ -52,9 +50,8 @@ pub async fn write_chunks_to_markdown(
             &mut markdown_output,
             processed_chunks_count,
             total_chunks,
-            sys,
             max_memory_gb,
-            last_snapshot_data,
+            memory_monitor,
             process_call_count,
         ).await?;
 
@@ -75,9 +72,8 @@ pub async fn write_chunks_to_markdown(
         verbose,
         temp_dir,
         &markdown_output,
-        sys,
         max_memory_gb,
-        last_snapshot_data,
+        memory_monitor,
         finalize_call_count,
     ).await?;
 

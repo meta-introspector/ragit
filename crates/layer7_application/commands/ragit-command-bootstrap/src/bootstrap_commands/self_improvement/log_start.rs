@@ -1,9 +1,8 @@
-use super::super::memory_utils::print_memory_usage;
-use sysinfo::System;
+use ragit_memory_monitor::MemoryMonitor;
 
-pub fn log_start(verbose: bool, sys: &mut System, last_snapshot_data: &mut Option<(u64, u64, u64)>) {
+pub fn log_start(verbose: bool, memory_monitor: &mut MemoryMonitor) {
     if verbose {
         println!("bootstrap_index_self: Running self-improvement query");
-        print_memory_usage(sys, "Before self-improvement query", last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot("Before self-improvement query");
     }
 }

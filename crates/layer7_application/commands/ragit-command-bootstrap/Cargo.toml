@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
+ragit-build-index-worker-single-file = { path = "../../ragit-build-index-worker-single-file" }
 glob = "0.3"
 ragit-command-init = { path = "../ragit-command-init" }
 ragit-fs = { path = "../../../layer2_data_link/fs" }
@@ -19,7 +20,8 @@ ragit-tfidf = { path = "../../../legacy_and_refactoring/ragit-tfidf" }
 ragit-types = { path = "../../../layer1_physical/ragit-types" }
 ragit-utils = { path = "../../../layer3_network/ragit-utils" }
 serde_json = "1.0"
-sysinfo = "0.30.5"
+
+ragit-memory-monitor = { path = "../../../layer1_physical/ragit-memory-monitor" }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 text-splitter = "0.3"
 

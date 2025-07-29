@@ -1,24 +1,21 @@
 use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
-use sysinfo::System;
 use super::constants::PROMPTS_DIR_NAME;
-
-use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
+use crate::memory_profiler::memory_monitor::MemoryMonitor;
 
 pub fn copy_prompts(
     verbose: bool,
     actual_root_dir: &PathBuf,
     temp_dir: &PathBuf,
-    sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_snapshot_data: &mut Option<(u64, u64, u64)>,
+    memory_monitor: &mut MemoryMonitor,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Copying prompts");
-        print_memory_usage(sys, "Before copy_prompts", last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot("Before copy_prompts");
     }
-    check_memory_limit(sys, max_memory_gb, "Before copy_prompts")?;
+    memory_monitor.check_memory_limit(max_memory_gb, "Before copy_prompts")?;
     let prompts_dir = actual_root_dir.join(PROMPTS_DIR_NAME);
     let temp_prompts_dir = temp_dir.join(PROMPTS_DIR_NAME);
     fs::create_dir_all(&temp_prompts_dir)?;
@@ -35,10 +32,10 @@ pub fn copy_prompts(
                 println!("DEBUG: summarize.pdl copied to: {:?}", dest_path);
             }
         }
-        check_memory_limit(sys, max_memory_gb, &format!("During copy_prompts loop for {:?}", path))?;
+        memory_monitor.check_memory_limit(max_memory_gb, &format!("During copy_prompts loop for {:?}", path))?;
     }
     if verbose {
-        print_memory_usage(sys, "After copy_prompts", last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot("After copy_prompts");
     }
     Ok(())
 }

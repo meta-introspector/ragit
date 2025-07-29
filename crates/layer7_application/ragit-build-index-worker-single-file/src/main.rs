@@ -11,78 +11,70 @@ use bootstrap_commands::copy_prompts::copy_prompts;
 use bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
 use bootstrap_commands::build_index::build_index;
 use bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_COPY_PROMPTS, MEMORY_USAGE_AFTER_COPY_PROMPTS, CLEANUP_TEMP_DIR, BEFORE_SETUP_ENV, AFTER_SETUP_ENV, BEFORE_COPY_PROMPTS, AFTER_COPY_PROMPTS, MEMORY_USAGE_BEFORE_ADD_FILES, MEMORY_USAGE_AFTER_ADD_FILES, BEFORE_ADD_FILES, AFTER_ADD_FILES, MEMORY_USAGE_SUMMARY_HEADER, MEMORY_USAGE_BEFORE_BUILD_INDEX, MEMORY_USAGE_AFTER_BUILD_INDEX, BEFORE_BUILD_INDEX, AFTER_BUILD_INDEX};
-use memory_profiler::memory_snapshot::MemorySnapshot;
-use memory_profiler::capture_memory_snapshot::capture_memory_snapshot;
-use memory_profiler::print_memory_table::print_memory_table;
+use memory_profiler::memory_monitor::MemoryMonitor;
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
-    let disable_cleanup = args.contains(&"--disable-cleanup".to_string());
+    let disable_cleanup = args.contains("--disable-cleanup".to_string());
     let args: Vec<String> = env::args().collect();
-    let disable_cleanup = args.contains(&"--disable-cleanup".to_string());
+    let disable_cleanup = args.contains("--disable-cleanup".to_string());
 
-    let mut sys = System::new_all();
-    let mut last_snapshot_data: Option<(u64, u64, u64)> = None;
-    let mut memory_snapshots: Vec<MemorySnapshot> = Vec::new();
+    let mut memory_monitor = MemoryMonitor::new();
 
     println!("{}", MEMORY_USAGE_BEFORE_SETUP_ENV);
-    capture_memory_snapshot(BEFORE_SETUP_ENV, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(BEFORE_SETUP_ENV);
 
     let (actual_root_dir, temp_dir, mut index) = setup_environment(
         true, // verbose
-        &mut sys,
         Some(1), // max_memory_gb (1GB for now)
-        &mut last_snapshot_data,
+        &mut memory_monitor,
     )?;
 
     println!("{}", MEMORY_USAGE_AFTER_SETUP_ENV);
-    capture_memory_snapshot(AFTER_SETUP_ENV, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(AFTER_SETUP_ENV);
 
     // Call copy_prompts
     println!("{}", MEMORY_USAGE_BEFORE_COPY_PROMPTS);
-    capture_memory_snapshot(BEFORE_COPY_PROMPTS, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(BEFORE_COPY_PROMPTS);
     copy_prompts(
         true, // verbose
         &actual_root_dir,
         &temp_dir,
-        &mut sys,
         Some(1), // max_memory_gb
-        &mut last_snapshot_data,
+        &mut memory_monitor,
     )?;
     println!("{}", MEMORY_USAGE_AFTER_COPY_PROMPTS);
-    capture_memory_snapshot(AFTER_COPY_PROMPTS, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(AFTER_COPY_PROMPTS);
 
     // Call add_bootstrap_files
     println!("{}", MEMORY_USAGE_BEFORE_ADD_FILES);
-    capture_memory_snapshot(BEFORE_ADD_FILES, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(BEFORE_ADD_FILES);
     add_bootstrap_files(
         true, // verbose
         &actual_root_dir,
         &temp_dir,
         &mut index, // index is not mutable anymore
-        &mut sys,
         Some(1), // max_memory_gb
-        &mut last_snapshot_data,
+        &mut memory_monitor,
         Some(5), // max_files_to_process
     )?;
     println!("{}", MEMORY_USAGE_AFTER_ADD_FILES);
-    capture_memory_snapshot(AFTER_ADD_FILES, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(AFTER_ADD_FILES);
 
     // Call build_index
     println!("{}", MEMORY_USAGE_BEFORE_BUILD_INDEX);
-    capture_memory_snapshot(BEFORE_BUILD_INDEX, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(BEFORE_BUILD_INDEX);
     build_index(
         true, // verbose
         &temp_dir,
         &actual_root_dir,
         &mut index, // index is not mutable anymore
         None, // max_iterations
-        &mut sys,
         Some(1), // max_memory_gb
-        &mut last_snapshot_data,
+        &mut memory_monitor,
     )?;
     println!("{}", MEMORY_USAGE_AFTER_BUILD_INDEX);
-    capture_memory_snapshot(AFTER_BUILD_INDEX, &mut sys, &mut last_snapshot_data, &mut memory_snapshots);
+    memory_monitor.capture_and_log_snapshot(AFTER_BUILD_INDEX);
 
     // Clean up the temporary directory
     if !disable_cleanup {
@@ -94,7 +86,7 @@ fn main() -> Result<()> {
 
     // Print memory usage table
     println!("{}", MEMORY_USAGE_SUMMARY_HEADER);
-    print_memory_table(memory_snapshots);
+    memory_monitor.print_final_report();
 
     Ok(())
 }

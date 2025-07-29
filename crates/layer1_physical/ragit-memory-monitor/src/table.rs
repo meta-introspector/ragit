@@ -1,5 +1,5 @@
 use super::column::{Column, ColumnAlignment};
-use std::io::{self, Write};
+//use std::io::{self, Write};
 
 pub struct Table {
     pub columns: Vec<Column>,

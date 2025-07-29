@@ -6,7 +6,7 @@ use ragit_types::ii_status::IIStatus;
 use ragit_types::summary::Summary;
 use ragit_types::build_config::BuildConfig;
 
-use ragit_types::chunk::chunk_trait::ChunkLike;
+//use ragit_types::chunk::chunk_trait::ChunkLike;
 
 //use ragit_model::Model;
 use serde::{Deserialize, Serialize};

@@ -1,8 +1,7 @@
 use anyhow::Result;
 use std::path::PathBuf;
-use sysinfo::System;
 use ragit_index_types::index_struct::Index;
-use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
+use ragit_memory_monitor::MemoryMonitor;
 use crate::bootstrap_commands::build_index_logic::get_staged_files::get_staged_files;
 use text_splitter::TextSplitter;
 use std::fs;
@@ -17,16 +16,15 @@ pub async fn build_index(
     actual_root_dir: &PathBuf,
     index: &mut Index,
     _max_iterations: Option<usize>,
-    sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_snapshot_data: &mut Option<(u64, u64, u64)>,
+    memory_monitor: &mut MemoryMonitor,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag build");
         println!("bootstrap_index_self: Before ragit_index_effects::build (placeholder)");
-        print_memory_usage(sys, "Before ragit_index_effects::build", last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot("Before ragit_index_effects::build");
     }
-    check_memory_limit(sys, max_memory_gb, "Before ragit_index_effects::build")?;
+    memory_monitor.check_memory_limit(max_memory_gb, "Before ragit_index_effects::build")?;
 
     let staged_files = get_staged_files(index)?;
     let build_config = BuildConfig::default();
@@ -59,8 +57,8 @@ pub async fn build_index(
     if verbose {
         println!("bootstrap_index_self: After ragit_index_effects::build (placeholder)");
         println!("bootstrap_index_self: Built index (placeholder)");
-        print_memory_usage(sys, "After ragit_index_effects::build", last_snapshot_data);
+        memory_monitor.capture_and_log_snapshot("After ragit_index_effects::build");
     }
-    check_memory_limit(sys, max_memory_gb, "After ragit_index_effects::build")?;
+    memory_monitor.check_memory_limit(max_memory_gb, "After ragit_index_effects::build")?;
     Ok(())
 }

@@ -1,8 +1,8 @@
 use sysinfo::System;
 use std::io::Write;
 use super::memory_snapshot::MemorySnapshot;
-use super::format_bytes::format_bytes;
-use super::format_signed_bytes::format_signed_bytes;
+//use super::format_bytes::format_bytes;
+//use super::format_signed_bytes::format_signed_bytes;
 
 pub fn capture_memory_snapshot(
     step_name: &str,
