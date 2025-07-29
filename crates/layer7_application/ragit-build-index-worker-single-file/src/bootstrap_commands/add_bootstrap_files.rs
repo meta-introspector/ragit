@@ -47,7 +47,7 @@ pub fn add_bootstrap_files(
     index: &mut Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
     max_files_to_process: Option<usize>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
@@ -81,14 +81,14 @@ pub fn add_bootstrap_files(
     }).collect::<Vec<String>>();
     if verbose {
         println!("bootstrap_index_self: Before add_files_command");
-        print_memory_usage(sys, "Before add_files_command", last_process_memory_kb);
+        print_memory_usage(sys, "Before add_files_command", last_snapshot_data);
     }
     check_memory_limit(sys, max_memory_gb, "Before add_files_command")?;
     add_files_sync(index, &relative_temp_files_to_add, None, false)?;
     if verbose {
         println!("bootstrap_index_self: After add_files_command");
         println!("bootstrap_index_self: Added files to index");
-        print_memory_usage(sys, "After add_files_command", last_process_memory_kb);
+        print_memory_usage(sys, "After add_files_command", last_snapshot_data);
     }
     check_memory_limit(sys, max_memory_gb, "After add_files_command")?;
     Ok(())

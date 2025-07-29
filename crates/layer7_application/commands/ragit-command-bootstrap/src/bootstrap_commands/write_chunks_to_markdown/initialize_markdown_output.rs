@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 use sysinfo::System;
 use ragit_index_types::index_struct::Index;
-use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
+use ragit_utils::memory_utils::{print_memory_usage, check_memory_limit};
 use ragit_types::fixed_types::fixed_chunk_struct::FixedChunk;
 
 pub async fn initialize_markdown_output(
@@ -10,12 +10,12 @@ pub async fn initialize_markdown_output(
     index: &Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
     call_count: usize,
 ) -> Result<(String, usize, Vec<FixedChunk>, usize), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Writing chunks to markdown file (Call: {})", call_count);
-        print_memory_usage(sys, &format!("Before iterating chunk files (Call: {})", call_count), last_process_memory_kb);
+        ragit_utils::memory_utils::print_memory_usage(sys, &format!("Before iterating chunk files (Call: {})", call_count), last_snapshot_data);
     }
     check_memory_limit(sys, max_memory_gb, &format!("Before iterating chunk files (Call: {})", call_count))?;
 

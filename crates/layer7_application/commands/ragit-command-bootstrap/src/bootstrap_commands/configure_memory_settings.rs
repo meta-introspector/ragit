@@ -11,11 +11,11 @@ pub async fn configure_memory_settings(
     index: &mut Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
 ) -> Result<()> {
     if verbose {
         println!("configure_memory_settings: Starting");
-        print_memory_usage(sys, "Before configuring memory settings", last_process_memory_kb);
+        print_memory_usage(sys, "Before configuring memory settings", last_snapshot_data);
     }
 
     check_memory_limit(sys, max_memory_gb, "Before setting max_chunk_size")?;
@@ -44,7 +44,7 @@ pub async fn configure_memory_settings(
 
     if verbose {
         println!("configure_memory_settings: Finished");
-        print_memory_usage(sys, "After configuring memory settings", last_process_memory_kb);
+        print_memory_usage(sys, "After configuring memory settings", last_snapshot_data);
     }
 
     Ok(())

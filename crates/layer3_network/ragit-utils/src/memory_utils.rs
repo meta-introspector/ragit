@@ -96,7 +96,7 @@ fn report_process_summary_table_footer() {
     println!("-------------------------------------");
 }
 
-pub fn print_memory_usage(sys: &mut System, message: &str, last_total_system_memory_kb: &mut Option<u64>) {
+pub fn print_memory_usage(sys: &mut System, message: &str, last_snapshot_data: &mut Option<(u64, u64, u64)>) {
     sys.refresh_memory();
 
     let format_memory = |kb: u64| -> String {
@@ -115,15 +115,20 @@ pub fn print_memory_usage(sys: &mut System, message: &str, last_total_system_mem
         let used_system_memory_kb = sys.used_memory() / 1024;
 
         let mut delta_str = String::new();
-        if let Some(last_mem_val_kb) = last_total_system_memory_kb {
-            let delta_kb = total_system_memory_kb as i64 - *last_mem_val_kb as i64;
-            delta_str = if delta_kb >= 1024 * 1024 { // If 1GB or more
-                format!("{:.2} GB", delta_kb as f64 / 1024.0 / 1024.0)
-            } else if delta_kb >= 1024 { // If 1MB or more
-                format!("{:.2} MB", delta_kb as f64 / 1024.0)
-            } else {
-                format!("{} KB", delta_kb)
-            };
+        if let Some((last_total, last_used, last_rss)) = *last_snapshot_data {
+            let total_delta_kb = total_system_memory_kb as i64 - last_total as i64;
+            let used_delta_kb = used_system_memory_kb as i64 - last_used as i64;
+            let rss_delta_kb = current_process_memory_kb as i64 - last_rss as i64;
+
+            delta_str = format!(
+                "Total: {} ({}), Used: {} ({}), RSS: {} ({})",
+                format_memory(total_system_memory_kb),
+                format_memory(total_delta_kb as u64),
+                format_memory(used_system_memory_kb),
+                format_memory(used_delta_kb as u64),
+                format_memory(current_process_memory_kb),
+                format_memory(rss_delta_kb as u64)
+            );
         }
 
         report_memory_usage(
@@ -133,7 +138,7 @@ pub fn print_memory_usage(sys: &mut System, message: &str, last_total_system_mem
             format_memory(current_process_memory_kb),
             delta_str
         );
-        *last_total_system_memory_kb = Some(total_system_memory_kb);
+        *last_snapshot_data = Some((total_system_memory_kb, used_system_memory_kb, current_process_memory_kb));
     } else {
         report_memory_usage_no_process(
             message,

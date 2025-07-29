@@ -14,7 +14,7 @@ pub async fn write_chunks_to_markdown(
     index: &Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
     max_iterations: Option<usize>,
 ) -> Result<(), anyhow::Error> {
     let mut initialize_call_count = 0;
@@ -28,7 +28,7 @@ pub async fn write_chunks_to_markdown(
             index,
             sys,
             max_memory_gb,
-            last_process_memory_kb,
+            last_snapshot_data,
             initialize_call_count,
         ).await?
     };
@@ -54,7 +54,7 @@ pub async fn write_chunks_to_markdown(
             total_chunks,
             sys,
             max_memory_gb,
-            last_process_memory_kb,
+            last_snapshot_data,
             process_call_count,
         ).await?;
 
@@ -77,7 +77,7 @@ pub async fn write_chunks_to_markdown(
         &markdown_output,
         sys,
         max_memory_gb,
-        last_process_memory_kb,
+        last_snapshot_data,
         finalize_call_count,
     ).await?;
 

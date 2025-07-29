@@ -12,11 +12,11 @@ pub fn copy_prompts(
     temp_dir: &PathBuf,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Copying prompts");
-        print_memory_usage(sys, "Before copy_prompts", last_process_memory_kb);
+        print_memory_usage(sys, "Before copy_prompts", last_snapshot_data);
     }
     check_memory_limit(sys, max_memory_gb, "Before copy_prompts")?;
     let prompts_dir = actual_root_dir.join(PROMPTS_DIR_NAME);

@@ -19,12 +19,12 @@ pub async fn build_index(
     _max_iterations: Option<usize>,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Running rag build");
         println!("bootstrap_index_self: Before ragit_index_effects::build (placeholder)");
-        print_memory_usage(sys, "Before ragit_index_effects::build", last_process_memory_kb);
+        print_memory_usage(sys, "Before ragit_index_effects::build", last_snapshot_data);
     }
     check_memory_limit(sys, max_memory_gb, "Before ragit_index_effects::build")?;
 
@@ -59,7 +59,7 @@ pub async fn build_index(
     if verbose {
         println!("bootstrap_index_self: After ragit_index_effects::build (placeholder)");
         println!("bootstrap_index_self: Built index (placeholder)");
-        print_memory_usage(sys, "After ragit_index_effects::build", last_process_memory_kb);
+        print_memory_usage(sys, "After ragit_index_effects::build", last_snapshot_data);
     }
     check_memory_limit(sys, max_memory_gb, "After ragit_index_effects::build")?;
     Ok(())

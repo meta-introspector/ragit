@@ -17,15 +17,15 @@ pub async fn perform_self_improvement(
     index: &Index,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
 ) -> Result<(), anyhow::Error> {
-    log_start(verbose, sys, last_process_memory_kb);
+    log_start(verbose, sys, last_snapshot_data);
     check_memory_limit(sys, max_memory_gb, "Before get_self_code")?;
     let self_code = get_self_code(actual_root_dir)?;
     check_memory_limit(sys, max_memory_gb, "After get_self_code")?;
     let prompt = format_prompt(&self_code);
     check_memory_limit(sys, max_memory_gb, "Before execute_query (self-improvement)")?;
-    let improved_code = execute_query(verbose, index, &prompt, sys, max_memory_gb, last_process_memory_kb).await?;
+    let improved_code = execute_query(verbose, index, &prompt, sys, max_memory_gb, last_snapshot_data).await?;
     check_memory_limit(sys, max_memory_gb, "After execute_query (self-improvement)")?;
     handle_improved_code(verbose, temp_dir, &improved_code)?;
     check_memory_limit(sys, max_memory_gb, "After handle_improved_code")?;

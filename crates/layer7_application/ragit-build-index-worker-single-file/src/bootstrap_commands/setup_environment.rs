@@ -12,7 +12,7 @@ pub fn setup_environment(
     verbose: bool,
     sys: &mut System,
     max_memory_gb: Option<u64>,
-    last_process_memory_kb: &mut Option<u64>,
+    last_snapshot_data: &mut Option<(u64, u64, u64)>,
 ) -> Result<(PathBuf, PathBuf, Index), anyhow::Error> {
     let actual_root_dir = ragit_utils::project_root::find_root()?;
     let temp_dir = actual_root_dir.join(TEMP_DIR_NAME);
@@ -31,7 +31,7 @@ pub fn setup_environment(
     save_index_to_file(&index, index_path)?;
     if verbose {
         println!("bootstrap_index_self: Initialized new index in {:?}", temp_dir);
-        print_memory_usage(sys, "After index initialization", last_process_memory_kb);
+        print_memory_usage(sys, "After index initialization", last_snapshot_data);
         check_memory_limit(sys, max_memory_gb, "After index initialization")?;
     }
     Ok((actual_root_dir, temp_dir, index))
