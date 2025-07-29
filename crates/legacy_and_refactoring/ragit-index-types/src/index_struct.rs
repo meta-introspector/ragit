@@ -86,4 +86,8 @@ impl Index {
         self.chunk_count += 1;
         self.chunks.push(chunk);
     }
+
+    pub fn get_chunks(&self) -> &Vec<ragit_types::fixed_types::fixed_chunk_struct::FixedChunk> {
+        &self.chunks
+    }
 }

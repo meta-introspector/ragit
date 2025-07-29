@@ -30,7 +30,7 @@ pub async fn bootstrap_index_self(
 ) -> Result<(), anyhow::Error> {
     let max_iterations = max_iterations.or(Some(1));
     let max_files_to_process = max_files_to_process.or(Some(1));
-    let disable_write_markdown = disable_write_markdown;
+    let disable_write_markdown = false;
     let max_memory_gb = max_memory_gb.or(Some(1));
     let mut memory_monitor = MemoryMonitor::new();
 

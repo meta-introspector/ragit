@@ -16,10 +16,14 @@ pub async fn write_chunks_to_markdown(
         println!("bootstrap_index_self: Writing chunks to content-addressable objects.");
     }
 
-    let all_chunks = &index.chunks;
+    let all_chunks = index.get_chunks();
+    if verbose { println!("DEBUG: Number of chunks to process: {}", all_chunks.len()); }
     let mut processed_chunks_count = 0;
 
     for chunk in all_chunks {
+        if verbose {
+            println!("DEBUG: Processing chunk. temp_dir: {:?}", temp_dir);
+        }
         if let Some(max_iter) = max_iterations {
             if processed_chunks_count >= max_iter {
                 println!("bootstrap_index_self: Stopping chunk processing after {} chunks due to max_iterations limit.", max_iter);

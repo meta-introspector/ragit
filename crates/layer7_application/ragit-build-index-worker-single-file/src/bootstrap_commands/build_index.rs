@@ -4,7 +4,7 @@ use ragit_index_types::index_struct::Index;
 use super::constants::{PROMPTS_DIR_NAME, SUMMARIZE_PROMPT_FILE_NAME};
 use ragit_memory_monitor::MemoryMonitor;
 use ragit_types::build_config::BuildConfig;
-use text_splitter::TextSplitter;
+use text_splitter::{TextSplitter, Characters};
 use std::fs;
 
 pub fn build_index(
@@ -31,7 +31,7 @@ pub fn build_index(
     }
 
     let build_config = BuildConfig::default();
-    let splitter = TextSplitter::default();
+    let splitter = TextSplitter::new(Characters);
 
     if verbose {
         println!("bootstrap_index_self: Iterating through staged files for chunking and indexing.");
