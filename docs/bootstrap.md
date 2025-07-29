@@ -30,12 +30,13 @@ cargo run --package ragit-commands -- bootstrap [FLAGS]
 
 ### Workflow
 
-The `ragit bootstrap` command executes a series of operations, each managed by a dedicated function within the `bootstrap_commands` module. Memory usage is checked before each major step.
+The `ragit bootstrap` command executes a series of operations, each managed by a dedicated function within the `bootstrap_commands` module. Memory usage is monitored and logged at key steps using `MemoryMonitor`.
 
 1.  **Setup Environment (`setup_environment`):**
     *   Creates a temporary directory.
     *   Initializes a new `ragit` repository within the temporary directory.
     *   Initializes a new `Index` structure.
+    *   A memory snapshot is captured and logged after index initialization.
 
 2.  **Copy Prompts (`copy_prompts`):**
     *   Copies the `prompts` directory from the actual root to the temporary directory.
@@ -47,15 +48,19 @@ The `ragit bootstrap` command executes a series of operations, each managed by a
 
 4.  **Build Index (`build_index`):**
     *   Builds the `Index` from the source code, processing the content of the added `.rs` files.
+    *   Memory snapshots are captured and logged before and after the build process.
 
 5.  **Write Chunks to Markdown (`write_chunks_to_markdown`):**
     *   Generates markdown from the processed chunks for review.
+    *   Memory snapshots are captured and logged before and after this step.
 
 6.  **Self-Improvement (`perform_self_improvement`):**
     *   Analyzes and improves code by reading its own source, generating a prompt, executing a query, and writing improved code to a file.
+    *   Memory snapshots are captured and logged at various stages of this process.
 
 7.  **Final Reflective Query (`perform_final_reflective_query`):**
     *   Executes a hardcoded query against the built index, and prints the response.
+    *   Memory snapshots are captured and logged before and after this step.
 
 ### File Locations
 
