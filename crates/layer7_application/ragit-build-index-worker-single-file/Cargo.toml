@@ -15,6 +15,7 @@ ragit-index-core = { path = "../../legacy_and_refactoring/ragit-index-core" }
 ragit-file-error = { path = "../../layer1_physical/ragit-file-error" }
 ragit-index-effects = { path = "../../legacy_and_refactoring/ragit-index-effects" }
 ragit-readers = { path = "../../layer4_transport/ragit-readers" }
+ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }
 chrono = "0.4"
 serde_json = "1.0"
 text-splitter = "0.3"
