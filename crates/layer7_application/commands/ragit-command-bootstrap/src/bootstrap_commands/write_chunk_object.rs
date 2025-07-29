@@ -12,6 +12,7 @@ pub async fn write_chunk_object(
     max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
 ) -> Result<PathBuf, anyhow::Error> {
+    if verbose { println!("DEBUG: Entering write_chunk_object for chunk with UID: {}", chunk.uid); }
     let mut hasher = Sha3_256::new();
     hasher.update(chunk.data.as_str().as_bytes());
     let hash_bytes = hasher.finalize();

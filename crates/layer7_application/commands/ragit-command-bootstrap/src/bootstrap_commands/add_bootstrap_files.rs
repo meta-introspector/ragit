@@ -47,6 +47,7 @@ pub async fn add_bootstrap_files(
         p.strip_prefix(&temp_dir).unwrap().to_string_lossy().into_owned()
     }).collect::<Vec<String>>();
     if verbose {
+        println!("DEBUG: Chunks in index before add_files_command: {}", index.chunks.len());
         println!("bootstrap_index_self: Before add_files_command");
         memory_monitor.capture_and_log_snapshot("Before add_files_command");
     }
@@ -56,6 +57,7 @@ pub async fn add_bootstrap_files(
         println!("bootstrap_index_self: After add_files_command");
         println!("bootstrap_index_self: Added files to index");
         memory_monitor.capture_and_log_snapshot("After add_files_command");
+        println!("DEBUG: Chunks in index after add_files_command: {}", index.chunks.len());
     }
     memory_monitor.check_memory_limit(max_memory_gb, "After add_files_command")?;
     Ok(())

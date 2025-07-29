@@ -17,6 +17,7 @@ pub async fn write_chunks_to_markdown(
     }
 
     let all_chunks = index.get_chunks();
+    if verbose { println!("DEBUG: Number of chunks returned by index.get_chunks(): {}", all_chunks.len()); }
     if verbose { println!("DEBUG: Number of chunks to process: {}", all_chunks.len()); }
     let mut processed_chunks_count = 0;
 
@@ -31,6 +32,7 @@ pub async fn write_chunks_to_markdown(
             }
         }
 
+        if verbose { println!("DEBUG: Calling write_chunk_object for chunk with UID: {}", chunk.uid); }
         write_chunk_object::write_chunk_object(
             verbose,
             temp_dir,

@@ -40,6 +40,13 @@ pub const AFTER_ADD_FILES: &str = "After add_bootstrap_files";
 pub const MEMORY_USAGE_SUMMARY_HEADER: &str = "\n--- Memory Usage Summary ---";
 pub const MEMORY_TABLE_FOOTER: &str = "--------------------------------------------------------------------------------------------------";
 pub const MEMORY_USAGE_BEFORE_BUILD_INDEX: &str = "\n--- Memory Usage Before build_index ---";
-pub const MEMORY_USAGE_AFTER_BUILD_INDEX: &str = "\n--- Memory Usage After build_index ---";
+pub const MEMORY_USAGE_AFTER_BUILD_INDEX: &str = "
+--- Memory Usage After build_index ---";
 pub const BEFORE_BUILD_INDEX: &str = "Before build_index";
 pub const AFTER_BUILD_INDEX: &str = "After build_index";
+pub const MEMORY_USAGE_BEFORE_EXPORT_CHUNKS: &str = "
+--- Memory Usage Before export_chunks ---";
+pub const MEMORY_USAGE_AFTER_EXPORT_CHUNKS: &str = "
+--- Memory Usage After export_chunks ---";
+pub const BEFORE_EXPORT_CHUNKS: &str = "Before export_chunks";
+pub const AFTER_EXPORT_CHUNKS: &str = "After export_chunks";

@@ -6,7 +6,8 @@ use crate::bootstrap_commands::setup_environment::setup_environment;
 use crate::bootstrap_commands::copy_prompts::copy_prompts;
 use crate::bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
 use crate::bootstrap_commands::build_index::build_index;
-use crate::bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_COPY_PROMPTS, MEMORY_USAGE_AFTER_COPY_PROMPTS, CLEANUP_TEMP_DIR, BEFORE_SETUP_ENV, AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_ADD_FILES, MEMORY_USAGE_AFTER_ADD_FILES, BEFORE_ADD_FILES, AFTER_ADD_FILES, MEMORY_USAGE_SUMMARY_HEADER, MEMORY_USAGE_BEFORE_BUILD_INDEX, MEMORY_USAGE_AFTER_BUILD_INDEX, BEFORE_BUILD_INDEX, AFTER_BUILD_INDEX};
+use crate::bootstrap_commands::export_chunks::export_chunks_main;
+use crate::bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_COPY_PROMPTS, MEMORY_USAGE_AFTER_COPY_PROMPTS, CLEANUP_TEMP_DIR, BEFORE_SETUP_ENV, AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_ADD_FILES, MEMORY_USAGE_AFTER_ADD_FILES, BEFORE_ADD_FILES, AFTER_ADD_FILES, MEMORY_USAGE_SUMMARY_HEADER, MEMORY_USAGE_BEFORE_BUILD_INDEX, MEMORY_USAGE_AFTER_BUILD_INDEX, BEFORE_BUILD_INDEX, AFTER_BUILD_INDEX, MEMORY_USAGE_BEFORE_EXPORT_CHUNKS, MEMORY_USAGE_AFTER_EXPORT_CHUNKS, BEFORE_EXPORT_CHUNKS, AFTER_EXPORT_CHUNKS};
 use crate::memory_profiler::memory_monitor::MemoryMonitor;
 
 pub async fn run() -> Result<()> {
@@ -45,17 +46,19 @@ pub async fn run() -> Result<()> {
     // Call add_bootstrap_files
     println!("{}", MEMORY_USAGE_BEFORE_ADD_FILES);
     memory_monitor.capture_and_log_snapshot(BEFORE_ADD_FILES);
+    println!("DEBUG: Staged files in index before add_bootstrap_files: {}", index.staged_files.len());
     add_bootstrap_files(
         true, // verbose
         &actual_root_dir,
         &temp_dir,
-        &mut index, // index is not mutable anymore
+        &mut index, // Pass mutable reference
         Some(1), // max_memory_gb
         &mut memory_monitor,
         Some(5), // max_files_to_process
     )?;
     println!("{}", MEMORY_USAGE_AFTER_ADD_FILES);
     memory_monitor.capture_and_log_snapshot(AFTER_ADD_FILES);
+    println!("DEBUG: Staged files in index after add_bootstrap_files: {}", index.staged_files.len());
 
     // Call build_index
     println!("{}", MEMORY_USAGE_BEFORE_BUILD_INDEX);
@@ -64,13 +67,27 @@ pub async fn run() -> Result<()> {
         true, // verbose
         &temp_dir,
         &actual_root_dir,
-        &mut index, // index is not mutable anymore
+        &mut index, // Pass mutable reference
         None, // max_iterations
         Some(1), // max_memory_gb
         &mut memory_monitor,
     )?;
     println!("{}", MEMORY_USAGE_AFTER_BUILD_INDEX);
     memory_monitor.capture_and_log_snapshot(AFTER_BUILD_INDEX);
+
+    // Call export_chunks
+    println!("{}", MEMORY_USAGE_BEFORE_EXPORT_CHUNKS);
+    memory_monitor.capture_and_log_snapshot(BEFORE_EXPORT_CHUNKS);
+    export_chunks_main::write_chunks_to_markdown(
+        true, // verbose
+        &temp_dir,
+        &index,
+        Some(1), // max_memory_gb
+        &mut memory_monitor,
+        None, // max_iterations
+    ).await?;
+    println!("{}", MEMORY_USAGE_AFTER_EXPORT_CHUNKS);
+    memory_monitor.capture_and_log_snapshot(AFTER_EXPORT_CHUNKS);
 
     // Clean up the temporary directory
     if !disable_cleanup {

@@ -10,14 +10,17 @@ pub async fn add_files_command(
     _add_mode: Option<AddMode>,
     _dry_run: bool,
 ) -> Result<AddResult, ApiError> {
+    println!("DEBUG: Entering add_files_command. Staged files before: {}", index.staged_files.len());
     let mut added_files = 0;
     for file in files {
         let path = PathBuf::from(file);
         if !index.staged_files.contains(&path) {
-            index.staged_files.push(path);
+            index.staged_files.push(path.clone());
             added_files += 1;
+            println!("DEBUG: Added file to staged_files: {:?}", path);
         }
     }
+    println!("DEBUG: Exiting add_files_command. Staged files after: {}", index.staged_files.len());
 
     Ok(AddResult {
         added_files,

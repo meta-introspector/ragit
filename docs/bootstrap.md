@@ -53,6 +53,7 @@ The `ragit bootstrap` command executes a series of operations, each managed by a
 5.  **Export Chunks to Content-Addressable Store (`export_chunks`):**
     *   Writes each chunk to a content-addressable store (similar to `.git/objects`) based on its SHA-1 hash.
     *   Memory snapshots are captured and logged before and after this step.
+    *   **Note:** The `--disable-write-markdown` flag is currently hardcoded to `false` in the `bootstrap` command, meaning this step will always execute.
 
 6.  **Self-Improvement (`perform_self_improvement`):**
     *   Analyzes and improves code by reading its own source, generating a prompt, executing a query, and writing improved code to a file.
@@ -99,7 +100,6 @@ The `bootstrap-new` command supports a similar set of flags, which are passed di
 *   `--max-memory-gb <NUMBER>`: Sets a maximum memory limit in gigabytes for the bootstrap operation.
 *   `--max-files-to-process <NUMBER>`: Limits the number of files to process during the bootstrap.
 *   `--disable-cleanup`: Disables the cleanup of the temporary directory after the bootstrap process.
-*   `--disable-write-markdown`: Disables writing chunks to markdown.
 *   `--disable-memory-config`: Disables memory configuration.
 *   `--disable-prompt-copy`: Disables copying prompts.
 *   `--disable-file-add`: Disables adding files.
@@ -116,6 +116,8 @@ The `ragit bootstrap-new` command's workflow is more granular and focuses on the
 3.  **File Staging (`add_bootstrap_files`):** Identifies and stages files using the `FileSource` trait (Static, CargoPackage, Glob).
 4.  **Placeholder Index Building (`build_index`):** This is currently a placeholder for actual index building logic; it iterates staged files and performs fixed-size chunking.
 5.  **Cleanup:** Removes the temporary directory.
+
+**Note on Index Mutability:** A notable inconsistency exists where the `Index` struct is created in `setup_environment`, but its subsequent modification is not consistently reflected in the function calls in `main.rs` (e.g., `&mut index` argument is commented out when calling `add_bootstrap_files` and `build_index`). This discrepancy needs to be resolved for proper index modification when actual indexing logic is implemented.
 
 ### File Locations
 
