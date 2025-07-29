@@ -13,7 +13,7 @@ use ragit_types::chunk::chunk_source::ChunkSource;
 pub async fn build_index(
     verbose: bool,
     _temp_dir: &PathBuf,
-    actual_root_dir: &PathBuf,
+    _actual_root_dir: &PathBuf,
     index: &mut Index,
     _max_iterations: Option<usize>,
     max_memory_gb: Option<u64>,
@@ -26,7 +26,7 @@ pub async fn build_index(
     }
     memory_monitor.check_memory_limit(max_memory_gb, "Before ragit_index_effects::build")?;
 
-    let staged_files = get_staged_files(index)?;
+    let _staged_files = get_staged_files(index)?;
     let build_config = BuildConfig::default();
     let splitter = TextSplitter::default();
 

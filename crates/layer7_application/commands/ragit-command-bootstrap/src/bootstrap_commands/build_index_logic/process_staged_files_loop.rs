@@ -8,8 +8,8 @@ use ragit_index_types::index_struct::Index;
 pub fn process_staged_files_loop(
     verbose: bool,
     staged_files: Vec<PathBuf>,
-    actual_root_dir: &PathBuf,
-    index: &mut Index,
+    _actual_root_dir: &PathBuf,
+    _index: &mut Index,
 ) -> Result<(), anyhow::Error> {
     if verbose {
         println!("bootstrap_index_self: Iterating through staged files for chunking and indexing.");

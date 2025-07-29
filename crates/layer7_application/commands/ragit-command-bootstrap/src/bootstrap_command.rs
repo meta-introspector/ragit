@@ -11,7 +11,6 @@ use crate::bootstrap_commands::perform_self_improvement::perform_self_improvemen
 use crate::bootstrap_commands::setup_environment::setup_environment;
 use crate::bootstrap_commands::write_chunks_to_markdown::write_chunks_to_markdown_main::write_chunks_to_markdown;
 use crate::bootstrap_commands::configure_memory_settings::configure_memory_settings;
-use ragit_utils::memory_utils::print_process_list;
 use ragit_memory_monitor::MemoryMonitor;
 
 pub async fn bootstrap_index_self(
@@ -27,7 +26,7 @@ pub async fn bootstrap_index_self(
     disable_index_build: bool,
     disable_self_improvement: bool,
     disable_final_query: bool,
-    disable_cleanup: bool,
+    _disable_cleanup: bool,
 ) -> Result<(), anyhow::Error> {
     let max_iterations = max_iterations.or(Some(1));
     let max_files_to_process = max_files_to_process.or(Some(1));
