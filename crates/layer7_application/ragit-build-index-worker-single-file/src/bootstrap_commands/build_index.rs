@@ -1,10 +1,8 @@
 use anyhow::Result;
 use std::path::PathBuf;
-use sysinfo::System;
 use ragit_index_types::index_struct::Index;
 use super::constants::{PROMPTS_DIR_NAME, SUMMARIZE_PROMPT_FILE_NAME};
-use super::constants::{PROMPTS_DIR_NAME, SUMMARIZE_PROMPT_FILE_NAME};
-use crate::memory_profiler::memory_monitor::MemoryMonitor;
+use ragit_memory_monitor::MemoryMonitor;
 use ragit_types::build_config::BuildConfig;
 use text_splitter::TextSplitter;
 use std::fs;

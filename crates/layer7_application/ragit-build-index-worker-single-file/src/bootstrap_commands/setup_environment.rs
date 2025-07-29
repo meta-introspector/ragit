@@ -1,14 +1,14 @@
 use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
-use sysinfo::System;
+
 use ragit_index_types::index_struct::Index;
 use ragit_index_save_to_file::save_index_to_file;
 use super::constants::{TEMP_DIR_NAME, RAGIT_DIR_NAME, INDEX_FILE_NAME};
 
 
 
-use crate::memory_profiler::memory_monitor::MemoryMonitor;
+use ragit_memory_monitor::MemoryMonitor;
 
 pub fn setup_environment(
     verbose: bool,

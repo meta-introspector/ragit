@@ -1,23 +1,20 @@
 use anyhow::Result;
 use std::env;
 use std::fs;
-use sysinfo::System;
+
 
 mod bootstrap_commands;
-mod memory_profiler;
+use ragit_memory_monitor::MemoryMonitor;
 
 use bootstrap_commands::setup_environment::setup_environment;
 use bootstrap_commands::copy_prompts::copy_prompts;
 use bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
 use bootstrap_commands::build_index::build_index;
-use bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_COPY_PROMPTS, MEMORY_USAGE_AFTER_COPY_PROMPTS, CLEANUP_TEMP_DIR, BEFORE_SETUP_ENV, AFTER_SETUP_ENV, BEFORE_COPY_PROMPTS, AFTER_COPY_PROMPTS, MEMORY_USAGE_BEFORE_ADD_FILES, MEMORY_USAGE_AFTER_ADD_FILES, BEFORE_ADD_FILES, AFTER_ADD_FILES, MEMORY_USAGE_SUMMARY_HEADER, MEMORY_USAGE_BEFORE_BUILD_INDEX, MEMORY_USAGE_AFTER_BUILD_INDEX, BEFORE_BUILD_INDEX, AFTER_BUILD_INDEX};
-use memory_profiler::memory_monitor::MemoryMonitor;
+use bootstrap_commands::constants::{MEMORY_USAGE_BEFORE_SETUP_ENV, MEMORY_USAGE_AFTER_SETUP_ENV, MEMORY_USAGE_BEFORE_COPY_PROMPTS, MEMORY_USAGE_AFTER_COPY_PROMPTS, CLEANUP_TEMP_DIR, BEFORE_SETUP_ENV, AFTER_SETUP_ENV, BEFORE_ADD_FILES, AFTER_ADD_FILES, MEMORY_USAGE_SUMMARY_HEADER, MEMORY_USAGE_BEFORE_BUILD_INDEX, MEMORY_USAGE_AFTER_BUILD_INDEX, BEFORE_BUILD_INDEX, AFTER_BUILD_INDEX};
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
-    let disable_cleanup = args.contains("--disable-cleanup".to_string());
-    let args: Vec<String> = env::args().collect();
-    let disable_cleanup = args.contains("--disable-cleanup".to_string());
+    let disable_cleanup = args.contains("--disable-cleanup");
 
     let mut memory_monitor = MemoryMonitor::new();
 

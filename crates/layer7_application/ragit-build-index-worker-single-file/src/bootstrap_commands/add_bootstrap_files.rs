@@ -1,11 +1,11 @@
 use anyhow::Result;
 use std::path::PathBuf;
-use sysinfo::System;
+
 use ragit_index_types::index_struct::Index;
 use super::file_source::FileSource;
 use super::file_copy_utils;
 use super::constants::BOOTSTRAP_PACKAGE_NAME;
-use crate::memory_profiler::memory_monitor::MemoryMonitor;
+use ragit_memory_monitor::MemoryMonitor;
 
 // Define AddResult and AddMode locally for synchronous operation
 pub struct AddResult {

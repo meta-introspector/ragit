@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 use ragit_types::{Uid};
 use ragit_types::fixed_types::fixed_chunk_struct::{FixedChunk, FixedChunkBuildInfo};
-use ragit_types::fixed_types::fixed_string_struct::FixedString;
+
 use ragit_types::fixed_types::fixed_vec::FixedVec;
 use ragit_types::chunk::ChunkSource;
 use chrono;
