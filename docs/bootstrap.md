@@ -50,10 +50,8 @@ The `ragit bootstrap` command executes a series of operations, each managed by a
     *   Builds the `Index` from the source code, processing the content of the added `.rs` files.
     *   Memory snapshots are captured and logged before and after the build process.
 
-5.  **Write Chunks to Markdown and Content-Addressable Store (`write_chunks_to_markdown`):**
-    *   Generates markdown from the processed chunks for review.
+5.  **Export Chunks to Content-Addressable Store (`export_chunks`):**
     *   Writes each chunk to a content-addressable store (similar to `.git/objects`) based on its SHA-1 hash.
-    *   The markdown output will include references to these content-addressable objects.
     *   Memory snapshots are captured and logged before and after this step.
 
 6.  **Self-Improvement (`perform_self_improvement`):**

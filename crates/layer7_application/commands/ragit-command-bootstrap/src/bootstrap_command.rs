@@ -9,7 +9,7 @@ use crate::bootstrap_commands::copy_prompts::copy_prompts;
 use crate::bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
 use crate::bootstrap_commands::perform_self_improvement::perform_self_improvement;
 use crate::bootstrap_commands::setup_environment::setup_environment;
-use crate::bootstrap_commands::write_chunks_to_markdown::write_chunks_to_markdown_main::write_chunks_to_markdown;
+use crate::bootstrap_commands::export_chunks::export_chunks_main;
 use crate::bootstrap_commands::configure_memory_settings::configure_memory_settings;
 use ragit_memory_monitor::MemoryMonitor;
 
@@ -73,7 +73,7 @@ pub async fn bootstrap_index_self(
         if !disable_write_markdown {
             memory_monitor.check_memory_limit(max_memory_gb, "Before write_chunks_to_markdown")?;
             
-            write_chunks_to_markdown(verbose, &temp_dir, &index, max_memory_gb, &mut memory_monitor, max_iterations).await?;
+            export_chunks_main::write_chunks_to_markdown(verbose, &temp_dir, &index, max_memory_gb, &mut memory_monitor, max_iterations).await?;
         } else if verbose {
             println!("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
         }
