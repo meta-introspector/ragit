@@ -2,11 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 use ragit_memory_monitor::MemoryMonitor;
 use ragit_index_types::index_struct::Index;
-
-// use crate::bootstrap_commands::memory_utils::{print_memory_usage, check_memory_limit};
-use crate::bootstrap_commands::write_chunks_to_markdown::initialize_markdown_output;
-use crate::bootstrap_commands::write_chunks_to_markdown::process_single_chunk;
-use crate::bootstrap_commands::write_chunks_to_markdown::finalize_markdown_output;
+use crate::bootstrap_commands::write_chunk_object;
 
 pub async fn write_chunks_to_markdown(
     verbose: bool,
@@ -16,24 +12,12 @@ pub async fn write_chunks_to_markdown(
     memory_monitor: &mut MemoryMonitor,
     max_iterations: Option<usize>,
 ) -> Result<(), anyhow::Error> {
-    let mut initialize_call_count = 0;
-    let mut process_call_count = 0;
-    let mut finalize_call_count = 0;
-
-    let (mut markdown_output, mut processed_chunks_count, all_chunks, total_chunks) = {
-        initialize_call_count += 1;
-        initialize_markdown_output::initialize_markdown_output(
-            verbose,
-            index,
-            max_memory_gb,
-            memory_monitor,
-            initialize_call_count,
-        ).await?
-    };
-
     if verbose {
-        println!("bootstrap_index_self: Total chunks to process: {}", total_chunks);
+        println!("bootstrap_index_self: Writing chunks to content-addressable objects.");
     }
+
+    let all_chunks = &index.chunks;
+    let mut processed_chunks_count = 0;
 
     for chunk in all_chunks {
         if let Some(max_iter) = max_iterations {
@@ -43,40 +27,20 @@ pub async fn write_chunks_to_markdown(
             }
         }
 
-        process_call_count += 1;
-        process_single_chunk::process_single_chunk(
+        write_chunk_object::write_chunk_object(
             verbose,
             temp_dir,
             &chunk,
-            &mut markdown_output,
-            processed_chunks_count,
-            total_chunks,
             max_memory_gb,
             memory_monitor,
-            process_call_count,
         ).await?;
 
         processed_chunks_count += 1;
     }
 
     if verbose {
-        println!("bootstrap_index_self: Finalizing markdown output to temp_dir: {:?}", temp_dir);
-        println!("bootstrap_index_self: Markdown output content length: {}", markdown_output.len());
+        println!("bootstrap_index_self: Finished writing {} chunks to content-addressable objects.", processed_chunks_count);
     }
-
-    if verbose {
-        println!("bootstrap_index_self: Finalizing markdown output to temp_dir: {:?}", temp_dir);
-        println!("bootstrap_index_self: Markdown output content length: {}", markdown_output.len());
-    }
-    finalize_call_count += 1;
-    finalize_markdown_output::finalize_markdown_output(
-        verbose,
-        temp_dir,
-        &markdown_output,
-        max_memory_gb,
-        memory_monitor,
-        finalize_call_count,
-    ).await?;
 
     Ok(())
 }

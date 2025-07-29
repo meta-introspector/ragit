@@ -18,6 +18,7 @@ pub async fn write_chunk_object(
     let hash_string = format!("{:x}", hash_bytes);
 
     let object_dir = temp_dir.join(".ragit").join("objects");
+    fs::create_dir_all(&object_dir)?;
     let first_two_chars = &hash_string[0..2];
     let rest_of_hash = &hash_string[2..];
 
