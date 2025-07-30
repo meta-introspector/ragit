@@ -33,6 +33,26 @@ struct Args {
     #[arg(long, global = true)]
     max_files_to_process: Option<usize>,
 
+    /// Maximum chunk size for content splitting
+    #[arg(long, global = true)]
+    max_chunk_size: Option<usize>,
+
+    /// Maximum summary length for generated summaries
+    #[arg(long, global = true)]
+    max_summary_len: Option<usize>,
+
+    /// Minimum summary length for generated summaries
+    #[arg(long, global = true)]
+    min_summary_len: Option<usize>,
+
+    /// Time threshold in milliseconds for performance alerts
+    #[arg(long, global = true)]
+    time_threshold_ms: Option<u128>,
+
+    /// Memory threshold in bytes for memory alerts
+    #[arg(long, global = true)]
+    memory_threshold_bytes: Option<u64>,
+
     /// Disable writing chunks to markdown file
     #[arg(long, global = true)]
     disable_write_markdown: bool,
@@ -90,6 +110,11 @@ async fn main() -> Result<()> {
                 args.max_iterations,
                 args.max_memory_gb,
                 args.max_files_to_process,
+                args.max_chunk_size,
+                args.max_summary_len,
+                args.min_summary_len,
+                args.time_threshold_ms,
+                args.memory_threshold_bytes,
                 args.disable_write_markdown,
                 args.disable_memory_config,
                 args.disable_prompt_copy,

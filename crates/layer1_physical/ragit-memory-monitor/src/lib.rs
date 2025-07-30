@@ -19,10 +19,12 @@ pub struct MemoryMonitor {
     last_snapshot_time: Option<std::time::Instant>,
     units_processed_since_last_snapshot: u64,
     verbose: bool,
+    time_threshold_ms: Option<u128>,
+    memory_threshold_bytes: Option<u64>,
 }
 
 impl MemoryMonitor {
-    pub fn new(verbose: bool) -> Self {
+    pub fn new(verbose: bool, time_threshold_ms: Option<u128>, memory_threshold_bytes: Option<u64>) -> Self {
         MemoryMonitor {
             sys: System::new_all(),
             last_snapshot_data: None,
@@ -30,6 +32,8 @@ impl MemoryMonitor {
             last_snapshot_time: None,
             units_processed_since_last_snapshot: 0,
             verbose,
+            time_threshold_ms,
+            memory_threshold_bytes,
         }
     }
 
@@ -48,6 +52,30 @@ impl MemoryMonitor {
     }
 
     pub fn capture_and_log_snapshot(&mut self, step_name: &str) {
+        let current_time = std::time::Instant::now();
+        let mut current_process_memory_kb = 0;
+        if let Some(process) = self.sys.process(sysinfo::Pid::from_u32(std::process::id())) {
+            current_process_memory_kb = process.memory() / 1024;
+        }
+
+        if let Some(last_time) = self.last_snapshot_time {
+            let elapsed_time = current_time.duration_since(last_time).as_millis();
+            if let Some(threshold) = self.time_threshold_ms {
+                if elapsed_time > threshold {
+                    self.verbose(&format!("PERFORMANCE ALERT: Step '{}' took {}ms, exceeding threshold of {}ms.", step_name, elapsed_time, threshold));
+                }
+            }
+        }
+
+        if let Some((_, _, last_rss)) = self.last_snapshot_data {
+            let memory_diff = current_process_memory_kb as i64 - last_rss as i64;
+            if let Some(threshold) = self.memory_threshold_bytes {
+                if memory_diff.abs() > threshold as i64 / 1024 { // Convert threshold to KB
+                    self.verbose(&format!("MEMORY ALERT: Step '{}' changed RSS by {}KB, exceeding threshold of {}KB.", step_name, memory_diff, threshold / 1024));
+                }
+            }
+        }
+
         capture_memory_snapshot(
             step_name,
             &mut self.sys,

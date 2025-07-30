@@ -19,6 +19,11 @@ pub async fn bootstrap_index_self(
     max_iterations: Option<usize>,
     max_memory_gb: Option<u64>,
     max_files_to_process: Option<usize>,
+    max_chunk_size: Option<usize>,
+    max_summary_len: Option<usize>,
+    min_summary_len: Option<usize>,
+    time_threshold_ms: Option<u128>,
+    memory_threshold_bytes: Option<u64>,
     _disable_write_markdown: bool,
     disable_memory_config: bool,
     disable_prompt_copy: bool,
@@ -28,13 +33,13 @@ pub async fn bootstrap_index_self(
     disable_final_query: bool,
     _disable_cleanup: bool,
 ) -> Result<(), anyhow::Error> {
-    let max_iterations = max_iterations.or(Some(1));
-    let max_files_to_process = max_files_to_process.or(Some(1));
+    let max_iterations = max_iterations;
+    let max_files_to_process = max_files_to_process;
     let disable_write_markdown = false;
-    let max_memory_gb = max_memory_gb.or(Some(1));
-    let mut memory_monitor = MemoryMonitor::new(verbose);
+    let max_memory_gb = max_memory_gb;
+    let mut memory_monitor = MemoryMonitor::new(verbose, time_threshold_ms, memory_threshold_bytes);
 
-    memory_monitor.verbose("bootstrap_index_self: Starting");
+    memory_monitor.verbose("Starting bootstrap process.");
     memory_monitor.capture_and_log_snapshot("Initial");
         
     let bootstrap_task = async move {
@@ -45,7 +50,7 @@ pub async fn bootstrap_index_self(
         if !disable_memory_config {
             memory_monitor.check_memory_limit(max_memory_gb, "Before configure_memory_settings")?;
             
-            configure_memory_settings(verbose, &mut index, max_memory_gb, &mut memory_monitor).await?;
+            configure_memory_settings(verbose, &mut index, max_memory_gb, max_chunk_size, max_summary_len, min_summary_len, &mut memory_monitor).await?;
         }
 
         if !disable_prompt_copy {

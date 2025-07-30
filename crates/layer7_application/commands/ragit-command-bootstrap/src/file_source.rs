@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use glob;
 
 pub trait FileSource {
-    fn get_files(&self) -> Result<Vec<String>>;
+    fn get_files(&self, memory_monitor: &mut ragit_memory_monitor::MemoryMonitor) -> Result<Vec<String>>;
 }
 
 pub struct StaticFileSource {
@@ -11,7 +11,7 @@ pub struct StaticFileSource {
 }
 
 impl FileSource for StaticFileSource {
-    fn get_files(&self) -> Result<Vec<String>> {
+    fn get_files(&self, _memory_monitor: &mut ragit_memory_monitor::MemoryMonitor) -> Result<Vec<String>> {
         Ok(self.files.clone())
     }
 }
@@ -22,7 +22,7 @@ pub struct CargoPackageFileSource {
 }
 
 impl FileSource for CargoPackageFileSource {
-    fn get_files(&self) -> Result<Vec<String>> {
+    fn get_files(&self, memory_monitor: &mut ragit_memory_monitor::MemoryMonitor) -> Result<Vec<String>> {
         let package_path = PathBuf::from(&self.project_root).join("crates").join("layer7_application").join("commands").join(&self.package_name);
         let pattern = format!("{}/**/*.rs", package_path.to_string_lossy());
         let mut files = Vec::new();
@@ -36,7 +36,7 @@ impl FileSource for CargoPackageFileSource {
                 Err(e) => return Err(e.into()),
             }
         }
-        println!("CargoPackageFileSource: Found files: {:?}", files);
+        memory_monitor.verbose(&format!("CargoPackageFileSource: Found files: {:?}", files));
         Ok(files)
     }
 }
@@ -46,7 +46,7 @@ pub struct GlobFileSource {
 }
 
 impl FileSource for GlobFileSource {
-    fn get_files(&self) -> Result<Vec<String>> {
+    fn get_files(&self, _memory_monitor: &mut ragit_memory_monitor::MemoryMonitor) -> Result<Vec<String>> {
         let mut files = Vec::new();
         for entry in glob::glob(&self.pattern)? {
             match entry {

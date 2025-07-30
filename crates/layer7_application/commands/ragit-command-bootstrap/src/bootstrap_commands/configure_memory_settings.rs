@@ -1,37 +1,34 @@
 use anyhow::Result;
 use ragit_index_types::index_impl::set_config_by_key::index_set_config_by_key;
 use ragit_index_types::index_struct::Index;
-use std::io::Write;
+
 use ragit_memory_monitor::MemoryMonitor;
 
 pub async fn configure_memory_settings(
     verbose: bool,
     index: &mut Index,
     max_memory_gb: Option<u64>,
+    max_chunk_size: Option<usize>,
+    max_summary_len: Option<usize>,
+    min_summary_len: Option<usize>,
     memory_monitor: &mut MemoryMonitor,
 ) -> Result<()> {
-    if verbose {
-        println!("configure_memory_settings: Starting");
-        memory_monitor.capture_and_log_snapshot("Before configuring memory settings");
-    }
+    memory_monitor.verbose("Configuring memory settings.");
 
-    memory_monitor.check_memory_limit(max_memory_gb, "Before setting max_chunk_size")?;
-    index_set_config_by_key(index, "max_chunk_size".to_string(), "256".to_string())?;
-    if verbose {
-        writeln!(std::io::stdout(), "Set max_chunk_size to 256")?;
-    }
+    let actual_max_chunk_size = max_chunk_size.unwrap_or(256);
+    memory_monitor.check_memory_limit(max_memory_gb, &format!("Before setting max_chunk_size to {}", actual_max_chunk_size))?;
+    index_set_config_by_key(index, "max_chunk_size".to_string(), actual_max_chunk_size.to_string())?;
+    memory_monitor.verbose(&format!("Set max_chunk_size to {}", actual_max_chunk_size));
 
-    memory_monitor.check_memory_limit(max_memory_gb, "Before setting max_summary_len")?;
-    index_set_config_by_key(index, "max_summary_len".to_string(), "500".to_string())?;
-    if verbose {
-        writeln!(std::io::stdout(), "Set max_summary_len to 500")?;
-    }
+    let actual_max_summary_len = max_summary_len.unwrap_or(500);
+    memory_monitor.check_memory_limit(max_memory_gb, &format!("Before setting max_summary_len to {}", actual_max_summary_len))?;
+    index_set_config_by_key(index, "max_summary_len".to_string(), actual_max_summary_len.to_string())?;
+    memory_monitor.verbose(&format!("Set max_summary_len to {}", actual_max_summary_len));
 
-    memory_monitor.check_memory_limit(max_memory_gb, "Before setting min_summary_len")?;
-    index_set_config_by_key(index, "min_summary_len".to_string(), "100".to_string())?;
-    if verbose {
-        writeln!(std::io::stdout(), "Set min_summary_len to 100")?;
-    }
+    let actual_min_summary_len = min_summary_len.unwrap_or(100);
+    memory_monitor.check_memory_limit(max_memory_gb, &format!("Before setting min_summary_len to {}", actual_min_summary_len))?;
+    index_set_config_by_key(index, "min_summary_len".to_string(), actual_min_summary_len.to_string())?;
+    memory_monitor.verbose(&format!("Set min_summary_len to {}", actual_min_summary_len));
 
     // Note: max_summaries and max_retrieval are query_config settings, not build_config.
     // They are not directly set via index_set_config_by_key in the current implementation

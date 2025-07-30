@@ -24,13 +24,13 @@ pub async fn build_index(
 
     let _staged_files = get_staged_files(index)?;
     let build_config = BuildConfig::default();
-    memory_monitor.verbose(&format!("DEBUG: BuildConfig chunk_size: {}", build_config.chunk_size));
+    memory_monitor.verbose(&format!("BuildConfig chunk_size: {}", build_config.chunk_size));
     let splitter = TextSplitter::new(Characters);
 
     let staged_files_cloned = index.staged_files.clone();
 
     memory_monitor.verbose("bootstrap_index_self: Iterating through staged files for chunking and indexing.");
-    memory_monitor.verbose(&format!("DEBUG: Number of staged files: {}", staged_files_cloned.len()));
+    memory_monitor.verbose(&format!("Number of staged files: {}", staged_files_cloned.len()));
 
     for file_path_buf in &staged_files_cloned {
         process_staged_file(file_path_buf, &splitter, &build_config, index, memory_monitor)?;

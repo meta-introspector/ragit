@@ -20,7 +20,7 @@ pub fn add_chunk_to_index(
         source: ChunkSource::File { path: file_path_str.to_string(), index: chunk_index, page: None },
         ..FixedChunk::dummy()
     };
-    memory_monitor.verbose(&format!("DEBUG: Adding chunk to index: data='{}', uid='{}'", new_chunk.data, new_chunk.uid));
+    memory_monitor.verbose(&format!("Adding chunk to index: data='{}', uid='{}'", new_chunk.data, new_chunk.uid));
     index.add_chunk(new_chunk);
     memory_monitor.process_unit();
 }
