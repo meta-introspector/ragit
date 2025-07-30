@@ -1,6 +1,5 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use std::env;
 use std::fs;
 use std::io::Write; // For stdin().read_line() and flush()
 use std::path::PathBuf; // For PathBuf::from in bootstrap_command_main
@@ -23,9 +22,7 @@ use ragit_index_query::query;
 use ragit_index_types::index_struct::Index;
 use ragit_index_types::load_mode::LoadMode;
 use ragit_utils::project_root::find_root;
-use ragit_utils::doc_utils::get_doc_content;
 use ragit_types::query_turn::QueryTurn;
-use ragit_utils::prelude::*;
 
 mod cli;
 use cli::{Cli, Commands};
@@ -50,7 +47,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
 
     println!("Temporary directory: {:?}", temp_dir);
 
-    memory_monitor.capture_and_log_snapshot("After setup_environment");
+    memory_monitor.capture_and_log_snapshot(AFTER_SETUP_ENV);
 
     if !args.disable_memory_config {
         memory_monitor.check_memory_limit(max_memory_gb, "Before configure_memory_settings")?;
@@ -66,7 +63,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
     }
 
     if !args.disable_prompt_copy {
-        memory_monitor.check_memory_limit(max_memory_gb, "Before copy_prompts")?;
+        memory_monitor.check_memory_limit(max_memory_gb, BEFORE_COPY_PROMPTS)?;
         copy_prompts(
             &actual_root_dir,
             &temp_dir,
@@ -77,7 +74,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
     }
 
     if !args.disable_file_add {
-        memory_monitor.check_memory_limit(max_memory_gb, "Before add_bootstrap_files")?;
+        memory_monitor.check_memory_limit(max_memory_gb, BEFORE_ADD_FILES)?;
         add_bootstrap_files(
             &actual_root_dir,
             &temp_dir,
@@ -89,7 +86,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
     }
 
     if !args.disable_index_build {
-        memory_monitor.check_memory_limit(max_memory_gb, "Before build_index")?;
+        memory_monitor.check_memory_limit(max_memory_gb, BEFORE_BUILD_INDEX)?;
         build_index(
             &temp_dir,
             &actual_root_dir,
