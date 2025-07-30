@@ -9,8 +9,8 @@ ragit-index-io = { path = "../ragit-index-io" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ragit-types = { path = "../../layer1_physical/ragit-types" }
-ragit-error = { path = "../ragit-error" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
 tokio = { version = "1.0", features = ["full"] }
-ragit-tfidf = { path = "../ragit-tfidf" }
-ragit-index-types = { path = "../ragit-index-types" }
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }

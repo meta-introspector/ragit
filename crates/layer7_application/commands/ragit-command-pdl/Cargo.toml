@@ -8,7 +8,7 @@ ragit-utils = { path = "../../../layer3_network/ragit-utils" }
 ragit-api = { path = "../../api" }
 ragit-types = { path = "../../../layer1_physical/ragit-types" }
 ragit-index-io = { path = "../../../legacy_and_refactoring/ragit-index-io" }
-ragit-index-types = { path = "../../../legacy_and_refactoring/ragit-index-types" }
+ragit-index-types = { path = "../../../layer3_network/ragit-index-types" }
 ragit-pdl = { path = "../../../layer6_presentation/pdl" }
 ragit-schema = { path = "../../../layer6_presentation/ragit-schema" }
 ragit-fs = { path = "../../../layer2_data_link/fs" }

@@ -4,7 +4,7 @@ use std::time::Duration;
 use tokio::time::timeout;
 
 use crate::bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
-use crate::bootstrap_commands::build_index_logic::main_build_index::build_index;
+use ragit_bootstrap_logic::build_index_logic::main_build_index::build_index;
 use crate::bootstrap_commands::copy_prompts::copy_prompts;
 use crate::bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
 use crate::bootstrap_commands::perform_self_improvement::perform_self_improvement;

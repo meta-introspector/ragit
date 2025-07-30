@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ragit-index-types = { path = "../ragit-index-types" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-types = { path = "../../layer1_physical/ragit-types" }
 ragit-index = { path = "../../layer3_network/ragit-index" }
 ragit-model = { path = "../../layer7_application/ragit-model" }

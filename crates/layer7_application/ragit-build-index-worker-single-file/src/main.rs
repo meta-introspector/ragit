@@ -9,7 +9,7 @@ use ragit_memory_monitor::MemoryMonitor;
 use bootstrap_commands::setup_environment::setup_environment;
 use bootstrap_commands::copy_prompts::copy_prompts;
 use bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
-use bootstrap_commands::build_index_logic::main_build_index::build_index;
+use ragit_bootstrap_logic::build_index_logic::main_build_index::build_index;
 use bootstrap_commands::constants::{CLEANUP_TEMP_DIR, MEMORY_USAGE_SUMMARY_HEADER};
 
 fn main() -> Result<()> {

@@ -2,14 +2,14 @@ use anyhow::Result;
 use std::path::PathBuf;
 use ragit_index_types::index_struct::Index;
 use ragit_memory_monitor::MemoryMonitor;
-use crate::bootstrap_commands::build_index_logic::get_staged_files::get_staged_files;
+use super::get_staged_files::get_staged_files;
 use text_splitter::{TextSplitter, Characters};
 use ragit_types::build_config::BuildConfig;
-use crate::bootstrap_commands::build_index_logic::process_file::process_staged_file::process_staged_file;
+use super::process_file::process_staged_file::process_staged_file;
 
 
 
-pub fn build_index(
+pub async fn build_index(
     _temp_dir: &PathBuf,
     _actual_root_dir: &PathBuf,
     index: &mut Index,

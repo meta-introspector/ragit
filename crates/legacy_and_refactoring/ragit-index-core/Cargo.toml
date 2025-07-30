@@ -9,11 +9,11 @@ ragit-types = { path = "../../layer1_physical/ragit-types" }
 ragit-api = { path = "../../layer7_application/api" }
 ragit-fs = { path = "../../layer2_data_link/fs" } # For PathBuf operations in Index struct
 ragit-uid = { path = "../../layer2_data_link/ragit-uid" } # For Uid in Index struct
-ragit-tfidf = { path = "../ragit-tfidf" } # For ProcessedDoc in Index methods
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" } # For ProcessedDoc in Index methods
 ragit-pdl = { path = "../../layer6_presentation/pdl" } # For Pdl in Index methods
 ragit-readers = { path = "../../layer4_transport/ragit-readers" } # For readers in Index methods
 ragit-utils = { path = "../../layer3_network/ragit-utils" }
-ragit-index-types = { path = "../ragit-index-types" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-index-effects = { path = "../ragit-index-effects" }
 
 

@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 ragit-types = { path = "../../layer1_physical/ragit-types" }
-ragit-index-types = { path = "../ragit-index-types" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-model = { path = "../../layer7_application/ragit-model" }
 ragit-muse = { path = "../../layer7_application/ragit-muse" }
 anyhow = "1.0"

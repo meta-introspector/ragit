@@ -15,7 +15,7 @@ ragit-types = { path = "../../layer1_physical/ragit-types" }
 ragit-fs = { path = "../../layer2_data_link/fs" }
 ragit-utils = { path = "../../layer3_network/ragit-utils" }
 ragit-pdl = { path = "../../layer6_presentation/pdl" }
-ragit-error = { path = "../../legacy_and_refactoring/ragit-error" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
 
 
 

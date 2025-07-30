@@ -7,7 +7,7 @@ edition = "2021"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ragit-types = { path = "../../layer1_physical/ragit-types" }
-ragit-error = { path = "../../legacy_and_refactoring/ragit-error" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
 
 ragit-model = { path = "../../layer7_application/ragit-model" }
 ragit-utils = { path = "../../layer3_network/ragit-utils" }

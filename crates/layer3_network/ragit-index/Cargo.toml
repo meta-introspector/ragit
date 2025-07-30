@@ -13,13 +13,13 @@ image = "0.24"
 lazy_static = "1.4.0"
 ragit-api = { path = "../../layer7_application/api" }
 ragit-config = { path = "../../layer5_session/ragit-config" }
-ragit-error = { path = "../../legacy_and_refactoring/ragit-error" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
 ragit-fs = { path = "../../layer2_data_link/fs" }
 ragit-index-core = { path = "../../legacy_and_refactoring/ragit-index-core" }
 ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }
 ragit-pdl = { path = "../../layer6_presentation/pdl" }
 ragit-readers = { path = "../../layer4_transport/ragit-readers" }
-ragit-tfidf = { path = "../../legacy_and_refactoring/ragit-tfidf" }
+ragit-tfidf = { path = "../ragit-tfidf" }
 ragit-uid = { path = "../../layer2_data_link/ragit-uid" }
 ragit-utils = { path = "../ragit-utils" }
 regex = "1.5"

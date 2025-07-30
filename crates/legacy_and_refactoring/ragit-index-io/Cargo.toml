@@ -12,10 +12,10 @@ ragit-api = { path = "../../layer7_application/api" }
 ragit-config = { path = "../../layer5_session/ragit-config" }
 
 ragit-fs = { path = "../../layer2_data_link/fs", features = ["diff"] }
-ragit-index-types = { path = "../ragit-index-types" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-pdl = { path = "../../layer6_presentation/pdl" }
 ragit-prompt-management = { path = "../ragit-prompt-management" }
-ragit-tfidf = { path = "../ragit-tfidf" }
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
 ragit-types = { path = "../../layer1_physical/ragit-types" }
 ragit-utils = { path = "../../layer3_network/ragit-utils" }
 ragit-index-storage = { path = "../ragit-index-storage" }

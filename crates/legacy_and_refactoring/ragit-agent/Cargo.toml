@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
-ragit-error = { path = "../ragit-error" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
 ragit-fs = { path = "../../layer2_data_link/fs" }
 ragit-utils = { path = "../../layer3_network/ragit-utils" }
 serde = { version = "1.0", features = ["derive"] }

@@ -15,15 +15,15 @@ ragit-index-io = { path = "../../../legacy_and_refactoring/ragit-index-io" }
 ragit-index-query = { path = "../../../legacy_and_refactoring/ragit-index-query" }
 ragit-index-save-to-file = { path = "../../../legacy_and_refactoring/ragit-index-save-to-file" }
 ragit-index-storage = { path = "../../../legacy_and_refactoring/ragit-index-storage" }
-ragit-index-types = { path = "../../../legacy_and_refactoring/ragit-index-types" }
-ragit-tfidf = { path = "../../../legacy_and_refactoring/ragit-tfidf" }
+ragit-index-types = { path = "../../../layer3_network/ragit-index-types" }
+ragit-tfidf = { path = "../../../layer3_network/ragit-tfidf" }
 ragit-types = { path = "../../../layer1_physical/ragit-types" }
 ragit-utils = { path = "../../../layer3_network/ragit-utils" }
 serde_json = "1.0"
 
 ragit-memory-monitor = { path = "../../../layer1_physical/ragit-memory-monitor" }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-text-splitter = "0.3"
+ragit-bootstrap-logic = { path = "../../../layer6_presentation/ragit-bootstrap-logic" }
 sha3 = "0.10.8"
 
 [dev-dependencies]

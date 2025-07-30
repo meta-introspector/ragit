@@ -56,7 +56,7 @@ members = [
     "crates/legacy_and_refactoring/ragit-agent-action",
     "crates/legacy_and_refactoring/ragit-chunk",
     "crates/legacy_and_refactoring/ragit-config-commands",
-    "crates/legacy_and_refactoring/ragit-error-conversions",
+    "crates/layer1_physical/ragit-error-conversions",
     "crates/legacy_and_refactoring/ragit-index-core",
     "crates/legacy_and_refactoring/ragit-index-effects",
     "crates/legacy_and_refactoring/ragit-index-io",
@@ -64,7 +64,7 @@ members = [
     "crates/legacy_and_refactoring/ragit-index-query",
     "crates/legacy_and_refactoring/ragit-index-save-to-file",
     "crates/legacy_and_refactoring/ragit-index-storage",
-    "crates/legacy_and_refactoring/ragit-index-types",
+    "crates/layer3_network/ragit-index-types",
     "crates/legacy_and_refactoring/ragit-legacy-agent",
     "crates/legacy_and_refactoring/ragit-legacy-api-config",
     "crates/legacy_and_refactoring/ragit-legacy-chunk",
@@ -75,7 +75,7 @@ members = [
     
     "crates/legacy_and_refactoring/ragit-prompt-management",
     "crates/legacy_and_refactoring/ragit-qa-system",
-    "crates/legacy_and_refactoring/ragit-tfidf",
+    "crates/layer3_network/ragit-tfidf",
 ]
 exclude = [
     "crates/server",
@@ -139,8 +139,8 @@ ragit-agent = { path = "./crates/legacy_and_refactoring/ragit-agent" }
 ragit-types = { path = "./crates/layer1_physical/ragit-types" }
 ragit-index-query = { path = "./crates/legacy_and_refactoring/ragit-index-query" }
 ragit-index = { path = "./crates/layer3_network/ragit-index" }
-ragit-index-types = { path = "./crates/legacy_and_refactoring/ragit-index-types" }
-ragit-tfidf = { path = "./crates/legacy_and_refactoring/ragit-tfidf" }
+ragit-index-types = { path = "./crates/layer3_network/ragit-index-types" }
+ragit-tfidf = { path = "./crates/layer3_network/ragit-tfidf" }
 ragit-index-io = { path = "./crates/legacy_and_refactoring/ragit-index-io" }
 ragit-model-query-response = { path = "./crates/layer6_presentation/ragit-model-query-response" }
 regex = "1.11.1"

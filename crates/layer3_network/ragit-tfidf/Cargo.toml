@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 ragit-types = { path = "../../layer1_physical/ragit-types" }
-ragit-error = { path = "../ragit-error" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
 ragit-fs = { path = "../../layer2_data_link/fs" }
 ragit-utils = { path = "../../layer3_network/ragit-utils" }
 anyhow = "1.0"
