@@ -16,15 +16,35 @@ pub struct MemoryMonitor {
     sys: System,
     last_snapshot_data: Option<(u64, u64, u64)>,
     snapshots: Vec<MemorySnapshot>,
+    last_snapshot_time: Option<std::time::Instant>,
+    units_processed_since_last_snapshot: u64,
+    verbose: bool,
 }
 
 impl MemoryMonitor {
-    pub fn new() -> Self {
+    pub fn new(verbose: bool) -> Self {
         MemoryMonitor {
             sys: System::new_all(),
             last_snapshot_data: None,
             snapshots: Vec::new(),
+            last_snapshot_time: None,
+            units_processed_since_last_snapshot: 0,
+            verbose,
         }
+    }
+
+    pub fn verbose(&self, message: &str) {
+        if self.verbose {
+            println!("{}", message);
+        }
+    }
+
+    pub fn process_unit(&mut self) {
+        self.units_processed_since_last_snapshot += 1;
+    }
+
+    pub fn process_units(&mut self, n: u64) {
+        self.units_processed_since_last_snapshot += n;
     }
 
     pub fn capture_and_log_snapshot(&mut self, step_name: &str) {
@@ -33,7 +53,10 @@ impl MemoryMonitor {
             &mut self.sys,
             &mut self.last_snapshot_data,
             &mut self.snapshots,
+            &mut self.last_snapshot_time,
+            self.units_processed_since_last_snapshot,
         );
+        self.units_processed_since_last_snapshot = 0;
     }
 
     pub fn print_final_report(&self) {

@@ -17,10 +17,15 @@ The "Have a KitKat" meta-program is a user-defined workflow for pausing the curr
 - **Fixed `thiserror` prefix errors:** Added whitespace to error messages in `ApiError` to resolve `thiserror` prefix warnings.
 
 ## New Critical Path:
-The next phase is to successfully run the `bootstrap` command without compilation errors or runtime panics. This involves:
-1. Verifying all compilation errors are resolved.
-2. Confirming the graceful exit behavior with `max_iterations`.
-3. Ensuring the `PromptMissing` error is resolved by correctly populating the `Index`'s `prompts` field.
+1.  **Enhance Memory Report with "Time Per Unit":**
+    *   Modify `crates/layer1_physical/ragit-memory-monitor/src/print_memory_table.rs` to include a "Duration/Unit" column, calculating the average time spent per processed unit.
+2.  **Trace Index Flow (Input to Output):**
+    *   Run the `bootstrap-new` command again.
+    *   Observe the verbose output to confirm the flow of files being added, chunked, and indexed.
+    *   Pay close attention to the `DEBUG: Adding chunk to index` messages to see the individual chunks being processed.
+3.  **Verify Markdown Export:**
+    *   Ensure the `export_chunks_main::write_chunks_to_markdown` function is being called and is correctly exporting the indexed chunks to markdown files in the temporary directory.
+    *   After the `bootstrap-new` run, I will inspect the contents of the temporary directory (which is not cleaned up by default in verbose mode) to manually verify the validity and content of the generated markdown files.
 
 ## Generalization of Learning:
 - **"One Declaration Per File" Principle:** This principle, while increasing the number of files, significantly improves modularity, testability, and reusability. It forces a clear separation of concerns and makes code easier to navigate and understand.

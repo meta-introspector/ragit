@@ -6,7 +6,6 @@ use std::fs::File;
 use anyhow::Context;
 
 pub struct PlainTextReader {
-    path: String,
     _root_dir: String,
     config: BuildConfig,
     tokens: VecDeque<AtomicToken>,
@@ -20,7 +19,6 @@ impl FileReaderImpl for PlainTextReader {
         let file = map_anyhow_error(File::open(path).context(format!("Failed to open plain text file: {}", path)))?;
         let file_size = map_anyhow_error(file.metadata().context("Failed to get file metadata"))?.len();
         let reader = PlainTextReader {
-            path: path.to_string(),
             _root_dir: root_dir.to_string(),
             config: config.clone(),
             tokens: VecDeque::new(),

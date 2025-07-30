@@ -19,7 +19,7 @@ pub async fn bootstrap_index_self(
     max_iterations: Option<usize>,
     max_memory_gb: Option<u64>,
     max_files_to_process: Option<usize>,
-    disable_write_markdown: bool,
+    _disable_write_markdown: bool,
     disable_memory_config: bool,
     disable_prompt_copy: bool,
     disable_file_add: bool,
@@ -32,14 +32,11 @@ pub async fn bootstrap_index_self(
     let max_files_to_process = max_files_to_process.or(Some(1));
     let disable_write_markdown = false;
     let max_memory_gb = max_memory_gb.or(Some(1));
-    let mut memory_monitor = MemoryMonitor::new();
+    let mut memory_monitor = MemoryMonitor::new(verbose);
 
-    if verbose {
-        println!("bootstrap_index_self: Starting");
-        memory_monitor.capture_and_log_snapshot("Initial");
+    memory_monitor.verbose("bootstrap_index_self: Starting");
+    memory_monitor.capture_and_log_snapshot("Initial");
         
-    }
-
     let bootstrap_task = async move {
         memory_monitor.check_memory_limit(max_memory_gb, "Before setup_environment")?;
         
@@ -67,15 +64,15 @@ pub async fn bootstrap_index_self(
         if !disable_index_build {
             memory_monitor.check_memory_limit(max_memory_gb, "Before build_index")?;
             
-            build_index(verbose, &temp_dir, &actual_root_dir, &mut index, max_iterations, max_memory_gb, &mut memory_monitor).await?;
+            build_index(&temp_dir, &actual_root_dir, &mut index, max_iterations, max_memory_gb, &mut memory_monitor).await?;
         }
 
         if !disable_write_markdown {
             memory_monitor.check_memory_limit(max_memory_gb, "Before write_chunks_to_markdown")?;
             
             export_chunks_main::write_chunks_to_markdown(verbose, &temp_dir, &index, max_memory_gb, &mut memory_monitor, max_iterations).await?;
-        } else if verbose {
-            println!("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
+        } else {
+            memory_monitor.verbose("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
         }
 
         if !disable_self_improvement {
