@@ -122,6 +122,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
             &index,
             max_memory_gb,
             &mut memory_monitor,
+            max_iterations,
         ).await?;
     }
 
