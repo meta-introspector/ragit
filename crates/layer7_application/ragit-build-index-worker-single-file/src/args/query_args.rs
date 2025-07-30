@@ -11,4 +11,6 @@ pub struct QueryArgs {
     pub json: bool,
     #[clap(long)]
     pub kb_path: Option<String>,
+    #[clap(long)]
+    pub verbose: bool,
 }

@@ -1,14 +1,12 @@
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::Parser;
 use std::fs;
-use std::io::Write; // For stdin().read_line() and flush()
 use std::path::PathBuf; // For PathBuf::from in bootstrap_command_main
-use std::collections::HashMap;
 
 mod bootstrap_commands;
 use ragit_memory_monitor::MemoryMonitor;
 use ragit_bootstrap_logic::build_index_logic::main_build_index::build_index;
-use bootstrap_commands::constants::{CLEANUP_TEMP_DIR, MEMORY_USAGE_SUMMARY_HEADER};
+use bootstrap_commands::constants::{AFTER_SETUP_ENV, BEFORE_COPY_PROMPTS, BEFORE_ADD_FILES, BEFORE_BUILD_INDEX, CLEANUP_TEMP_DIR, MEMORY_USAGE_SUMMARY_HEADER};
 use bootstrap_commands::setup_environment::setup_environment;
 use bootstrap_commands::copy_prompts::copy_prompts;
 use bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
@@ -45,7 +43,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
         &mut memory_monitor,
     ).await?;
 
-    println!("Temporary directory: {:?}", temp_dir);
+    memory_monitor.verbose(&format!("Temporary directory: {:?}", temp_dir));
 
     memory_monitor.capture_and_log_snapshot(AFTER_SETUP_ENV);
 
@@ -111,6 +109,10 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
         memory_monitor.verbose("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
     }
 
+    memory_monitor.verbose("bootstrap_command_main: Saving index to file.");
+    ragit_index_save_to_file::save_index_to_file(&index, temp_dir.join(".ragit").join("index.json"))?;
+    memory_monitor.verbose("bootstrap_command_main: Index saved to file.");
+
     if !args.disable_self_improvement {
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_self_improvement")?;
         perform_self_improvement(
@@ -124,6 +126,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
     }
 
     if !args.disable_final_query {
+        memory_monitor.verbose("bootstrap_command_main: Before perform_final_reflective_query");
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_final_reflective_query")?;
         perform_final_reflective_query(
             args.verbose,
@@ -131,6 +134,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
             max_memory_gb,
             &mut memory_monitor,
         ).await?;
+        memory_monitor.verbose("bootstrap_command_main: After perform_final_reflective_query");
     }
 
     // Clean up the temporary directory
@@ -148,7 +152,8 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
     Ok(())
 }
 
-async fn query_command_main(args: QueryArgs) -> Result<(), anyhow::Error> {
+async fn query_command_main(args: QueryArgs, memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
+    memory_monitor.verbose("query_command_main: Starting query command.");
     let index = if let Some(path) = args.kb_path {
         Index::load(PathBuf::from(path), LoadMode::OnlyJson)?
     } else {
@@ -170,8 +175,9 @@ async fn query_command_main(args: QueryArgs) -> Result<(), anyhow::Error> {
             if input == ".exit" {
                 break;
             }
-
-            let response = query(&index, &input, turns.clone(), None).await?;
+            memory_monitor.verbose(&format!("query_command_main: Executing query: {}", input));
+            let response = query(&index, &input, turns.clone(), None, memory_monitor).await?;
+            memory_monitor.verbose("query_command_main: Query executed.");
             println!("{}", response.get_message());
             turns.push(QueryTurn {
                 query: input.to_string(),
@@ -179,7 +185,9 @@ async fn query_command_main(args: QueryArgs) -> Result<(), anyhow::Error> {
             });
         }
     } else {
-        let response = query(&index, &query_str, vec![], None).await?;
+        memory_monitor.verbose(&format!("query_command_main: Executing query: {}", query_str));
+        let response = query(&index, &query_str, vec![], None, memory_monitor).await?;
+        println!("query_command_main: Query executed.");
 
         if json_mode {
             println!("{}", serde_json::to_string_pretty(&response.to_json())?);
@@ -191,7 +199,7 @@ async fn query_command_main(args: QueryArgs) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
-async fn top_terms_command_main(args: TopTermsArgs) -> Result<(), anyhow::Error> {
+async fn top_terms_command_main(args: TopTermsArgs, memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
     use std::collections::HashMap;
 
     let index = if let Some(path) = args.kb_path {
@@ -232,7 +240,13 @@ async fn main() -> Result<()> {
 
     match cli.command {
         Commands::Bootstrap { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup } => bootstrap_command_main(BootstrapArgs { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup }).await,
-        Commands::Query { query_string, no_pdl, multi_turn, json, kb_path } => query_command_main(QueryArgs { query_string, no_pdl, multi_turn, json, kb_path }).await,
-        Commands::TopTerms { count, kb_path } => top_terms_command_main(TopTermsArgs { count, kb_path }).await,
+        Commands::Query { query_string, no_pdl, multi_turn, json, kb_path, verbose } => {
+            let mut memory_monitor = MemoryMonitor::new(verbose, None, None);
+            query_command_main(QueryArgs { query_string, no_pdl, multi_turn, json, kb_path, verbose }, &mut memory_monitor).await
+        },
+        Commands::TopTerms { count, kb_path, verbose } => {
+            let mut memory_monitor = MemoryMonitor::new(verbose, None, None);
+            top_terms_command_main(TopTermsArgs { count, kb_path }, &mut memory_monitor).await
+        }
     }
 }

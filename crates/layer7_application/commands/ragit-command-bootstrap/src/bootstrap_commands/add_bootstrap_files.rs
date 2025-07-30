@@ -17,6 +17,7 @@ pub async fn add_bootstrap_files(
     memory_monitor: &mut MemoryMonitor,
     max_files_to_process: Option<usize>,
 ) -> Result<(), anyhow::Error> {
+    memory_monitor.verbose("add_bootstrap_files: Starting to add bootstrap files.");
     memory_monitor.verbose("Running rag add.");
     memory_monitor.verbose(&format!("Found project root: {:?}", actual_root_dir));
     let bootstrap_source = crate::file_source::CargoPackageFileSource { 
@@ -27,6 +28,7 @@ pub async fn add_bootstrap_files(
     if let Some(max_files) = max_files_to_process {
         if original_files_to_add.len() > max_files {
             original_files_to_add.truncate(max_files);
+            memory_monitor.verbose(&format!("add_bootstrap_files: Truncated files to process to {} files.", max_files));
         }
     }
     memory_monitor.verbose(&format!("Found {} files to add", original_files_to_add.len()));
@@ -50,5 +52,6 @@ pub async fn add_bootstrap_files(
     memory_monitor.capture_and_log_snapshot("After add_files_command");
     memory_monitor.verbose(&format!("Chunks in index after add_files_command: {}", index.chunks.len()));
     memory_monitor.check_memory_limit(max_memory_gb, "After add_files_command")?;
+    memory_monitor.verbose("add_bootstrap_files: Finished adding bootstrap files.");
     Ok(())
 }

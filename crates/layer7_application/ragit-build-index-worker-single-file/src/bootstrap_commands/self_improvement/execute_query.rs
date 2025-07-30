@@ -14,7 +14,7 @@ pub async fn execute_query(
         memory_monitor.capture_and_log_snapshot("Before self-improvement query");
     }
     memory_monitor.check_memory_limit(max_memory_gb, "Before self-improvement query")?;
-    let response = ragit_index_query::query(index, prompt, vec![], None).await?;
+    let response = ragit_index_query::query(index, prompt, vec![], None, memory_monitor).await?;
     let improved_code = response.get_message();
     if verbose {
         memory_monitor.capture_and_log_snapshot("After self-improvement query");

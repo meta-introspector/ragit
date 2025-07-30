@@ -23,16 +23,11 @@ impl ModelQueryResponse {
         serde_json::to_value(self).unwrap()
     }
 
-    pub async fn new(
-        _model: &Model,
-        _prompt: &Prompt,
-        _previous_request: &str,
-        _current_data: &str,
-    ) -> Result<Self, ApiError> {
-        Ok(ModelQueryResponse {
+    pub fn new(response: String) -> Self {
+        ModelQueryResponse {
             multi_turn_schema: None,
             retrieved_chunks: Vec::new(),
-            response: String::new(),
-        })
+            response,
+        }
     }
 }

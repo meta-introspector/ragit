@@ -132,15 +132,12 @@ async fn main() -> Result<()> {
             cmd.arg("ragit-build-index-worker-single-file");
             cmd.arg("--"); // Pass arguments to the binary
 
-            // Global flags for ragit-build-index-worker-single-file should come first
-            if args.verbose {
-                cmd.arg("--verbose");
-            }
-
-            // Then the subcommand
             cmd.arg("bootstrap");
 
             // Then subcommand-specific flags
+            if args.verbose {
+                cmd.arg("--verbose");
+            }
             if let Some(timeout) = args.timeout {
                 cmd.arg("--timeout-seconds").arg(timeout.to_string());
             }

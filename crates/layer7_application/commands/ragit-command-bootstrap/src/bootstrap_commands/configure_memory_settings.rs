@@ -37,7 +37,7 @@ pub async fn configure_memory_settings(
     // would need to be updated to expose these as configurable via this method.
 
     if verbose {
-        println!("configure_memory_settings: Finished");
+        memory_monitor.verbose("configure_memory_settings: Finished");
         memory_monitor.capture_and_log_snapshot("After configuring memory settings");
     }
 

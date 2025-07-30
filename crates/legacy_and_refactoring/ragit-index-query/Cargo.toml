@@ -14,3 +14,4 @@ tokio = { version = "1.0", features = ["full"] }
 ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
 ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }
+ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }

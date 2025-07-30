@@ -68,6 +68,8 @@ pub enum Commands {
         json: bool,
         #[clap(long)]
         kb_path: Option<String>,
+        #[clap(long)]
+        verbose: bool,
     },
     /// Report top terms in the index
     TopTerms {
@@ -75,5 +77,7 @@ pub enum Commands {
         count: Option<usize>,
         #[clap(long)]
         kb_path: Option<String>,
+        #[clap(long)]
+        verbose: bool,
     },
 }

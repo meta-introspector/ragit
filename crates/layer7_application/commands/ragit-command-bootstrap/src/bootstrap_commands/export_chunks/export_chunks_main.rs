@@ -12,23 +12,24 @@ pub async fn write_chunks_to_markdown(
     memory_monitor: &mut MemoryMonitor,
     max_iterations: Option<usize>,
 ) -> Result<(), anyhow::Error> {
+    memory_monitor.verbose("export_chunks_main: Starting to write chunks to content-addressable objects.");
     memory_monitor.verbose("Writing chunks to content-addressable objects.");
 
     let all_chunks = index.get_chunks();
-    memory_monitor.verbose(&format!("Number of chunks returned by index.get_chunks(): {}", all_chunks.len()));
-    memory_monitor.verbose(&format!("Number of chunks to process: {}", all_chunks.len()));
+    memory_monitor.verbose(&format!("export_chunks_main: Number of chunks returned by index.get_chunks(): {}", all_chunks.len()));
+    memory_monitor.verbose(&format!("export_chunks_main: Number of chunks to process: {}", all_chunks.len()));
     let mut processed_chunks_count = 0;
 
     for chunk in all_chunks {
-        memory_monitor.verbose(&format!("Processing chunk. temp_dir: {:?}", temp_dir));
+        memory_monitor.verbose(&format!("export_chunks_main: Processing chunk. temp_dir: {:?}", temp_dir));
         if let Some(max_iter) = max_iterations {
             if processed_chunks_count >= max_iter {
-                memory_monitor.verbose(&format!("Stopping chunk processing after {} chunks due to max_iterations limit.", max_iter));
+                memory_monitor.verbose(&format!("export_chunks_main: Stopping chunk processing after {} chunks due to max_iterations limit.", max_iter));
                 break;
             }
         }
 
-        memory_monitor.verbose(&format!("Calling write_chunk_object for chunk with UID: {}", chunk.uid));
+        memory_monitor.verbose(&format!("export_chunks_main: Calling write_chunk_object for chunk with UID: {}", chunk.uid));
         write_chunk_object::write_chunk_object(
             verbose,
             temp_dir,
@@ -40,7 +41,8 @@ pub async fn write_chunks_to_markdown(
         processed_chunks_count += 1;
     }
 
-    memory_monitor.verbose(&format!("Finished writing {} chunks to content-addressable objects.", processed_chunks_count));
+    memory_monitor.verbose(&format!("export_chunks_main: Finished writing {} chunks to content-addressable objects.", processed_chunks_count));
+    memory_monitor.verbose("export_chunks_main: Exiting.");
 
     Ok(())
 }
