@@ -1,6 +1,7 @@
 use anyhow::Result;
 use std::env;
 use std::fs;
+use std::io::Write;
 
 use crate::bootstrap_commands::setup_environment::setup_environment;
 use crate::bootstrap_commands::copy_prompts::copy_prompts;
@@ -18,88 +19,64 @@ pub async fn run() -> Result<()> {
 
     let mut memory_monitor = MemoryMonitor::new();
 
-    println!("{}", MEMORY_USAGE_BEFORE_SETUP_ENV);
     memory_monitor.capture_and_log_snapshot(BEFORE_SETUP_ENV);
 
     let (actual_root_dir, temp_dir, mut index) = setup_environment(
-        true, // verbose
-        Some(1), // max_memory_gb (1GB for now)
+        false, // verbose
+        None, // max_memory_gb (no limit for now)
         &mut memory_monitor,
     )?;
+    println!("DEBUG: Actual root directory: {:?}", actual_root_dir);
 
-    println!("{}", MEMORY_USAGE_AFTER_SETUP_ENV);
     memory_monitor.capture_and_log_snapshot(AFTER_SETUP_ENV);
 
     // Call copy_prompts
-    println!("{}", MEMORY_USAGE_BEFORE_COPY_PROMPTS);
     memory_monitor.capture_and_log_snapshot(BEFORE_COPY_PROMPTS);
     copy_prompts(
-        true, // verbose
+        false, // verbose
         &actual_root_dir,
         &temp_dir,
-        Some(1), // max_memory_gb
+        None, // max_memory_gb
         &mut memory_monitor,
     )?;
-    println!("{}", MEMORY_USAGE_AFTER_COPY_PROMPTS);
     memory_monitor.capture_and_log_snapshot(AFTER_COPY_PROMPTS);
 
     // Call add_bootstrap_files
-    println!("{}", MEMORY_USAGE_BEFORE_ADD_FILES);
     memory_monitor.capture_and_log_snapshot(BEFORE_ADD_FILES);
-    println!("DEBUG: Staged files in index before add_bootstrap_files: {}", index.staged_files.len());
     add_bootstrap_files(
-        true, // verbose
+        false, // verbose
         &actual_root_dir,
         &temp_dir,
         &mut index, // Pass mutable reference
-        Some(1), // max_memory_gb
+        None, // max_memory_gb
         &mut memory_monitor,
-        Some(5), // max_files_to_process
+        None, // max_files_to_process (process all files)
     )?;
-    println!("{}", MEMORY_USAGE_AFTER_ADD_FILES);
     memory_monitor.capture_and_log_snapshot(AFTER_ADD_FILES);
-    println!("DEBUG: Staged files in index after add_bootstrap_files: {}", index.staged_files.len());
 
     // Call build_index
-    println!("{}", MEMORY_USAGE_BEFORE_BUILD_INDEX);
     memory_monitor.capture_and_log_snapshot(BEFORE_BUILD_INDEX);
     build_index(
-        true, // verbose
+        false, // verbose
         &temp_dir,
         &actual_root_dir,
         &mut index, // Pass mutable reference
         None, // max_iterations
-        Some(1), // max_memory_gb
+        None, // max_memory_gb
         &mut memory_monitor,
     )?;
-    println!("{}", MEMORY_USAGE_AFTER_BUILD_INDEX);
     memory_monitor.capture_and_log_snapshot(AFTER_BUILD_INDEX);
 
-    // Call export_chunks
-    println!("{}", MEMORY_USAGE_BEFORE_EXPORT_CHUNKS);
-    memory_monitor.capture_and_log_snapshot(BEFORE_EXPORT_CHUNKS);
-    export_chunks_main::write_chunks_to_markdown(
-        true, // verbose
-        &temp_dir,
-        &index,
-        Some(1), // max_memory_gb
-        &mut memory_monitor,
-        None, // max_iterations
-    ).await?;
-    println!("{}", MEMORY_USAGE_AFTER_EXPORT_CHUNKS);
-    memory_monitor.capture_and_log_snapshot(AFTER_EXPORT_CHUNKS);
-
-    // Clean up the temporary directory
-    if !disable_cleanup {
-        fs::remove_dir_all(&temp_dir)?;
-        println!("{}{:?}", CLEANUP_TEMP_DIR, temp_dir);
-    } else if true { // verbose
-        println!("bootstrap_index_self: Skipping cleanup of temporary directory as requested.");
-    }
-
     // Print memory usage table
-    println!("{}", MEMORY_USAGE_SUMMARY_HEADER);
     memory_monitor.print_final_report();
+
+    // Count words in chunks and print to stdout
+    // Print memory usage table
+    memory_monitor.print_final_report();
+
+    // Count words in chunks and print to stdout
+    let word_counts = ragit_index_types::word_counter::count_words_in_chunks(&index);
+    println!("\nWord Counts:\n{:?}", word_counts);
 
     Ok(())
 }

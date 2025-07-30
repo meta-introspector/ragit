@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use super::constants::PROMPTS_DIR_NAME;
 use ragit_memory_monitor::MemoryMonitor;
 
-pub fn copy_prompts(
+pub async fn copy_prompts(
     actual_root_dir: &PathBuf,
     temp_dir: &PathBuf,
     max_memory_gb: Option<u64>,

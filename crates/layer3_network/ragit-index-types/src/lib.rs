@@ -8,7 +8,8 @@ pub use ragit_utils::constant::*;
 pub use std::time::{Duration, Instant};
 pub use ragit_types::chunk;
 pub use ragit_types::uid::Uid;
-pub use ragit_types::ii_status::IIStatus;
+
+pub mod word_counter;
 pub fn index_get_prompt(
     index: &Index,
     prompt_name: &str,

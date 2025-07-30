@@ -39,7 +39,7 @@ pub fn add_files_sync(
     })
 }
 
-pub fn add_bootstrap_files(
+pub async fn add_bootstrap_files(
     actual_root_dir: &PathBuf,
     temp_dir: &PathBuf,
     index: &mut Index,

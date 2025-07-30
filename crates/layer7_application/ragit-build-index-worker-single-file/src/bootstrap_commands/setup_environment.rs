@@ -10,7 +10,7 @@ use super::constants::{TEMP_DIR_NAME, RAGIT_DIR_NAME, INDEX_FILE_NAME};
 
 use ragit_memory_monitor::MemoryMonitor;
 
-pub fn setup_environment(
+pub async fn setup_environment(
     _max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
 ) -> Result<(PathBuf, PathBuf, Index), anyhow::Error> {

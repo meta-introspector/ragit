@@ -1,5 +1,6 @@
 use anyhow::Result;
 use std::time::Duration;
+use std::fs;
 
 use tokio::time::timeout;
 
@@ -39,7 +40,7 @@ pub async fn bootstrap_index_self(
     let max_memory_gb = max_memory_gb;
     let mut memory_monitor = MemoryMonitor::new(verbose, time_threshold_ms, memory_threshold_bytes);
 
-    memory_monitor.verbose("Starting bootstrap process.");
+    
     memory_monitor.capture_and_log_snapshot("Initial");
         
     let bootstrap_task = async move {
@@ -94,8 +95,15 @@ pub async fn bootstrap_index_self(
 
         memory_monitor.check_memory_limit(max_memory_gb, "Before final return")?;
         
+        // Clean up the temporary directory
+        if !disable_cleanup {
+            fs::remove_dir_all(&temp_dir)?;
+        }
+
         Ok(())
     };
+
+    
 
     match timeout_seconds {
         Some(seconds) => {
