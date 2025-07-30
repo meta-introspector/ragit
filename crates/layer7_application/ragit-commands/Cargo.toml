@@ -23,7 +23,7 @@ mupdf = { version = "0.5.0", optional = true }
 resvg = { version = "0.45.1", optional = true }
 png = { version = "0.17.16", optional = true }
 
-ragit-api = { path = "../api" }
+ragit-api = { path = "../../layer7_application/api" }
 
 ragit-fs = { path = "../../layer2_data_link/fs" }
 ragit-pdl = { path = "../../layer6_presentation/pdl" }
