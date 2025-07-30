@@ -70,7 +70,7 @@ impl MemoryMonitor {
         if let Some((_, _, last_rss)) = self.last_snapshot_data {
             let memory_diff = current_process_memory_kb as i64 - last_rss as i64;
             if let Some(threshold) = self.memory_threshold_bytes {
-                if memory_diff.abs() > threshold as i64 / 1024 { // Convert threshold to KB
+                if memory_diff > threshold as i64 / 1024 { // Convert threshold to KB
                     self.verbose(&format!("MEMORY ALERT: Step '{}' changed RSS by {}KB, exceeding threshold of {}KB.", step_name, memory_diff, threshold / 1024));
                 }
             }
