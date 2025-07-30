@@ -27,8 +27,22 @@ Ragit works on Windows, but it's [not perfect](https://github.com/baehyunsol/rag
 
 Other than those 3 platforms, I haven't tested ragit on any platform.
 
+## Comprehensive Documentation
+
+For a structured overview of the project's documentation, including a glossary of terms and an index of all documents, please refer to:
+
+*   [Documentation Index](./docs/index/index.md)
+*   [Glossary of Terms](./docs/index/glossary.md)
+
+## Project Insights
+
+For a free-form braindump and synthesis of the project's philosophy, architecture, and implementation details, see:
+
+*   [Project Braindump](./docs/braindump.md)
+
 ## More documents
 
+- [Architecture](./docs/architecture.md)
 - [Build](./docs/build.md)
 - [Bootstrap](./docs/bootstrap.md): A self-improving command for developers working on `ragit` itself.
 - [Chunks](./docs/chunks.md)
