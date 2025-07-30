@@ -4,6 +4,7 @@ use std::env;
 use std::fs;
 use std::io::Write; // For stdin().read_line() and flush()
 use std::path::PathBuf; // For PathBuf::from in bootstrap_command_main
+use std::collections::HashMap;
 
 mod bootstrap_commands;
 use ragit_memory_monitor::MemoryMonitor;
@@ -24,78 +25,15 @@ use ragit_index_types::load_mode::LoadMode;
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_types::query_turn::QueryTurn;
-use ragit_utils::prelude::*; // For ArgParser, ArgType, ArgCount, etc.
+use ragit_utils::prelude::*;
 
-#[derive(Parser)]
-#[clap(author, version, about, long_about = None)]
-struct Cli {
-    #[clap(subcommand)]
-    command: Commands,
-}
+mod cli;
+use cli::{Cli, Commands};
 
-#[derive(Subcommand)]
-enum Commands {
-    /// Bootstrap the ragit index
-    Bootstrap {
-        #[clap(long)]
-        verbose: bool,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(u64))]
-        timeout_seconds: Option<u64>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(usize))]
-        max_iterations: Option<usize>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(u64))]
-        max_memory_gb: Option<u64>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(usize))]
-        max_files_to_process: Option<usize>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(usize))]
-        max_chunk_size: Option<usize>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(usize))]
-        max_summary_len: Option<usize>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(usize))]
-        min_summary_len: Option<usize>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(u128))]
-        time_threshold_ms: Option<u128>,
-        #[clap(long)]
-        #[arg(long, value_parser = clap::value_parser!(u64))]
-        memory_threshold_bytes: Option<u64>,
-        #[clap(long)]
-        disable_write_markdown: bool,
-        #[clap(long)]
-        disable_memory_config: bool,
-        #[clap(long)]
-        disable_prompt_copy: bool,
-        #[clap(long)]
-        disable_file_add: bool,
-        #[clap(long)]
-        disable_index_build: bool,
-        #[clap(long)]
-        disable_self_improvement: bool,
-        #[clap(long)]
-        disable_final_query: bool,
-        #[clap(long)]
-        disable_cleanup: bool,
-    },
-    /// Query the ragit index
-    Query {
-        query_string: String,
-        #[clap(long)]
-        no_pdl: bool,
-        #[clap(long)]
-        multi_turn: bool,
-        #[clap(long)]
-        json: bool,
-        #[clap(long)]
-        kb_path: Option<String>,
-    },
-}
+mod args;
+use crate::args::bootstrap_args::BootstrapArgs;
+use crate::args::query_args::QueryArgs;
+use crate::args::top_terms_args::TopTermsArgs;
 
 async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error> {
     let max_iterations = args.max_iterations;
@@ -256,6 +194,41 @@ async fn query_command_main(args: QueryArgs) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
+async fn top_terms_command_main(args: TopTermsArgs) -> Result<(), anyhow::Error> {
+    use std::collections::HashMap;
+
+    let index = if let Some(path) = args.kb_path {
+        Index::load(PathBuf::from(path), LoadMode::OnlyJson)?
+    } else {
+        Index::load(find_root()?, LoadMode::OnlyJson)?
+    };
+
+    let mut term_frequencies: HashMap<String, usize> = HashMap::new();
+
+    for chunk in index.get_chunks() {
+        let content = chunk.data.as_str();
+        for word in content.split_whitespace() {
+            let cleaned_word = word.to_lowercase().trim_matches(|c: char| !c.is_alphanumeric()).to_string();
+            if !cleaned_word.is_empty() {
+                *term_frequencies.entry(cleaned_word).or_insert(0) += 1;
+            }
+        }
+    }
+
+    let mut sorted_terms: Vec<(&String, &usize)> = term_frequencies.iter().collect();
+    sorted_terms.sort_by(|a, b| b.1.cmp(a.1));
+
+    let count = args.count.unwrap_or(10);
+    println!("\nTop {} terms in the index:", count);
+    println!("----------------------------------");
+    for (term, freq) in sorted_terms.iter().take(count) {
+        println!("{}: {}", term, freq);
+    }
+    println!("----------------------------------");
+
+    Ok(())
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let cli = Cli::parse();
@@ -263,68 +236,6 @@ async fn main() -> Result<()> {
     match cli.command {
         Commands::Bootstrap { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup } => bootstrap_command_main(BootstrapArgs { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup }).await,
         Commands::Query { query_string, no_pdl, multi_turn, json, kb_path } => query_command_main(QueryArgs { query_string, no_pdl, multi_turn, json, kb_path }).await,
+        Commands::TopTerms { count, kb_path } => top_terms_command_main(TopTermsArgs { count, kb_path }).await,
     }
-}
-
-// Helper structs for clap args
-#[derive(Parser)]
-struct BootstrapArgs {
-    #[clap(long)]
-    verbose: bool,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(u64))]
-    timeout_seconds: Option<u64>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(usize))]
-    max_iterations: Option<usize>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(u64))]
-    max_memory_gb: Option<u64>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(usize))]
-    max_files_to_process: Option<usize>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(usize))]
-    max_chunk_size: Option<usize>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(usize))]
-    max_summary_len: Option<usize>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(usize))]
-    min_summary_len: Option<usize>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(u128))]
-    time_threshold_ms: Option<u128>,
-    #[clap(long)]
-    #[arg(long, value_parser = clap::value_parser!(u64))]
-    memory_threshold_bytes: Option<u64>,
-    #[clap(long)]
-    disable_write_markdown: bool,
-    #[clap(long)]
-    disable_memory_config: bool,
-    #[clap(long)]
-    disable_prompt_copy: bool,
-    #[clap(long)]
-    disable_file_add: bool,
-    #[clap(long)]
-    disable_index_build: bool,
-    #[clap(long)]
-    disable_self_improvement: bool,
-    #[clap(long)]
-    disable_final_query: bool,
-    #[clap(long)]
-    disable_cleanup: bool,
-}
-
-#[derive(Parser)]
-struct QueryArgs {
-    query_string: String,
-    #[clap(long)]
-    no_pdl: bool,
-    #[clap(long)]
-    multi_turn: bool,
-    #[clap(long)]
-    json: bool,
-    #[clap(long)]
-    kb_path: Option<String>,
 }
