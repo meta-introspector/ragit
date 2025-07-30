@@ -22,7 +22,7 @@ ragit-utils = { path = "../../../layer3_network/ragit-utils" }
 serde_json = "1.0"
 
 ragit-memory-monitor = { path = "../../../layer1_physical/ragit-memory-monitor" }
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "process"] }
 ragit-bootstrap-logic = { path = "../../../layer6_presentation/ragit-bootstrap-logic" }
 sha3 = "0.10.8"
 

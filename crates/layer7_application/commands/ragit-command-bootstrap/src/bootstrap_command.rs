@@ -1,120 +1,87 @@
 use anyhow::Result;
-use std::time::Duration;
-use std::fs;
-
-use tokio::time::timeout;
-
-use crate::bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
-use ragit_bootstrap_logic::build_index_logic::main_build_index::build_index;
-use crate::bootstrap_commands::copy_prompts::copy_prompts;
-use crate::bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
-use crate::bootstrap_commands::perform_self_improvement::perform_self_improvement;
-use crate::bootstrap_commands::setup_environment::setup_environment;
-use crate::bootstrap_commands::export_chunks::export_chunks_main;
-use crate::bootstrap_commands::configure_memory_settings::configure_memory_settings;
-use ragit_memory_monitor::MemoryMonitor;
+use tokio::process::Command;
+use std::path::PathBuf;
 
 pub async fn bootstrap_index_self(
     verbose: bool,
-    timeout_seconds: Option<u64>,
+    _timeout_seconds: Option<u64>,
     max_iterations: Option<usize>,
     max_memory_gb: Option<u64>,
     max_files_to_process: Option<usize>,
     max_chunk_size: Option<usize>,
     max_summary_len: Option<usize>,
     min_summary_len: Option<usize>,
-    time_threshold_ms: Option<u128>,
-    memory_threshold_bytes: Option<u64>,
-    _disable_write_markdown: bool,
+    _time_threshold_ms: Option<u128>,
+    _memory_threshold_bytes: Option<u64>,
+    disable_write_markdown: bool,
     disable_memory_config: bool,
     disable_prompt_copy: bool,
     disable_file_add: bool,
     disable_index_build: bool,
     disable_self_improvement: bool,
     disable_final_query: bool,
-    _disable_cleanup: bool,
+    disable_cleanup: bool,
 ) -> Result<(), anyhow::Error> {
-    let max_iterations = max_iterations;
-    let max_files_to_process = max_files_to_process;
-    let disable_write_markdown = false;
-    let max_memory_gb = max_memory_gb;
-    let mut memory_monitor = MemoryMonitor::new(verbose, time_threshold_ms, memory_threshold_bytes);
+    let mut cmd = Command::new(PathBuf::from("target/debug/ragit-build-index-worker-single-file"));
 
-    
-    memory_monitor.capture_and_log_snapshot("Initial");
-        
-    let bootstrap_task = async move {
-        memory_monitor.check_memory_limit(max_memory_gb, "Before setup_environment")?;
-        
-        let (actual_root_dir, temp_dir, mut index) = setup_environment(verbose, max_memory_gb, &mut memory_monitor).await?;
-
-        if !disable_memory_config {
-            memory_monitor.check_memory_limit(max_memory_gb, "Before configure_memory_settings")?;
-            
-            configure_memory_settings(verbose, &mut index, max_memory_gb, max_chunk_size, max_summary_len, min_summary_len, &mut memory_monitor).await?;
-        }
-
-        if !disable_prompt_copy {
-            memory_monitor.check_memory_limit(max_memory_gb, "Before copy_prompts")?;
-            
-            copy_prompts(verbose, &actual_root_dir, &temp_dir, max_memory_gb, &mut memory_monitor).await?;
-            ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(&mut index, &temp_dir.join("prompts"))?;
-        }
-
-        if !disable_file_add {
-            memory_monitor.check_memory_limit(max_memory_gb, "Before add_bootstrap_files")?;
-            
-            add_bootstrap_files(verbose, &actual_root_dir, &temp_dir, &mut index, max_memory_gb, &mut memory_monitor, max_files_to_process).await?;
-        }
-
-        if !disable_index_build {
-            memory_monitor.check_memory_limit(max_memory_gb, "Before build_index")?;
-            
-            build_index(&temp_dir, &actual_root_dir, &mut index, max_iterations, max_memory_gb, &mut memory_monitor).await?;
-        }
-
-        if !disable_write_markdown {
-            memory_monitor.check_memory_limit(max_memory_gb, "Before write_chunks_to_markdown")?;
-            
-            export_chunks_main::write_chunks_to_markdown(verbose, &temp_dir, &index, max_memory_gb, &mut memory_monitor, max_iterations).await?;
-        } else {
-            memory_monitor.verbose("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
-        }
-
-        if !disable_self_improvement {
-            memory_monitor.check_memory_limit(max_memory_gb, "Before perform_self_improvement")?;
-            
-            perform_self_improvement(verbose, &actual_root_dir, &temp_dir, &index, max_memory_gb, &mut memory_monitor).await?;
-        }
-
-        if !disable_final_query {
-            memory_monitor.check_memory_limit(max_memory_gb, "Before perform_final_reflective_query")?;
-            
-            perform_final_reflective_query(verbose, &index, max_memory_gb, &mut memory_monitor).await?;
-        }
-
-        memory_monitor.check_memory_limit(max_memory_gb, "Before final return")?;
-        
-        // Clean up the temporary directory
-        if !disable_cleanup {
-            fs::remove_dir_all(&temp_dir)?;
-        }
-
-        Ok(())
-    };
-
-    
-
-    match timeout_seconds {
-        Some(seconds) => {
-            match timeout(Duration::from_secs(seconds), bootstrap_task).await {
-                Ok(result) => result,
-                Err(_) => Err(anyhow::anyhow!(
-                    "Bootstrap operation timed out after {} seconds",
-                    seconds
-                )),
-            }
-        }
-        None => bootstrap_task.await,
+    if verbose {
+        cmd.arg("--verbose");
     }
+    if let Some(mem_gb) = max_memory_gb {
+        cmd.arg("--max-memory-gb").arg(mem_gb.to_string());
+    }
+    if let Some(iterations) = max_iterations {
+        cmd.arg("--max-iterations").arg(iterations.to_string());
+    }
+    if let Some(files_to_process) = max_files_to_process {
+        cmd.arg("--max-files-to-process").arg(files_to_process.to_string());
+    }
+    if let Some(chunk_size) = max_chunk_size {
+        cmd.arg("--max-chunk-size").arg(chunk_size.to_string());
+    }
+    if let Some(summary_len) = max_summary_len {
+        cmd.arg("--max-summary-len").arg(summary_len.to_string());
+    }
+    if let Some(min_len) = min_summary_len {
+        cmd.arg("--min-summary-len").arg(min_len.to_string());
+    }
+    if disable_write_markdown {
+        cmd.arg("--disable-write-markdown");
+    }
+    if disable_memory_config {
+        cmd.arg("--disable-memory-config");
+    }
+    if disable_prompt_copy {
+        cmd.arg("--disable-prompt-copy");
+    }
+    if disable_file_add {
+        cmd.arg("--disable-file-add");
+    }
+    if disable_index_build {
+        cmd.arg("--disable-index-build");
+    }
+    if disable_self_improvement {
+        cmd.arg("--disable-self-improvement");
+    }
+    if disable_final_query {
+        cmd.arg("--disable-final_query");
+    }
+    if disable_cleanup {
+        cmd.arg("--disable-cleanup");
+    }
+
+    let output = cmd.output().await?;
+
+    if !output.stdout.is_empty() {
+        println!("{}", String::from_utf8_lossy(&output.stdout));
+    }
+    if !output.stderr.is_empty() {
+        eprintln!("{}", String::from_utf8_lossy(&output.stderr));
+    }
+
+    if !output.status.success() {
+        anyhow::bail!("ragit-build-index-worker-single-file failed with status: {}", output.status);
+    }
+
+    Ok(())
 }
