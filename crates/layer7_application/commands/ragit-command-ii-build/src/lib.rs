@@ -1,3 +1,8 @@
+pub fn ii_build_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIXME: ragit-command-ii-build not implemented");
+}
+
+/*
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
@@ -23,3 +28,4 @@ pub fn ii_build_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     index.build_ii(quiet)?;
     Ok(())
 }
+*/

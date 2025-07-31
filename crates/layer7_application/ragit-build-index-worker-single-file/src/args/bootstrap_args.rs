@@ -2,8 +2,7 @@ use clap::{Parser, Args};
 
 #[derive(Parser, Debug, Clone)]
 pub struct BootstrapArgs {
-    #[clap(long)]
-    pub verbose: bool,
+    
     #[clap(long)]
     #[arg(long, value_parser = clap::value_parser!(u64))]
     pub timeout_seconds: Option<u64>,

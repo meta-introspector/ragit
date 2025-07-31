@@ -1,3 +1,9 @@
+use ragit_utils::cli_types::ParsedArgs;
+pub async fn audit_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), anyhow::Error> {
+    panic!("FIXME: audit_command_main not implemented");
+}
+
+/*
 use ragit_utils::prelude::*;
 use ragit_api::AuditRecord as Audit;
 use ragit_types::prelude::*;
@@ -212,3 +218,4 @@ fn print_all_categories(args: &AuditArgs, result: &HashMap<String, Audit>) -> Re
     }
     Ok(())
 }
+*/

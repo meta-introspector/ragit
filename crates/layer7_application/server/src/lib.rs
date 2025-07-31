@@ -1,4 +1,3 @@
-use std::sync::OnceLock;
 
 pub mod cli;
 pub mod config;
@@ -13,3 +12,9 @@ pub mod utils;
 pub fn dummy_server_lib() {
     panic!("FIX ME LATER: Fix the bootstrap first and this code later.");
 }
+
+/*
+use std::sync::OnceLock;
+
+pub static CONFIG: OnceLock<crate::config::Config> = OnceLock::new();
+*/

@@ -1,3 +1,8 @@
+pub fn meta_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIXME: ragit-command-meta not implemented");
+}
+
+/*
 use ragit_utils::prelude::*;
 //use ragit_cli::prelude::*;
 //use ragit_index_io::index_struct::load_index_from_path;
@@ -95,3 +100,5 @@ pub fn meta_command_main(args: &[String]) -> Result<(), anyhow::Error> {
 
     Ok(())
 }
+*/
+

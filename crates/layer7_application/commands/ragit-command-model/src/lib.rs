@@ -1,3 +1,8 @@
+pub async fn model_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIXME: model_command_main not implemented");
+}
+
+/*
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
@@ -179,7 +184,7 @@ pub async fn model_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         }
         Some(flag) => {
             return Err(anyhow::anyhow!(CliError::new_message_with_span(
-                format!("Unknown flag: `{flag}`. Valid flags are --search | --update | --remove."),
+                format!("Unknown flag: `{}`. Valid flags are --search | --update | --remove.", flag),
                 Span::End,
             )));
         }
@@ -193,3 +198,4 @@ pub async fn model_command_main(args: &[String]) -> Result<(), anyhow::Error> {
 
     Ok(())
 }
+*/

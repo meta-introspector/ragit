@@ -1,3 +1,8 @@
+pub fn status_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIXME: ragit-command-status not implemented");
+}
+
+/*
 use ragit_utils::prelude::*;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_utils::project_root::find_root;
@@ -19,3 +24,4 @@ pub fn status_command_main(args: &[String]) -> Result<(), anyhow::Error> {
 
     Ok(())
 }
+*/

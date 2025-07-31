@@ -1,3 +1,8 @@
+pub fn gc_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIXME: ragit-command-gc not implemented");
+}
+
+/*
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
@@ -43,3 +48,4 @@ pub fn gc_command_main(args: &[String]) -> Result<(), anyhow::Error> {
 
     Ok(())
 }
+*/

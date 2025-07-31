@@ -1,3 +1,9 @@
+use ragit_utils::cli_types::ParsedArgs;
+pub async fn archive_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Result<(), anyhow::Error> {
+    panic!("FIXME: ragit-command-archive is commented out.");
+}
+
+/*
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
@@ -80,3 +86,4 @@ pub async fn archive_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> R
     }
     Ok(())
 }
+*/

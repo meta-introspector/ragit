@@ -1,3 +1,6 @@
+pub async fn build_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIX ME LATER: ragit-command-build is commented out.");
+/*
 use ragit_utils::prelude::*;
 use ragit_index_effects::build as build_index;
 use ragit_utils::project_root::find_root;
@@ -35,4 +38,6 @@ pub async fn build_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let mut index = Index::load(find_root()?, LoadMode::OnlyJson)?;
     build_index(&mut index, jobs, quiet).await?;
     Ok(())
+}
+*/
 }

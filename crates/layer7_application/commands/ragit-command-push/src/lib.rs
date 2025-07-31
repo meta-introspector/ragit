@@ -1,3 +1,6 @@
+pub async fn push_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIX ME LATER: ragit-command-push is commented out.");
+/*
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
@@ -36,4 +39,6 @@ pub async fn push_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     }
 
     Ok(())
+}
+*/
 }

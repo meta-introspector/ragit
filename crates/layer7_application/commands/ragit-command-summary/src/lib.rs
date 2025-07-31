@@ -1,3 +1,8 @@
+pub async fn summary_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIXME: summary_command_main not implemented");
+}
+
+/*
 use ragit_utils::prelude::*;
 //use ragit_cli::prelude::*;
 use ragit_index_core::load_index_from_path;
@@ -35,3 +40,4 @@ pub async fn summary_command_main(args: &[String]) -> Result<(), anyhow::Error> 
 
     Ok(())
 }
+*/

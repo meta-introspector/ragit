@@ -1,15 +1,7 @@
 use ragit_utils::prelude::*;
-use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, CliError};
-use ragit_utils::doc_utils::get_doc_content;
 // use ragit_index_core::load_index_from_path;
 // use ragit_index_core::index_struct::Index;
-use ragit_utils::project_root::find_root;
 // use ragit_query::query_helpers::{uid_query, UidQueryConfig};
-use std::path::PathBuf;
-use serde_json::Value;
-use std::collections::HashMap;
-use ragit_types::uid::Uid;
-use ragit_types::file_schema::FileSchema;
 // use ragit_index_io::get_file_schema;
 
 pub async fn ls_files_command_main(_args: &[String]) -> Result<(), anyhow::Error> {

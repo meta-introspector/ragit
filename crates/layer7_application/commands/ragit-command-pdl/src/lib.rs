@@ -1,6 +1,6 @@
 use ragit_pdl::render_pdl_schema;
 use ragit_types::ApiError;
-use ragit_index_core::load_index_from_path;
+// use ragit_index_io::load_index_from_path; // FIXME: load_index_from_path not found
 use ragit_utils::ragit_path_utils::join;
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
@@ -9,7 +9,7 @@ use ragit_fs::create_dir;
 use ragit_fs::read_string;
 //use ragit_index_io::index_struct::{Index, load_index_from_path};
 use ragit_index_types::index_struct::Index;
-use ragit_index_core::load_index_from_path;
+// use ragit_index_io::load_index_from_path; // FIXME: load_index_from_path not found
 
 use ragit_pdl::parse_pdl_from_file;
 use ragit_utils::path_utils::str_to_pathbuf;
@@ -23,6 +23,11 @@ use ragit_utils::doc_utils::get_doc_content;
 use ragit_pdl::parse_schema;
 
 
+pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIXME: pdl_command_main not implemented");
+}
+
+/*
 pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new()
         .flag_with_default(&["--strict", "--no-strict"])
@@ -97,10 +102,11 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {
             }
 
             (
-                Some(str_to_pathbuf(&join(
-                    log_at,
-                    &format!("{}.pdl", now.to_rfc3339()),
-                )?).to_string_lossy().to_string()),
+                Some(str_to_pathbuf(
+                    &join(
+                        log_at,
+                        &format!("{}.pdl", now.to_rfc3339()),
+                    )?).to_string_lossy().to_string()),
                 Some(log_at.to_string()),
             )
         }
@@ -152,3 +158,4 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {
 
     Ok(())
 }
+*/

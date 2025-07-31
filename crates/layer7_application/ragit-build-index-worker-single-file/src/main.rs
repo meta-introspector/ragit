@@ -30,17 +30,16 @@ use crate::args::bootstrap_args::BootstrapArgs;
 use crate::args::query_args::QueryArgs;
 use crate::args::top_terms_args::TopTermsArgs;
 
-async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error> {
+async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
     let max_iterations = args.max_iterations;
     let max_files_to_process = args.max_files_to_process;
     let max_memory_gb = args.max_memory_gb;
-    let mut memory_monitor = MemoryMonitor::new(args.verbose, args.time_threshold_ms, args.memory_threshold_bytes);
 
     memory_monitor.capture_and_log_snapshot("Initial");
 
     let (actual_root_dir, temp_dir, mut index) = setup_environment(
         max_memory_gb,
-        &mut memory_monitor,
+        memory_monitor,
     ).await?;
 
     memory_monitor.verbose(&format!("Temporary directory: {:?}", temp_dir));
@@ -50,13 +49,13 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
     if !args.disable_memory_config {
         memory_monitor.check_memory_limit(max_memory_gb, "Before configure_memory_settings")?;
         configure_memory_settings(
-            args.verbose,
+            true,
             &mut index,
             max_memory_gb,
             args.max_chunk_size,
             args.max_summary_len,
             args.min_summary_len,
-            &mut memory_monitor,
+            memory_monitor,
         ).await?;
     }
 
@@ -66,7 +65,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
             &actual_root_dir,
             &temp_dir,
             max_memory_gb,
-            &mut memory_monitor,
+            memory_monitor,
         ).await?;
         ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(&mut index, &temp_dir.join("prompts"))?;
     }
@@ -78,7 +77,7 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
             &temp_dir,
             &mut index,
             max_memory_gb,
-            &mut memory_monitor,
+            memory_monitor,
             max_files_to_process,
         ).await?;
     }
@@ -91,18 +90,18 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
             &mut index,
             max_iterations,
             max_memory_gb,
-            &mut memory_monitor,
+            memory_monitor,
         ).await?;
     }
 
     if !args.disable_write_markdown {
         memory_monitor.check_memory_limit(max_memory_gb, "Before write_chunks_to_markdown")?;
         export_chunks_main::write_chunks_to_markdown(
-            args.verbose,
+            true,
             &temp_dir,
             &index,
             max_memory_gb,
-            &mut memory_monitor,
+            memory_monitor,
             max_iterations,
         ).await?;
     } else {
@@ -116,12 +115,12 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
     if !args.disable_self_improvement {
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_self_improvement")?;
         perform_self_improvement(
-            args.verbose,
+            true,
             &actual_root_dir,
             &temp_dir,
             &index,
             max_memory_gb,
-            &mut memory_monitor,
+            memory_monitor,
             max_iterations,
         ).await?;
     }
@@ -130,10 +129,10 @@ async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error
         memory_monitor.verbose("bootstrap_command_main: Before perform_final_reflective_query");
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_final_reflective_query")?;
         perform_final_reflective_query(
-            args.verbose,
+            true,
             &index,
             max_memory_gb,
-            &mut memory_monitor,
+            memory_monitor,
         ).await?;
         memory_monitor.verbose("bootstrap_command_main: After perform_final_reflective_query");
     }
@@ -238,15 +237,21 @@ async fn top_terms_command_main(args: TopTermsArgs, memory_monitor: &mut MemoryM
 #[tokio::main]
 async fn main() -> Result<()> {
     let cli = Cli::parse();
+    let mut memory_monitor = MemoryMonitor::new(true, None, None);
 
     match cli.command {
-        Commands::Bootstrap { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup } => bootstrap_command_main(BootstrapArgs { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup }).await,
-        Commands::Query { query_string, no_pdl, multi_turn, json, kb_path, verbose } => {
-            let mut memory_monitor = MemoryMonitor::new(verbose, None, None);
-            query_command_main(QueryArgs { query_string, no_pdl, multi_turn, json, kb_path, verbose }, &mut memory_monitor).await
+        Commands::Bootstrap { timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup } => {
+            let mut memory_monitor = MemoryMonitor::new(true, time_threshold_ms, memory_threshold_bytes);
+            bootstrap_command_main(BootstrapArgs {
+		//verbose: true,
+		timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup }, &mut memory_monitor).await
         },
-        Commands::TopTerms { count, kb_path, verbose } => {
-            let mut memory_monitor = MemoryMonitor::new(verbose, None, None);
+        Commands::Query { query_string, no_pdl, multi_turn, json, kb_path } => {
+            query_command_main(QueryArgs { query_string, no_pdl, multi_turn, json, kb_path,
+					   //verbose: true
+	    }, &mut memory_monitor).await
+        },
+        Commands::TopTerms { count, kb_path } => {
             top_terms_command_main(TopTermsArgs { count, kb_path }, &mut memory_monitor).await
         }
     }

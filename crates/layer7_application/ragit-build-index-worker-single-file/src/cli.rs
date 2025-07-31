@@ -12,8 +12,6 @@ pub enum Commands {
     /// Bootstrap the ragit index
     Bootstrap {
         #[clap(long)]
-        verbose: bool,
-        #[clap(long)]
         #[arg(long, value_parser = clap::value_parser!(u64))]
         timeout_seconds: Option<u64>,
         #[clap(long)]
@@ -68,8 +66,6 @@ pub enum Commands {
         json: bool,
         #[clap(long)]
         kb_path: Option<String>,
-        #[clap(long)]
-        verbose: bool,
     },
     /// Report top terms in the index
     TopTerms {
@@ -77,7 +73,5 @@ pub enum Commands {
         count: Option<usize>,
         #[clap(long)]
         kb_path: Option<String>,
-        #[clap(long)]
-        verbose: bool,
     },
 }

@@ -1,3 +1,6 @@
+pub async fn clone_command_main(args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIX ME LATER: ragit-command-clone is commented out.");
+/*
 use ragit_utils::prelude::*;
 use ragit_api::prelude::*;
 use ragit_types::prelude::*;
@@ -35,4 +38,6 @@ pub async fn clone_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     index.clone(url, depth).await?;
 
     Ok(())
+}
+*/
 }

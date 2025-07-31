@@ -25,7 +25,7 @@ pub async fn bootstrap_index_self(
     let mut cmd = Command::new(PathBuf::from("target/debug/ragit-build-index-worker-single-file"));
 
     if verbose {
-        cmd.arg("--verbose");
+//        cmd.arg("--verbose");
     }
     if let Some(mem_gb) = max_memory_gb {
         cmd.arg("--max-memory-gb").arg(mem_gb.to_string());

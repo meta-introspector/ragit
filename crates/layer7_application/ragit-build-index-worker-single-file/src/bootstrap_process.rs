@@ -17,7 +17,7 @@ use crate::memory_profiler::memory_monitor::MemoryMonitor;
 pub async fn run() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let disable_cleanup = args.contains("--disable-cleanup".to_string());
-    let verbose = args.contains("--verbose");
+//    let verbose = args.contains("--verbose");
     let max_memory_gb = args.iter().position(|arg| arg == "--max-memory-gb")
         .and_then(|i| args.get(i + 1))
         .and_then(|s| s.parse::<u64>().ok());

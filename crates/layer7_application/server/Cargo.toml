@@ -8,6 +8,7 @@ repository = "https://github.com/baehyunsol/ragit"
 documentation = "https://docs.rs/ragit-server"
 
 [dependencies]
+anyhow = "1.0.86"
 base64 = "0.22.1"
 bytes = "1.10.0"
 chrono = { version = "0.4.40", features = ["serde"] }

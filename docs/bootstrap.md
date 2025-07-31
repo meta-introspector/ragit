@@ -14,7 +14,7 @@ cargo run --package ragit-build-index-worker-single-file -- bootstrap [FLAGS]
 
 ### Flags
 
-*   `--verbose`: Enables verbose output, which is useful for debugging.
+*   `--verboseo`: Enables verbose output, which is useful for debugging.
 *   `--timeout-seconds <SECONDS>`: Sets a timeout for the bootstrap operation.
 *   `--max-iterations <NUMBER>`: Exits gracefully after a certain number of iterations. This is primarily for debugging.
 *   `--max-memory-gb <NUMBER>`: Sets a maximum memory limit in gigabytes for the bootstrap operation.

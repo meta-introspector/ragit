@@ -13,10 +13,6 @@ struct Args {
     #[command(subcommand)]
     command: Commands,
 
-    /// Enable verbose logging
-    #[arg(short, long, global = true)]
-    verbose: bool,
-
     /// Timeout for the bootstrap process in seconds
     #[arg(long, global = true)]
     timeout: Option<u64>,
@@ -98,14 +94,12 @@ enum Commands {
 async fn main() -> Result<()> {
     let args = Args::parse();
 
-    if args.verbose {
-        println!("Verbose mode enabled.");
-    }
+    println!("Verbose mode enabled.");
 
     match args.command {
         Commands::Bootstrap => {
             bootstrap_index_self(
-                args.verbose,
+                true,
                 args.timeout,
                 args.max_iterations,
                 args.max_memory_gb,
@@ -135,9 +129,6 @@ async fn main() -> Result<()> {
             cmd.arg("bootstrap");
 
             // Then subcommand-specific flags
-            if args.verbose {
-                cmd.arg("--verbose");
-            }
             if let Some(timeout) = args.timeout {
                 cmd.arg("--timeout-seconds").arg(timeout.to_string());
             }
