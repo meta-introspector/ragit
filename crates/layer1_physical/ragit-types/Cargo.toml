@@ -17,6 +17,7 @@ anyhow = "1.0"
 base64 = "0.22.1"
 ragit-file-error = { path = "../ragit-file-error" }
 ragit-core = { path = "../ragit-core" }
+tera = "1.20.0"
 #// do not import ragit-utils
 #//ragit-utils = { path = "../ragit-utils" }
 

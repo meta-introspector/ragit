@@ -14,8 +14,10 @@ pub enum PdlError {
     Io(#[from] std::io::Error),
     #[error(transparent)]
     FromUtf8(#[from] std::string::FromUtf8Error),
-    #[error("tera error: {0}")]
-    Tera(String),
+    #[error(transparent)]
+    Tera(#[from] tera::Error),
+    #[error("image type error: {0}")]
+    ImageType(String),
     #[error(transparent)]
     Json(#[from] serde_json::Error),
     #[error(transparent)]
@@ -24,6 +26,14 @@ pub enum PdlError {
     Base64(#[from] base64::DecodeError),
     #[error(transparent)]
     File(#[from] ragit_file_error::FileError),
+    #[error("{0}")]
+    Other(String),
+}
+
+impl From<String> for PdlError {
+    fn from(s: String) -> Self {
+        PdlError::Other(s)
+    }
 }
 
 #[derive(Debug, Error)]

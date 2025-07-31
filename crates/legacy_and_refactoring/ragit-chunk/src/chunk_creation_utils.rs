@@ -7,7 +7,7 @@ use serde_json::Value as JsonValue;
 use regex::Regex;
 use std::time::Instant;
 //use ragit_types::Schema;
-use ragit_api::Schema;
+use ragit_types::schema::Schema;
 
 pub async fn send_and_validate_chunk_response(
     mut messages: Vec<Message>,

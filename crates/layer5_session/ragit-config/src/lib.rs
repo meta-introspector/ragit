@@ -191,7 +191,7 @@ pub fn load_config_from_home<T: serde::de::DeserializeOwned>(
         )?,
     )?;
 
-    if exists(&config_path.clone().into()) {
+    if exists(&config_path) {
         // Load from ~/.config/ragit/filename
         let config_content = read_string(config_path.to_str().unwrap())?;
         match serde_json::from_str::<T>(&config_content) {

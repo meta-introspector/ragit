@@ -1,5 +1,5 @@
 use std::path::PathBuf;
-use crate::prelude::{Message, Model, Schema, ApiProvider};
+use crate::prelude::{Message, Model, ApiProvider};
 use ragit_types::ApiError as Error;
 use ragit_session_query::response::Response;
 use ragit_types::AuditRecordAt;
@@ -13,6 +13,7 @@ use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 use std::time::{Duration, Instant};
 use ragit_types::pdl_types::Role;
+use ragit_types::schema::Schema;
 use ragit_model::ModelRaw;
 use crate::map_serde_json_error;
 

@@ -20,7 +20,7 @@ use ragit_model::Model;
 use std::path::PathBuf;
 //use std::time::Instant;
 use crate::chunk_creation_utils;
-use ragit_pdl::Pdl;
+use ragit_pdl::pdl_struct::Pdl;
 pub async fn create_chunk_from(
     tokens: &[AtomicToken],
     config: &BuildConfig,
@@ -34,7 +34,7 @@ pub async fn create_chunk_from(
     let mut dummy_context = tera::Context::new();
     dummy_context.insert("chunk", "placeholder");
 
-    let Pdl { messages: mut prompt, .. } = ragit_pdl::parse_pdl(
+    let Pdl { messages: mut prompt, .. } = ragit_pdl::parse_pdl::parse_pdl_logic::parse_pdl_logic(
         pdl,
         &dummy_context,
         &file, // Assuming 'file' can be used as the current directory for media files

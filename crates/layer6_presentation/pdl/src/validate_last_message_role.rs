@@ -1,5 +1,6 @@
-use super::{Message, Role};
-use crate::error::Error;
+use ragit_types::pdl_error::PdlError as Error;
+use ragit_types::pdl_types::{Message, Role};
+
 
 pub fn validate_last_message_role(messages: &[Message]) -> Result<(), Error> {
     if let Some(Message {

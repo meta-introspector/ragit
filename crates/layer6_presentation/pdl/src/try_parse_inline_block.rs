@@ -1,8 +1,11 @@
-use crate::error::Error;
-use crate::image::ImageType;
+
+use ragit_types::pdl_error::PdlError as Error;
+use ragit_types::pdl_types::ImageType;
 use lazy_static::lazy_static;
 use regex::bytes::Regex;
 use ragit_fs::{extension, join, read_bytes};
+use base64::prelude::BASE64_STANDARD;
+use base64::Engine;
 
 lazy_static! {
     static ref MEDIA_RE: Regex = Regex::new(r"^media\((.+)\)$").unwrap();
@@ -25,14 +28,14 @@ pub fn try_parse_inline_block(
 
                 Ok(Some((
                     ImageType::from_extension(&image_type)?,
-                    super::decode_base64::decode_base64(&image_bytes)?,
+                    BASE64_STANDARD.decode(image_bytes).map_err(Error::Base64)?,
                     new_index,
                 )))
             } else if let Some(cap) = media_re.captures(token) {
                 let path = &cap[1];
                 let file = join(curr_dir, &String::from_utf8_lossy(path).to_string())?;
                 Ok(Some((
-                    ImageType::from_extension(&extension(&file)?.unwrap_or(String::new()))?,
+                    ImageType::from_extension(&extension(&file)?.unwrap_or(String::new())).map_err(Error::ImageType)?,
                     read_bytes(&file)?,
                     new_index,
                 )))

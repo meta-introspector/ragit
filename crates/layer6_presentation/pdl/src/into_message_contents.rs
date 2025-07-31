@@ -1,6 +1,6 @@
-use crate::error::Error;
-use crate::message::MessageContent;
-use crate::image::ImageType;
+
+use ragit_types::pdl_error::PdlError as Error;
+use ragit_types::pdl_types::{MessageContent, ImageType};
 use crate::unescape_pdl_tokens::unescape_pdl_tokens;
 use crate::try_parse_inline_block::try_parse_inline_block;
 
