@@ -29,7 +29,7 @@ impl<const N: usize> fmt::Display for FixedString<N> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    
     use crate::fixed_types::fixed_string_struct::FixedString;
 
     #[test]

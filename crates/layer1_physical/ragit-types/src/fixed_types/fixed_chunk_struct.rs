@@ -167,7 +167,7 @@ mod tests {
     use crate::chunk::chunk_struct::Chunk;
     use crate::chunk::chunk_struct::ChunkBuildInfo as OriginalChunkBuildInfo;
     use crate::uid::Uid;
-    use std::collections::HashMap;
+    
 
     #[test]
     fn test_fixed_chunk_build_info_from_original() {
