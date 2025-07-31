@@ -61,10 +61,7 @@ impl SchemaType {
     }
 
     pub fn is_number(&self) -> bool {
-        match self {
-            SchemaType::Integer | SchemaType::Float => true,
-            _ => false,
-        }
+        self.is_number()
     }
 
     pub fn is_array(&self) -> bool {
@@ -445,7 +442,7 @@ impl Schema {
 
     pub fn default_array(r#type: Option<Schema>) -> Self {
         Schema {
-            r#type: SchemaType::Array(r#type.map(|t| Box::new(t))),
+            r#type: SchemaType::Array(r#type.map(Box::new)),
             constraint: None,
         }
     }

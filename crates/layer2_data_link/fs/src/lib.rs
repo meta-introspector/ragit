@@ -252,7 +252,7 @@ pub fn is_symlink(path: &str) -> bool {
         .unwrap_or(false)
 }
 
-pub fn exists(path: &PathBuf) -> bool {
+pub fn exists(path: &Path) -> bool {
     path.exists()
 }
 
@@ -301,13 +301,13 @@ pub fn copy_dir(src: &str, dst: &str) -> Result<(), FileError> {
     // TODO: how about links?
     for e_string in read_dir(src, false)?.iter() {
         let e = e_string.as_str();
-        let new_dst = join(dst, &basename(&e)?)?;
+        let new_dst = join(dst, basename(e)?.as_str())?;
 
-        if is_dir(&e) {
+        if is_dir(e) {
             create_dir_all(&new_dst)?;
-            copy_dir(&e, &new_dst)?;
+            copy_dir(e, &new_dst)?;
         } else {
-            copy_file(&e, &new_dst)?;
+            copy_file(e, &new_dst)?;
         }
     }
 
@@ -424,11 +424,11 @@ pub fn diff(path: &str, base: &str) -> Result<String, FileError> {
 /// It calcs diff and normalizes.
 pub fn get_relative_path(base: &str, path: &str) -> Result<String, FileError> {
     // It has to normalize the output because `diff` behaves differently on windows and unix.
-    Ok(normalize(&diff(
+    normalize(&diff(
         // in order to calc diff, it needs a full path
         &normalize(&into_abs_path(path)?)?,
         &normalize(&into_abs_path(base)?)?,
-    )?)?)
+    )?)
 }
 
 pub fn normalize(path: &str) -> Result<String, FileError> {
@@ -437,7 +437,7 @@ pub fn normalize(path: &str) -> Result<String, FileError> {
 
     for component in path.split("/") {
         match component {
-            c if c == "." => {}
+            "." => {}
 
             // this branch is messy and that's a design decision
             // It's obvious that `normalize("./foo")` is `"foo"` and

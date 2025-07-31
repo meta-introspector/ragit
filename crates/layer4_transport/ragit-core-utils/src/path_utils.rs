@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
 /// Converts a `PathBuf` to an `&str`. Panics if the path is not valid UTF-8.
-pub fn pathbuf_to_str(path: &PathBuf) -> String {
+pub fn pathbuf_to_str(path: &Path) -> String {
     path.to_str().expect("Path is not valid UTF-8").to_string()
 }
 

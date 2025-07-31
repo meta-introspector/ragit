@@ -1,7 +1,7 @@
 enum ParseState {
-    BeforeFence,
-    InFence(usize),
-    AfterFence,
+    Before,
+    In(usize),
+    After,
 }
 
 pub fn try_extract_code_fence(s: &str) -> Result<String, String> {
@@ -10,15 +10,15 @@ pub fn try_extract_code_fence(s: &str) -> Result<String, String> {
 
     for line in s.lines() {
         match state {
-            ParseState::BeforeFence => {
+            ParseState::Before => {
                 if let Some(n) = count_opening_fence(line) {
-                    state = ParseState::InFence(n);
+                    state = ParseState::In(n);
                 }
             }
-            ParseState::InFence(fence_len) => {
+            ParseState::In(fence_len) => {
                 if let Some(n) = count_closing_fence(line) {
                     if n >= fence_len {
-                        state = ParseState::AfterFence;
+                        state = ParseState::After;
                     } else {
                         code_lines.push(line.to_string());
                     }
@@ -26,7 +26,7 @@ pub fn try_extract_code_fence(s: &str) -> Result<String, String> {
                     code_lines.push(line.to_string());
                 }
             }
-            ParseState::AfterFence => {
+            ParseState::After => {
                 if count_opening_fence(line).is_some() {
                     return Err(String::from(
                         "It seems like your response has more than 1 code block. Please give me exactly 1 code block.",
@@ -36,7 +36,7 @@ pub fn try_extract_code_fence(s: &str) -> Result<String, String> {
         }
     }
 
-    if let ParseState::BeforeFence = state {
+    if let ParseState::Before = state {
         Err(String::from(
             "I cannot find a code block in your response. Please give me a fenced code block. An opening and closing fence consist of 3 or more backtick characters.",
         ))

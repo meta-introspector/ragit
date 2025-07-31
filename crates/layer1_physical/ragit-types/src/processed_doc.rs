@@ -21,6 +21,6 @@ impl ProcessedDoc {
 
     pub fn render(&self, term_only: bool, stat_only: bool, json_mode: bool) -> String {
         // Placeholder implementation
-        format!("Placeholder for ProcessedDoc render: term_only={}, stat_only={}, json_mode={}", term_only, stat_only, json_mode)
+        format!("Placeholder for ProcessedDoc render: term_only={term_only}, stat_only={stat_only}, json_mode={json_mode}")
     }
 }

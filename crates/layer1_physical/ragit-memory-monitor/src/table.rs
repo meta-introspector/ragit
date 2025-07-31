@@ -37,12 +37,12 @@ impl Table {
                 ColumnAlignment::Center => format!("{:^width$}", column.header, width = column.width),
             };
             header_line.push_str(&padded_header);
-            header_line.push_str(" "); // Add a space between columns
+            header_line.push(' '); // Add a space between columns
 
             for _ in 0..column.width {
-                separator_line.push_str("-");
+                separator_line.push('-');
             }
-            separator_line.push_str(" "); // Add a space between columns
+            separator_line.push(' '); // Add a space between columns
         }
         println!("{}", header_line.trim_end());
         println!("{}", separator_line.trim_end());
@@ -58,7 +58,7 @@ impl Table {
                 ColumnAlignment::Center => format!("{:^width$}", data, width = column.width),
             };
             row_line.push_str(&padded_data);
-            row_line.push_str(" "); // Add a space between columns
+            row_line.push(' '); // Add a space between columns
         }
         println!("{}", row_line.trim_end());
     }

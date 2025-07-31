@@ -25,7 +25,7 @@ impl MessageContent {
 impl fmt::Display for MessageContent {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            MessageContent::String(s) => write!(f, "{}", s),
+            MessageContent::String(s) => write!(f, "{s}"),
             MessageContent::Image { image_type, bytes } => {
                 write!(f, "<|raw_media({}:{})|>", image_type.to_extension(), base64::prelude::BASE64_STANDARD.encode(bytes))
             }

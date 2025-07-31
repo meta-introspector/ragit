@@ -12,31 +12,11 @@ const CHUNK_BUILD_INFO_KEY_SIZE: usize = 128;
 const CHUNK_BUILD_INFO_PROMPT_HASH_SIZE: usize = 128;
 const CHUNK_BUILD_INFO_MODEL_SIZE: usize = 128;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
 pub struct FixedChunkBuildInfo {
     pub file_reader_key: FixedString<CHUNK_BUILD_INFO_KEY_SIZE>,
     pub prompt_hash: FixedString<CHUNK_BUILD_INFO_PROMPT_HASH_SIZE>,
     pub model: FixedString<CHUNK_BUILD_INFO_MODEL_SIZE>,
-}
-
-impl FixedChunkBuildInfo {
-    pub fn new(file_reader_key: &str, prompt_hash: &str, model: &str) -> Self {
-        FixedChunkBuildInfo {
-            file_reader_key: file_reader_key.into(),
-            prompt_hash: prompt_hash.into(),
-            model: model.into(),
-        }
-    }
-}
-
-impl Default for FixedChunkBuildInfo {
-    fn default() -> Self {
-        FixedChunkBuildInfo {
-            file_reader_key: FixedString::new(),
-            prompt_hash: FixedString::new(),
-            model: FixedString::new(),
-        }
-    }
 }
 
 impl From<crate::chunk::chunk_struct::ChunkBuildInfo> for FixedChunkBuildInfo {

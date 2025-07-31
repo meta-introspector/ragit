@@ -34,7 +34,7 @@ fn u128_from_bytes(bytes: &[u8]) -> Result<u128, UidError> {
 }
 
 pub fn uid_from_hash(hash: &[u8; 32]) -> Result<Uid, ApiError> {
-    let hex_string: String = hash.iter().map(|b| format!("{:02x}", b)).collect();
+    let hex_string: String = hash.iter().map(|b| format!("{b:02x}")).collect();
     Uid::from_str(&hex_string).map_err(|e| ApiError::UidError(Arc::new(e)))
 }
 
@@ -324,10 +324,7 @@ impl Uid {
         if carry > self.high {
             None
         } else {
-            match (self.high - carry).checked_sub(other.high) {
-                Some(high) => Some(Uid { high, low }),
-                None => None,
-            }
+            (self.high - carry).checked_sub(other.high).map(|high| Uid { high, low })
         }
     }
 }

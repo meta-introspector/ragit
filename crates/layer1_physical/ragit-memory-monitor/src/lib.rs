@@ -40,7 +40,7 @@ impl MemoryMonitor {
     pub fn verbose(&self, message: &str) {
         if self.verbose {
             let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S%.3f");
-            println!("[{}] [INFO] {}", timestamp, message);
+            println!("[{timestamp}] [INFO] {message}");
         }
     }
 
@@ -63,7 +63,7 @@ impl MemoryMonitor {
             let elapsed_time = current_time.duration_since(last_time).as_millis();
             if let Some(threshold) = self.time_threshold_ms {
                 if elapsed_time > threshold {
-                    self.verbose(&format!("PERFORMANCE ALERT: Step '{}' took {}ms, exceeding threshold of {}ms.", step_name, elapsed_time, threshold));
+                    self.verbose(&format!("PERFORMANCE ALERT: Step '{step_name}' took {elapsed_time}ms, exceeding threshold of {threshold}ms."));
                 }
             }
         }

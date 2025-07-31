@@ -11,6 +11,12 @@ pub struct Ignore {
     pub strong_patterns: Vec<Pattern>,
 }
 
+impl Default for Ignore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Ignore {
     pub fn new() -> Self {
         Ignore {

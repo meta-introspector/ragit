@@ -13,7 +13,7 @@ impl Pattern {
         // `a/b` -> `**/a/b`
         // `/a/b` -> `a/b`
         if !pattern.starts_with("/") {
-            pattern = format!("**/{}", pattern);
+            pattern = format!("**/{pattern}");
         } else {
             pattern = pattern.get(1..).unwrap().to_string();
         }

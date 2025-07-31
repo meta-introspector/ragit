@@ -1,13 +1,13 @@
 use ragit_fs::{read_bytes, write_bytes, WriteMode};
 pub use ragit_types::uid::{Uid, UidError, UidWriteMode};
 
-pub fn load_from_file(path: &std::path::PathBuf) -> Result<Vec<Uid>, UidError> {
+pub fn load_from_file(path: &std::path::Path) -> Result<Vec<Uid>, UidError> {
     let bytes = read_bytes(path.to_str().unwrap())?;
     Ok(serde_json::from_slice(&bytes)?)
 }
 
 pub fn save_to_file(
-    path: &std::path::PathBuf,
+    path: &std::path::Path,
     uids: &Vec<Uid>,
     write_mode: UidWriteMode,
 ) -> Result<(), UidError> {

@@ -1,6 +1,6 @@
 use crate::AuditRecordAt;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct ApiConfig {
@@ -34,7 +34,7 @@ impl Default for ApiConfig {
 }
 
 impl ApiConfig {
-    pub fn dump_api_usage_at(&self, root_dir: &PathBuf, name: &str) -> Option<AuditRecordAt> {
+    pub fn dump_api_usage_at(&self, root_dir: &Path, name: &str) -> Option<AuditRecordAt> {
         if self.dump_api_usage {
             Some(AuditRecordAt {
                 path: self.get_audit_path(root_dir.to_str().unwrap()),
@@ -45,11 +45,11 @@ impl ApiConfig {
         }
     }
 
-    pub fn create_pdl_path(&self, _root_dir: &PathBuf, _name: &str) -> Option<PathBuf> {
+    pub fn create_pdl_path(&self, _root_dir: &Path, _name: &str) -> Option<PathBuf> {
         None
     }
 
-    pub fn dump_log_at(&self, _root_dir: &PathBuf) -> Option<PathBuf> {
+    pub fn dump_log_at(&self, _root_dir: &Path) -> Option<PathBuf> {
         None
     }
 
@@ -57,7 +57,7 @@ impl ApiConfig {
         // This should be a path to a file where audit logs are stored.
         // For now, let's use a placeholder.
         // TODO: Make this configurable or derive from constants.
-        format!("{}/.ragit/audit.json", root_dir)
+        format!("{root_dir}/.ragit/audit.json")
     }
 }
 

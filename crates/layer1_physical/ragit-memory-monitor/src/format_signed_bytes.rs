@@ -6,6 +6,6 @@ pub fn format_signed_bytes(bytes: i64) -> String {
     } else if bytes >= 1024 {
         format!("{:.2} KB", bytes as f64 / 1024.0)
     } else {
-        format!("{} B", bytes)
+        format!("{bytes} B")
     }
 }

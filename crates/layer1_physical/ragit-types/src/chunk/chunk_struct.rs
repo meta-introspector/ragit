@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::processed_doc::ProcessedDoc;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize, Default)]
 pub struct ChunkBuildInfo {
     pub file_reader_key: String,
     pub prompt_hash: String,
@@ -22,15 +22,7 @@ impl ChunkBuildInfo {
     }
 }
 
-impl Default for ChunkBuildInfo {
-    fn default() -> Self {
-        ChunkBuildInfo {
-            file_reader_key: String::new(),
-            prompt_hash: String::new(),
-            model: String::new(),
-        }
-    }
-}
+#[derive(Default)]
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Chunk {

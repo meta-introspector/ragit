@@ -34,7 +34,7 @@ members = [
     "crates/layer5_session/ragit-session-query",
 
     # Layer 6
-    "crates/layer6_presentation/korean",
+    
     "crates/layer6_presentation/pdl",
     "crates/layer6_presentation/ragit-model-query-response",
     "crates/layer6_presentation/ragit-schema",
@@ -128,7 +128,7 @@ mupdf = { version = "0.5.0", optional = true }
 png = { version = "0.17.16", optional = true }  # `resvg`'s function returns `png::EncodingError`
 
 ragit-ignore = { path = "./crates/layer2_data_link/ignore", version = "0.4.2" }
-ragit-korean = { path = "./crates/layer6_presentation/korean", version = "0.4.2", optional = true }
+
 ragit-model = { path = "./crates/layer7_application/ragit-model" }
 ragit-pdl = { path = "./crates/layer6_presentation/pdl", version = "0.4.2" }
 ragit-uid = { path = "./crates/layer2_data_link/ragit-uid", version = "0.1.0" }
@@ -162,10 +162,10 @@ zstd = "0.13.3"
 [features]
 # `csv` is small enough and is purely in Rust.
 default = ["csv"]
-full = ["csv", "korean"]
+full = ["csv"]
 
 csv = ["dep:csv"]
-korean = ["dep:ragit-korean"]
+
 pdf = ["dep:mupdf"]
 svg = ["dep:resvg", "dep:png"]
 

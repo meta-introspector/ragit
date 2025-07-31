@@ -25,12 +25,12 @@ pub fn initialize_log(
 }
 
 fn get_log_file_path() -> Option<String> {
-    LOG_FILE_PATH.get().map(|p| p.clone()).unwrap_or(None)
+    LOG_FILE_PATH.get().cloned().unwrap_or(None)
 }
 
 pub fn write_log(owner: &str, msg: &str) {
-    let dump_to_stdout = DUMP_TO_STDOUT.get().map(|b| *b).unwrap_or(false);
-    let dump_to_stderr = DUMP_TO_STDERR.get().map(|b| *b).unwrap_or(false);
+    let dump_to_stdout = DUMP_TO_STDOUT.get().copied().unwrap_or(false);
+    let dump_to_stderr = DUMP_TO_STDERR.get().copied().unwrap_or(false);
     let path = get_log_file_path();
 
     if path.is_none() && !dump_to_stdout && !dump_to_stderr {

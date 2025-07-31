@@ -20,7 +20,7 @@ impl<T: Default + Clone, const N: usize> FixedVec<T, N> {
             self.data[self.len] = item;
             self.len += 1;
         } else {
-            eprintln!("FixedVec overflow: capacity {} reached.", N);
+            eprintln!("FixedVec overflow: capacity {N} reached.");
         }
     }
 
