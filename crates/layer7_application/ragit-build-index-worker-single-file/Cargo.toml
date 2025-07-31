@@ -1,0 +1,33 @@
+[package]
+name = "ragit-build-index-worker-single-file"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+sysinfo = "0.30"
+glob = "0.3"
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-index-save-to-file = { path = "../../legacy_and_refactoring/ragit-index-save-to-file" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-index-core = { path = "../../legacy_and_refactoring/ragit-index-core" }
+ragit-file-error = { path = "../../layer1_physical/ragit-file-error" }
+ragit-index-effects = { path = "../../legacy_and_refactoring/ragit-index-effects" }
+ragit-readers = { path = "../../layer4_transport/ragit-readers" }
+ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }
+clap = { version = "4.4", features = ["derive"] }
+ragit-query = { path = "../../layer4_transport/ragit-query" }
+ragit-model = { path = "../ragit-model" }
+ragit-pdl = { path = "../../layer6_presentation/pdl" }
+ragit-api = { path = "../api" }
+ragit-config = { path = "../../layer5_session/ragit-config" }
+ragit-index-query = { path = "../../legacy_and_refactoring/ragit-index-query" }
+chrono = "0.4"
+serde_json = "1.0"
+ragit-bootstrap-logic = { path = "../../layer6_presentation/ragit-bootstrap-logic" }
+ragit-command-query = { path = "../commands/ragit-command-query" }
+tokio = { version = "1", features = ["full"] }
+sha3 = "0.10"
+
+ragit-fs = { path = "../../layer2_data_link/fs" }

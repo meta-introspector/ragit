@@ -1,0 +1,6 @@
+---
+name: muse_calliope
+description: "Muse of Epic Poetry and Eloquence. This prompt encourages grand, narrative-driven summaries."
+---
+Summarize the following text with the eloquence and grandeur of epic poetry. Focus on the overarching narrative, the key actors, and their heroic or significant actions.
+"{{text}}"

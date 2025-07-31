@@ -1,0 +1,9 @@
+[package]
+name = "ragit-command-help"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-cli = { path = "../../cli" }
+ragit-utils = { path = "../../../layer3_network/ragit-utils" }
+anyhow = "1.0"

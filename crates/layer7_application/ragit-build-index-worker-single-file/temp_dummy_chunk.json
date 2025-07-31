@@ -1,0 +1,28 @@
+{
+  "data": "This is some dummy data for the chunk.",
+  "images": [],
+  "char_len": 0,
+  "image_count": 0,
+  "title": "Dummy Chunk Title",
+  "summary": "This is a summary of the dummy chunk.",
+  "file": "/path/to/dummy/file.txt",
+  "index": 0,
+  "source": {
+    "File": {
+      "path": "/path/to/dummy/file.txt",
+      "index": 0,
+      "page": 0
+    }
+  },
+  "uid": {
+    "high": 0,
+    "low": 0
+  },
+  "build_info": {
+    "file_reader_key": "",
+    "prompt_hash": "",
+    "model": ""
+  },
+  "timestamp": 1753746151,
+  "searchable": true
+}

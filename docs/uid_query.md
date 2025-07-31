@@ -4,6 +4,8 @@ Uid is like hash of git. For example, `git log` shows you commit hashes, and you
 
 There are many commands that ask uid from you: `cat-file`, `ls-chunks`, `ls-files`, `ls-images` and `ls-terms`. For example, let's say "abcd1234" is a uid of a file, and "efgh5678" is a uid of a chunk. `rag ls-chunks abcd1234` shows you the chunks that belongs to "abcd1234" and `rag ls-terms efgh5678` shows you the term-frequency of "efab5678".
 
+The underlying logic for UID querying, including configuration and result handling, is managed within the `ragit-index` crate, specifically in its `query_helpers` module.
+
 ## Full match
 
 The simplest uid query is to use all the 64 characters. It's faster than prefix-matching.

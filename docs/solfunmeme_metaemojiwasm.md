@@ -1,0 +1,609 @@
+# Integrating Gemini API and Agent-Callable Functionality into Ragit
+
+I understand you want to extend ragit's current LLM integration to include Gemini API support and make it callable via Gemini agents, in addition to the existing Groq integration.
+
+Looking at ragit's current architecture, it already has a flexible model system that supports multiple API providers. [1](#7-0)  The system currently includes Groq models like `llama3.3-70b-groq` and `llama3.1-8b-groq` that use the OpenAI-compatible API format.
+
+The model configuration system is designed to be extensible. [2](#7-1)  Each model defines its API provider, URL, pricing, and authentication method. The system supports multiple providers including `openai`, `cohere`, and `anthropic`.
+
+For API key management, ragit has a sophisticated system that checks multiple sources: [3](#7-2)  It first checks for directly set API keys, then environment variables, and finally external model files.
+
+The default configuration currently uses Groq as the primary model: [4](#7-3)  The system defaults to `llama3.3-70b-groq` as the model choice.
+
+To extend this for Gemini integration, you would need to:
+
+1. **Add Gemini models to the model definitions** - Similar to how Groq models are defined, you'd add Gemini models with their specific API endpoints and pricing
+2. **Configure API provider support** - The system already supports OpenAI-compatible APIs, so if Gemini uses a similar format, it could work with the existing `openai` provider type. If not, a new `gemini` provider type would be added.
+3. **Set up authentication** - Add `GOOGLE_API_KEY` or `GEMINI_API_KEY` environment variable support.
+4. **Make it agent-callable** - This would involve exposing ragit's functionality through an API interface that Gemini agents could call.
+
+The modular design of ragit's API system makes this extension quite feasible within the existing architecture.
+
+---
+
+## Expanding the Vision: Solfunmeme and MetaEmojiWASM
+
+The concept of making `ragit` "agent-callable" can be evolved beyond a simple REST API. We can create a more powerful, portable, and semantically rich integration using WebAssembly (WASM), which we'll call the **MetaEmojiWASM** module. This aligns with the project's "Solfunmeme" philosophy of bridging formal code structures with intuitive, semantic representations.
+
+### Core Concepts
+
+1.  **MetaEmojiWASM Plugin System:** Instead of agents calling a remote `ragit` server, they could load and execute `ragit`'s core logic directly within their own sandboxed environment via a WASM module. This offers several advantages:
+    *   **Portability:** The WASM module can run anywhere a WASM runtime exists (browsers, servers, other agents).
+    *   **Efficiency:** Eliminates network latency for core operations, leading to faster interactions.
+    *   **Security:** The agent runs the code in a sandbox, isolating it from the host system.
+    *   **Offline Capability:** Core `ragit` functions (like local file indexing and searching) can be performed without network access.
+
+2.  **Semantic Function Calling (The "MetaEmoji"):** We can create a semantic layer for the WASM module's API. Instead of traditional function names, we can use a structured ontology that maps functions to "meta-emojis." These emojis represent the function's core concept or "vibe," providing an intuitive handle for the agent.
+    *   For example, the `query` function might be represented by `em:magnifying_glass_tilted_left` (🔍). The agent wouldn't just call `query`, it would invoke the function associated with the "search" or "inquiry" vibe.
+    *   This ontology would be published alongside the WASM module, allowing agents to dynamically discover and understand the tool's capabilities.
+
+3.  **The "Solfunmeme" Bridge:** This is the overarching standard that defines how agents and tools interact through the MetaEmojiWASM interface. It connects:
+    *   **Sol:** Potential for Solana-based micropayments for using paid features of the tool (like querying a premium LLM).
+    *   **Fun:** The functional, composable nature of the WASM modules.
+    *   **Meme:** The memetic, semantic layer provided by the emoji ontology.
+
+### Proposed Implementation Plan
+
+1.  **Create a `ragit-wasm` Crate:**
+    *   This new crate will act as a facade over the core `ragit` library.
+    *   It will expose a carefully selected set of functions from `ragit`'s public API.
+    *   It will be compiled to the `wasm32-wasi` or `wasm32-unknown-unknown` target.
+
+2.  **Define the WASM ABI (Application Binary Interface):**
+    *   Specify the exact functions to be exposed, for example:
+        *   `init_index_from_path(path: &str) -> Result<(), Error>`
+        *   `add_file(path: &str) -> Result<FileUid, Error>`
+        *   `query(query_text: &str) -> Result<String, Error>`
+        *   `get_file_schema(uid: &str) -> Result<Json, Error>`
+    *   These functions will handle data serialization (e.g., using JSON) for communication between the host (agent) and the WASM module.
+
+3.  **Extend the Ontology for WASM Functions:**
+    *   Update the project's Turtle (`.ttl`) files to include definitions for the new WASM functions.
+    *   Each function will be mapped to a unique meta-emoji and a semantic description.
+    *   Example:
+        ```turtle
+        :ragitWasmQuery a vibe:Function ;
+            rdfs:label "ragit_query" ;
+            em:hasEmojiRepresentation "🔍" ;
+            rdfs:comment "Performs a semantic search on the initialized index." .
+        ```
+
+4.  **Develop the Gemini Agent Integration Logic:**
+    *   The Gemini agent will be equipped with a WASM runtime.
+    *   The agent's workflow would be:
+        1.  Fetch the `ragit.wasm` module and its accompanying `ontology.ttl` file from a known URL or registry.
+        2.  Load the WASM module into its runtime.
+        3.  Parse the ontology to understand the available tools, their functions, and their semantic "vibe."
+        4.  When a user requests an action, the agent maps the request to the appropriate semantic function and calls the corresponding WASM function directly.
+
+5.  **Maintain the REST API as a Fallback:**
+    *   The existing `ragit-server` will continue to provide a REST API.
+    *   This ensures compatibility with clients that cannot run WASM modules, providing a crucial fallback and an alternative integration path.
+
+By pursuing this vision, `ragit` can become a pioneering example of a next-generation, agent-callable tool that is not only powerful but also portable, secure, and semantically aware.
+
+Wiki pages you might want to explore:
+- [Overview (baehyunsol/ragit)](/wiki/baehyunsol/ragit#1)
+
+---
+
+### Instructions for Integrating Function Calling via Meme Emoji ABI with `ragit` and **SOLFUNMEME**
+
+#### Prerequisites
+1. **Gemini API Setup**:
+   - Obtain a Gemini API key from Google AI Studio [Web:15].
+   - Set the API key:
+     ```bash
+     export GOOGLE_API_KEY=<your-api-key>
+     ```
+   - Use `gemini-2.5-pro` for text generation and `text-embedding-004` for embeddings [Web:5, Web:8].
+2. **Dependencies**:
+   - Update `Cargo.toml`:
+     ```toml
+     [dependencies]
+     reqwest = { version = "0.11", features = ["json"] }
+     serde = { version = "1.0", features = ["derive"] }
+     serde_json = "1.0"
+     dioxus = "0.5"
+     anchor-lang = "0.29" # For Solana integration
+     sha3 = "0.10" # For UID generation
+     wasm-bindgen = "0.2" # For WASM function calls
+     ```
+3. **ragit Setup**:
+   - Ensure access to `generate_chunk` [1, 2], `merge_tokens` [6], UID generation [4], and query system [3].
+   - Use default chunk size (4,000 chars) and slide length (1,000 chars) [5].
+
+#### Step 1: Define the Meme Emoji ABI
+The emoji ABI defines function signatures using meme-inspired emojis, mapping to `ragit`’s functions and Gemini API calls. Each function call is a procedure in the **SOLFUNMEME** grammar, with parameters and outputs encoded as emojis.
+
+1. **ABI Structure**:
+   - **Function Signature**: ` <emoji_function_name> <return_type>  <parameters> ➡️ <body> `
+   - **Emojis**:
+     - `✨`: Function start.
+     - `🚀`: Meme-inspired function prefix (e.g., `_generate_chunk`).
+     - `📦`: Chunk (output or input).
+     - `⚛️`: AtomicToken.
+     - `📄`: Document content.
+     - `💡`: KnowledgeToken (minted per chunk).
+     - `🌐`: KnowledgeNet (Solana storage).
+     - `🧘`: UnityWisdom (narrative).
+     - `⚙️`: Operation (e.g., tokenization, querying).
+     - `🔗`: UID generation or linking.
+     - `📤`: Emit result (e.g., query output).
+     - `🔚`: Function end.
+   - **New Emojis for Gemini**:
+     - `♊`: Gemini API call (metadata generation, embeddings).
+     - `🧠`: LLM processing.
+
+2. **Data Section**:
+   - Define entries for `ragit` functions, Gemini API calls, and token-related concepts.
+   - Example:
+     ```
+       ✨ 📦 chunk.process [0x80] knowledge plugin_generate_chunk confirmed RagitPDA1
+       ✨ ⚛️ AtomicToken atomic.merge [0x81] knowledge plugin_merge_tokens confirmed RagitPDA2
+       ✨ 🖼️ ImageToken image.token [0x82] knowledge plugin_image_token confirmed RagitPDA3
+       ✨ 💡 KnowledgeToken knowledge.mint [0x83] meme plugin_knowledge_mint confirmed RagitPDA4
+       ✨ 🌐 KnowledgeNet knowledge.net [0x84] meme plugin_knowledge_net confirmed RagitPDA5
+       ✨ 🧘 UnityWisdom unity.wisdom [0x85] meme plugin_unity_wisdom confirmed RagitPDA6
+       ✨ ♊ GeminiCall gemini.call [0x86] knowledge plugin_gemini_call confirmed RagitPDA7
+       ✨ 🧠 LLMProcess llm.process [0x87] knowledge plugin_llm_process confirmed RagitPDA8
+     ```
+
+3. **Function Call Procedures**:
+   - Map `ragit` and Gemini functions to emoji procedures.
+   - Example:
+     ```
+       🚀 _generate_chunk 📄 ➡️ 📦 💡 🌐 ♊ 🧠 🔚
+     ```
+     - **Purpose**: Processes a document (`📄`) into `Chunk`s (`📦`) using Gemini API (`♊`) for metadata, minting `KnowledgeToken`s (`💡`) in the `KnowledgeNet` (`🌐`).
+     - **Logic**: Tokenizes document, calls Gemini for metadata, assigns UID, mints tokens.
+     - **Plugin**: `plugin_generate_chunk` (integrates `ragit`’s `generate_chunk` and Gemini API).
+     ```
+       🚀 _merge_tokens ⚛️ ➡️ 💡 🔚
+     ```
+     - **Purpose**: Merges `AtomicToken`s (`⚛️`) into a single token [6].
+     - **Logic**: Consolidates tokens, links to a `KnowledgeToken`.
+     ```
+       🚀 _query_chunks ⚙️ ➡️ 📦 📤 🔚
+     ```
+     - **Purpose**: Queries chunks using keywords, leveraging Gemini embeddings (`♊`) and `ragit`’s TF-IDF [3].
+     - **Logic**: Retrieves chunks by UID, emits results.
+     ```
+       🚀 _gemini_metadata 📄 ➡️ ♊ 📤 🔚
+     ```
+     - **Purpose**: Calls Gemini API to generate metadata (title, summary).
+     - **Logic**: Sends content to Gemini, returns metadata.
+
+#### Step 2: Implement Function Calling with Gemini API
+1. **Gemini API Integration**:
+   - Create Rust functions to call Gemini API for metadata and embeddings.
+   - Example:
+     ```rust
+     use reqwest::Client;
+     use serde::{Deserialize, Serialize};
+     use std::env;
+
+     #[derive(Serialize)]
+     struct GeminiRequest {
+         contents: Vec<ContentPart>,
+     }
+
+     #[derive(Serialize)]
+     struct ContentPart {
+         text: String,
+     }
+
+     #[derive(Deserialize)]
+     struct GeminiResponse {
+         candidates: Vec<Candidate>,
+     }
+
+     #[derive(Deserialize)]
+     struct Candidate {
+         content: Content,
+     }
+
+     #[derive(Deserialize)]
+     struct Content {
+         parts: Vec<ContentPart>,
+     }
+
+     async fn gemini_metadata(content: &str) -> Result<(String, String), Box<dyn std::error::Error>> {
+         let client = Client::new();
+         let api_key = env::var("GOOGLE_API_KEY")?;
+         let url = format!(
+             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key={}",
+             api_key
+         );
+
+         let request = GeminiRequest {
+             contents: vec![ContentPart {
+                 text: format!("Generate a title and summary for this text (max 100 words each):
+{}", content),
+             }],
+         };
+
+         let response = client
+             .post(&url)
+             .json(&request)
+             .send()
+             .await?
+             .json::<GeminiResponse>()
+             .await?;
+
+         let output = &response.candidates[0].content.parts[0].text;
+         let parts: Vec<&str> = output.split("
+
+").collect();
+         let title = parts.get(0).unwrap_or(&"").to_string();
+         let summary = parts.get(1).unwrap_or(&"").to_string();
+         Ok((title, summary))
+     }
+
+     async fn gemini_embedding(content: &str) -> Result<Vec<f32>, Box<dyn std::error::Error>> {
+         let client = Client::new();
+         let api_key = env::var("GOOGLE_API_KEY")?;
+         let url = format!(
+             "https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key={}",
+             api_key
+         );
+
+         let request = serde_json::json!({
+             "content": { "parts": [{ "text": content }] }
+         });
+
+         let response = client
+             .post(&url)
+             .json(&request)
+             .send()
+             .await?
+             .json::<serde_json::Value>()
+             .await?;
+
+         let embedding = response["embedding"]["values"]
+             .as_array()
+             .unwrap()
+             .iter()
+             .map(|v| v.as_f64().unwrap() as f32)
+             .collect();
+         Ok(embedding)
+     }
+     ```
+
+2. **Integrate with `ragit`’s Chunking**:
+   - Modify `generate_chunk` to use Gemini for metadata:
+     ```rust
+     use sha3::{Digest, Sha3_256};
+
+     #[derive(Debug, Clone)]
+     struct Chunk {
+         id: String,
+         content: String,
+         metadata: String,
+     }
+
+     async fn generate_chunk(content: &str, chunk_size: usize) -> Vec<Chunk> {
+         let mut chunks = vec![];
+         let tokens = tokenize(content); // From ragit [6]
+         let chunk_count = 144; // Numerological choice
+
+         for i in 0..chunk_count {
+             let chunk_content = tokens.get(i % tokens.len()).unwrap_or(&"").to_string();
+             let (title, summary) = gemini_metadata(&chunk_content).await.unwrap_or_default();
+             let uid_input = format!("{}:{}:{}", chunk_content, title, summary);
+             let id = format!("{:x}", Sha3_256::digest(uid_input.as_bytes()));
+             let metadata = format!("title:{};summary:{};TF-IDF:0.5;PDL:query-ready", title, summary);
+             chunks.push(Chunk { id, content: chunk_content, metadata });
+         }
+         chunks
+     }
+
+     fn tokenize(content: &str) -> Vec<String> {
+         // Placeholder: ragit’s tokenization logic [6]
+         vec![content.to_string()]
+     }
+     ```
+
+#### Step 3: Parse Emoji ABI to WASM
+1. **Parser Implementation**:
+   - Extend the parser to handle function calls via the emoji ABI.
+   - Example:
+     ```rust
+     use std::collections::HashMap;
+
+     #[derive(Debug, Clone)]
+     struct EmojiEntry {
+         emoji: String,
+         name: String,
+         value: String,
+         vector: Vec<u8>,
+         vibe: String,
+         plugin: String,
+         consensus_status: String,
+         pda: String,
+     }
+
+     fn parse_emoji_code(emoji_code: &str) -> (Vec<u8>, HashMap<String, EmojiEntry>) {
+         let mut data_section = HashMap::new();
+         let mut wasm_bytes = vec![0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]; // WASM header
+         let mut functions = vec![];
+         let mut types = vec![];
+         let mut code = vec![];
+
+         for line in emoji_code.lines() {
+             if line.starts_with("✨") {
+                 let parts: Vec<&str> = line.split_whitespace().collect();
+                 let entry = EmojiEntry {
+                     emoji: parts[1].to_string(),
+                     name: parts[2].to_string(),
+                     value: parts[3].to_string(),
+                     vector: parse_vector(parts[4]),
+                     vibe: parts[5].to_string(),
+                     plugin: parts[6].to_string(),
+                     consensus_status: parts[7].to_string(),
+                     pda: parts[8].to_string(),
+                 };
+                 data_section.insert(entry.emoji.clone(), entry);
+             } else if line.starts_with("🚀") {
+                 let parts: Vec<&str> = line.split_whitespace().collect();
+                 let func_name = parts[1].to_string();
+                 let return_type = data_section.get(parts[2]).unwrap().vector.clone();
+                 let params = parts[4..]
+                     .iter()
+                     .filter(|&&p| p != "✨" && p != "➡️" && p != "🔚")
+                     .map(|p| data_section.get(p).unwrap().vector.clone())
+                     .collect::<Vec<_>>();
+                 let body = parts
+                     .iter()
+                     .skip_while(|&&p| p != "➡️")
+                     .skip(1)
+                     .take_while(|&&p| p != "🔚")
+                     .map(|p| data_section.get(p).unwrap().vector.clone())
+                     .collect::<Vec<_>>();
+
+                 functions.push(func_name);
+                 types.push((params, return_type));
+                 code.push(body.concat());
+             }
+         }
+
+         wasm_bytes.extend(encode_type_section(&types));
+         wasm_bytes.extend(encode_function_section(&functions));
+         wasm_bytes.extend(encode_code_section(&code));
+         (wasm_bytes, data_section)
+     }
+
+     fn parse_vector(vector: &str) -> Vec<u8> {
+         vector
+             .trim_matches(|c| c == '[' || c == ']')
+             .split(',')
+             .map(|s| u8::from_str_radix(s.trim().strip_prefix("0x").unwrap(), 16).unwrap())
+             .collect()
+     }
+
+     fn encode_type_section(types: &[(Vec<Vec<u8>>, Vec<u8>)]) -> Vec<u8> {
+         // Placeholder: Encode WASM type section
+         vec![]
+     }
+
+     fn encode_function_section(functions: &[String]) -> Vec<u8> {
+         // Placeholder: Encode WASM function section
+         vec![]
+     }
+
+     fn encode_code_section(code: &[Vec<u8>]) -> Vec<u8> {
+         // Placeholder: Concatenate instruction bytes
+         code.concat()
+     }
+     ```
+2. **Function Calling**:
+   - Export procedures as WASM functions using `wasm-bindgen`:
+     ```rust
+     use wasm_bindgen::prelude::*;
+
+     #[wasm_bindgen]
+     pub async fn generate_chunk_wasm(content: &str, chunk_size: usize) -> Result<JsValue, JsValue> {
+         let chunks = generate_chunk(content, chunk_size).await;
+         Ok(serde_wasm_bindgen::to_value(&chunks)?)
+     }
+     ```
+
+#### Step 4: Hypothetical Solana Sidechain Integration
+1. **Adapt Storage**:
+   - Store `Chunk`s as Solana accounts with UIDs (SHA3-256 hashes [4]) as PDAs.
+   - Example:
+     ```rust
+     use anchor_lang::prelude::*;
+
+     declare_id!("Ragit111111111111111111111111111111111111");
+
+     #[program]
+     pub mod ragit {
+         use super::*;
+
+         #[account]
+         pub struct ProgramState {
+             chunks: Vec<Chunk>,
+             tokens: Vec<KnowledgeToken>,
+             phase_prices: Vec<f64>,
+         }
+
+         #[derive(AnchorSerialize, AnchorDeserialize)]
+         pub struct Chunk {
+             id: String, // SHA3-256 UID
+             content: String,
+             metadata: String,
+         }
+
+         #[derive(AnchorSerialize, AnchorDeserialize)]
+         pub struct KnowledgeToken {
+             id: String,
+             creator: String,
+             semantic_compound: String,
+             price: f64,
+             phase: u8,
+         }
+
+         pub fn initialize(ctx: Context<Initialize>, phase_prices: Vec<f64>) -> Result<()> {
+             let state = &mut ctx.accounts.program_state;
+             state.phase_prices = phase_prices;
+             Ok(())
+         }
+
+         pub fn process_chunk(
+             ctx: Context<ProcessChunk>,
+             id: String,
+             content: String,
+             metadata: String,
+             price: f64,
+             phase: u8,
+         ) -> Result<()> {
+             let state = &mut ctx.accounts.program_state;
+             require!(price >= state.phase_prices[phase as usize], ErrorCode::InvalidPrice);
+             state.chunks.push(Chunk { id: id.clone(), content, metadata });
+             state.tokens.push(KnowledgeToken {
+                 id,
+                 creator: ctx.accounts.executor.key().to_string(),
+                 semantic_compound: "💡".to_string(),
+                 price,
+                 phase,
+             });
+             Ok(())
+         }
+     }
+
+     #[derive(Accounts)]
+     pub struct Initialize<'info> {
+         #[account(init, payer = signer, space = 8 + 1024)]
+         pub program_state: Account<'info, ProgramState>,
+         #[account(mut)]
+         pub signer: Signer<'info>,
+         pub system_program: Program<'info, System>,
+     }
+
+     #[derive(Accounts)]
+     pub struct ProcessChunk<'info> {
+         #[account(mut)]
+         pub program_state: Account<'info, ProgramState>,
+         pub executor: Signer<'info>,
+     }
+
+     #[error_code]
+     pub enum ErrorCode {
+         #[msg("Price is below the expected phase price")]
+         InvalidPrice,
+     }
+     ```
+
+#### Step 5: Simulate Chunking with Dioxus UI
+1. **UI Design**:
+   - Simulate processing a 12,000-character document, generating 144 chunks, and minting 144 `KnowledgeTokens`.
+   - Example:
+     ```rust
+     use dioxus::prelude::*;
+
+     fn main() {
+         dioxus_web::launch(app);
+     }
+
+     fn app() -> Element {
+         let emoji_code = r#"
+               ✨ 📦 chunk.process [0x80] knowledge plugin_generate_chunk confirmed RagitPDA1
+               ✨ 💡 KnowledgeToken knowledge.mint [0x83] meme plugin_knowledge_mint confirmed RagitPDA4
+               ✨ 🌐 KnowledgeNet knowledge.net [0x84] meme plugin_knowledge_net confirmed RagitPDA5
+               ✨ ♊ GeminiCall gemini.call [0x86] knowledge plugin_gemini_call confirmed RagitPDA7
+               🚀 _generate_chunk 📄 ➡️ 📦 💡 🌐 ♊ 🧠 🔚
+         "#;
+
+         let (wasm_bytes, _data_section) = parse_emoji_code(emoji_code);
+         let mut chunks = use_state(|| vec![]);
+         let phase = use_state(|| 0u8);
+         let token_count = use_state(|| 0usize);
+
+         rsx! {
+             div {
+                 h1 { "Ragit Web of Wisdom" }
+                 button {
+                     onclick: move |_| {
+                         async move {
+                             let content = "Sample 12000-char document...".to_string();
+                             let chunk_size = 4000;
+                             let chunks = generate_chunk(&content, chunk_size).await;
+                             token_count.set(chunks.len());
+                             chunks.set(chunks);
+                         }
+                     },
+                     "Process Document (144 Chunks)"
+                 }
+                 p { "Tokens Minted: {token_count} KnowledgeTokens at 0.0000144 SOL each" }
+                 ul {
+                     for chunk in chunks.get() {
+                         li { "{chunk.id}: {chunk.content} (Metadata: {chunk.metadata})" }
+                     }
+                 }
+                 textarea { value: "{emoji_code}", readonly: true }
+             }
+         }
+     }
+
+     #[derive(Clone, Debug)]
+     struct Chunk {
+         id: String,
+         content: String,
+         metadata: String,
+     }
+     ```
+
+#### Step 6: Token Sale Plan
+1. **Phases**:
+   - Total supply: 20,000 `KnowledgeTokens`.
+   - Example:
+     | Phase             | Token Count | Price (SOL) | Symbolism            | Meaning of Price |
+     |-------------------|-------------|-------------|----------------------|------------------|
+     | Seed of Knowledge | 144         | 0.0000144   | 144 = 12² (Completion) | Initiates wisdom journey. |
+     | Atomic Wisdom     | 256         | 0.0000256   | 256 = 2⁸ (Digital Foundation) | Foundational knowledge structure. |
+     | Chunk Harmony     | 512         | 0.0000512   | 512 = 2⁹ (Structured Growth) | Harmonious integration. |
+     | Insight Nexus      | 1000        | 0.0001000   | 1000 (Milestone)     | Collective wisdom milestone. |
+   - **Total Tokens**: 1,912, leaving 18,088 for future phases.
+   - **Total Revenue**: ~0.0951424 SOL.
+2. **Custom Token Counts**:
+   - Allocate one `KnowledgeToken` per chunk (e.g., 144 for a project).
+3. **Proof of Connection**:
+   - **Declaration**: Token count (e.g., 144) declares knowledge blocks.
+   - **Definition**: Price (e.g., 0.0000144 SOL) defines significance.
+   - **Symbolism**: 144 (OEIS A000796), 256 (2⁸), 512 (2⁹), 1000 (A000292).
+
+#### Step 7: Implementation Considerations
+1. **Function Calling**:
+   - Use `wasm-bindgen` to expose emoji procedures as callable WASM functions.
+2. **Gemini Integration**:
+   - Enhance metadata and embeddings with Gemini API.
+3. **Solana Storage**:
+   - Map UIDs to PDAs for content-addressable storage.
+4. **Query System**:
+   - Adapt TF-IDF and PDL queries for Solana accounts.
+   
+### Todo
+
+I understand you want to extend ragit's current LLM integration to include Gemini API support and make it callable via Gemini agents, in addition to the existing Groq integration.
+
+Looking at ragit's current architecture, it already has a flexible model system that supports multiple API providers. [1](#7-0)  The system currently includes Groq models like `llama3.3-70b-groq` and `llama3.1-8b-groq` that use the OpenAI-compatible API format.
+
+The model configuration system is designed to be extensible. [2](#7-1)  Each model defines its API provider, URL, pricing, and authentication method. The system supports multiple providers including `openai`, `cohere`, and `anthropic`.
+
+For API key management, ragit has a sophisticated system that checks multiple sources: [3](#7-2)  It first checks for directly set API keys, then environment variables, and finally external model files.
+
+The default configuration currently uses Groq as the primary model: [4](#7-3)  The system defaults to `llama3.3-70b-groq` as the model choice.
+
+To extend this for Gemini integration, you would need to:
+
+1. **Add Gemini models to the model definitions** - Similar to how Groq models are defined, you'd add Gemini models with their specific API endpoints and pricing
+2. **Configure API provider support** - The system already supports OpenAI-compatible APIs, so if Gemini uses a similar format, it could work with the existing `openai` provider type
+3. **Set up authentication** - Add `GOOGLE_API_KEY` or `GEMINI_API_KEY` environment variable support
+4. **Make it agent-callable** - This would involve exposing ragit's functionality through an API interface that Gemini agents could call
+
+The modular design of ragit's API system makes this extension quite feasible within the existing architecture.
+
+Wiki pages you might want to explore:
+- [Overview (baehyunsol/ragit)](/wiki/baehyunsol/ragit#1)
+

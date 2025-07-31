@@ -11,13 +11,24 @@ rag query "What makes ragit special?";
 
 ## Why another RAG framework?
 
-RAGIT is very different from the other RAG frameworks.
+RAGIT is very different from the other RAG frameworks, focusing on a highly modular and extensible design.
 
 1. It adds a title and summary to every chunks. The summaries make AIs very easy to rerank chunks.
 2. It uses tfidf scores instead of vector searches. It first asks an AI to generate keywords from a query, then runs tfidf search with the keywords.
 3. It supports markdown files with images.
 4. It supports multi-turn queries (experimental).
 5. You can clone/push knowledge-bases, like git.
+
+## Modular Design
+
+Ragit is built with a multi-crate architecture, where functionalities are separated into distinct, specialized Rust crates. This approach enhances:
+
+*   **Modularity:** Each component is a self-contained unit, making the codebase easier to understand and manage.
+*   **Reusability:** Individual crates can be reused across different parts of the project or even in other applications.
+*   **Maintainability:** Changes and updates to one part of the system are isolated, reducing the risk of unintended side effects.
+*   **Scalability:** The modular structure allows for easier expansion and integration of new features.
+
+Key functionalities like indexing, API interactions, and command handling are now managed by dedicated crates (e.g., `ragit-index`, `ragit-api`, `ragit-command-*`), contributing to a more robust and flexible system.
 
 ## Platform support
 
@@ -38,6 +49,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Pipeline](./pipeline.md)
 - [Prompt Engineering](./prompt_engineering.md)
 - [Quick Guide](./quick_guide.md)
+- [Architecture](./architecture.md)
 
 ## Interactive documents
 

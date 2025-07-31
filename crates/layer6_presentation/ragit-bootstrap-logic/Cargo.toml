@@ -1,0 +1,12 @@
+
+[package]
+name = "ragit-bootstrap-logic"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
+ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+text-splitter = "0.3.0"

@@ -1,0 +1,6 @@
+---
+name: muse_euterpe
+description: "Muse of Music and Flutes. This prompt seeks summaries that identify rhythm, harmony, and flow."
+---
+Analyze the following text for its underlying rhythm and flow. Summarize its content by highlighting the harmonious and dissonant elements, the patterns, and the overall musicality of the piece.
+"{{text}}"

@@ -7,25 +7,142 @@ description = "git-like rag pipeline"
 repository = "https://github.com/baehyunsol/ragit"
 documentation = "https://docs.rs/ragit"
 
-[[bin]]
-name = "rag"
-path = "src/main.rs"
+[workspace]
+members = [
+    # Layer 1
+    "crates/layer1_physical/ragit-core",
+    "crates/layer1_physical/ragit-types",
+    "crates/layer1_physical/ragit-file-error",
+
+    # Layer 2
+    "crates/layer2_data_link/fs",
+    "crates/layer2_data_link/ignore",
+    "crates/layer2_data_link/ragit-uid",
+
+    # Layer 3
+    "crates/layer3_network/ragit-index",
+    "crates/layer3_network/ragit-utils",
+
+    # Layer 4
+    "crates/layer4_transport/ragit-core-utils",
+    "crates/layer4_transport/ragit-query",
+    "crates/layer4_transport/ragit-readers",
+
+    # Layer 5
+    "crates/layer5_session/ragit-config",
+    "crates/layer5_session/ragit-rate-limit",
+    "crates/layer5_session/ragit-session-query",
+
+    # Layer 6
+    
+    "crates/layer6_presentation/pdl",
+    "crates/layer6_presentation/ragit-model-query-response",
+    "crates/layer6_presentation/ragit-schema",
+
+    # Layer 7
+    "crates/layer7_application/api",
+    "crates/layer7_application/cli",
+    "crates/layer7_application/ragit-commands",
+    "crates/layer7_application/ragit-groq-data",
+    "crates/layer7_application/ragit-model",
+    "crates/layer7_application/ragit-model-provider",
+    "crates/layer7_application/ragit-muse",
+    "crates/layer7_application/server",
+    "crates/layer7_application/commands/*",
+    "crates/layer7_application/ragit-build-index-worker-single-file",
+
+    # Legacy & Refactoring
+    "crates/legacy_and_refactoring/ragit-agent",
+    "crates/legacy_and_refactoring/ragit-agent-action",
+    "crates/legacy_and_refactoring/ragit-chunk",
+    "crates/legacy_and_refactoring/ragit-config-commands",
+    "crates/layer1_physical/ragit-error-conversions",
+    "crates/legacy_and_refactoring/ragit-index-core",
+    "crates/legacy_and_refactoring/ragit-index-effects",
+    "crates/legacy_and_refactoring/ragit-index-io",
+    "crates/legacy_and_refactoring/ragit-index-model-management",
+    "crates/legacy_and_refactoring/ragit-index-query",
+    "crates/legacy_and_refactoring/ragit-index-save-to-file",
+    "crates/legacy_and_refactoring/ragit-index-storage",
+    "crates/layer3_network/ragit-index-types",
+    "crates/legacy_and_refactoring/ragit-legacy-agent",
+    "crates/legacy_and_refactoring/ragit-legacy-api-config",
+    "crates/legacy_and_refactoring/ragit-legacy-chunk",
+    "crates/legacy_and_refactoring/ragit-legacy-error",
+    "crates/legacy_and_refactoring/ragit-legacy-log-qa-results",
+    "crates/legacy_and_refactoring/ragit-legacy-uid",
+    "crates/legacy_and_refactoring/ragit-muse-logic",
+    
+    "crates/legacy_and_refactoring/ragit-prompt-management",
+    "crates/legacy_and_refactoring/ragit-qa-system",
+    "crates/layer3_network/ragit-tfidf",
+]
+exclude = [
+    "crates/server",
+    "crates/ragit-agent-action",
+    "crates/ragit-legacy-agent",
+    "crates/ragit-legacy-api-config",
+    "crates/ragit-legacy-chunk",
+    "crates/ragit-legacy-error",
+    "crates/ragit-legacy-log-qa-results",
+    "crates/ragit-legacy-uid",
+    "crates/ragit-qa-system",
+    "crates/ragit-model-query-response",
+    "crates/ragit-command-archive",
+    "crates/ragit-command-audit",
+    "crates/ragit-command-cat-file",
+    "crates/ragit-command-check",
+    "crates/ragit-command-clone",
+    "crates/ragit-command-config",
+    "crates/ragit-command-extract-keywords",
+    "crates/ragit-command-gc",
+    "crates/ragit-command-help",
+    "crates/ragit-command-ii-build",
+    "crates/ragit-command-ii-reset",
+    "crates/ragit-command-ii-status",
+    "crates/ragit-command-ls",
+    "crates/ragit-command-merge",
+    "crates/ragit-command-meta",
+    "crates/ragit-command-model",
+    "crates/ragit-command-muse-summarize",
+    "crates/ragit-command-pdl",
+    "crates/ragit-command-pull",
+    "crates/ragit-command-push",
+    "crates/ragit-command-qa-test",
+    "crates/ragit-command-qa-tune",
+    "crates/ragit-command-remove",
+    "crates/ragit-command-status",
+    "crates/ragit-command-summary",
+    "crates/ragit-command-version",
+]
+
 
 [dependencies]
 async-recursion = "1.1.1"
 chrono = "0.4.40"
 csv = { version = "1.3.1", optional = true }
 flate2 = "1.1.0"
-image = "0.25.5"
+image = { version = "0.25.5", default-features = false, features = ["rayon", "bmp", "dds", "exr", "ff", "gif", "hdr", "ico", "jpeg", "png", "pnm", "qoi", "tga", "tiff", "webp"] }
 lazy_static = "1.5.0"
 mupdf = { version = "0.5.0", optional = true }
 png = { version = "0.17.16", optional = true }  # `resvg`'s function returns `png::EncodingError`
-ragit-api = { path = "./crates/api", version = "0.4.2" }
-ragit-cli = { path = "./crates/cli", version = "0.4.2" }
-ragit-fs = { path = "./crates/fs", version = "0.4.2", features = ["diff"] }
-ragit-ignore = { path = "./crates/ignore", version = "0.4.2" }
-ragit-korean = { path = "./crates/korean", version = "0.4.2", optional = true }
-ragit-pdl = { path = "./crates/pdl", version = "0.4.2" }
+
+ragit-ignore = { path = "./crates/layer2_data_link/ignore", version = "0.4.2" }
+
+ragit-model = { path = "./crates/layer7_application/ragit-model" }
+ragit-pdl = { path = "./crates/layer6_presentation/pdl", version = "0.4.2" }
+ragit-uid = { path = "./crates/layer2_data_link/ragit-uid", version = "0.1.0" }
+ragit-utils = { path = "./crates/layer3_network/ragit-utils", version = "0.1.0" }
+ragit-schema = { path = "./crates/layer6_presentation/ragit-schema", version = "0.1.0" }
+ragit-commands = { path = "./crates/layer7_application/ragit-commands", version = "0.1.0" }
+ragit-agent = { path = "./crates/legacy_and_refactoring/ragit-agent" }
+ragit-types = { path = "./crates/layer1_physical/ragit-types" }
+ragit-index-query = { path = "./crates/legacy_and_refactoring/ragit-index-query" }
+ragit-index = { path = "./crates/layer3_network/ragit-index" }
+ragit-index-types = { path = "./crates/layer3_network/ragit-index-types" }
+ragit-tfidf = { path = "./crates/layer3_network/ragit-tfidf" }
+ragit-index-io = { path = "./crates/legacy_and_refactoring/ragit-index-io" }
+ragit-model-query-response = { path = "./crates/layer6_presentation/ragit-model-query-response" }
 regex = "1.11.1"
 reqwest = { version = "0.12.12", features = ["multipart"] }
 resvg = { version = "0.45.1", optional = true }
@@ -33,23 +150,30 @@ rust-stemmers = "1.2.0"
 serde = { version = "1.0.218", features = ["derive"] }
 serde_json = { version = "1.0.139", features = ["arbitrary_precision"] }
 sha3 = "0.10.8"
+strum = { version = "0.26", features = ["derive"] }
 tera = "1.20.0"
+thiserror = "1.0"
+anyhow = "1.0"
+tikv-jemallocator = { version = "0.5", optional = true }
 tokio = { version = "1.43.0", features = ["full"] }
 url = "2.5.4"
+zstd = "0.13.3"
 
 [features]
 # `csv` is small enough and is purely in Rust.
 default = ["csv"]
-full = ["csv", "pdf", "svg", "korean"]
+full = ["csv"]
 
 csv = ["dep:csv"]
-korean = ["dep:ragit-korean"]
+
 pdf = ["dep:mupdf"]
 svg = ["dep:resvg", "dep:png"]
 
 # This feature only affects `rag version --build-options`.
 # Please make sure to enable this when you build ragit with "production" profile.
 production = []
+jemalloc = ["dep:tikv-jemallocator"]
+
 
 [profile.production]
 inherits = "release"

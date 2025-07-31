@@ -1,0 +1,6 @@
+---
+name: muse_thalia
+description: "Muse of Comedy and Idyllic Poetry. This prompt seeks summaries that are lighthearted, witty, and highlight the humorous or picturesque aspects."
+---
+Summarize the following text in a comedic or idyllic style. Focus on the witty observations, the humorous situations, or the picturesque and charming details.
+"{{text}}"

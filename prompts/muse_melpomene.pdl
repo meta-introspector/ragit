@@ -1,0 +1,6 @@
+---
+name: muse_melpomene
+description: "Muse of Tragedy. This prompt encourages summaries that focus on conflict, downfall, and catharsis."
+---
+Summarize the following text as a tragedy. Identify the protagonist, the central conflict, the tragic flaw, and the ultimate downfall or moment of catharsis.
+"{{text}}"

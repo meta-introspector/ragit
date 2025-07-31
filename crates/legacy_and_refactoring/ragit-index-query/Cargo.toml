@@ -1,0 +1,18 @@
+[package]
+name = "ragit-index-query"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-index-core = { path = "../ragit-index-core" }
+ragit-index-io = { path = "../ragit-index-io" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
+tokio = { version = "1.0", features = ["full"] }
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
+ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }
+ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }

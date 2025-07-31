@@ -25,6 +25,8 @@ cd ragit
 
 You need [cargo](https://github.com/rust-lang/cargo) anyway to compile the source. `cargo` is the only dependency. Make sure that your rust-toolchain is up to date. Ragit doesn't have an MSRV policy. It's always tested on the newest version of rust and is likely to fail on 1.84 or older versions.
 
+Ragit is built with a modular, multi-crate architecture. While the internal structure is composed of many specialized crates, `cargo` automatically manages their compilation and dependencies. You can build the entire project using the standard `cargo build` commands:
+
 ```
 # only default features
 cargo build --release

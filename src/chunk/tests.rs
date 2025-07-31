@@ -1,5 +1,5 @@
 use crate::chunk::{Chunk, ChunkSource};
-use crate::index::Index;
+use crate::index::index_struct::Index;
 use super::merge_and_convert_chunks;
 
 #[test]

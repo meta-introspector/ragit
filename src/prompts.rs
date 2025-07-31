@@ -44,6 +44,43 @@ lazy_static! {
             include_str!("../prompts/agent.pdl").to_string(),
         );
 
+        result.insert(
+            String::from("muse_calliope"),
+            include_str!("../prompts/muse_calliope.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_clio"),
+            include_str!("../prompts/muse_clio.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_erato"),
+            include_str!("../prompts/muse_erato.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_euterpe"),
+            include_str!("../prompts/muse_euterpe.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_melpomene"),
+            include_str!("../prompts/muse_melpomene.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_polyhymnia"),
+            include_str!("../prompts/muse_polyhymnia.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_terpsichore"),
+            include_str!("../prompts/muse_terpsichore.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_thalia"),
+            include_str!("../prompts/muse_thalia.pdl").to_string(),
+        );
+        result.insert(
+            String::from("muse_urania"),
+            include_str!("../prompts/muse_urania.pdl").to_string(),
+        );
+
         result
     };
 }
