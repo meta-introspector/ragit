@@ -3,10 +3,8 @@ use ragit_types::pdl_error::PdlError as Error;
 use crate::pdl_struct::Pdl;
 use ragit_types::schema::Schema;
 
-use ragit_types::pdl_types::{Message, MessageContent, Role, PdlRole};
+use ragit_types::pdl_types::{Message, MessageContent, PdlRole};
 use crate::escape_pdl_tokens::escape_pdl_tokens;
-use crate::unescape_pdl_tokens::unescape_pdl_tokens;
-use crate::try_parse_inline_block::try_parse_inline_block;
 use crate::into_message_contents::into_message_contents;
 
 pub fn parse_pdl_logic(
