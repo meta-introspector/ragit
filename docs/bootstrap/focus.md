@@ -21,6 +21,7 @@ To achieve a clean build for the `bootstrap` command, we are systematically comm
 - `ragit-legacy-api-config`
 - `ragit-legacy-chunk`
 - `ragit-command-ii-reset`
+- `ragit-command-ii-status`
 - `ragit-command-status`
 - `ragit-command-summary`
 - `ragit-command-help`

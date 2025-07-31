@@ -11,6 +11,7 @@ The primary focus is on ensuring the `ragit bootstrap` command compiles and func
 **Key Progress:**
 - `memory_monitor` argument correctly passed to `get_self_code`, `format_prompt`, and `handle_improved_code` in bootstrap crates.
 - `ragit-index-query` updated to use `index.get_chunks()` for TF-IDF search.
+- `ragit-types` compilation errors resolved.
 
 **Next Steps for Bootstrap:**
 1.  **Implement Compile and Test Logic:** Add logic within the `perform_self_improvement` loop to compile the improved code and run relevant tests.
