@@ -181,7 +181,7 @@ mod tests {
 
     #[test]
     fn test_fixed_vec_from_slice() {
-        let s = &[100, 200];
+        let s: &[u8] = &[100, 200];
         let fv: FixedVec<u8, 5> = s.into();
         assert_eq!(fv.len(), 2);
         assert_eq!(fv.iter().collect::<Vec<_>>(), vec![&100, &200]);

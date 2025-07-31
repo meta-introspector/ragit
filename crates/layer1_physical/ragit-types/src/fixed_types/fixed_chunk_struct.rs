@@ -167,7 +167,7 @@ impl ChunkLike for FixedChunk {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::chunk::Chunk;
+    use crate::chunk::chunk_struct::Chunk;
     use crate::chunk::chunk_struct::ChunkBuildInfo as OriginalChunkBuildInfo;
     use crate::uid::Uid;
     use std::collections::HashMap;
