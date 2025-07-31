@@ -90,7 +90,6 @@ impl FixedChunk {
             image_count: 0,
             title: FixedString::new(),
             summary: FixedString::new(),
-//            muse_summaries: FixedHashMap::new(),
             file: FixedString::new(),
             index: 0,
             source: ChunkSource::default(),
@@ -111,7 +110,6 @@ impl From<crate::chunk::chunk_struct::Chunk> for FixedChunk {
             image_count: chunk.image_count,
             title: chunk.title.into(),
             summary: chunk.summary.into(),
-            //            muse_summaries: chunk.muse_summaries.into(),
             file: chunk.file.into(),
             index: chunk.index,
             source: chunk.source,
@@ -133,7 +131,6 @@ impl From<ProcessedDoc> for FixedChunk {
             image_count: 0,
             title: FixedString::new(),
             summary: FixedString::new(),
-//            muse_summaries: FixedHashMap::new(),
             file: FixedString::new(),
             index: 0,
             source: ChunkSource::default(),
@@ -187,10 +184,6 @@ mod tests {
 
     #[test]
     fn test_fixed_chunk_from_original_chunk() {
-        let mut original_muse_summaries = HashMap::new();
-        original_muse_summaries.insert(String::from("key1"), String::from("value1"));
-        original_muse_summaries.insert(String::from("key2"), String::from("value2"));
-
         let original_chunk = Chunk {
             data: String::from("some chunk data"),
             images: vec![Uid::dummy(), Uid::dummy()],
@@ -198,7 +191,6 @@ mod tests {
             image_count: 2,
             title: String::from("Chunk Title"),
             summary: String::from("Chunk Summary"),
-            muse_summaries: original_muse_summaries,
             file: String::from("/path/to/file.txt"),
             index: 1,
             source: ChunkSource::default(),
@@ -220,9 +212,6 @@ mod tests {
         assert_eq!(fixed_chunk.image_count, 2);
         assert_eq!(fixed_chunk.title.as_str(), "Chunk Title");
         assert_eq!(fixed_chunk.summary.as_str(), "Chunk Summary");
-        assert_eq!(fixed_chunk.muse_summaries.len(), 2);
-        assert_eq!(fixed_chunk.muse_summaries.get("key1"), Some("value1"));
-        assert_eq!(fixed_chunk.muse_summaries.get("key2"), Some("value2"));
         assert_eq!(fixed_chunk.file.as_str(), "/path/to/file.txt");
         assert_eq!(fixed_chunk.index, 1);
         assert_eq!(fixed_chunk.source, ChunkSource::default());
