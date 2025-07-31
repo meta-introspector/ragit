@@ -39,7 +39,8 @@ impl MemoryMonitor {
 
     pub fn verbose(&self, message: &str) {
         if self.verbose {
-            println!("{}", message);
+            let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S%.3f");
+            println!("[{}] [INFO] {}", timestamp, message);
         }
     }
 

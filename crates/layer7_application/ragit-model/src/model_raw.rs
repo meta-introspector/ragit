@@ -105,13 +105,59 @@ impl ModelRaw {
     }
 
     pub fn gpt_4o_mini() -> Self {
-        // DEFAULT_MODELS.get("gpt-4o-mini").unwrap().clone()
-        unimplemented!()
+        // TODO: Replace with actual model loading from DEFAULT_MODELS
+        Self {
+            name: "gpt-4o-mini".to_string(),
+            api_name: "gpt-4o-mini".to_string(),
+            can_read_images: true,
+            api_provider: "openai".to_string(),
+            api_url: None,
+            input_price: 0.0,
+            output_price: 0.0,
+            api_timeout: None,
+            explanation: None,
+            api_key: None,
+            api_env_var: None,
+            requests_per_minute: None,
+            requests_per_day: None,
+            tokens_per_minute: None,
+            tokens_per_day: None,
+            quality_expectations: None,
+            expected_response_time_ms: None,
+            initial_score: None,
+            api_keys: None,
+            api_env_vars: None,
+            current_key_index: 0,
+            test_model: None,
+        }
     }
 
     pub fn gemini_2_flash() -> Self {
-        // DEFAULT_MODELS.get("gemini-2.0-flash").unwrap().clone()
-        unimplemented!()
+        // TODO: Replace with actual model loading from DEFAULT_MODELS
+        Self {
+            name: "gemini-2.0-flash".to_string(),
+            api_name: "gemini-2.0-flash".to_string(),
+            can_read_images: true,
+            api_provider: "google".to_string(),
+            api_url: None,
+            input_price: 0.0,
+            output_price: 0.0,
+            api_timeout: None,
+            explanation: None,
+            api_key: None,
+            api_env_var: None,
+            requests_per_minute: None,
+            requests_per_day: None,
+            tokens_per_minute: None,
+            tokens_per_day: None,
+            quality_expectations: None,
+            expected_response_time_ms: None,
+            initial_score: None,
+            api_keys: None,
+            api_env_vars: None,
+            current_key_index: 0,
+            test_model: None,
+        }
     }
 
     pub fn sonnet() -> Self {

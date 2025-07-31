@@ -12,7 +12,7 @@ use bootstrap_commands::copy_prompts::copy_prompts;
 use bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
 use bootstrap_commands::configure_memory_settings::configure_memory_settings;
 use bootstrap_commands::export_chunks::export_chunks_main;
-use bootstrap_commands::perform_self_improvement::perform_self_improvement;
+use bootstrap_commands::self_improvement::run_self_improvement_loop::run_self_improvement_loop;
 use bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
 
 // Query related imports
@@ -114,7 +114,7 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
 
     if !args.disable_self_improvement {
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_self_improvement")?;
-        perform_self_improvement(
+        run_self_improvement_loop(
             true,
             &actual_root_dir,
             &temp_dir,

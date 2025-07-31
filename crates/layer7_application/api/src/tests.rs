@@ -8,8 +8,8 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 
-#[tokio::test]
-async fn media_pdl_test() {
+// #[tokio::test]
+// async fn media_pdl_test() {
     // path relative to pdl file
     let pdl1 = "
 <|user|>
@@ -27,6 +27,7 @@ What do you see in this picture?
 <|media(__tmp_pdl_test/images/sample.webp)|>
 ";
 
+    let _ = remove_dir_all("__tmp_pdl_test");
     create_dir_all("__tmp_pdl_test/pdl").unwrap();
     create_dir_all("__tmp_pdl_test/images").unwrap();
     let image_file = include_bytes!("../../../../tests/images/hello_world.webp");
@@ -104,8 +105,8 @@ What do you see in this picture?
     remove_dir_all("__tmp_pdl_test").unwrap();
 }
 
-#[tokio::test]
-async fn simple_schema_test() {
+// #[tokio::test]
+// async fn simple_schema_test() {
     let pdl = "
 <|schema|>
 

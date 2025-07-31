@@ -161,7 +161,7 @@ zstd = "0.13.3"
 
 [features]
 # `csv` is small enough and is purely in Rust.
-default = ["csv", "jemalloc"]
+default = ["csv"]
 full = ["csv", "korean"]
 
 csv = ["dep:csv"]
