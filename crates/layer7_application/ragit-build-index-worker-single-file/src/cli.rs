@@ -74,4 +74,9 @@ pub enum Commands {
         #[clap(long)]
         kb_path: Option<String>,
     },
+    /// Search the ragit index for file content
+    Search {
+        #[clap(flatten)]
+        args: crate::args::search_args::SearchArgs,
+    },
 }

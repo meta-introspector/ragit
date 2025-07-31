@@ -1,0 +1,1 @@
+- **Search Functionality:** The `ragit`-based search functionality has been successfully integrated into the `ragit-build-index-worker-single-file` executable. The `ragit-command-query` crate was fixed and extended to provide a `search` command that mimics the `search_file_content` tool's API, returning file path, line number, and line content in JSON format.

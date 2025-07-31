@@ -15,7 +15,6 @@ use bootstrap_commands::export_chunks::export_chunks_main;
 use bootstrap_commands::self_improvement::run_self_improvement_loop::run_self_improvement_loop;
 use bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
 
-// Query related imports
 use ragit_index_query::query;
 use ragit_index_types::index_struct::Index;
 use ragit_index_types::load_mode::LoadMode;
@@ -29,6 +28,10 @@ mod args;
 use crate::args::bootstrap_args::BootstrapArgs;
 use crate::args::query_args::QueryArgs;
 use crate::args::top_terms_args::TopTermsArgs;
+use crate::args::search_args::SearchArgs;
+
+mod search_commands;
+use search_commands::search_command_main;
 
 async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
     let max_iterations = args.max_iterations;
@@ -199,7 +202,7 @@ async fn query_command_main(args: QueryArgs, memory_monitor: &mut MemoryMonitor)
     Ok(())
 }
 
-async fn top_terms_command_main(args: TopTermsArgs, memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
+async fn top_terms_command_main(args: TopTermsArgs, _memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
     use std::collections::HashMap;
 
     let index = if let Some(path) = args.kb_path {
@@ -253,6 +256,9 @@ async fn main() -> Result<()> {
         },
         Commands::TopTerms { count, kb_path } => {
             top_terms_command_main(TopTermsArgs { count, kb_path }, &mut memory_monitor).await
+        },
+        Commands::Search { args } => {
+            search_command_main(args).await
         }
     }
 }

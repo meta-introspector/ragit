@@ -26,6 +26,7 @@ ragit-index-query = { path = "../../legacy_and_refactoring/ragit-index-query" }
 chrono = "0.4"
 serde_json = "1.0"
 ragit-bootstrap-logic = { path = "../../layer6_presentation/ragit-bootstrap-logic" }
+ragit-command-query = { path = "../commands/ragit-command-query" }
 tokio = { version = "1", features = ["full"] }
 sha3 = "0.10"
 

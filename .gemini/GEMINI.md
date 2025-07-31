@@ -120,3 +120,9 @@ The next phase is to successfully run the `bootstrap` command without compilatio
     - Identified core components and their roles (e.g., `Matcher` trait in `ragit-core`, `Uid` struct in `ragit-types`, `FileError` in `ragit-file-error`, `MemoryMonitor` in `ragit-memory-monitor`, `WriteMode` in `ragit-fs`, `Ignore` in `ragit-ignore`, `uid_query` in `ragit-query`, `FileReader` in `ragit-readers`, `ApiConfig` in `ragit-config`, `ModelQueryResponse` in `ragit-model-query-response`, `Pdl` in `ragit-pdl`, `Prettify` trait in `ragit-schema`, `AuditRecord` in `ragit-api`, `FileTree` in `ragit-agent`).
     - Noted instances of placeholder code, empty modules, and potential duplicate definitions, indicating ongoing refactoring and areas for future development.
 - **README Update**: Updated the top-level `README.md` to provide clear navigation to the newly generated documentation.
+
+---
+
+**Recent Updates:**
+
+{{< include GEMINI_updates.md >}}
