@@ -50,16 +50,15 @@ pub async fn run_self_improvement_loop(
         // Compile the improved code
         let compile_success = compile_improved_code(temp_dir, memory_monitor).await?;
         if compile_success {
-            memory_monitor.verbose("Self-improvement: Compilation successful.");
-            // Test the improved code
+            memory_monitor.verbose("Self-improvement loop: Compilation SUCCEEDED.");
             let test_success = test_improved_code(temp_dir, memory_monitor).await?;
             if test_success {
-                memory_monitor.verbose("Self-improvement: Tests passed.");
+                memory_monitor.verbose("Self-improvement loop: Tests PASSED.");
             } else {
-                memory_monitor.verbose("Self-improvement: Tests failed.");
+                memory_monitor.verbose("Self-improvement loop: Tests FAILED.");
             }
         } else {
-            memory_monitor.verbose("Self-improvement: Compilation failed.");
+            memory_monitor.verbose("Self-improvement loop: Compilation FAILED.");
         }
 
         // TODO: Add logic to evaluate the LLM's output and decide whether to continue.
