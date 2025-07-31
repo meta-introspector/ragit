@@ -2,7 +2,6 @@ use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
 // use ragit_agent::file_tree::FileTree;
 use ragit_types::ApiError;
-use std::path::PathBuf;
 
 pub(crate) async fn run_read_dir(_argument: &str, _index: &Index) -> Result<ActionResult, ApiError> {
     panic!("FIX ME LATER: Fix the bootstrap first and this code later.");

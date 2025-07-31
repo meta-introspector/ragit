@@ -1,7 +1,7 @@
 use crate::action_result_enum::ActionResult;
 use ragit_index_types::index_struct::Index;
 // use ragit_index_types::index_impl::get_chunk_by_uid;
-use ragit_types::{ApiError, Uid, Chunk};
+use ragit_types::ApiError;
 // use ragit_query::query_helpers::{uid_query, UidQueryConfig};
 
 pub(crate) async fn run_read_chunk(_argument: &str, _index: &Index) -> Result<ActionResult, ApiError> {

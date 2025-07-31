@@ -2,7 +2,7 @@ use crate::action_result_enum::ActionResult;
 use crate::search_type_enum::SearchType;
 use ragit_index_types::index_struct::Index;
 // use ragit_index_types::index_impl::get_chunk_by_uid;
-use ragit_types::{ApiError, Chunk};
+use ragit_types::ApiError;
 // use ragit_utils::query::Keywords;
 // use ragit_utils::string_utils::substr_edit_distance;
 

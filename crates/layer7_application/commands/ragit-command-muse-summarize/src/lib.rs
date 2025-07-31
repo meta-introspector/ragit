@@ -1,6 +1,4 @@
 use ragit_utils::prelude::*;
-use ragit_api::prelude::*;
-use ragit_types::prelude::*;
 // use ragit_index_io::load_index_from_path; // FIXME: load_index_from_path not found
 // use ragit_index_core::{Index, LoadMode}; // FIXME: Index and LoadMode not found
 

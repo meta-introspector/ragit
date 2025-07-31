@@ -14,7 +14,7 @@ async fn test_add_single_file() {
     fs::create_dir(&ragit_dir).unwrap();
     let index_path = ragit_dir.join("index.json");
 
-    let mut index = Index::new(root_dir.clone());
+    let index = Index::new(root_dir.clone());
     let index_json = serde_json::to_string(&index).unwrap();
     fs::write(&index_path, index_json).unwrap();
 

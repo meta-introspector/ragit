@@ -1,10 +1,6 @@
 use ragit_utils::prelude::*;
-use ragit_api::prelude::*;
-use ragit_types::prelude::*;
 // use ragit_index_core::load_index_from_path; // FIXME: load_index_from_path not found
 //use ragit_index_core::Index;
-use ragit_utils::project_root::find_root;
-use ragit_utils::doc_utils::get_doc_content;
 
 pub async fn pull_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     panic!("FIXME: pull_command_main not implemented");

@@ -1,6 +1,5 @@
 use crate::action_result_enum::ActionResult;
-use crate::constants;
-use ragit_types::{Uid, Chunk};
+use ragit_types::Chunk;
 
 impl ActionResult {
     pub fn render_read_chunk_ambiguous(_query: &str, _chunks: &Vec<Chunk>) -> String {

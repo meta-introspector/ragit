@@ -1,26 +1,10 @@
-use ragit_pdl::render_pdl_schema;
-use ragit_types::ApiError;
 // use ragit_index_io::load_index_from_path; // FIXME: load_index_from_path not found
-use ragit_utils::ragit_path_utils::join;
 use ragit_utils::prelude::*;
-use ragit_api::prelude::*;
-use ragit_types::prelude::*;
-use ragit_fs::create_dir;
-use ragit_fs::read_string;
 //use ragit_index_io::index_struct::{Index, load_index_from_path};
-use ragit_index_types::index_struct::Index;
 // use ragit_index_io::load_index_from_path; // FIXME: load_index_from_path not found
 
-use ragit_pdl::parse_pdl_from_file;
-use ragit_utils::path_utils::str_to_pathbuf;
 //use ragit_schema::{parse_schema, render_pdl_schema};
-use tera::Context;
-use chrono::Local;
-use serde_json::{Value, Map};
-use ragit_utils::project_root::find_root;
 //use ragit_utils::ragit_path_utils::{str_to_pathbuf, join};
-use ragit_utils::doc_utils::get_doc_content;
-use ragit_pdl::parse_schema;
 
 
 pub async fn pdl_command_main(args: &[String]) -> Result<(), anyhow::Error> {

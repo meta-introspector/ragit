@@ -1,5 +1,4 @@
 use crate::action_result_enum::ActionResult;
-use crate::constants;
 
 impl ActionResult {
     pub fn render_no_such_dir(_dir: &str, _similar_dirs: &Vec<String>) -> String {

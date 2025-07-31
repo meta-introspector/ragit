@@ -1,11 +1,9 @@
 use ragit_utils::prelude::*;
 use ragit_index_types::index_struct::Index;
 // use ragit_index_io::load_index_from_path; // FIXME: load_index_from_path not found
-use ragit_index_types::load_mode::LoadMode;
 
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_types::ii_status::IIStatus;
 
 pub fn ii_status_command_main(args: &[String]) -> Result<(), anyhow::Error> {
     let parsed_args = ArgParser::new().parse(args, 2)?;

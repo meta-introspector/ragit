@@ -1,6 +1,4 @@
 use crate::action_result_enum::ActionResult;
-use crate::constants;
-use ragit_types::Uid;
 
 impl ActionResult {
     pub fn render_no_such_chunk(_query: &str) -> String {

@@ -1,4 +1,3 @@
-use ragit_model::Model;
 use ragit_types::chunk::chunk_struct::Chunk;
 use serde::{Deserialize, Serialize};
 
@@ -6,7 +5,6 @@ use ragit_utils::query::MultiTurnSchema;
 pub use ragit_pdl::Prompt;
 pub mod query_turn;
 pub use query_turn::QueryTurn;
-use ragit_types::ApiError;
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Default)]
 pub struct ModelQueryResponse {
     pub multi_turn_schema: Option<MultiTurnSchema>,

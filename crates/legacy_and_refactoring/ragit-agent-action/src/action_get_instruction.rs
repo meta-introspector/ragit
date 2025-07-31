@@ -1,5 +1,4 @@
 use super::action_enum::Action;
-use crate::constants;
 use ragit_index_types::index_struct::Index;
 use ragit_types::ApiError;
 use anyhow::Result;

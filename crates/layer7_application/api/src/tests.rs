@@ -29,7 +29,7 @@ What do you see in this picture?
 
     create_dir_all("__tmp_pdl_test/pdl").unwrap();
     create_dir_all("__tmp_pdl_test/images").unwrap();
-    let image_file = include_bytes!("../../../tests/images/hello_world.webp");
+    let image_file = include_bytes!("../../../../tests/images/hello_world.webp");
     write_string(
         "__tmp_pdl_test/pdl/sample1.pdl",
         pdl1,
