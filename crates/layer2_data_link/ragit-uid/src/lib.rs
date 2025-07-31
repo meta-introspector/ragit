@@ -110,8 +110,8 @@ mod tests {
 
     #[test]
     fn uid_abbrev_test() {
-        let uid = Uid::from_str("1234567890abcdef1234567890abcdefedcba0987654321fedcba0987654321").unwrap();
-        assert_eq!(uid.abbrev(8), "12345678");
+        let uid = Uid::from_str("0000000000000000000000000000000000000000000000000000000000000001").unwrap();
+        assert_eq!(uid.abbrev(8), "00000000");
     }
 
     #[test]

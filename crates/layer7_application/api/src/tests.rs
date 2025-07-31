@@ -8,6 +8,7 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 
+/*
 // #[tokio::test]
 // async fn media_pdl_test() {
     // path relative to pdl file
@@ -103,10 +104,13 @@ What do you see in this picture?
     }
 
     remove_dir_all("__tmp_pdl_test").unwrap();
-}
+//}
+*/
 
+/*
 // #[tokio::test]
 // async fn simple_schema_test() {
+//
     let pdl = "
 <|schema|>
 
@@ -212,7 +216,7 @@ Sam,12,baseball
         name: String::from("Sam"),
         age: 12
     }));
-}
+*/
 
 #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
 struct Student {

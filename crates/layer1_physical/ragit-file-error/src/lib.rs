@@ -76,6 +76,6 @@ pub enum FileErrorKind {
 
 impl From<FileError> for io::Error {
     fn from(err: FileError) -> Self {
-        io::Error::new(io::ErrorKind::Other, err.to_string())
+        io::Error::other(err.to_string())
     }
 }
