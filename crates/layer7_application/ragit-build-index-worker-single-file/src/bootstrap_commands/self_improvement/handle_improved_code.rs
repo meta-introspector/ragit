@@ -9,12 +9,15 @@ pub fn handle_improved_code(
     improved_code: &str,
     memory_monitor: &mut ragit_memory_monitor::MemoryMonitor,
 ) -> Result<(), anyhow::Error> {
+    memory_monitor.verbose("handle_improved_code: Starting to handle improved code.");
     if !improved_code.is_empty() {
         let improved_self_path = temp_dir.join(IMPROVED_LIB_FILE_NAME);
+        memory_monitor.verbose(&format!("handle_improved_code: Writing improved code to: {:?}", improved_self_path));
         write_string(improved_self_path.to_str().unwrap(), improved_code, WriteMode::CreateOrTruncate)?;
         memory_monitor.verbose(&format!("{} {:?}", LOG_SUCCESS_WRITE_IMPROVED_SELF, improved_self_path));
     } else {
         memory_monitor.verbose(LOG_EMPTY_SELF_IMPROVEMENT_RESPONSE);
     }
+    memory_monitor.verbose("handle_improved_code: Finished handling improved code.");
     Ok(())
 }

@@ -1,1 +1,3 @@
-use crate::action_result_enum::ActionResult;use crate::constants;use ragit_types::QueryResponse;impl ActionResult {    pub fn render_simple_rag(response: &QueryResponse) -> String {        format!("{} {} {}", constants::RENDER_SIMPLE_RAG, response.response.clone(), if response.retrieved_chunks.is_empty() { String::new() } else { format!("{} {}", constants::RENDER_SIMPLE_RAG_REFERENCED_CHUNKS, response.retrieved_chunks.iter().map( |c| format!("{} {} {}", constants::RENDER_SIMPLE_RAG_REFERENCED_CHUNK, c.render_source(), c.uid.abbrev(9))).collect::<Vec<_>>().join("\n")) })    }}
+use crate::action_result_enum::ActionResult;use crate::constants;use ragit_types::QueryResponse;impl ActionResult {    pub fn render_simple_rag(_response: &QueryResponse) -> String {        panic!("FIX ME LATER: Fix the bootstrap first and this code later.");
+        // format!("{} {}", constants::RENDER_SIMPLE_RAG, response.response.clone())
+    }}

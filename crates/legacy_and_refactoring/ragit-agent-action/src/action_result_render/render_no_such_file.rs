@@ -1,1 +1,2 @@
-use crate::action_result_enum::ActionResult;use crate::constants;impl ActionResult {    pub fn render_no_such_file(file: &str, similar_files: &Vec<String>) -> String {        format!("{} {} {}", constants::RENDER_NO_SUCH_FILE, file, if !similar_files.is_empty() { format!("{} {}", constants::RENDER_NO_SUCH_FILE_SIMILAR, similar_files.join("\n")) } else { String::new() })    }}
+use crate::action_result_enum::ActionResult;use crate::constants;impl ActionResult {    pub fn render_no_such_file(_file: &str, _similar_files: &Vec<String>) -> String {        panic!("FIX ME LATER: Fix the bootstrap first and this code later.");
+    }}

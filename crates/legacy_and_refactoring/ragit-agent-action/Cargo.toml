@@ -16,3 +16,4 @@ anyhow = "1.0"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }
+ragit-index-query = { path = "../../legacy_and_refactoring/ragit-index-query" }

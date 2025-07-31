@@ -13,7 +13,7 @@ pub fn load_or_init_models(index: &mut Index) -> Result<(), ApiError> {
 
     if exists(&models_at) {
         let j = read_string(models_at.to_str().unwrap())?;
-        let models = serde_json::from_str::<Vec<ModelRaw>>(&j)?;
+        let models = serde_json::from_str::<Vec<ModelRaw>>(&j).map_err(|e| ApiError::from(std::sync::Arc::new(e)))?;
         let mut result = Vec::with_capacity(models.len());
 
         for model in models.iter() {
@@ -35,7 +35,7 @@ pub fn save_models(index: &Index) -> Result<(), ApiError> {
     let models: Vec<ModelRaw> = index.models.iter().map(|model| model.into()).collect();
     write_string(
         &models_at.to_str().unwrap(),
-        &serde_json::to_string_pretty(&models)?,
+        &serde_json::to_string_pretty(&models).map_err(|e| ApiError::from(std::sync::Arc::new(e)))?,
         WriteMode::CreateOrTruncate,
     )?;
 
@@ -50,9 +50,7 @@ pub fn get_initial_models() -> Result<Vec<ModelRaw>, ApiError> {
             .map_err(|e| ApiError::from(anyhow::Error::new(e)))?,
         &PathBuf::from("models.json"),
     ).map_err(|e| ApiError::from(anyhow::Error::new(e)))?.to_str().unwrap()) {
-        if let Ok(models) = serde_json::from_str::<Vec<ModelRaw>>(&env_content) {
-            result.extend(models);
-        }
+        result.extend(serde_json::from_str::<Vec<ModelRaw>>(&env_content).map_err(|e| ApiError::from(std::sync::Arc::new(e)))?);
     }
 
     if let Ok(config_content) = read_string(&join_paths(
@@ -60,9 +58,7 @@ pub fn get_initial_models() -> Result<Vec<ModelRaw>, ApiError> {
             .map_err(|e| ApiError::from(anyhow::Error::new(e)))?,
         &PathBuf::from("models.json"),
     ).map_err(|e| ApiError::from(anyhow::Error::new(e)))?.to_str().unwrap()) {
-        if let Ok(models) = serde_json::from_str::<Vec<ModelRaw>>(&config_content) {
-            result.extend(models);
-        }
+        result.extend(serde_json::from_str::<Vec<ModelRaw>>(&config_content).map_err(|e| ApiError::from(std::sync::Arc::new(e)))?);
     }
 
     if result.is_empty() {

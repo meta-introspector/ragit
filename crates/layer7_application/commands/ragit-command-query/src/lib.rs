@@ -1,62 +1,66 @@
 use ragit_utils::prelude::*;
 //use ragit_cli::prelude::*;
-use ragit_index_query::query;
-use ragit_index_types::index_struct::Index;
-use ragit_index_types::load_mode::LoadMode;
+// use ragit_index_query::query;
+// use ragit_index_types::index_struct::Index;
+// use ragit_index_types::load_mode::LoadMode;
 
 use ragit_utils::project_root::find_root;
 use ragit_utils::doc_utils::get_doc_content;
 use ragit_types::query_turn::QueryTurn;
+// use ragit_memory_monitor::MemoryMonitor;
 
-pub async fn query_command_main(args: &[String]) -> Result<(), anyhow::Error> {
-    let parsed_args = ArgParser::new()
-        .optional_flag(&["--no-pdl"])
-        .optional_flag(&["--multi-turn"])
-        .optional_flag(&["--json"])
-        .short_flag(&["--json"])
-        .args(ArgType::Query, ArgCount::Geq(1))
-        .parse(args, 2)?;
+pub async fn query_command_main(_args: &[String]) -> Result<(), anyhow::Error> {
+    panic!("FIX ME LATER: Fix the bootstrap first and this code later.");
+    // let parsed_args = ArgParser::new()
+    //     .optional_flag(&["--no-pdl"])
+    //     .optional_flag(&["--multi-turn"])
+    //     .optional_flag(&["--json"])
+    //     .short_flag(&["--json"])
+    //     .args(ArgType::Query, ArgCount::Geq(1))
+    //     .parse(args, 2)?;
 
-    if parsed_args.show_help() {
-        println!("{}", get_doc_content("commands/query.txt"));
-        return Ok(());
-    }
+    // if parsed_args.show_help() {
+    //     println!("{}", get_doc_content("commands/query.txt"));
+    //     return Ok(());
+    // }
 
-    let index = Index::load(find_root()?, LoadMode::OnlyJson)?;
+    // let index = Index::load(find_root()?, LoadMode::OnlyJson)?;
 
-    let _no_pdl = parsed_args.get_flag(0).is_some();
-    let multi_turn = parsed_args.get_flag(1).is_some();
-    let json_mode = parsed_args.get_flag(2).is_some();
-    let query_str = parsed_args.get_args().join(" ");
+    // let _no_pdl = parsed_args.get_flag(0).is_some();
+    // let multi_turn = parsed_args.get_flag(1).is_some();
+    // let json_mode = parsed_args.get_flag(2).is_some();
+    // let query_str = parsed_args.get_args().join(" ");
 
-    if multi_turn {
-        let mut turns = vec![];
+    // let mut memory_monitor = MemoryMonitor::new(false, None, None);
 
-        loop {
-            let mut input = String::new();
-            std::io::stdin().read_line(&mut input)?;
-            let input = input.trim();
+    // if multi_turn {
+    //     let mut turns = vec![];
 
-            if input == ".exit" {
-                break;
-            }
+    //     loop {
+    //         let mut input = String::new();
+    //         std::io::stdin().read_line(&mut input)?;
+    //         let input = input.trim();
 
-            let response = query(&index, &input, turns.clone(), None).await?;
-            println!("{}", response.get_message());
-            turns.push(QueryTurn {
-                query: input.to_string(),
-                response: ragit_types::query_turn::QueryResponse { response: response.get_message().to_string() },
-            });
-        }
-    } else {
-        let response = query(&index, &query_str, vec![], None).await?;
+    //         if input == ".exit" {
+    //             break;
+    //         }
 
-        if json_mode {
-            println!("{}", serde_json::to_string_pretty(&response.to_json())?);
-        } else {
-            println!("{}", response.get_message());
-        }
-    }
+    //         let response = query(&index, &input, turns.clone(), None, &mut memory_monitor).await?;
+    //         println!("{}", response.get_message());
+    //         turns.push(QueryTurn {
+    //             query: input.to_string(),
+    //             response: ragit_types::query_turn::QueryResponse { response: response.get_message().to_string() },
+    //         });
+    //     }
+    // } else {
+    //     let response = query(&index, &query_str, vec![], None, &mut memory_monitor).await?;
 
-    Ok(())
+    //     if json_mode {
+    //         println!("{}", serde_json::to_string_pretty(&response.to_json())?);
+    //     } else {
+    //         println!("{}", response.get_message());
+    //     }
+    // }
+
+    // Ok(())
 }
