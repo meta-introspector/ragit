@@ -39,35 +39,71 @@ cargo run --package ragit-build-index-worker-single-file -- bootstrap [FLAGS]
 
 The `bootstrap` subcommand executes a series of operations, each managed by a dedicated function within the `bootstrap_commands` module (or its refactored equivalents). Memory usage is monitored and logged at key steps using `MemoryMonitor`.
 
-1.  **Setup Environment (`setup_environment`):**
-    *   Creates a temporary directory.
-    *   Initializes a new `ragit` repository within the temporary directory.
-    *   Initializes a new `Index` structure.
-    *   A memory snapshot is captured and logged after index initialization.
+The `bootstrap_command_main` function orchestrates the entire `ragit` bootstrap process. It takes `BootstrapArgs` (parsed CLI arguments) and a mutable `MemoryMonitor` instance to track resource usage.
 
-2.  **Copy Prompts (`copy_prompts`):**
-    *   Copies the `prompts` directory from the actual root to the temporary directory.
-    *   Loads copied prompts into the in-memory `Index` structure. This step was crucial in resolving `PromptMissing` errors, as prompts must be loaded *after* being copied to the temporary directory.
+1.  **Initial Memory Snapshot:**
+    *   `memory_monitor.capture_and_log_snapshot("Initial")`: Records the initial memory state of the process.
 
-3.  **Add Bootstrap Files (`add_bootstrap_files`):**
-    *   Identifies and copies relevant `.rs` files (e.g., from the `ragit-command-bootstrap` package) to the temporary directory.
-    *   Adds the copied files to the `Index`. The `--max-files-to-process` flag limits the number of files processed here.
+2.  **Setup Environment (`setup_environment`):**
+    *   **Purpose:** Creates a temporary directory, initializes a new `ragit` repository within it, and sets up an initial `Index` structure.
+    *   **Function Call:** `setup_environment(max_memory_gb, memory_monitor).await?`
+    *   **Output:** Returns the actual root directory, the path to the temporary directory, and the initialized `Index`.
+    *   **Memory Monitoring:** `memory_monitor.capture_and_log_snapshot(AFTER_SETUP_ENV)` records memory after environment setup.
 
-4.  **Build Index (`build_index`):**
-    *   Builds the `Index` from the source code, processing the content of the added `.rs` files.
-    *   Memory snapshots are captured and logged before and after the build process.
+3.  **Configure Memory Settings (`configure_memory_settings` - Optional):**
+    *   **Purpose:** Adjusts memory-related settings for the `Index` based on CLI arguments, such as maximum chunk size, summary lengths, and memory thresholds.
+    *   **Function Call:** `configure_memory_settings(...)`
+    *   **Flags:** Skipped if `--disable-memory-config` is set.
+    *   **Memory Monitoring:** `memory_monitor.check_memory_limit(...)` ensures memory limits are respected before execution.
 
-5.  **Export Chunks to Content-Addressable Store (`export_chunks`):**
-    *   Writes each chunk to a content-addressable store (similar to `.git/objects`) based on its SHA-1 hash.
-    *   Memory snapshots are captured and logged before and after this step.
+4.  **Copy Prompts (`copy_prompts` - Optional):**
+    *   **Purpose:** Copies the `prompts` directory from the actual project root to the temporary directory and then loads these prompts into the in-memory `Index`. This is crucial for the LLM to function correctly.
+    *   **Function Call:** `copy_prompts(...)` followed by `ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(...)`.
+    *   **Flags:** Skipped if `--disable-prompt-copy` is set.
+    *   **Memory Monitoring:** `memory_monitor.check_memory_limit(...)` ensures memory limits are respected before execution.
 
-6.  **Self-Improvement (`perform_self_improvement`):**
-    *   Analyzes and improves code by reading its own source, generating a prompt, executing a query, and writing improved code to a file. This phase is now iterative, controlled by the `--max-iterations` flag, allowing for repeated cycles of analysis and improvement.
-    *   Memory snapshots are captured and logged at various stages of this process.
+5.  **Add Bootstrap Files (`add_bootstrap_files` - Optional):**
+    *   **Purpose:** Identifies and copies relevant Rust source files from the actual project to the temporary directory, then adds them to the `ragit` Index. The `--max-files-to-process` flag can limit the number of files added.
+    *   **Function Call:** `add_bootstrap_files(...)`
+    *   **Flags:** Skipped if `--disable-file-add` is set.
+    *   **Memory Monitoring:** `memory_monitor.check_memory_limit(...)` ensures memory limits are respected before execution.
 
-7.  **Final Reflective Query (`perform_final_reflective_query`):**
-    *   Executes a hardcoded query against the built index, and prints the response. This step serves as a final verification of the index's query capabilities.
-    *   Memory snapshots are captured and logged before and after this step.
+6.  **Build Index (`build_index` - Optional):**
+    *   **Purpose:** Processes the content of the added files and builds the `ragit` Index. This involves chunking, embedding, and other indexing operations.
+    *   **Function Call:** `build_index(...)`
+    *   **Flags:** Skipped if `--disable-index-build` is set.
+    *   **Memory Monitoring:** `memory_monitor.check_memory_limit(...)` ensures memory limits are respected before execution.
+
+7.  **Export Chunks to Content-Addressable Store (`export_chunks_main::write_chunks_to_markdown` - Optional):**
+    *   **Purpose:** Writes the processed chunks to a content-addressable store, typically within the temporary `.ragit` directory, based on their SHA-1 hash.
+    *   **Function Call:** `export_chunks_main::write_chunks_to_markdown(...)`
+    *   **Flags:** Skipped if `--disable-write-markdown` is set.
+    *   **Memory Monitoring:** `memory_monitor.check_memory_limit(...)` ensures memory limits are respected before execution.
+
+8.  **Save Index to File:**
+    *   **Purpose:** Persists the in-memory Index to a JSON file within the temporary `.ragit` directory.
+    *   **Function Call:** `ragit_index_save_to_file::save_index_to_file(...)`
+
+9.  **Self-Improvement Loop (`run_self_improvement_loop` - Optional):**
+    *   **Purpose:** The core iterative phase where the LLM analyzes the code, generates improvements, and potentially compiles and tests them. Controlled by `--max-iterations`.
+    *   **Function Call:** `run_self_improvement_loop(...)`
+    *   **Flags:** Skipped if `--disable-self-improvement` is set.
+    *   **Memory Monitoring:** `memory_monitor.check_memory_limit(...)` ensures memory limits are respected before execution.
+
+10. **Final Reflective Query (`perform_final_reflective_query` - Optional):**
+    *   **Purpose:** Executes a hardcoded query against the built index to verify its query capabilities and the integrity of the indexed data.
+    *   **Function Call:** `perform_final_reflective_query(...)`
+    *   **Flags:** Skipped if `--disable-final-query` is set.
+    *   **Memory Monitoring:** `memory_monitor.check_memory_limit(...)` ensures memory limits are respected before execution.
+
+11. **Clean up the temporary directory (Optional):**
+    *   **Purpose:** Removes the temporary directory and all its contents.
+    *   **Function Call:** `fs::remove_dir_all(&temp_dir)?`
+    *   **Flags:** Skipped if `--disable-cleanup` is set.
+
+12. **Print Final Memory Usage Report:**
+    *   **Purpose:** Displays a summary of memory usage throughout the bootstrap process.
+    *   **Function Call:** `memory_monitor.print_final_report()`
 
 ---
 
