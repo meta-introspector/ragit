@@ -74,7 +74,7 @@ use crate::grand_plan::ragit_chunk_integration::chunk_formal_metadata::chunk_for
         // 2. Create conceptual SolanaProgram from this vibe/module
         // For simplicity, we'll create a dummy Quasifiber to convert to SolanaProgram.
         // In a real scenario, the Quasifiber would be derived from the module's content.
-        let dummy_quasifiber = Quasifiber(crate::grand_plan::binary_id_trees::universe_struct::Universe::new());
+        let dummy_quasifiber: Quasifiber<char> = Quasifiber(crate::grand_plan::binary_id_trees::universe_struct::Universe::new());
         let solana_program: SolanaProgram = dummy_quasifiber.into();
 
         // 3. Generate conceptual formal metadata

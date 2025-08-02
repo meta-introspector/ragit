@@ -15,7 +15,7 @@ pub enum LlmOperation {
 
 use ragit_macros::OurMacro;
 
-#[derive(Debug, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
+#[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents the conceptual result of an LLM operation.
 pub enum LlmResult {
     ModelLoaded(LlmModel),

@@ -25,7 +25,7 @@ impl MarketMaker {
 
     /// Solves the inference request by orchestrating the optimal pipeline.
     /// This involves: QA, linking, compiling, and executing.
-    pub fn solve_and_orchestrate<T: Clone + 'static>(
+    pub fn solve_and_orchestrate<T: Clone + 'static + std::fmt::Debug>(
         &mut self,
         bid: InferenceBid,
         ask: ComputeAsk,
@@ -64,8 +64,8 @@ impl MarketMaker {
         send_inference_bid_to_solana(&bid)?;
 
         // Simulate LLM operations as part of the pipeline
-        self.llm_monad = self.llm_monad.bind(LlmOperation::LoadModel("optimal_model".to_string()));
-        self.llm_monad = self.llm_monad.bind(LlmOperation::SampleText("Execute Quasifiber".to_string()));
+        self.llm_monad = self.llm_monad.clone().bind(LlmOperation::LoadModel("optimal_model".to_string()));
+        self.llm_monad = self.llm_monad.clone().bind(LlmOperation::SampleText("Execute Quasifiber".to_string()));
 
         println!("--- Market Maker: Inference Orchestration Complete ---");
         Ok(format!("Inference for bid {:?} orchestrated successfully by provider {:?}", bid.requested_quasifiber_type, ask.provider_id))

@@ -18,10 +18,7 @@ impl MemeGenerator {
 
     pub fn generate_ooda_meme(&mut self, ooda_loop: &OodaLoop) -> Result<Vec<u8>, String> {
         let self_description = SelfDescription::Text(format!(
-            "Observe: {}
-Orient: {}
-Decide: {}
-Act:જી",
+            "Observe: {}\nOrient: {}\nDecide: {}\nAct: {}",
             ooda_loop.observe,
             ooda_loop.orient,
             ooda_loop.decide,
@@ -41,4 +38,3 @@ Act:જી",
         Ok(image_data)
     }
 }
-

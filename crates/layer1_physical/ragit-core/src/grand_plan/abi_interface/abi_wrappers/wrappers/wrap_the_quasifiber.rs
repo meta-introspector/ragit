@@ -4,7 +4,7 @@ use crate::grand_plan::unified_stores::grand_unified_store_struct::GrandUnifiedS
 use crate::grand_plan::binary_id_trees::universe_struct::Universe;
 use crate::grand_plan::abi_interface::abi_wrappers::helpers::to_abi_value_universe::to_abi_value_universe;
 
-pub fn wrap_the_quasifiber<T: 'static + Clone>(func: for<'b> fn(&'b GrandUnifiedStore, &'b str, usize) -> &'b Universe<T>) -> AbiFunction {
+pub fn wrap_the_quasifiber<T: 'static + Clone + std::fmt::Debug>(func: for<'b> fn(&'b GrandUnifiedStore, &'b str, usize) -> &'b Universe<T>) -> AbiFunction {
     Box::new(move |args: AbiArgs| -> AbiResult {
         if args.len() != 3 {
             return Err("Expected 3 arguments: &GrandUnifiedStore, &str, usize".to_string());

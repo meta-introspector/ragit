@@ -3,7 +3,7 @@ use crate::grand_plan::llm_sampling_system::llm_model::llm_model_struct::LlmMode
 
 use ragit_macros::OurMacro;
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
+#[derive(Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A conceptual LLM Monad for chaining operations.
 pub struct LlmMonad {
     model: Option<LlmModel>,
@@ -65,9 +65,31 @@ impl LlmMonad {
                     LlmResult::ModelImproved(format!("Improved with feedback from {}", feedback_data))
                 }
             },
+            LlmOperation::ImageGeneration { prompt, description } => {
+                if self.model.is_none() {
+                    LlmResult::Error("No model loaded for image generation".to_string())
+                } else {
+                    // Simulate image generation
+                    println!("Simulating image generation for prompt: '{}' with description: '{}'", prompt, description);
+                    LlmResult::ImageGenerated(vec![0; 100]) // Placeholder for image data
+                }
+            },
         };
         self.last_result = Some(result);
         self
+    }
+
+    pub fn bind_image_generation(&mut self, self_description: &crate::grand_plan::meme_generator::meme_generator_struct::SelfDescription, prompt: &str) -> Result<Vec<u8>, String> {
+        let description_str = match self_description {
+            crate::grand_plan::meme_generator::meme_generator_struct::SelfDescription::Text(s) => s.clone(),
+        };
+        let new_self = self.clone().bind(LlmOperation::ImageGeneration { prompt: prompt.to_string(), description: description_str });
+        *self = new_self;
+        match self.last_result.as_ref() {
+            Some(LlmResult::ImageGenerated(data)) => Ok(data.clone()),
+            Some(LlmResult::Error(e)) => Err(e.clone()),
+            _ => Err("Unexpected result from image generation".to_string()),
+        }
     }
 
     /// Retrieves the last result from the monad.

@@ -26,6 +26,7 @@ pub struct UnifiedNumberConcept {
 
 pub const UNIFYING_NUMBERS: [u32; 10] = [0, 1, 2, 3, 4, 7, 11, 13, 17, 19];
 
+/*
 /// Conceptually unifies a system concept (represented by its name) to a number.
 ///
 /// This function attempts to find a corresponding unifying number for a given
@@ -50,3 +51,4 @@ pub fn unify_system_concept(concept_name: &str) -> Option<UnifiedNumberConcept> 
         _ => None,
     }
 }
+*/

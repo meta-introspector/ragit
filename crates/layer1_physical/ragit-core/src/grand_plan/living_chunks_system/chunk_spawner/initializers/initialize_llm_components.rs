@@ -11,7 +11,7 @@ pub struct LlmComponents {
 pub fn initialize_llm_components() -> LlmComponents {
     let llm_model = LlmModel::new(12);
     let tokenizer = Tokenizer::new();
-    let embedding_sampler = EmbeddingSampler::new(llm_model, tokenizer);
+    let embedding_sampler = EmbeddingSampler::new(llm_model.clone(), tokenizer.clone());
     LlmComponents {
         llm_model,
         tokenizer,

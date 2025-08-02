@@ -3,7 +3,7 @@ use crate::grand_plan::binary_id_trees::universe_struct::Universe;
 
 use ragit_macros::OurMacro;
 
-#[derive(Debug, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
+#[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A store for Universes, indexed by the number of leaves in their trees.
 pub struct SizedUniverseStore<T> {
     pub universes: HashMap<usize, Universe<T>>,

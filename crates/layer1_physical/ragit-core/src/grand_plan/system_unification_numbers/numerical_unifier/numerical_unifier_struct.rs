@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use crate::grand_plan::unified_concept_enum::concept_enum::unified_concept_enum_enum::UnifiedConceptEnum;
 use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::unify_system_concept::{UnifiedNumberConcept, UNIFYING_NUMBERS};
 use crate::grand_plan::system_unification_numbers::numerical_unifier::unified_concept_enum_unifier::unify_unified_concept_enum::unify_unified_concept_enum;
-use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::unify_system_concept::unify_system_concept;
+// use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::unify_system_concept::unify_system_concept;
 pub struct NumericalUnifier;
 
 impl NumericalUnifier {
@@ -14,8 +14,9 @@ impl NumericalUnifier {
     /// This function attempts to find a corresponding unifying number for a given
     /// concept name based on predefined semantic rules. In a real, more advanced
     /// system, this mapping could be dynamic, learned, or formally derived.
-    pub fn unify_system_concept(&self, concept_name: &str) -> Option<UnifiedNumberConcept> {
-        unify_system_concept(concept_name)
+    pub fn unify_system_concept(&self, _concept_name: &str) -> Option<UnifiedNumberConcept> {
+        // unify_system_concept(concept_name)
+        None // Temporarily return None
     }
 
     /// Conceptually unifies a `UnifiedConceptEnum` to a number.
