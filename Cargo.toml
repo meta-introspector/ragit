@@ -51,6 +51,9 @@ members = [
     "crates/layer7_application/commands/*",
     "crates/layer7_application/ragit-build-index-worker-single-file",
 
+    # Layer 8 - Web
+    "crates/layer8_web/ragit-wasm",
+
     # Legacy & Refactoring
     "crates/legacy_and_refactoring/ragit-agent",
     "crates/legacy_and_refactoring/ragit-agent-action",

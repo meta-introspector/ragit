@@ -10,6 +10,7 @@ pub enum LlmOperation {
     SampleText(String), // Prompt
     GetEmbeddings(EmbeddingRequest),
     ImproveModel { feedback_data: String },
+    ImageGeneration { prompt: String, description: String },
 }
 
 use ragit_macros::OurMacro;
@@ -22,5 +23,6 @@ pub enum LlmResult {
     SampledText(String),
     Embeddings(EmbeddingResponse),
     ModelImproved(String), // Report or model ID
+    ImageGenerated(Vec<u8>),
     Error(String),
 }
