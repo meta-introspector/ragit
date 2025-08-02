@@ -3,6 +3,8 @@ use crate::grand_plan::coin_intelligence_system::data_processor::data_processor_
 use crate::grand_plan::llm_monadic_interface::llm_monad::llm_monad_struct::LlmMonad;
 use crate::grand_plan::llm_monadic_interface::llm_operations::llm_operations_enum::{LlmOperation, LlmResult};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents actionable intelligence derived from processed data.
 pub struct CoinIntelligence {

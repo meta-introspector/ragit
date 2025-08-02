@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// The core token of the Introspector Solana Pump.Fun Paired Meme Ecosystem,
 /// encoded as a Zero Ontology System (ZOS).

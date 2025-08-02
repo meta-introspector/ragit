@@ -3,6 +3,8 @@ use crate::grand_plan::meme_economy::dank_meta_meme::dank_meta_meme_struct::Dank
 use crate::grand_plan::solfunmeme_zos::hyper_pump_mechanism::hyper_pump_mechanism_struct::HyperPumpMechanism;
 use crate::grand_plan::solfunmeme_zos::solfunmeme_core::solfunmeme_core_struct::Solfunmeme;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a Meme Lord, an agent who invests in and punts dank meta memes.
 pub struct MemeLord {

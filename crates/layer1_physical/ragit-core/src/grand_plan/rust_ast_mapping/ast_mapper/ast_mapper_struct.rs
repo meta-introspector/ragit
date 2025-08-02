@@ -2,6 +2,8 @@ use syn::{File, Item};
 use quote::quote;
 use crate::grand_plan::fundamental_units::prime_bases::PRIME_BASES;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Maps Rust AST items to our prime-based system.
 pub struct AstMapper;

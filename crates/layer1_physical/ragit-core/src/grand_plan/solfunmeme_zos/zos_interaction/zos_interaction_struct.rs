@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A fully interactive memetic encoding/decoding system.
 pub struct ZosInteraction;

@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use crate::grand_plan::privacy_and_scaling::federated_learning::federated_learning_structs::{FederatedLearningServer, FederatedModelUpdate};
 use crate::grand_plan::solfunmeme_zos::paxos_meme_consensus::paxos_meme_consensus_struct::PaxosMemeConsensus;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a new model update to be shared and merged.
 pub struct SharedModelUpdate {

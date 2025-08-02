@@ -1,6 +1,8 @@
 use crate::grand_plan::llm_monadic_interface::llm_operations::llm_operations_enum::{LlmOperation, LlmResult};
 use crate::grand_plan::llm_sampling_system::llm_model::llm_model_struct::LlmModel;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A conceptual LLM Monad for chaining operations.
 pub struct LlmMonad {

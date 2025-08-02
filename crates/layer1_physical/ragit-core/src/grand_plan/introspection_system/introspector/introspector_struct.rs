@@ -4,6 +4,8 @@ use crate::grand_plan::llm_sampling_system::llm_model::llm_model_struct::LlmMode
 use crate::grand_plan::llm_sampling_system::tokenizer::tokenizer_struct::Tokenizer;
 use crate::grand_plan::binary_tree_generators::prime_exponents::PRIME_EXPONENTS;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// The Introspector is the visualization loop of the vibe.
 /// It simulates the LLM looking at the stream of emojis and converging on prime-based patterns.

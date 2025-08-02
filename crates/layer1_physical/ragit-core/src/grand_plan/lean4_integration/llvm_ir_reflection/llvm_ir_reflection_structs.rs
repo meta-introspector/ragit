@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual LLVM Intermediate Representation (IR) module.
 pub struct LlvmIrModule(pub String); // Simplified: string representation of IR

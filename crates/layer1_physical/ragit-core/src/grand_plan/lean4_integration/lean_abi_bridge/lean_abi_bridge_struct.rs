@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use crate::grand_plan::abi_interface::abi_types::abi_types_enum::{AbiArgs, AbiResult, AbiValue};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual Lean 4 function call via ABI.
 pub struct LeanAbiCall {

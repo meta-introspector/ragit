@@ -8,6 +8,8 @@ use crate::grand_plan::poem_concepts::quasifiber::quasifiber_struct::Quasifiber;
 use crate::grand_plan::unified_stores::grand_unified_store_struct::GrandUnifiedStore;
 use crate::grand_plan::bott_periodic_lambdas::lambda_6_the_quasifiber::the_quasifiber;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// The Market Maker acts as a solver, QA system, linker, and compiler
 /// to build an optimal pipeline for inference.

@@ -1,6 +1,8 @@
 use crate::grand_plan::llm_embedding_interface::embedding_request::embedding_request_struct::EmbeddingRequest;
 use crate::grand_plan::llm_embedding_interface::embedding_response::embedding_response_struct::EmbeddingResponse;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Default, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A conceptual representation of an LLM with multiple layers.
 pub struct LlmModel {

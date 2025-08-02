@@ -1,5 +1,6 @@
 use crate::grand_plan::poem_concepts::quasifiber::quasifiber_struct::Quasifiber;
 use serde::{Deserialize, Serialize};
+use ragit_macros::OurMacro;
 
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a Solana Program Derived Address (PDA).

@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use crate::grand_plan::unimath_integration::unimath_concept::unimath_concept_enum::UnimathConcept;
 use crate::grand_plan::unimath_integration::univalent_type_theory::univalent_type_theory_structs::UnivalentTypeTheory;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents the result of a unification operation.
 pub enum UnificationResult {

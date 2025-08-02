@@ -5,6 +5,8 @@ use crate::grand_plan::llm_sampling_system::tokenizer::tokenizer_struct::Tokeniz
 use std::collections::HashMap;
 use std::hash::Hasher;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Simulates the process of sampling embeddings from an LLM.
 pub struct EmbeddingSampler {

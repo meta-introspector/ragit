@@ -2,6 +2,8 @@ use std::collections::HashMap;
 use crate::grand_plan::gossip_system::gossip_node::gossip_node_struct::GossipNode;
 use crate::grand_plan::gossip_system::gossip_message::gossip_message_enum::GossipMessage;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual gossip network of nodes.
 pub struct GossipNetwork {

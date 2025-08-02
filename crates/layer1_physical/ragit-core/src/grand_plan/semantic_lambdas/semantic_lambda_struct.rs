@@ -1,3 +1,5 @@
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a step in the 8-fold creative path, linking semantics to a computational form.
 pub struct SemanticLambda {

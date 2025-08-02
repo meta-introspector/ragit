@@ -3,6 +3,8 @@ use crate::grand_plan::living_chunks_system::chunk_executor::chunk_executor_func
 use crate::grand_plan::living_chunks_system::chunk_spawner::chunk_spawner_function::spawn_new_chunks;
 use std::collections::HashMap;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Manages the lifecycle of living RagitChunks.
 pub struct LivingChunkManager {

@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 use crate::grand_plan::abi_interface::abi_types::abi_types_enum::{AbiArgs, AbiResult, AbiValue};
 
-
+#[derive(Default)]
+pub struct FunctionRegistry {
+    pub functions: HashMap<String, AbiFunction>,
+}
 
 pub type AbiFunction = Box<dyn Fn(AbiArgs) -> AbiResult + Send + Sync>;
 

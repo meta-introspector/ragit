@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// The response from an LLM containing the sampled embeddings.
 pub struct EmbeddingResponse {

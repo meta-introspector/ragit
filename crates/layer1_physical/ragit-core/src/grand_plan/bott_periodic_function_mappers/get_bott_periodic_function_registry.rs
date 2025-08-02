@@ -1,8 +1,5 @@
 use crate::grand_plan::abi_interface::function_registry::FunctionRegistry;
-use crate::grand_plan::abi_interface::abi_wrappers::{
-    wrap_the_void, wrap_the_spark, wrap_the_pair, wrap_the_tree, wrap_the_cosmos,
-    wrap_the_mirror, wrap_the_quasifiber, wrap_the_cycle
-};
+use crate::grand_plan::abi_interface::abi_wrappers::abi_wrappers_functions::*;
 use crate::grand_plan::bott_periodic_lambdas::{
     lambda_0_the_void,
     lambda_1_the_spark,

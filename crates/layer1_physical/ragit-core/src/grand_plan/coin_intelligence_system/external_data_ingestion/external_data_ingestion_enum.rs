@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a piece of raw external data ingested into the system.
 pub enum ExternalData {

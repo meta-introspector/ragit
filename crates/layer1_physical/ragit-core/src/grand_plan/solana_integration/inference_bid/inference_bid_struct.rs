@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a bid or request for LLM inference.
 pub struct InferenceBid {

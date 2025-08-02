@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use crate::grand_plan::poem_concepts::quasifiber::quasifiber_struct::Quasifiber;
 use crate::grand_plan::binary_id_trees::universe_struct::Universe;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual path or trajectory within Unimath.
 pub struct UnimathPath(pub String); // Simplified: string representation of the path

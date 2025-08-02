@@ -1,3 +1,5 @@
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 pub struct Node<T> {
     pub id: usize,

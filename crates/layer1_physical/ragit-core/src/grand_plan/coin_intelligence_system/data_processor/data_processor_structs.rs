@@ -4,6 +4,8 @@ use crate::grand_plan::privacy_and_scaling::homomorphic_encryption::homomorphic_
 use crate::grand_plan::privacy_and_scaling::zero_knowledge_proofs::zero_knowledge_proofs_structs::{ZeroKnowledgeProof, ZeroKnowledgeProofs};
 use crate::grand_plan::privacy_and_scaling::lattice_rollups::lattice_rollups_structs::{LatticeRollups, RollupTransaction};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents processed and privacy-enhanced data.
 pub enum ProcessedData {

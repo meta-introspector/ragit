@@ -4,6 +4,8 @@ use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_ma
 use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::unify_system_concept::unify_system_concept;
 use crate::grand_plan::system_unification_numbers::numerical_unifier::unified_concept_enum_unifier::unify_unified_concept_enum::unify_unified_concept_enum;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual mapping of a system concept to a unifying number.
 ///

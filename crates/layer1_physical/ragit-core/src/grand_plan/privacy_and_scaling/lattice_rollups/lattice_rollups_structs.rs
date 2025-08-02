@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use crate::grand_plan::privacy_and_scaling::zero_knowledge_proofs::zero_knowledge_proofs_structs::ZeroKnowledgeProof;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual transaction or data batch for a rollup.
 pub struct RollupTransaction(pub String); // Simplified: just a string representation

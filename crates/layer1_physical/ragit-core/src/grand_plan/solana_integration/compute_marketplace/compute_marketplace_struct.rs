@@ -2,6 +2,8 @@ use std::collections::HashMap;
 use crate::grand_plan::solana_integration::inference_bid::inference_bid_struct::InferenceBid;
 use crate::grand_plan::solana_integration::compute_ask::compute_ask_struct::ComputeAsk;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Default, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual marketplace for compute resources.
 pub struct ComputeMarketplace {

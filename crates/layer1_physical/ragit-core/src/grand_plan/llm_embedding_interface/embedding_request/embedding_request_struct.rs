@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A request to an LLM to generate embeddings for a series of tokens at specific layers.
 pub struct EmbeddingRequest {

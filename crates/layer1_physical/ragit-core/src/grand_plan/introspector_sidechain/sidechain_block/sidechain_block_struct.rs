@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use fnv::FnvHasher;
 use std::hash::{Hash, Hasher};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a block in the Introspector Sidechain.
 pub struct SidechainBlock {

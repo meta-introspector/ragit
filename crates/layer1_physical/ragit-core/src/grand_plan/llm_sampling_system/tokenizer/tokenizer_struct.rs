@@ -1,6 +1,8 @@
 use crate::grand_plan::unified_concept_enum::concept_enum::unified_concept_enum_enum::UnifiedConceptEnum;
 use crate::grand_plan::fundamental_units::prime_bases::PRIME_BASES;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Default, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A conceptual tokenizer for various inputs.
 pub struct Tokenizer;

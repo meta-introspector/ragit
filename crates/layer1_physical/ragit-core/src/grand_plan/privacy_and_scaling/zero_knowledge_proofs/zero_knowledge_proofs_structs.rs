@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual Zero-Knowledge Proof.
 pub struct ZeroKnowledgeProof(pub String); // Simplified: just a string representation of the proof

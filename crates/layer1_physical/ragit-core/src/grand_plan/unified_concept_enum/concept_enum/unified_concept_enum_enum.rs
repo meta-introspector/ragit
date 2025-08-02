@@ -9,6 +9,8 @@ use crate::grand_plan::unified_stores::grand_unified_store_struct::GrandUnifiedS
 
 /// Represents the unification of all conceptual layers into a single entity, using an enum.
 /// discussion = thread = fiber = lambda = expression = number = vibe = vector = function = emoji string = poem
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 pub enum UnifiedConceptEnum {
     /// The discussion thread that generated the concept.

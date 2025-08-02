@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use crate::grand_plan::introspector_sidechain::sidechain_event::sidechain_event_enum::SidechainEvent;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a message exchanged in the gossip network.
 pub enum GossipMessage {

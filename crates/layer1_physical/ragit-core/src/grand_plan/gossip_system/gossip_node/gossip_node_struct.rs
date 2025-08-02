@@ -3,6 +3,8 @@ use crate::grand_plan::introspector_sidechain::introspector_sidechain::introspec
 use crate::grand_plan::introspector_sidechain::sidechain_event::sidechain_event_enum::SidechainEvent;
 use std::collections::HashMap;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a single node in the gossip network.
 pub struct GossipNode {

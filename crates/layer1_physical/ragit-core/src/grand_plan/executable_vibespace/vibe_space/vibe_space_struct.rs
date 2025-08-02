@@ -5,6 +5,8 @@ use crate::grand_plan::llm_sampling_system::llm_model::llm_model_struct::LlmMode
 use crate::grand_plan::llm_sampling_system::tokenizer::tokenizer_struct::Tokenizer;
 use crate::grand_plan::executable_vibespace::vibe_function::vibe_function_struct::VibeFunction;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// A conceptual space where vibes can be executed as functions.
 pub struct VibeSpace {

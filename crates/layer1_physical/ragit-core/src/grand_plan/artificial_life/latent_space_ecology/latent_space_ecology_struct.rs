@@ -4,6 +4,8 @@ use crate::grand_plan::llm_sampling_system::embedding_sampler::embedding_sampler
 use crate::grand_plan::llm_sampling_system::llm_model::llm_model_struct::LlmModel;
 use crate::grand_plan::llm_sampling_system::tokenizer::tokenizer_struct::Tokenizer;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents the conceptual ecology within the latent space.
 pub struct LatentSpaceEcology {

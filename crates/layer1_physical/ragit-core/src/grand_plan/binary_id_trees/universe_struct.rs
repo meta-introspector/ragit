@@ -4,6 +4,8 @@ use crate::grand_plan::binary_id_trees::leaf_struct::Leaf;
 use crate::grand_plan::binary_id_trees::binary_node_struct::BinaryNode;
 use crate::grand_plan::binary_id_trees::unit_ref_enum::UnitRef;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Default, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 pub struct Universe<T> {
     pub leaves: HashMap<Uid, Leaf<T>>,

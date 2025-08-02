@@ -12,6 +12,8 @@ pub enum LlmOperation {
     ImproveModel { feedback_data: String },
 }
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents the conceptual result of an LLM operation.
 pub enum LlmResult {

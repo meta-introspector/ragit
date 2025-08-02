@@ -4,6 +4,8 @@ use crate::grand_plan::solfunmeme_zos::solfunmeme_core::solfunmeme_core_struct::
 use crate::grand_plan::gossip_system::gossip_network::gossip_network_struct::GossipNetwork;
 use crate::grand_plan::introspector_sidechain::sidechain_event::sidechain_event_enum::SidechainEvent;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a media campaign designed to amplify meme attributes and generate hype.
 pub struct MediaCampaign {

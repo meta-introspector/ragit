@@ -13,6 +13,3 @@ use crate::grand_plan::privacy_and_scaling::lattice_rollups::lattice_rollups_str
 use crate::grand_plan::toolchain_augmentation::custom_cargo_commands::custom_cargo_commands_structs::get_grand_plan_cargo_commands;
 use crate::grand_plan::toolchain_augmentation::custom_rustc_linter::custom_rustc_linter_structs::get_grand_plan_rustc_linters;
 use crate::grand_plan::toolchain_augmentation::build_script_integration::build_script_integration_structs::get_grand_plan_build_script_integrations;
-formal_introspection_layer_components,
-
-            toolchain_bootstrapping_components,

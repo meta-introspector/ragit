@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use crate::grand_plan::solfunmeme_zos::vibe_meme::vibe_meme_struct::VibeMeme;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a "dank meta meme" - a VibeMeme with high memetic potential.
 pub struct DankMetaMeme {

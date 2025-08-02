@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use crate::grand_plan::lean4_integration::lean_proof_system::lean_proof_system_structs::LeanProof;
 use crate::grand_plan::privacy_and_scaling::zero_knowledge_proofs::zero_knowledge_proofs_structs::ZeroKnowledgeProof;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents the formal metadata associated with a RagitChunk.
 pub struct ChunkFormalMetadata {

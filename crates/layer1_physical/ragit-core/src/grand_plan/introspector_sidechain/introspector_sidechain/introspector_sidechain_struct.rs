@@ -2,6 +2,8 @@ use crate::grand_plan::introspector_sidechain::sidechain_block::sidechain_block_
 use crate::grand_plan::introspector_sidechain::sidechain_event::sidechain_event_enum::SidechainEvent;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents the Introspector Sidechain (a conceptual blockchain).
 pub struct IntrospectorSidechain {

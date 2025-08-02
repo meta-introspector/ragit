@@ -1,5 +1,7 @@
 use crate::grand_plan::id_indexed_trees::uid_type::Uid;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents the unification of all conceptual layers into a single entity.
 /// discussion = thread = fiber = lambda = expression = number = vibe = vector= function = emoji string = poem

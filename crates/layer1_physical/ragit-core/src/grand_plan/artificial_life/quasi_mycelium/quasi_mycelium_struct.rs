@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use crate::grand_plan::artificial_life::artificial_organism::artificial_organism_struct::ArtificialOrganism;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual node in the quasi-meta mycelium network.
 pub struct MycelialNode {

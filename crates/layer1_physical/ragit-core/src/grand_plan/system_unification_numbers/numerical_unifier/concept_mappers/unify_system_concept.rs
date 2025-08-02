@@ -10,6 +10,8 @@ use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_ma
 use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::mappings::map_osi_layer_4::map_osi_layer_4;
 use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::mappings::map_osi_layer_3::map_osi_layer_3;
 
+use ragit_macros::OurMacro;
+
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual mapping of a system concept to a unifying number.
 ///

@@ -2,6 +2,8 @@ use crate::grand_plan::llm_sampling_system::embedding_sampler::embedding_sampler
 use crate::grand_plan::llm_embedding_interface::embedding_request::embedding_request_struct::EmbeddingRequest;
 use crate::grand_plan::llm_embedding_interface::embedding_response::embedding_response_struct::EmbeddingResponse;
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Analyzes the "vibe" of a sequence of emojis by getting their LLM embeddings.
 pub struct VibeAnalyzer {

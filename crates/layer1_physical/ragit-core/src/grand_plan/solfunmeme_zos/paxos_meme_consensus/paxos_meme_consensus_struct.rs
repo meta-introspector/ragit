@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use ragit_macros::OurMacro;
+
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual Paxos-like consensus mechanism for meme evolution.
 pub struct PaxosMemeConsensus;
