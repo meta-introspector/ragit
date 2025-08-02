@@ -1,6 +1,5 @@
 
-/// Represents a conceptual custom `cargo` subcommand.
-pub struct CustomCargoCommand {
+    pub struct CustomCargoCommand {
     pub name: String,
     pub description: String,
     pub execution_logic: String, // Conceptual: Rust code or shell command
@@ -23,7 +22,6 @@ impl CustomCargoCommand {
         // in a directory on the user's PATH, or using a Cargo plugin system.
     }
 }
-
 
 pub fn get_grand_plan_cargo_commands() -> Vec<CustomCargoCommand> {
     vec![

@@ -7,7 +7,7 @@ use crate::grand_plan::poem_concepts::quasifiber::quasifiber_struct::Quasifiber;
 use crate::grand_plan::ragit_chunk_integration::chunk_formal_metadata::chunk_formal_metadata_struct::ChunkFormalMetadata;
 
 
-fn foo() {
+    pub fn ingest_grand_plan_modules() -> Vec<RagitChunk> {
     let mut chunks = Vec::new();
     let llm_model = LlmModel::new(12);
     let tokenizer = Tokenizer::new();

@@ -3,11 +3,7 @@ use crate::grand_plan::abi_interface::abi_types::abi_types_enum::{AbiArgs, AbiRe
 
 
 
-#[derive(Default, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// A registry for functions that can be called via the ABI.
-pub struct FunctionRegistry {
-    functions: HashMap<String, AbiFunction>,
-}
+pub type AbiFunction = Box<dyn Fn(AbiArgs) -> AbiResult + Send + Sync>;
 
 impl FunctionRegistry {
     pub fn new() -> Self {

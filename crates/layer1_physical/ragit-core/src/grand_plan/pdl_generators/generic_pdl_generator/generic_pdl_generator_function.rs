@@ -1,5 +1,5 @@
 
-pub fn foo(
+    pub fn generate_pdl_document(
     system_role: &str,
     system_task: &str,
     user_prompt: &str,

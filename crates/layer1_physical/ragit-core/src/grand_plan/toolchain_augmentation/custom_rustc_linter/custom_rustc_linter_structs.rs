@@ -1,5 +1,5 @@
 
-struct stomRustcLinter {
+    pub struct CustomRustcLinter {
     pub name: String,
     pub description: String,
     pub lint_logic: String, // Conceptual: Rust code for linting rules
@@ -23,7 +23,7 @@ impl CustomRustcLinter {
     }
 }
 
-fn foo() {
+pub fn get_grand_plan_rustc_linters() -> Vec<CustomRustcLinter> {
     vec![
         CustomRustcLinter::new(
             "ragit-pdl-compliance",

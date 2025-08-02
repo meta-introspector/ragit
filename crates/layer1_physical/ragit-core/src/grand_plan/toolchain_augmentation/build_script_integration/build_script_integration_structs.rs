@@ -1,5 +1,5 @@
 
-struct BuildScriptIntegration  {
+    pub struct BuildScriptIntegration {
     pub name: String,
     pub description: String,
     pub integration_logic: String, // Conceptual: Rust code for build script logic
@@ -23,8 +23,7 @@ impl BuildScriptIntegration {
     }
 }
 
-
-fn foo() {
+pub fn get_grand_plan_build_script_integrations() -> Vec<BuildScriptIntegration> {
     vec![
         BuildScriptIntegration::new(
             "generate-pdl-prompts",

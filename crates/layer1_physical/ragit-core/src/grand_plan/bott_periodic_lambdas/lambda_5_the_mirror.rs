@@ -1,4 +1,4 @@
-use crate::grand_plan::unified_store::{GrandUnifiedStore, TypeStore};
+use crate::grand_plan::unified_stores::grand_unified_store_struct::{GrandUnifiedStore, TypeStore};
 
 /// Reflects on the store to retrieve a specific type's universe collection.
 pub fn the_mirror<'a>(
