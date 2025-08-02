@@ -18,7 +18,7 @@ pub fn get_bott_periodic_lambdas() -> Vec<SemanticLambda> {
             lambda_str: "|i: usize| -> char { (i as u8 % 26 + b'a') as char }",
         },
         SemanticLambda {
-            emoji: "✌️",
+            emoji: '✌',
             number: 2,
             name: "the_pair",
             meaning: "Generating the first and simplest universe, a binary tree of size 2.",

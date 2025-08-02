@@ -9,11 +9,11 @@ use ragit_macros::OurMacro;
 #[derive(Debug, Default, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 pub struct Universe<T> {
     pub leaves: HashMap<Uid, Leaf<T>>,
-    pub nodes: HashMap<Uid, Node<T>>,
+    pub nodes: HashMap<Uid, Node>,
     next_uid: Uid,
 }
 
-impl<T> Universe<T> {
+impl<T: Default> Universe<T> {
     pub fn new() -> Self {
         Self::default()
     }

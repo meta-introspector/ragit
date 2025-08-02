@@ -2,7 +2,7 @@ use crate::grand_plan::id_indexed_trees::uid_type::Uid;
 use crate::grand_plan::binary_id_trees::universe_struct::Universe;
 
 /// Recursively builds a balanced binary tree with a specified number of leaves.
-pub fn build_tree_recursive<T: Clone>(
+pub fn build_tree_recursive<T: Clone + Default>(
     universe: &mut Universe<T>,
     creator: &impl Fn(usize) -> T,
     leaf_counter: &mut usize,

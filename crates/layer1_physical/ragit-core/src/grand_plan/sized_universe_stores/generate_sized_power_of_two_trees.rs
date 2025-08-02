@@ -6,7 +6,7 @@ use crate::grand_plan::sized_universe_stores::sized_universe_store_struct::Sized
 
 /// Generates a SizedUniverseStore containing binary trees where the number of leaves
 /// is 2 raised to a prime exponent.
-pub fn generate_sized_power_of_two_trees<T: Clone>(
+pub fn generate_sized_power_of_two_trees<T: Clone + Default>(
     creator: impl Fn(usize) -> T,
 ) -> SizedUniverseStore<T> {
     let mut store = SizedUniverseStore::new();
