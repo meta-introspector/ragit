@@ -1,4 +1,4 @@
-use crate::grand_plan::abi_interface::abi_types::AbiValue;
+use crate::grand_plan::abi_interface::abi_types::abi_types_enum::AbiValue;
 use crate::grand_plan::sized_universe_stores::sized_universe_store_struct::SizedUniverseStore;
 
 pub fn to_abi_value_sized_universe_store<T>(store: &SizedUniverseStore<T>) -> AbiValue {

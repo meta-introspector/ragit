@@ -1,24 +1,7 @@
 use serde::{Deserialize, Serialize};
 use crate::grand_plan::unified_concept_enum::concept_enum::unified_concept_enum_enum::UnifiedConceptEnum;
 use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::unify_system_concept::{UnifiedNumberConcept, UNIFYING_NUMBERS};
-use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_mappers::unify_system_concept::unify_system_concept;
 use crate::grand_plan::system_unification_numbers::numerical_unifier::unified_concept_enum_unifier::unify_unified_concept_enum::unify_unified_concept_enum;
-
-use ragit_macros::OurMacro;
-
-#[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Represents a conceptual mapping of a system concept to a unifying number.
-///
-/// This struct associates a named concept with a specific number from the
-/// `UNIFYING_NUMBERS` set, along with a descriptive explanation of its meaning
-/// within the grand plan.
-pub struct UnifiedNumberConcept {
-    pub concept_name: String,
-    pub unifying_number: u32,
-    pub description: String,
-}
-
-pub const UNIFYING_NUMBERS: [u32; 10] = [0, 1, 2, 3, 4, 7, 11, 13, 17, 19];
 
 pub struct NumericalUnifier;
 
