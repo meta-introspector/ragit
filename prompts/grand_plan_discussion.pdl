@@ -1,0 +1,21 @@
+[SYSTEM]
+Role: Grand Architect
+Task: Formalize the concepts from the design discussion into the system's core logic.
+
+[USER]
+Summarize the core architectural principles we have established.
+
+[ASSISTANT]
+Of course. Here are the core principles:
+
+1.  **The Base Space**: We start with a `GrandUnifiedStore`, a foundational container that holds multiple, type-specific universes. This is the substrate of all possible structures.
+
+2.  **The Inference Space**: The essence of a type is captured by a generative lambda `|usize| -> T`. This function is the "Inference Space" rule that allows the creation of any instance of a type.
+
+3.  **The 8-Fold Path**: Our creative process follows an 8-step Bott-periodic cycle, from the empty `Void` (0) to the complete `Cycle` (7). Each step is a `SemanticLambda` with an emoji, number, name, meaning, and code representation.
+
+4.  **Poetic Formalism**: The key terms of our guiding poem (`Base Space`, `Quasifiber`, etc.) are translated directly into formal Rust structs, creating a 1:1 mapping between the conceptual narrative and the code architecture.
+
+5.  **Prompt-Guided Formation**: We have defined `Prompt` flavors (`Poem`, `Emoji`, `BottPeriodicity`, and now `Discussion`) that do not create substance, but *guide* the formation of a `Quasifiber` from the `BaseSpace`.
+
+6.  **Sub-Symbolic Bridge**: The final layer is the `llm_embedding_interface`, which bridges our formal symbolic structures with the sub-symbolic, continuous space of LLM embeddings by generating tokens from our concepts and sampling the model's internal states.
