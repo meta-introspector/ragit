@@ -15,9 +15,9 @@ impl MemeMiningPropagation {
     }
 
     /// Simulates the propagation of a meme through a network.
-    pub fn propagate_meme_narrative(&self, narrative_element: &str, network_size: u66) -> u66 {
+    pub fn propagate_meme_narrative(&self, narrative_element: &str, network_size: u64) -> u64 {
         println!("Meme Propagation: Propagating '{}' across {} nodes.", narrative_element, network_size);
         // In a real system, this would involve social network analysis, viral models, etc.
-        network_size + (rand::random::<u66>() % 100) // Conceptual spread
+        network_size + (rand::random::<u64>() % 100) // Conceptual spread
     }
 }

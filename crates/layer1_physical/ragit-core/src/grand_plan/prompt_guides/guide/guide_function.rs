@@ -2,10 +2,7 @@ use crate::grand_plan::poem_concepts::quasifiber::quasifiber_struct::Quasifiber;
 use crate::grand_plan::prompt_guides::prompt::prompt_enum::Prompt;
 use crate::grand_plan::unified_stores::grand_unified_store_struct::GrandUnifiedStore;
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Demonstrates how a Prompt guides the selection of a Quasifiber from the BaseSpace.
-/// This is a conceptual function; the actual logic would be far more complex.
-pub fn guide_the_quasifiber<T>(
+fn fixme(
     base_space: &crate::grand_plan::poem_concepts::base_space::base_space_struct::BaseSpace,
     prompt: &Prompt,
     type_name: &str,

@@ -9,7 +9,7 @@ use std::hash::Hasher;
 /// Simulates the process of sampling embeddings from an LLM.
 pub struct EmbeddingSampler {
     llm_model: LlmModel,
-    tokenizer: Tokenizer,
+    pub tokenizer: Tokenizer,
 }
 
 impl EmbeddingSampler {
@@ -51,7 +51,9 @@ impl EmbeddingSampler {
             for (i, embedding) in embeddings.iter().enumerate() {
                 let original_token = input_tokens.get(i).map_or("", |s| s.as_str());
                 // A very simple conceptual fusion: combine original token with a hash of its embedding
-                let embedding_hash = format!("{:x}", fnv::FnvHasher::default().write(format!("{:?}", embedding).as_bytes()).finish());
+                let mut hasher = fnv::FnvHasher::default();
+                hasher.write(format!("{:?}", embedding).as_bytes());
+                let embedding_hash = format!("{:x}", hasher.finish());
                 meta_tokens.push(format!("meta_{}_L{}_{}", original_token, layer_depth, &embedding_hash[0..8]));
             }
         }

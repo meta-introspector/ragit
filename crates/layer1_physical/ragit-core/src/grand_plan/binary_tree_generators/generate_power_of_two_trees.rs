@@ -2,7 +2,7 @@ use crate::grand_plan::binary_id_trees::universe_struct::Universe;
 use crate::grand_plan::binary_tree_generators::prime_exponents::PRIME_EXPONENTS;
 use crate::grand_plan::binary_tree_generators::build_tree_recursive::build_tree_recursive;
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
+
 /// Generates a vector of Universes, each containing a binary tree
 /// with a number of leaves equal to 2 raised to a prime exponent.
 pub fn generate_power_of_two_trees<T: Clone>(creator: impl Fn(usize) -> T) -> Vec<Universe<T>> {

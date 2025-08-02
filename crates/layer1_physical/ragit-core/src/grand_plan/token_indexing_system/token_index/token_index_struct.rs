@@ -1,9 +1,7 @@
 use std::collections::HashMap;
 use crate::grand_plan::llm_sampling_system::tokenizer::tokenizer_struct::Tokenizer;
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Unique identifier for an "idea" or document.
-pub type IdeaId = usize;
+
 
 #[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// An inverted index for tokens, mapping tokens to the ideas they appear in.

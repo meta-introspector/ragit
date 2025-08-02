@@ -30,8 +30,8 @@ impl MarketMaker {
         grand_unified_store: &GrandUnifiedStore,
     ) -> Result<String, String> {
         println!("\n--- Market Maker: Orchestrating Inference ---");
-        println!("  Bid: {{:?}}", bid);
-        println!("  Ask: {{:?}}", ask);
+        println!("  Bid: {:?}", bid);
+        println!("  Ask: {:?}", ask);
 
         // Step 1: QA and Solver - Determine the Quasifiber to construct
         // This is a conceptual step. In a real system, the market maker would
@@ -45,12 +45,12 @@ impl MarketMaker {
             bid.requested_quasifiber_size,
         );
         let quasifiber = Quasifiber(quasifiber_universe.clone());
-        println!("  Market Maker: Identified Quasifiber: {{:?}}", quasifiber);
+        println!("  Market Maker: Identified Quasifiber: {:?}", quasifiber);
 
         // Step 2: Linker and Compiler - Prepare the Quasifiber as a Solana Program
         println!("  Market Maker: Compiling Quasifiber into Solana Program.");
         let solana_program: SolanaProgram = quasifiber.into();
-        println!("  Market Maker: Generated Solana Program: {{:?}}", solana_program);
+        println!("  Market Maker: Generated Solana Program: {:?}", solana_program);
 
         // Step 3: Orchestrate Execution - Deploy and interact with the Solana Program
         println!("  Market Maker: Deploying Solana Program and initiating inference.");
@@ -66,6 +66,6 @@ impl MarketMaker {
         self.llm_monad = self.llm_monad.bind(LlmOperation::SampleText("Execute Quasifiber".to_string()));
 
         println!("--- Market Maker: Inference Orchestration Complete ---");
-        Ok(format!("Inference for bid {{:?}} orchestrated successfully by provider {{:?}}", bid.requested_quasifiber_type, ask.provider_id))
+        Ok(format!("Inference for bid {:?} orchestrated successfully by provider {:?}", bid.requested_quasifiber_type, ask.provider_id))
     }
 }

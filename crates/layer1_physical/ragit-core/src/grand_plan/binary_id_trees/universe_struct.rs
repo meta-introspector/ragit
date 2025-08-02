@@ -11,7 +11,7 @@ pub struct Universe<T> {
     next_uid: Uid,
 }
 
-impl<T> Universe<T> {
+impl<T: Default> Universe<T> {
     pub fn new() -> Self {
         Self::default()
     }

@@ -14,7 +14,7 @@ use crate::grand_plan::bott_periodic_lambdas::{
     lambda_7_the_cycle
 };
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
+
 /// Initializes and returns a FunctionRegistry with all Bott Periodic Lambdas registered.
 pub fn get_bott_periodic_function_registry() -> FunctionRegistry {
     let mut registry = FunctionRegistry::new();

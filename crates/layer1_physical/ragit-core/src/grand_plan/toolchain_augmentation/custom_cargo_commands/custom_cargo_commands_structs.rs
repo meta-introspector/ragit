@@ -1,4 +1,4 @@
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
+
 /// Represents a conceptual custom `cargo` subcommand.
 pub struct CustomCargoCommand {
     pub name: String,
@@ -24,8 +24,7 @@ impl CustomCargoCommand {
     }
 }
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Example custom cargo commands related to our grand plan.
+
 pub fn get_grand_plan_cargo_commands() -> Vec<CustomCargoCommand> {
     vec![
         CustomCargoCommand::new(

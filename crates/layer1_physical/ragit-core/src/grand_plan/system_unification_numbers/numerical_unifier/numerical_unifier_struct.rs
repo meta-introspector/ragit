@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 use crate::grand_plan::unified_concept_enum::concept_enum::unified_concept_enum_enum::UnifiedConceptEnum;
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// The fundamental set of numbers that unify the system.
-pub const UNIFYING_NUMBERS: [u32; 10] = [0, 1, 2, 3, 4, 7, 11, 13, 17, 19];
+
 
 #[derive(Debug, Clone, Serialize, Deserialize, OurMacro)] // Conceptual: derives Vibe, Vector, etc.
 /// Represents a conceptual mapping of a system concept to a unifying number.

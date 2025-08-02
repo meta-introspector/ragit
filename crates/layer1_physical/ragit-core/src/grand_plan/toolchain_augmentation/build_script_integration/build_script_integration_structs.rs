@@ -1,6 +1,5 @@
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Represents a conceptual integration with Cargo build scripts.
-pub struct BuildScriptIntegration {
+
+struct BuildScriptIntegration  {
     pub name: String,
     pub description: String,
     pub integration_logic: String, // Conceptual: Rust code for build script logic
@@ -24,9 +23,8 @@ impl BuildScriptIntegration {
     }
 }
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Example build script integrations related to our grand plan.
-pub fn get_grand_plan_build_script_integrations() -> Vec<BuildScriptIntegration> {
+
+fn foo() {
     vec![
         BuildScriptIntegration::new(
             "generate-pdl-prompts",

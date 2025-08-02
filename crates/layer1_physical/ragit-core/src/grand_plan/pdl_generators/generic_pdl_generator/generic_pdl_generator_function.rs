@@ -1,6 +1,5 @@
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Generates a PDL document programmatically with customizable sections.
-pub fn generate_pdl_document(
+
+pub fn foo(
     system_role: &str,
     system_task: &str,
     user_prompt: &str,

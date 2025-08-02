@@ -1,6 +1,5 @@
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Represents a conceptual custom `rustc` linter.
-pub struct CustomRustcLinter {
+
+struct stomRustcLinter {
     pub name: String,
     pub description: String,
     pub lint_logic: String, // Conceptual: Rust code for linting rules
@@ -24,9 +23,7 @@ impl CustomRustcLinter {
     }
 }
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-/// Example custom rustc linter related to our grand plan.
-pub fn get_grand_plan_rustc_linters() -> Vec<CustomRustcLinter> {
+fn foo() {
     vec![
         CustomRustcLinter::new(
             "ragit-pdl-compliance",

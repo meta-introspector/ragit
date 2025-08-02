@@ -39,7 +39,7 @@ impl Introspector {
         // Simulate looking for convergence with prime bases
         for &base in PRIME_EXPONENTS.iter() {
             if base == 0 { continue; }
-            let remainder = stream.emojis.len() % base;
+            let remainder = stream.emojis.len() % (base as usize);
             if remainder == 0 {
                 println!("  Convergence detected with base {}: Stream length is a multiple of {}", base, base);
             } else {

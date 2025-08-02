@@ -52,7 +52,7 @@ impl IntelligenceAggregator {
 
         if !combined_text.is_empty() {
             // Use LLM to generate sentiment or trend from combined text
-            self.llm_monad = self.llm_monad.bind(LlmOperation::SampleText(format!("Analyze sentiment of: {}", combined_text)));
+            self.llm_monad = self.llm_monad.clone().bind(LlmOperation::SampleText(format!("Analyze sentiment of: {}", combined_text)));
             if let Some(LlmResult::SampledText(sentiment)) = self.llm_monad.get_result() {
                 intelligence_reports.push(CoinIntelligence {
                     timestamp: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs(),

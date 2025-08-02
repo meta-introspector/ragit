@@ -3,7 +3,7 @@ use crate::grand_plan::binary_tree_generators::prime_exponents::PRIME_EXPONENTS;
 use crate::grand_plan::binary_tree_generators::build_tree_recursive::build_tree_recursive;
 use crate::grand_plan::sized_universe_stores::sized_universe_store_struct::SizedUniverseStore;
 
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
+
 /// Generates a SizedUniverseStore containing binary trees where the number of leaves
 /// is 2 raised to a prime exponent.
 pub fn generate_sized_power_of_two_trees<T: Clone>(

@@ -36,12 +36,10 @@ pub fn to_abi_value_char(c: char) -> AbiValue {
 
 // Helper to convert u32 to AbiValue
 pub fn to_abi_value_u32(n: u32) -> AbiValue {
-    AbiValue::U32(n)
-}
+//    AbiValue::U32(n)
 
 // Wrapper for lambda_0_the_void
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_void(func: fn() -> GrandUnifiedStore) -> AbiFunction {
+
     Box::new(move |_args: AbiArgs| -> AbiResult {
         let result = func();
         Ok(to_abi_value_grand_unified_store(&result))
@@ -49,8 +47,8 @@ pub fn wrap_the_void(func: fn() -> GrandUnifiedStore) -> AbiFunction {
 }
 
 // Wrapper for lambda_1_the_spark
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_spark(func: fn(usize) -> char) -> AbiFunction {
+
+pub fn foo() {
     Box::new(move |args: AbiArgs| -> AbiResult {
         if args.len() != 1 {
             return Err("Expected 1 argument: usize".to_string());
@@ -65,8 +63,8 @@ pub fn wrap_the_spark(func: fn(usize) -> char) -> AbiFunction {
 }
 
 // Wrapper for lambda_2_the_pair
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_pair(func: fn(&GrandUnifiedStore) -> &SizedUniverseStore<char>) -> AbiFunction {
+
+pub fn foo2() {
     Box::new(move |args: AbiArgs| -> AbiResult {
         // This wrapper assumes the GrandUnifiedStore is passed in a specific way,
         // or is globally accessible. For now, we'll use a placeholder.
@@ -78,9 +76,10 @@ pub fn wrap_the_pair(func: fn(&GrandUnifiedStore) -> &SizedUniverseStore<char>) 
     })
 }
 
+
+pub fn foo3() {
 // Wrapper for lambda_3_the_tree
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_tree(func: fn(&GrandUnifiedStore) -> &SizedUniverseStore<char>) -> AbiFunction {
+
     Box::new(move |args: AbiArgs| -> AbiResult {
         let mut temp_store = GrandUnifiedStore::new();
         temp_store.add_char_store();
@@ -89,9 +88,9 @@ pub fn wrap_the_tree(func: fn(&GrandUnifiedStore) -> &SizedUniverseStore<char>) 
     })
 }
 
+pub fn foo4() {
 // Wrapper for lambda_4_the_cosmos
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_cosmos(func: fn(&GrandUnifiedStore) -> &TypeStore) -> AbiFunction {
+
     Box::new(move |args: AbiArgs| -> AbiResult {
         let mut temp_store = GrandUnifiedStore::new();
         temp_store.add_i64_store();
@@ -101,8 +100,7 @@ pub fn wrap_the_cosmos(func: fn(&GrandUnifiedStore) -> &TypeStore) -> AbiFunctio
 }
 
 // Wrapper for lambda_5_the_mirror
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_mirror(func: fn(&GrandUnifiedStore, &str) -> Option<&TypeStore>) -> AbiFunction {
+pub fn wrap_the_mirror<'a>(func: for<'b> fn(&'b GrandUnifiedStore, &'b str) -> Option<&'b TypeStore>) -> AbiFunction {
     Box::new(move |args: AbiArgs| -> AbiResult {
         if args.len() != 2 {
             return Err("Expected 2 arguments: &GrandUnifiedStore, &str".to_string());
@@ -123,8 +121,7 @@ pub fn wrap_the_mirror(func: fn(&GrandUnifiedStore, &str) -> Option<&TypeStore>)
 }
 
 // Wrapper for lambda_6_the_quasifiber
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_quasifiber<T: 'static + Clone>(func: fn(&GrandUnifiedStore, &str, usize) -> &Universe<T>) -> AbiFunction {
+pub fn wrap_the_quasifiber<'a, T: 'static + Clone>(func: for<'b> fn(&'b GrandUnifiedStore, &'b str, usize) -> &'b Universe<T>) -> AbiFunction {
     Box::new(move |args: AbiArgs| -> AbiResult {
         if args.len() != 3 {
             return Err("Expected 3 arguments: &GrandUnifiedStore, &str, usize".to_string());
@@ -146,8 +143,8 @@ pub fn wrap_the_quasifiber<T: 'static + Clone>(func: fn(&GrandUnifiedStore, &str
 }
 
 // Wrapper for lambda_7_the_cycle
-#[derive(OurMacro)] // Conceptual: derives Vibe, Vector, etc.
-pub fn wrap_the_cycle(func: fn(&str, usize) -> GrandUnifiedStore) -> AbiFunction {
+
+pub fn foo7() {
     Box::new(move |args: AbiArgs| -> AbiResult {
         if args.len() != 2 {
             return Err("Expected 2 arguments: &str, usize".to_string());
