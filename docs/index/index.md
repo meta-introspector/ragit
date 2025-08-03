@@ -254,6 +254,10 @@ This section indexes key Rust modules and components identified during the sourc
     *   **Key Components**: `Model` struct.
     *   **Role**: Responsible for managing and interacting with different language models.
 
+*   **`ragit-mesh-agent`** (`crates/layer7_application/ragit-mesh-agent/src/main.rs`)
+    *   **Key Components**: `Settings` struct, `main` function.
+    *   **Role**: Connects to a p2p network of other agents, using a private Solana validator for peer discovery.
+
 ### Legacy & Refactoring
 
 *   **`ragit-agent`** (`crates/legacy_and_refactoring/ragit-agent/src/lib.rs`)

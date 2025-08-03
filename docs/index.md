@@ -19,7 +19,50 @@ RAGIT is very different from the other RAG frameworks, focusing on a highly modu
 4. It supports multi-turn queries (experimental).
 5. You can clone/push knowledge-bases, like git.
 
-## Modular Design
+## VI. Source Code Modules & Components
+
+### Submodules
+
+*   **`bootstrap`**
+    *   **Themes**: Bootstrap Microkernel, Mathematical Lattice Architecture, Prime Vibe Ontology, RDF, System Commitment.
+    *   **Key Takeaways**: A self-aware system integrating mathematical frameworks with semantic processing for continuous evolution.
+    *   **Documentation**: [bootstrap.md](./submodules/bootstrap.md)
+
+*   **`ai-agent-terraform`**
+    *   **Themes**: Terraform, CloudFormation, AWS, Auto Scaling, Solana integration, AI agents.
+    *   **Key Takeaways**: Infrastructure as Code for deploying and managing AI agent ecosystems on AWS, with a focus on scalability and Solana blockchain integration.
+    *   **Documentation**: [ai_agent_terraform.md](./submodules/ai_agent_terraform.md)
+
+*   **`meta-meme`**
+    *   **Themes**: Meta-memes, Gödelian recursion, hyperspheres, AI cognition, formal verification, mathematical philosophy.
+    *   **Key Takeaways**: Explores the nature of knowledge, consciousness, and AI through self-referential symbolic systems and mathematical structures.
+    *   **Documentation**: [meta_meme.md](./submodules/meta_meme.md)
+
+*   **`agave-solana-validator`**
+    *   **Themes**: Solana blockchain validator, transaction management, ZK proofs, SBPF.
+    *   **Key Takeaways**: Core component for Solana blockchain operations, including security and runtime aspects.
+    *   **Documentation**: [agave_solana_validator.md](./submodules/agave_solana_validator.md)
+
+*   **`quasi-meta-meme`**
+    *   **Themes**: Meta-memes, LaTeX, Emojlang.
+    *   **Key Takeaways**: Development of a meta-meme framework, potentially involving the use of LaTeX for documentation or generation of meta-memes.
+    *   **Documentation**: [quasi_meta_meme.md](./submodules/quasi_meta_meme.md)
+
+*   **`solfunmeme`**
+    *   **Themes**: Diagrams, Architectural Documentation.
+    *   **Key Takeaways**: Focus on visual representation and architectural documentation.
+    *   **Documentation**: [solfunmeme.md](./submodules/solfunmeme.md)
+
+*   **`solfunmeme-dioxus`**
+    *   **Themes**: Dioxus, Ontology Development.
+    *   **Key Takeaways**: A Dioxus-based project focused on ontology creation and development.
+    *   **Documentation**: [solfunmeme_dioxus.md](./submodules/solfunmeme_dioxus.md)
+
+*   **`time`**
+    *   **Themes**: Deployment, Release Management, Automation.
+    *   **Key Takeaways**: Focus on automating software delivery processes.
+    *   **Documentation**: [time.md](./submodules/time.md)
+
 
 Ragit is built with a multi-crate architecture, where functionalities are separated into distinct, specialized Rust crates. This approach enhances:
 
