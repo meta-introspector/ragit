@@ -1,0 +1,3 @@
+# `ModelRaw`
+
+Raw model configuration.

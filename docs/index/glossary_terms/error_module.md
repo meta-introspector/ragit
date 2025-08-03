@@ -1,0 +1,3 @@
+# `Error`
+
+Various error types.

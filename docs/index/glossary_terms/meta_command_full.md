@@ -1,0 +1,3 @@
+# `MetaCommand`
+
+Meta command.

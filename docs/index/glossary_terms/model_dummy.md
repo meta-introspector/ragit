@@ -1,0 +1,3 @@
+# `ModelDummy`
+
+Dummy model functionalities.

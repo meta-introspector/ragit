@@ -1,0 +1,3 @@
+# `WordCounter`
+
+Counts words.

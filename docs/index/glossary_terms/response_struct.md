@@ -1,0 +1,3 @@
+# `Response`
+
+Represents a response.

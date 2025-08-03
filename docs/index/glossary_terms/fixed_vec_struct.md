@@ -1,0 +1,3 @@
+# `FixedVec`
+
+Fixed-size vector.

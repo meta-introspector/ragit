@@ -1,0 +1,3 @@
+# `Render`
+
+Rendering for chunks.

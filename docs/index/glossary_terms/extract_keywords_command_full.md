@@ -1,0 +1,3 @@
+# `ExtractKeywordsCommand`
+
+Extract keywords command.

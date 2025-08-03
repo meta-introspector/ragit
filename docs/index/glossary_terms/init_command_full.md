@@ -1,0 +1,3 @@
+# `InitCommand`
+
+Initialize command.

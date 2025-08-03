@@ -1,0 +1,3 @@
+# `Gc`
+
+Garbage collection command.

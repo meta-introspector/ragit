@@ -1,0 +1,3 @@
+# `Constant`
+
+Various string constants.

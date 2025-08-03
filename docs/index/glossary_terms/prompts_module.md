@@ -1,0 +1,3 @@
+# `Prompts`
+
+Module for prompts.

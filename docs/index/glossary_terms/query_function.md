@@ -1,0 +1,3 @@
+# `Query`
+
+Function for querying.

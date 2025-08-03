@@ -1,0 +1,3 @@
+# `FixedString`
+
+Fixed-size string.

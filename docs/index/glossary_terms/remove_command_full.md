@@ -1,0 +1,3 @@
+# `RemoveCommand`
+
+Remove command.

@@ -1,0 +1,3 @@
+# `MergeCommand`
+
+Merge command.

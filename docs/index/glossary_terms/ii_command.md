@@ -1,0 +1,3 @@
+# `IiCommand`
+
+Inverted index command.

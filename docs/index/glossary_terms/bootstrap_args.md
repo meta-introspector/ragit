@@ -1,0 +1,3 @@
+# `BootstrapArgs`
+
+Arguments for bootstrapping.

@@ -1,0 +1,3 @@
+# `QueryCommand`
+
+Query command.

@@ -1,0 +1,3 @@
+# `HelpCommand`
+
+Help command.

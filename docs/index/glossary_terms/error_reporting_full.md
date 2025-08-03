@@ -1,0 +1,3 @@
+# `ErrorReporting`
+
+Error reporting functionalities.

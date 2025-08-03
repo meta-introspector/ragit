@@ -1,0 +1,3 @@
+# `ModelDefault`
+
+Default model functionalities.

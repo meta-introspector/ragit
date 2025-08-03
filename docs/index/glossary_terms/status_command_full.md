@@ -1,0 +1,3 @@
+# `StatusCommand`
+
+Status command.

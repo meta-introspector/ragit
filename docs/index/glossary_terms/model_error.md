@@ -1,0 +1,3 @@
+# `ModelError`
+
+Model error handling.
