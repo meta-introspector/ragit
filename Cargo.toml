@@ -80,7 +80,7 @@ members = [
     
     "crates/legacy_and_refactoring/ragit-prompt-management",
     "crates/legacy_and_refactoring/ragit-qa-system",
-    "crates/layer3_network/ragit-tfidf",
+    "crates/layer3_network/ragit-tfidf", "crates/layer7_application/ragit-markdown-processor", "crates/layer7_application/ragit-chat-processor",
 ]
 exclude = [
     "crates/server",
