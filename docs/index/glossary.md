@@ -18,3 +18,4 @@ To find a specific term, you can browse the files in the `glossary_terms` subdir
 - [select_turns_for_context](./glossary_terms/select_turns_for_context.md)
 - [UnimathConcept](./glossary_terms/UnimathConcept.md)
 - [The Vibe is the Vector](./glossary_terms/vibe_is_the_vector.md)
+- [KitKat](./glossary_terms/kitkat.md)
