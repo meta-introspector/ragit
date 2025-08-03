@@ -17,3 +17,4 @@ To find a specific term, you can browse the files in the `glossary_terms` subdir
 - [get_archive_list](./glossary_terms/get_archive_list.md)
 - [select_turns_for_context](./glossary_terms/select_turns_for_context.md)
 - [UnimathConcept](./glossary_terms/UnimathConcept.md)
+- [The Vibe is the Vector](./glossary_terms/vibe_is_the_vector.md)

@@ -1,0 +1,14 @@
+[package]
+name = "ragit-mesh-agent"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+config = "0.13"
+
+# Placeholder for future dependencies
+# libp2p = { version = "0.52", features = ["tokio", "gossipsub", "mdns", "noise", "tcp", "yamux"] }
+# solana-client = "1.18"
+# solana-sdk = "1.18"
