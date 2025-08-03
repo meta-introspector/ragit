@@ -57,14 +57,14 @@ pub async fn add_bootstrap_files(
     let mut original_files_to_add = bootstrap_source.get_files()?;
 
     let filtered_files = match target.as_deref() {
-        Some("all") | None => original_files_to_add,
-        Some("submodules") => original_files_to_add.into_iter().filter(|p| p.starts_with("vendor/meta-introspector/") && !p.contains(".gitmodules")).collect(),
-        Some("crates") => original_files_to_add.into_iter().filter(|p| p.starts_with("crates/")).collect(),
-        Some("src") => original_files_to_add.into_iter().filter(|p| p.starts_with("src/")).collect(),
-        Some("docs") => original_files_to_add.into_iter().filter(|p| p.starts_with("docs/")).collect(),
+        Some("all") | None => original_files_to_add.clone(),
+        Some("submodules") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("vendor/meta-introspector/") && !p.contains(".gitmodules")).collect(),
+        Some("crates") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("crates/")).collect(),
+        Some("src") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("src/")).collect(),
+        Some("docs") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("docs/")).collect(),
         _ => {
-            memory_monitor.verbose(&format!("Invalid target specified: {:?}. Processing all files.", target));
-            original_files_to_add
+            eprintln!("Invalid target specified. Supported targets are: all, submodules, crates, src, docs");
+            original_files_to_add.clone()
         }
     };
 

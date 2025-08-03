@@ -244,11 +244,11 @@ async fn main() -> Result<()> {
     let mut memory_monitor = MemoryMonitor::new(true, None, None);
 
     match cli.command {
-        Commands::Bootstrap { timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup } => {
+        Commands::Bootstrap { timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup, target } => {
             let mut memory_monitor = MemoryMonitor::new(true, time_threshold_ms, memory_threshold_bytes);
             bootstrap_command_main(BootstrapArgs {
 		//verbose: true,
-		timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup }, &mut memory_monitor).await
+		timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup, target }, &mut memory_monitor).await
         },
         Commands::Query { query_string, no_pdl, multi_turn, json, kb_path } => {
             query_command_main(QueryArgs { query_string, no_pdl, multi_turn, json, kb_path,
