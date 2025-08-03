@@ -82,6 +82,7 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
             max_memory_gb,
             memory_monitor,
             max_files_to_process,
+            args.target,
         ).await?;
     }
 

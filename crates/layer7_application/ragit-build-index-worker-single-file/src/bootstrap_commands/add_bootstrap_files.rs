@@ -46,6 +46,7 @@ pub async fn add_bootstrap_files(
     max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
     max_files_to_process: Option<usize>,
+    target: Option<String>,
 ) -> Result<(), anyhow::Error> {
     memory_monitor.verbose("bootstrap_index_self: Running rag add");
     memory_monitor.verbose(&format!("bootstrap_index_self: Found project root: {:?}", actual_root_dir));
@@ -54,9 +55,24 @@ pub async fn add_bootstrap_files(
         project_root: actual_root_dir.to_str().unwrap().to_string(),
     };
     let mut original_files_to_add = bootstrap_source.get_files()?;
+
+    let filtered_files = match target.as_deref() {
+        Some("all") | None => original_files_to_add,
+        Some("submodules") => original_files_to_add.into_iter().filter(|p| p.starts_with("vendor/meta-introspector/") && !p.contains(".gitmodules")).collect(),
+        Some("crates") => original_files_to_add.into_iter().filter(|p| p.starts_with("crates/")).collect(),
+        Some("src") => original_files_to_add.into_iter().filter(|p| p.starts_with("src/")).collect(),
+        Some("docs") => original_files_to_add.into_iter().filter(|p| p.starts_with("docs/")).collect(),
+        _ => {
+            memory_monitor.verbose(&format!("Invalid target specified: {:?}. Processing all files.", target));
+            original_files_to_add
+        }
+    };
+
+    let mut files_to_add = filtered_files;
+
     if let Some(max_files) = max_files_to_process {
-        if original_files_to_add.len() > max_files {
-            original_files_to_add.truncate(max_files);
+        if files_to_add.len() > max_files {
+            files_to_add.truncate(max_files);
         }
     }
     memory_monitor.verbose(&format!("bootstrap_index_self: Found {} files to add", original_files_to_add.len()));

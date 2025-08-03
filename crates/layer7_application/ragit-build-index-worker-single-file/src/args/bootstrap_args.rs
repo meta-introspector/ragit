@@ -46,4 +46,6 @@ pub struct BootstrapArgs {
     pub disable_final_query: bool,
     #[clap(long)]
     pub disable_cleanup: bool,
+    #[clap(long)]
+    pub target: Option<String>,
 }

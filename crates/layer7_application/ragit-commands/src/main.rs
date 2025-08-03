@@ -80,6 +80,10 @@ struct Args {
     /// Disable cleanup of temporary directory
     #[arg(long, global = true)]
     disable_cleanup: bool,
+
+    /// Target specific directories for indexing (all, submodules, crates, src, docs)
+    #[arg(long, global = true)]
+    target: Option<String>,
 }
 
 #[derive(Parser, Debug)]
@@ -117,6 +121,7 @@ async fn main() -> Result<()> {
                 args.disable_self_improvement,
                 args.disable_final_query,
                 args.disable_cleanup,
+                args.target,
             ).await?;
         },
         Commands::BootstrapNew => {
