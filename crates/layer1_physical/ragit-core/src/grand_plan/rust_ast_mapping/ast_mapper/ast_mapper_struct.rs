@@ -1,4 +1,4 @@
-use syn::{File, Item};
+use syn::{File, Item, Visibility};
 use quote::quote;
 use crate::grand_plan::fundamental_units::prime_bases::PRIME_BASES;
 
@@ -11,31 +11,32 @@ pub struct AstMapper;
 impl AstMapper {
     pub fn new() -> Self { AstMapper {} }
 
-    /// Conceptually parses a Rust code string and maps its items.
-    pub fn map_rust_code(&self, code: &str) -> Vec<String> {
-        let syntax_tree = syn::parse_file(code).expect("Unable to parse Rust code");
-        let mut mappings = Vec::new();
+    /// Extracts public struct, enum, and function identifiers from Rust code.
+    pub fn extract_public_identifiers(code: &str) -> Result<Vec<String>, syn::Error> {
+        let syntax_tree = syn::parse_file(code)?;
+        let mut identifiers = Vec::new();
 
         for item in syntax_tree.items {
             match item {
                 Item::Fn(func) => {
-                    let num_args = func.sig.inputs.len();
-                    let num_stmts = func.block.stmts.len();
-                    mappings.push(format!("Function: {} (args: {}, stmts: {})", func.sig.ident, num_args, num_stmts));
-                    // Conceptual mapping to primes
-                    if num_args == 2 { mappings.push("Mapped to Prime 2 (Pair)".to_string()); }
-                    if num_args == 3 { mappings.push("Mapped to Prime 3 (Triple)".to_string()); }
+                    if let Visibility::Public(_) = func.vis {
+                        identifiers.push(func.sig.ident.to_string());
+                    }
                 },
                 Item::Struct(s) => {
-                    let num_fields = s.fields.len();
-                    mappings.push(format!("Struct: {} (fields: {})", s.ident, num_fields));
-                    if num_fields == 5 { mappings.push("Mapped to Prime 5 (Cosmos)".to_string()); }
+                    if let Visibility::Public(_) = s.vis {
+                        identifiers.push(s.ident.to_string());
+                    }
                 },
-                // Add more mappings for other Item types as needed
+                Item::Enum(e) => {
+                    if let Visibility::Public(_) = e.vis {
+                        identifiers.push(e.ident.to_string());
+                    }
+                },
                 _ => {},
             }
         }
-        mappings
+        Ok(identifiers)
     }
 
     /// Conceptually generates Rust code based on a prime base.

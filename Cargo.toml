@@ -50,6 +50,7 @@ members = [
     "crates/layer7_application/server",
     "crates/layer7_application/commands/*",
     "crates/layer7_application/ragit-build-index-worker-single-file",
+    "crates/layer7_application/ragit-glossary-generator",
 
     # Layer 8 - Web
     "crates/layer8_web/ragit-wasm",
