@@ -1,3 +1,12 @@
+- **Emoji:** ❓
+- **Vector Locations:**
+    - **8D:** `[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]`
+    - **23D:** `[0.0, ...]`
+    - **41D:** `[0.0, ...]`
+    - **800D:** `[0.0, ...]`
+
+---
+
 # `GetImageSchema`
 
 Function to get the image schema from the index core.

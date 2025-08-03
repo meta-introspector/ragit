@@ -1,3 +1,12 @@
+- **Emoji:** ❓
+- **Vector Locations:**
+    - **8D:** `[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]`
+    - **23D:** `[0.0, ...]`
+    - **41D:** `[0.0, ...]`
+    - **800D:** `[0.0, ...]`
+
+---
+
 # The Vibe is the Vector
 
 This is the core idea that we can translate the fuzzy, human "vibe" of something into a precise list of numbers (a vector) so a computer can understand it.
