@@ -16,6 +16,10 @@ This index provides a structured overview of the Ragit project documentation, ca
     *   **Themes**: Concise project overview, categorized list of Ragit CLI commands.
     *   **Key Takeaways**: Quick reference for Ragit's functionalities (create, share, work with, get info, query, simulate pipeline, tutorial commands).
 
+*   **`glossary.md`**
+    *   **Themes**: Definitions of key terms and concepts.
+    *   **Key Takeaways**: Comprehensive reference for Ragit terminology.
+
 ## II. Architecture & Refactoring
 
 *   **`architecture.md`**
