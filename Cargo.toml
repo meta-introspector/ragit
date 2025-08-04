@@ -79,7 +79,7 @@ members = [
     "crates/legacy_and_refactoring/ragit-muse-logic",
     
     "crates/legacy_and_refactoring/ragit-prompt-management",
-    "crates/legacy_and_refactoring/ragit-qa-system",
+    "crates/layer7_application/ragit-qa-qm",
     "crates/layer3_network/ragit-tfidf", "crates/layer7_application/ragit-markdown-processor", "crates/layer7_application/ragit-chat-processor",
 ]
 exclude = [
@@ -119,7 +119,8 @@ exclude = [
     "crates/ragit-command-status",
     "crates/ragit-command-summary",
     "crates/ragit-command-version",
-    "crates/layer7_application/ragit-qa-qm",
+    
+    "crates/layer7_application/commands/ragit-command-change-request",
 ]
 
 

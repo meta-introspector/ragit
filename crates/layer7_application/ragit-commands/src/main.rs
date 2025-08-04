@@ -100,6 +100,8 @@ enum Commands {
     BootstrapNew,
     /// Query the ragit index
     Query(QueryArgs),
+    /// Request a new change
+    ChangeRequest,
 }
 
 #[tokio::main]
@@ -187,6 +189,24 @@ async fn main() -> Result<()> {
         Commands::Query(mut query_args) => {
             query_args.index_path = Some(PathBuf::from("/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"));
             query_command_main(query_args).await?;
+        },
+        Commands::ChangeRequest => {
+            let mut cmd = Command::new("cargo");
+            cmd.arg("run");
+            cmd.arg("--package");
+            cmd.arg("ragit-command-change-request");
+            cmd.arg("--"); // Pass arguments to the binary
+
+            // Pass all remaining arguments to the subcommand
+            let mut args_iter = std::env::args().skip(2); // Skip "ragit" and "change-request"
+            while let Some(arg) = args_iter.next() {
+                cmd.arg(arg);
+            }
+
+            let status = cmd.status()?;
+            if !status.success() {
+                anyhow::bail!("ragit-command-change-request failed with status: {}", status);
+            }
         }
     }
 
