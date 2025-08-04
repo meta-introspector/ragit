@@ -1,6 +1,5 @@
 use super::action_state_struct::ActionState;
-use ragit_types::schema::Schema;
-use ragit_types::schema::schema_builders::{integer_between, default_yesno};
+use ragit_types::schema::{Schema, integer_between, default_yesno};
 
 
 impl ActionState {
@@ -13,7 +12,7 @@ impl ActionState {
         } else if !self.complete {
             None
         } else if self.r#continue.is_none() {
-            Some(schema_builders::default_yesno())
+            Some(default_yesno())
         } else {
             unreachable!()
         }
