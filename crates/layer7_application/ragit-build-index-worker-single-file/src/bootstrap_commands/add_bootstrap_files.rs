@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use ragit_index_types::index_struct::Index;
 use super::file_source::FileSource;
-use super::file_copy_utils;
+
 use super::constants::BOOTSTRAP_PACKAGE_NAME;
 use ragit_memory_monitor::MemoryMonitor;
 
@@ -41,7 +41,7 @@ pub fn add_files_sync(
 
 pub async fn add_bootstrap_files(
     actual_root_dir: &PathBuf,
-    temp_dir: &PathBuf,
+    
     index: &mut Index,
     max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
@@ -57,14 +57,14 @@ pub async fn add_bootstrap_files(
     let mut original_files_to_add = bootstrap_source.get_files()?;
 
     let filtered_files = match target.as_deref() {
-        Some("all") | None => original_files_to_add.clone(),
-        Some("submodules") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("vendor/meta-introspector/") && !p.contains(".gitmodules")).collect(),
-        Some("crates") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("crates/")).collect(),
-        Some("src") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("src/")).collect(),
-        Some("docs") => original_files_to_add.clone().into_iter().filter(|p| p.starts_with("docs/")).collect(),
+        Some("all") | None => original_files_to_add,
+        Some("submodules") => original_files_to_add.into_iter().filter(|p| p.starts_with("vendor/meta-introspector/") && !p.contains(".gitmodules")).collect(),
+        Some("crates") => original_files_to_add.into_iter().filter(|p| p.starts_with("crates/")).collect(),
+        Some("src") => original_files_to_add.into_iter().filter(|p| p.starts_with("src/")).collect(),
+        Some("docs") => original_files_to_add.into_iter().filter(|p| p.starts_with("docs/")).collect(),
         _ => {
-            eprintln!("Invalid target specified. Supported targets are: all, submodules, crates, src, docs");
-            original_files_to_add.clone()
+            memory_monitor.verbose(&format!("Invalid target specified: {:?}. Processing all files.", target));
+            original_files_to_add
         }
     };
 
@@ -75,20 +75,15 @@ pub async fn add_bootstrap_files(
             files_to_add.truncate(max_files);
         }
     }
-    memory_monitor.verbose(&format!("bootstrap_index_self: Found {} files to add", original_files_to_add.len()));
-    let temp_files_to_add = file_copy_utils::copy_files_to_temp_dir(
-        &actual_root_dir,
-        &temp_dir,
-        original_files_to_add,
-    )?;
+    memory_monitor.verbose(&format!("bootstrap_index_self: Found {} files to add", files_to_add.len()));
+    let absolute_files_to_add: Vec<String> = files_to_add.into_iter().map(|p| {
+        actual_root_dir.join(&p).to_string_lossy().into_owned()
+    }).collect();
 
-    let relative_temp_files_to_add = temp_files_to_add.iter().map(|p| {
-        p.strip_prefix(&temp_dir).unwrap().to_string_lossy().into_owned()
-    }).collect::<Vec<String>>();
     memory_monitor.verbose("bootstrap_index_self: Before add_files_command");
     memory_monitor.capture_and_log_snapshot("Before add_files_command");
     memory_monitor.check_memory_limit(max_memory_gb, "Before add_files_command")?;
-    add_files_sync(index, &relative_temp_files_to_add, None, false)?;
+    add_files_sync(index, &absolute_files_to_add, None, false)?;
     memory_monitor.verbose("bootstrap_index_self: After add_files_command");
     memory_monitor.verbose("bootstrap_index_self: Added files to index");
     memory_monitor.capture_and_log_snapshot("After add_files_command");

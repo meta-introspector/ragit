@@ -1,6 +1,7 @@
 use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
+use std::env;
 
 use ragit_index_types::index_struct::Index;
 use ragit_index_save_to_file::save_index_to_file;
@@ -14,7 +15,7 @@ pub async fn setup_environment(
     _max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
 ) -> Result<(PathBuf, PathBuf, Index), anyhow::Error> {
-    let actual_root_dir = ragit_utils::project_root::find_root()?;
+    let actual_root_dir = env::current_dir()?;
     let temp_dir = actual_root_dir.join(TEMP_DIR_NAME);
 
     fs::create_dir_all(&temp_dir)?;

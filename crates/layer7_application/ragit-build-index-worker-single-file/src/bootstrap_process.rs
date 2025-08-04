@@ -17,7 +17,7 @@ use crate::memory_profiler::memory_monitor::MemoryMonitor;
 pub async fn run() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let disable_cleanup = args.contains("--disable-cleanup".to_string());
-//    let verbose = args.contains("--verbose");
+    let verbose = args.contains("--verbose");
     let max_memory_gb = args.iter().position(|arg| arg == "--max-memory-gb")
         .and_then(|i| args.get(i + 1))
         .and_then(|s| s.parse::<u64>().ok());
@@ -37,6 +37,9 @@ pub async fn run() -> Result<()> {
         .and_then(|s| s.parse::<usize>().ok());
     let disable_self_improvement = args.contains("--disable-self-improvement");
     let disable_final_query = args.contains("--disable-final-query");
+    let target = args.iter().position(|arg| arg == "--target")
+        .and_then(|i| args.get(i + 1))
+        .map(|s| s.to_string());
 
     let mut memory_monitor = MemoryMonitor::new(verbose, None, None); // time_threshold_ms and memory_threshold_bytes are None for now
 
@@ -74,11 +77,11 @@ pub async fn run() -> Result<()> {
     add_bootstrap_files(
         verbose,
         &actual_root_dir,
-        &temp_dir,
         &mut index, // Pass mutable reference
         max_memory_gb,
         &mut memory_monitor,
         None, // max_files_to_process (process all files)
+        target, // Pass the target argument
     ).await?;
     memory_monitor.capture_and_log_snapshot(AFTER_ADD_FILES);
 

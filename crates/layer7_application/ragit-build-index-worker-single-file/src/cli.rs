@@ -56,6 +56,8 @@ pub enum Commands {
         disable_cleanup: bool,
         #[clap(long)]
         target: Option<String>,
+        #[clap(long)]
+        verbose: bool,
     },
     /// Query the ragit index
     Query {

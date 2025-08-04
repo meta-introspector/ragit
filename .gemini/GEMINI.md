@@ -92,14 +92,6 @@ The "Have a KitKat" meta-program is a user-defined workflow for pausing the curr
 - **Resolved `ApiError` cloning issues:** `ApiError` now correctly derives `Clone` by wrapping non-`Clone`able inner error types in `Arc`. Error handling in `run_worker_task.rs` and `ragit-model-provider/src/lib.rs` has been adjusted to use `ApiError::from(e)` and `map_err` with `Arc::new(e)` where necessary, and to clone `ApiError` instances when sending them through MPSC channels.
 - **Removed conflicting `From` implementation:** The custom `impl From<ApiError> for anyhow::Error` was removed from `ragit-types/src/api_error.rs` to resolve conflicts with `anyhow`'s built-in implementation.
 - **Fixed `thiserror` prefix errors:** Added whitespace to error messages in `ApiError` to resolve `thiserror` prefix warnings.
-- **`markdown_processor.rs` Code Recovery & Refactoring:**
-    - Discovered that `vendor/meta-introspector/solfunmeme-dioxus/src/playground/markdown_processor.rs` previously contained code for structured markdown processing (including `ConversationTurn` and related structs/functions) despite being empty in recent history.
-    - This "turn-based chat" processing logic was refactored into a new, dedicated crate: `crates/layer7_application/ragit-chat-processor`, adhering to the "one declaration per file" principle.
-    - A general markdown-to-HTML processor, `crates/layer7_application/ragit-markdown-processor`, was also created and committed.
-- **`ragit bootstrap` Argument Fixes:**
-    - Identified and fixed the issue where `ragit bootstrap`'s `--target` argument was not being recognized by `ragit-build-index-worker-single-file`. This involved adding the `target` argument to the `Bootstrap` subcommand's definition in `crates/layer7_application/ragit-build-index-worker-single-file/src/cli.rs`.
-    - Resolved an ownership error (E0382) in `crates/layer7_application/ragit-build-index-worker-single-file/src/bootstrap_commands/add_bootstrap_files.rs` by cloning the `original_files_to_add` vector when filtering.
-- **Successful Submodule Indexing:** The `ragit bootstrap --target submodules` command now successfully indexes all submodules, including `solfunmeme-dioxus` and `vendor/meta-introspector/bootstrap`.
 
 **New Critical Path:**
 The next phase is to successfully run the `bootstrap` command without compilation errors or runtime panics. This involves:

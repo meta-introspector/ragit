@@ -77,7 +77,6 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
         memory_monitor.check_memory_limit(max_memory_gb, BEFORE_ADD_FILES)?;
         add_bootstrap_files(
             &actual_root_dir,
-            &temp_dir,
             &mut index,
             max_memory_gb,
             memory_monitor,
@@ -244,10 +243,10 @@ async fn main() -> Result<()> {
     let mut memory_monitor = MemoryMonitor::new(true, None, None);
 
     match cli.command {
-        Commands::Bootstrap { timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup, target } => {
-            let mut memory_monitor = MemoryMonitor::new(true, time_threshold_ms, memory_threshold_bytes);
+        Commands::Bootstrap { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup, target } => {
+            let mut memory_monitor = MemoryMonitor::new(verbose, time_threshold_ms, memory_threshold_bytes);
             bootstrap_command_main(BootstrapArgs {
-		//verbose: true,
+		verbose,
 		timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup, target }, &mut memory_monitor).await
         },
         Commands::Query { query_string, no_pdl, multi_turn, json, kb_path } => {

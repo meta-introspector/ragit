@@ -48,4 +48,6 @@ pub struct BootstrapArgs {
     pub disable_cleanup: bool,
     #[clap(long)]
     pub target: Option<String>,
+    #[clap(long)]
+    pub verbose: bool,
 }
