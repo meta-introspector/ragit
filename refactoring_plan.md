@@ -186,3 +186,23 @@ We have successfully completed the refactoring of all modules within `ragit-core
 *   **Unit Tests**: Run existing tests; add new tests for granular components.
 *   **Conceptual Integrity**: `grep` for old paths, visual inspection of structure, dependency analysis.
 *   **Runtime/Integration Tests**: Attempt `GrandOrchestrator` execution; trace key workflow simulations.
+
+## New Indexing Strategy: Phased and Parallelized Indexing for Self-Improvement
+
+The current approach of indexing all files at once is inefficient for large codebases and self-improvement tasks, leading to slow indexing and memory issues. We need to move towards a more intelligent and parallelized indexing system.
+
+### High-Level Plan:
+
+1.  **Phased Indexing (Metadata First):**
+    *   **Phase 1: Git Tree/Directory Structure Indexing:** Instead of immediately reading file content, we'll first index only the file paths and basic metadata (e.g., file type, size, last modified date). This can be done efficiently by leveraging `git ls-files` for tracked files and `glob` for untracked files, building a lightweight "metadata index."
+    *   **Phase 2: Selective Content Indexing:** Based on this metadata index, we'll implement heuristics to prioritize and selectively read and chunk the *content* of files that are most likely to contain valuable information for self-improvement (e.g., Rust source code, Markdown documentation, configuration files). This will significantly reduce the amount of data processed initially.
+
+2.  **Parallel Processing:**
+    *   **Local Multiprocessing:** We'll explore using Rust's asynchronous capabilities (`tokio::task::spawn`) or parallel iterators (`rayon` crate) to process file reading, chunking, and embedding in parallel on the local machine. This will utilize available CPU cores more effectively.
+    *   **Distributed Indexing (Future):** For engaging "more nodes" and splitting the corpus across multiple machines, this would involve a more complex distributed system design (e.g., message queues, shared storage, worker nodes). This is a larger undertaking and would be a subsequent phase.
+
+### Initial Steps:
+
+*   **Modify `add_bootstrap_files`:** Refactor to first gather metadata and then selectively add content.
+*   **Refactor `build_index`:** Update to handle the two-phase indexing and incorporate parallel processing for content indexing.
+*   **Introduce a "metadata index" structure:** A new data structure to hold file paths and basic metadata before full content indexing.
