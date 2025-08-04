@@ -26,13 +26,11 @@ pub async fn query_command_main(args: &[String]) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let index = Index::load(find_root()?, LoadMode::OnlyJson)?;
-
     let _no_pdl = parsed_args.get_flag(0).is_some();
     let multi_turn = parsed_args.get_flag(1).is_some();
     let json_mode = parsed_args.get_flag(2).is_some();
     let query_str = parsed_args.get_args().join(" ");
-    let include_pattern = parsed_args.arg_flags.get("--include").map(|s| s.to_string());
+    let _include_pattern = parsed_args.arg_flags.get("--include").map(|s| s.to_string());
     let kb_path = parsed_args.arg_flags.get("--path").map(|s| s.to_string());
 
     let index = if let Some(path_str) = kb_path {

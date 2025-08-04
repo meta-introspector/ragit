@@ -8,6 +8,8 @@ use std::path::PathBuf;
 use ragit_command_bootstrap::bootstrap_index_self;
 use ragit_commands::commands::query::{query_command_main, QueryArgs};
 use ragit_command_duplicate_chunks::{duplicate_chunks_command_main, DuplicateChunksArgs};
+use ragit_dyim::DyimCommand;
+
 
 
 #[derive(Parser, Debug)]
@@ -105,6 +107,7 @@ enum Commands {
     Query(QueryArgs),
     /// Find and list duplicate chunks
     DuplicateChunks(DuplicateChunksArgs),
+    
     /// Request a new change
     #[clap(external_subcommand)]
     External(Vec<String>),
@@ -241,6 +244,10 @@ async fn main() -> Result<()> {
                         anyhow::bail!("Subcommand {} failed with status: {}", subcommand, status);
                     }
                 },
+                "dyim" => {
+                    let dyim_cmd = DyimCommand::Dyim(subcommand_args.to_vec());
+                    dyim_cmd.run().await?;
+                }
                 _ => {
                     anyhow::bail!("Unknown subcommand: {}", subcommand);
                 }

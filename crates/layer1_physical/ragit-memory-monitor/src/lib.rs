@@ -37,6 +37,10 @@ impl MemoryMonitor {
         }
     }
 
+    pub fn is_verbose(&self) -> bool {
+        self.verbose
+    }
+
     pub fn verbose(&self, message: &str) {
         if self.verbose {
             let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S%.3f");

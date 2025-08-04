@@ -53,20 +53,22 @@ impl FileSource for CargoPackageFileSource {
 }
 
 pub struct GlobFileSource {
-    pub pattern: String,
+    pub patterns: Vec<String>,
 }
 
 impl FileSource for GlobFileSource {
     fn get_files(&self) -> Result<Vec<String>> {
         let mut files = Vec::new();
-        for entry in glob::glob(&self.pattern)? {
-            match entry {
-                Ok(path) => {
-                    if let Some(path_str) = path.to_str() {
-                        files.push(path_str.to_string());
+        for pattern in &self.patterns {
+            for entry in glob::glob(pattern)? {
+                match entry {
+                    Ok(path) => {
+                        if let Some(path_str) = path.to_str() {
+                            files.push(path_str.to_string());
+                        }
                     }
+                    Err(e) => return Err(e.into()),
                 }
-                Err(e) => return Err(e.into()),
             }
         }
         Ok(files)

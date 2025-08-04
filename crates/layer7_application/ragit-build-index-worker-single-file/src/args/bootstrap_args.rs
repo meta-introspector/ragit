@@ -46,7 +46,7 @@ pub struct BootstrapArgs {
     pub disable_final_query: bool,
     #[clap(long)]
     pub disable_cleanup: bool,
-    #[clap(long)]
+    #[clap(long, value_parser = ["all", "cargo-toml"])]
     pub target: Option<String>,
     #[clap(long)]
     pub verbose: bool,

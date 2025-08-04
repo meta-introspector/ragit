@@ -23,13 +23,17 @@ pub fn add_files_sync(
     files: &[String],
     _add_mode: Option<AddMode>,
     _dry_run: bool,
+    verbose: bool,
 ) -> Result<AddResult, anyhow::Error> {
     let mut added_files = 0;
-    for file in files {
+    for (i, file) in files.iter().enumerate() {
         let path = PathBuf::from(file);
         if !index.staged_files.contains(&path) {
             index.staged_files.push(path);
             added_files += 1;
+            if verbose {
+                println!("Adding file {}/{}: {}", i + 1, files.len(), file);
+            }
         }
     }
 
@@ -53,9 +57,15 @@ pub async fn add_bootstrap_files(
 
     let files_to_add_source: Box<dyn FileSource> = match target.as_deref() {
         Some("all") => {
-            memory_monitor.verbose("Using GlobFileSource for all Rust files.");
+            memory_monitor.verbose("Using GlobFileSource for all Rust, Markdown, and TOML files.");
             Box::new(GlobFileSource {
-                pattern: "**/*.rs".to_string(),
+                patterns: vec!["**/*.rs".to_string(), "**/*.md".to_string(), "**/*.toml".to_string()],
+            })
+        },
+        Some("cargo-toml") => {
+            memory_monitor.verbose("Using GlobFileSource for Cargo.toml files.");
+            Box::new(GlobFileSource {
+                patterns: vec!["**/Cargo.toml".to_string()],
             })
         },
         _ => {
@@ -87,7 +97,7 @@ pub async fn add_bootstrap_files(
     memory_monitor.verbose("bootstrap_index_self: Before add_files_command");
     memory_monitor.capture_and_log_snapshot("Before add_files_command");
     memory_monitor.check_memory_limit(max_memory_gb, "Before add_files_command")?;
-    add_files_sync(index, &absolute_files_to_add, None, false)?;
+    add_files_sync(index, &absolute_files_to_add, None, false, memory_monitor.is_verbose())?;
     memory_monitor.verbose("bootstrap_index_self: After add_files_command");
     memory_monitor.verbose("bootstrap_index_self: Added files to index");
     memory_monitor.capture_and_log_snapshot("After add_files_command");

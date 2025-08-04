@@ -5,7 +5,6 @@ use ragit_index_types::index_struct::Index;
 use ragit_memory_monitor::MemoryMonitor;
 
 pub async fn configure_memory_settings(
-    verbose: bool,
     index: &mut Index,
     max_memory_gb: Option<u64>,
     max_chunk_size: Option<usize>,
@@ -36,10 +35,7 @@ pub async fn configure_memory_settings(
     // If these need to be set, the index_set_config_by_key function or the Index struct
     // would need to be updated to expose these as configurable via this method.
 
-    if verbose {
-        println!("configure_memory_settings: Finished");
-        memory_monitor.capture_and_log_snapshot("After configuring memory settings");
-    }
+    memory_monitor.capture_and_log_snapshot("After configuring memory settings");
 
     Ok(())
 }

@@ -70,7 +70,7 @@ pub async fn bootstrap_index_self(
         cmd.arg("--disable-self-improvement");
     }
     if disable_final_query {
-        cmd.arg("--disable-final_query");
+        cmd.arg("--disable-final-query");
     }
     if disable_cleanup {
         cmd.arg("--disable-cleanup");

@@ -28,7 +28,7 @@ mod args;
 use crate::args::bootstrap_args::BootstrapArgs;
 use crate::args::query_args::QueryArgs;
 use crate::args::top_terms_args::TopTermsArgs;
-use crate::args::search_args::SearchArgs;
+
 
 mod search_commands;
 use search_commands::search_command_main;
@@ -38,21 +38,22 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
     let max_files_to_process = args.max_files_to_process;
     let max_memory_gb = args.max_memory_gb;
 
+    memory_monitor.verbose("Starting bootstrap process.");
     memory_monitor.capture_and_log_snapshot("Initial");
 
+    memory_monitor.verbose("Setting up environment...");
     let (actual_root_dir, temp_dir, mut index) = setup_environment(
         max_memory_gb,
         memory_monitor,
     ).await?;
-
     memory_monitor.verbose(&format!("Temporary directory: {:?}", temp_dir));
-
     memory_monitor.capture_and_log_snapshot(AFTER_SETUP_ENV);
+    memory_monitor.verbose("Environment setup complete.");
 
     if !args.disable_memory_config {
+        memory_monitor.verbose("Configuring memory settings...");
         memory_monitor.check_memory_limit(max_memory_gb, "Before configure_memory_settings")?;
         configure_memory_settings(
-            true,
             &mut index,
             max_memory_gb,
             args.max_chunk_size,
@@ -60,9 +61,11 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
             args.min_summary_len,
             memory_monitor,
         ).await?;
+        memory_monitor.verbose("Memory settings configured.");
     }
 
     if !args.disable_prompt_copy {
+        memory_monitor.verbose("Copying prompts...");
         memory_monitor.check_memory_limit(max_memory_gb, BEFORE_COPY_PROMPTS)?;
         copy_prompts(
             &actual_root_dir,
@@ -71,9 +74,11 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
             memory_monitor,
         ).await?;
         ragit_index_types::index_impl::load_prompts::load_prompts_from_directory(&mut index, &temp_dir.join("prompts"))?;
+        memory_monitor.verbose("Prompts copied and loaded.");
     }
 
     if !args.disable_file_add {
+        memory_monitor.verbose("Adding bootstrap files...");
         memory_monitor.check_memory_limit(max_memory_gb, BEFORE_ADD_FILES)?;
         add_bootstrap_files(
             &actual_root_dir,
@@ -83,9 +88,11 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
             max_files_to_process,
             args.target,
         ).await?;
+        memory_monitor.verbose("Bootstrap files added.");
     }
 
     if !args.disable_index_build {
+        memory_monitor.verbose("Building index...");
         memory_monitor.check_memory_limit(max_memory_gb, BEFORE_BUILD_INDEX)?;
         build_index(
             &temp_dir,
@@ -95,30 +102,34 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
             max_memory_gb,
             memory_monitor,
         ).await?;
+        memory_monitor.verbose("Index built.");
     }
 
     if !args.disable_write_markdown {
+        memory_monitor.verbose("Exporting chunks to markdown...");
         memory_monitor.check_memory_limit(max_memory_gb, "Before write_chunks_to_markdown")?;
         export_chunks_main::write_chunks_to_markdown(
-            true,
+            args.verbose,
             &temp_dir,
             &index,
             max_memory_gb,
             memory_monitor,
             max_iterations,
         ).await?;
+        memory_monitor.verbose("Chunks exported.");
     } else {
         memory_monitor.verbose("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
     }
 
-    memory_monitor.verbose("bootstrap_command_main: Saving index to file.");
+    memory_monitor.verbose("Saving index to file...");
     ragit_index_save_to_file::save_index_to_file(&index, temp_dir.join(".ragit").join("index.json"))?;
-    memory_monitor.verbose("bootstrap_command_main: Index saved to file.");
+    memory_monitor.verbose("Index saved to file.");
 
     if !args.disable_self_improvement {
+        memory_monitor.verbose("Running self-improvement loop...");
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_self_improvement")?;
         run_self_improvement_loop(
-            true,
+            args.verbose,
             &actual_root_dir,
             &temp_dir,
             &index,
@@ -126,24 +137,27 @@ async fn bootstrap_command_main(args: BootstrapArgs, memory_monitor: &mut Memory
             memory_monitor,
             max_iterations,
         ).await?;
+        memory_monitor.verbose("Self-improvement loop finished.");
     }
 
     if !args.disable_final_query {
-        memory_monitor.verbose("bootstrap_command_main: Before perform_final_reflective_query");
+        memory_monitor.verbose("Performing final reflective query...");
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_final_reflective_query")?;
         perform_final_reflective_query(
-            true,
+            args.verbose,
             &index,
             max_memory_gb,
             memory_monitor,
         ).await?;
-        memory_monitor.verbose("bootstrap_command_main: After perform_final_reflective_query");
+        memory_monitor.verbose("Final reflective query performed.");
     }
 
     // Clean up the temporary directory
     if !args.disable_cleanup {
+        memory_monitor.verbose("Cleaning up temporary directory...");
         fs::remove_dir_all(&temp_dir)?;
         memory_monitor.verbose(&format!("{:?}{:?}", CLEANUP_TEMP_DIR, temp_dir));
+        memory_monitor.verbose("Temporary directory cleaned up.");
     } else {
         memory_monitor.verbose("bootstrap_index_self: Skipping cleanup of temporary directory as requested.");
     }
