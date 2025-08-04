@@ -5,9 +5,7 @@ use ragit_index_types::index_struct::Index;
 use ragit_index_types::load_mode::LoadMode;
 use ragit_memory_monitor::MemoryMonitor;
 use ragit_utils::project_root::find_root;
-use ragit_utils::prelude::*;
-use ragit_utils::doc_utils::get_doc_content;
-use ragit_types::query_turn::QueryTurn;
+
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
