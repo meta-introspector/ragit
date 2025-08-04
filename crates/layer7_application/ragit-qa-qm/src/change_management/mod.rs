@@ -22,6 +22,8 @@ fn load_changes() -> Result<Vec<Change>> {
 
 fn save_changes(changes: &[Change]) -> Result<()> {
     let path = get_changes_file_path()?;
+    let parent = path.parent().ok_or_else(|| anyhow!("Invalid path for changes.json"))?;
+    fs::create_dir_all(parent)?;
     let contents = serde_json::to_string_pretty(changes)?;
     fs::write(path, contents).map_err(|e| anyhow!("Failed to write changes.json: {}", e))
 }
