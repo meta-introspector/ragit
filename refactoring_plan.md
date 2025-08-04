@@ -206,3 +206,38 @@ The current approach of indexing all files at once is inefficient for large code
 *   **Modify `add_bootstrap_files`:** Refactor to first gather metadata and then selectively add content.
 *   **Refactor `build_index`:** Update to handle the two-phase indexing and incorporate parallel processing for content indexing.
 *   **Introduce a "metadata index" structure:** A new data structure to hold file paths and basic metadata before full content indexing.
+
+### Distributed Indexing and Real-time Monitoring (P2P)
+
+**Overall Goal:** Enable distributed indexing across multiple machines, with a central monitor aggregating real-time status updates via a P2P network.
+
+*   **Phase 1: Structured Logging & P2P Status Broadcasting (Worker Side)**
+    *   **Modify `ragit-build-index-worker-single-file` (or a new `ragit-worker` crate):**
+        *   Continue emitting structured JSON logs to stdout for local debugging and single-machine monitoring.
+        *   **Integrate P2P Communication:** Implement a P2P layer within the worker. This layer will:
+            *   Utilize the existing `gossip_system` (if suitable) or a new, lightweight P2P module for status updates.
+            *   Define a clear P2P message format for progress updates (e.g., `WorkerID`, `CurrentStep`, `ProgressPercentage`, `MemoryUsage`, `FilesProcessed`).
+            *   Periodically broadcast these status messages to the network.
+
+*   **Phase 2: Corpus Distribution & Worker Orchestration**
+    *   **New `ragit-distribute` command/crate:** This will be the orchestrator.
+        *   It will take the full corpus (e.g., all `Cargo.toml` files, or all Rust files).
+        *   It will use the P2P network to discover available `ragit-worker` nodes.
+        *   It will intelligently split the corpus into smaller work units and assign them to individual workers.
+        *   It will send commands to workers to start processing their assigned work units.
+
+*   **Phase 3: `ragit-monitor` TUI Application (Aggregated & Distributed View)**
+    *   **New `ragit-monitor` crate:** This will be the central monitoring application.
+        *   It will listen on the P2P network for status updates from all active `ragit-worker` instances.
+        *   It will aggregate these updates to provide an overall progress view of the entire indexing job.
+        *   The TUI will display:
+            *   Overall progress (e.g., total files processed / total files).
+            *   Individual worker status (e.g., Worker ID, current file, progress).
+            *   Network health (e.g., active workers, last seen time).
+        *   It will also retain the ability to monitor a local `ragit-worker` via stdout for single-machine scenarios.
+
+**Key Considerations for P2P Implementation:**
+
+*   **`gossip_system` Assessment:** We'll need to thoroughly examine the existing `gossip_system` to determine its suitability for real-time, low-latency status updates. If it's too heavy or not designed for this, we might need a simpler UDP-based broadcast for status.
+*   **Worker Discovery:** How will the `ragit-distribute` command and `ragit-monitor` discover the workers? Simple broadcast/multicast on a local network is a good starting point.
+*   **Fault Tolerance:** What happens if a worker goes offline? The monitor should reflect this, and the distributor might need to reassign work. (This can be a later refinement).
