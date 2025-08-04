@@ -119,6 +119,7 @@ exclude = [
     "crates/ragit-command-status",
     "crates/ragit-command-summary",
     "crates/ragit-command-version",
+    "crates/layer7_application/ragit-qa-qm",
 ]
 
 

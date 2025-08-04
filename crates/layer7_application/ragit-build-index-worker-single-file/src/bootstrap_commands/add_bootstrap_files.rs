@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 
 use ragit_index_types::index_struct::Index;
-use super::file_source::FileSource;
+use super::file_source::{FileSource, CargoPackageFileSource, GlobFileSource}; // Import GlobFileSource
 
 use super::constants::BOOTSTRAP_PACKAGE_NAME;
 use ragit_memory_monitor::MemoryMonitor;
@@ -50,25 +50,24 @@ pub async fn add_bootstrap_files(
 ) -> Result<(), anyhow::Error> {
     memory_monitor.verbose("bootstrap_index_self: Running rag add");
     memory_monitor.verbose(&format!("bootstrap_index_self: Found project root: {:?}", actual_root_dir));
-    let bootstrap_source = super::file_source::CargoPackageFileSource { 
-        package_name: BOOTSTRAP_PACKAGE_NAME.to_string(),
-        project_root: actual_root_dir.to_str().unwrap().to_string(),
-    };
-    let mut original_files_to_add = bootstrap_source.get_files()?;
 
-    let filtered_files = match target.as_deref() {
-        Some("all") | None => original_files_to_add,
-        Some("submodules") => original_files_to_add.into_iter().filter(|p| p.starts_with("vendor/meta-introspector/") && !p.contains(".gitmodules")).collect(),
-        Some("crates") => original_files_to_add.into_iter().filter(|p| p.starts_with("crates/")).collect(),
-        Some("src") => original_files_to_add.into_iter().filter(|p| p.starts_with("src/")).collect(),
-        Some("docs") => original_files_to_add.into_iter().filter(|p| p.starts_with("docs/")).collect(),
+    let files_to_add_source: Box<dyn FileSource> = match target.as_deref() {
+        Some("all") => {
+            memory_monitor.verbose("Using GlobFileSource for all Rust files.");
+            Box::new(GlobFileSource {
+                pattern: "**/*.rs".to_string(),
+            })
+        },
         _ => {
-            memory_monitor.verbose(&format!("Invalid target specified: {:?}. Processing all files.", target));
-            original_files_to_add
+            memory_monitor.verbose("Using CargoPackageFileSource.");
+            Box::new(CargoPackageFileSource {
+                package_name: BOOTSTRAP_PACKAGE_NAME.to_string(),
+                project_root: actual_root_dir.to_str().unwrap().to_string(),
+            })
         }
     };
 
-    let mut files_to_add = filtered_files;
+    let mut files_to_add = files_to_add_source.get_files()?;
 
     if let Some(max_files) = max_files_to_process {
         if files_to_add.len() > max_files {

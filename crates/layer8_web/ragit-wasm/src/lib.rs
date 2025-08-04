@@ -16,6 +16,7 @@ pub fn greet(name: &str) {
 }
 
 #[derive(Serialize, Deserialize)]
+#[derive(Clone)]
 pub struct WebChunk {
     pub content: String,
     pub title: String,

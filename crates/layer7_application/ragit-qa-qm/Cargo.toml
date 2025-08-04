@@ -1,0 +1,7 @@
+[package]
+name = "ragit-qa-qm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Add dependencies as needed
