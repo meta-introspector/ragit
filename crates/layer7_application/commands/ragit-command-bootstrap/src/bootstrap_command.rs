@@ -1,6 +1,6 @@
 use anyhow::Result;
 use tokio::process::Command;
-use std::path::PathBuf;
+
 
 pub async fn bootstrap_index_self(
     verbose: bool,
@@ -23,7 +23,11 @@ pub async fn bootstrap_index_self(
     disable_cleanup: bool,
     target: Option<String>,
 ) -> Result<(), anyhow::Error> {
-    let mut cmd = Command::new(PathBuf::from("target/debug/ragit-build-index-worker-single-file"));
+    let mut cmd = Command::new("cargo");
+    cmd.arg("run");
+    cmd.arg("--package");
+    cmd.arg("ragit-build-index-worker-single-file");
+    cmd.arg("--"); // Separator for arguments to the binary
     cmd.arg("bootstrap");
 
     if verbose {
@@ -85,7 +89,7 @@ pub async fn bootstrap_index_self(
     }
 
     if !output.status.success() {
-        anyhow::bail!("ragit-build-index-worker-single-file failed with status: {}", output.status);
+        anyhow::bail!("cargo run --package ragit-build-index-worker-single-file failed with status: {}", output.status);
     }
 
     Ok(())

@@ -184,7 +184,7 @@ async fn main() -> Result<()> {
 
             let status = cmd.status()?;
             if !status.success() {
-                anyhow::bail!("ragit-build-index-worker-single-file failed with status: {}", status);
+                anyhow::bail!("cargo run --package ragit-build-index-worker-single-file failed with status: {}", status);
             }
         },
         Commands::Query(mut query_args) => {
