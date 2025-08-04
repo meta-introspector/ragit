@@ -154,7 +154,7 @@ ragit-tfidf = { path = "./crates/layer3_network/ragit-tfidf" }
 ragit-index-io = { path = "./crates/legacy_and_refactoring/ragit-index-io" }
 ragit-model-query-response = { path = "./crates/layer6_presentation/ragit-model-query-response" }
 regex = "1.11.1"
-reqwest = { version = "0.12.12", features = ["multipart"] }
+reqwest = { version = "0.11.18", features = ["multipart"] }
 resvg = { version = "0.45.1", optional = true }
 rust-stemmers = "1.2.0"
 serde = { version = "1.0.218", features = ["derive"] }

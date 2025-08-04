@@ -19,6 +19,17 @@ RAGIT is very different from the other RAG frameworks.
 4. It supports multi-turn queries (experimental).
 5. You can clone/push knowledge-bases, like git.
 
+## Dogfooding RAGIT Search
+
+In line with our "eat your own dogfood" philosophy, the `search_file_content` tool within the Gemini CLI now leverages `ragit`'s internal search capabilities. This provides:
+
+-   **Performance:** Faster searches, especially in large codebases, due to `ragit`'s indexing.
+-   **Advanced Search:** Future potential for more sophisticated search functionalities (e.g., semantic search).
+-   **Consistency:** Aligns our internal tools with the project's core `ragit` philosophy.
+-   **Self-Improvement:** Enables `ragit` to "understand" its own codebase better, crucial for its self-improvement loop.
+
+*(Note: The `solfunmeme` crate has been temporarily excluded from the workspace due to dependency conflicts. This will be revisited once the core search functionality is fully integrated and stable.)*
+
 ## Platform support
 
 Ragit is primarily supported on Linux (x64) and Mac (aarch64). It goes through a full test process before each release, on Linux and Mac. It is primarily developed on Linux and Mac.

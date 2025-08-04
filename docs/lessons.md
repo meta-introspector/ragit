@@ -16,6 +16,7 @@ Lessons Learned (Refined):
    * `cargo check` vs. `cargo run`: `cargo check` is useful for quick syntax and type checking, but `cargo run` (or `cargo test`) is necessary to catch runtime errors and issues related to file paths or other environmental factors.
    * `cargo run --package <package_name> -- <args>`: When running a binary within a workspace, use `cargo run --package <package_name> -- <args>` to specify the correct package and pass arguments to its binary.
    * **Code Search and Memory Management:** External JavaScript-based code search tools can cause out-of-memory errors. Always use `ragit`'s internal search capabilities for code search, as it is optimized for large codebases and supports searching for filenames that match function names.
+   * **Rebooting the Development Cycle:** When encountering significant roadblocks or completing a major feature, a "reboot" (committing current work, clearing context, and starting fresh) can help refocus efforts and improve efficiency.
 
   Current Plan (Next Steps):
 
