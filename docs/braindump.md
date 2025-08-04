@@ -20,3 +20,10 @@ To ensure iterative self-improvement, maintain high code quality, and adhere to 
 -   **Clear Documentation:** All changes will be formally documented through the `ragit change request` command. Commit messages will be concise, follow a standardized format, and reference the associated change request.
 -   **Iterative Development:** Large features will be broken down into the smallest possible functional increments. Each increment will follow this "Small Changes" strategy, allowing for continuous integration and rapid feedback.
 -   **"Vibe-Driven Development":** Each change, branch, and feature should embody a clear "vibe" or "vector," representing a distinct conceptual unit within the Code-Math Manifold. This ensures semantic resonance and alignment with the project's core philosophy.
+
+## Agent Communication and Task Distribution
+
+Agents will communicate and distribute tasks using an "outbox" and "inbox" model.
+-   **Outbox:** Agents will write their available capacity or task requests to a shared "outbox."
+-   **Inbox:** Other agents will monitor the "outbox" and respond with work assignments to the requesting agents' "inboxes."
+-   **Source Referencing:** Tasks and work context will be referenced using GitHub and Hugging Face URLs, leveraging the existing `ragit` infrastructure for content-addressed chunks and knowledge management.
