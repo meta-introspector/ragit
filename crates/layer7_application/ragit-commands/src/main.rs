@@ -98,6 +98,8 @@ enum Commands {
     Bootstrap,
     /// Run the new bootstrap process (fixed-size chunking)
     BootstrapNew,
+    /// Index the current project
+    Index,
     /// Query the ragit index
     Query(QueryArgs),
     /// Request a new change
@@ -113,6 +115,29 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Bootstrap => {
+            bootstrap_index_self(
+                true,
+                args.timeout,
+                args.max_iterations,
+                args.max_memory_gb,
+                args.max_files_to_process,
+                args.max_chunk_size,
+                args.max_summary_len,
+                args.min_summary_len,
+                args.time_threshold_ms,
+                args.memory_threshold_bytes,
+                args.disable_write_markdown,
+                args.disable_memory_config,
+                args.disable_prompt_copy,
+                args.disable_file_add,
+                args.disable_index_build,
+                args.disable_self_improvement,
+                args.disable_final_query,
+                args.disable_cleanup,
+                Some("all".to_string()),
+            ).await?;
+        },
+        Commands::Index => {
             bootstrap_index_self(
                 true,
                 args.timeout,
