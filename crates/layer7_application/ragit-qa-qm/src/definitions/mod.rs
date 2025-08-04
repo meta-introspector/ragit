@@ -26,4 +26,5 @@ pub struct Change {
     pub verified_by: Option<String>,
     pub commit_id: Option<String>,
     pub compliance_notes: Option<String>,
+    pub branch_name: Option<String>,
 }

@@ -12,6 +12,10 @@ struct Args {
     /// Name of the person requesting the change
     #[arg(short, long)]
     requested_by: String,
+
+    /// Optional: Git branch name associated with the change
+    #[arg(short, long)]
+    branch_name: Option<String>,
 }
 
 fn main() -> Result<()> {
@@ -20,7 +24,8 @@ fn main() -> Result<()> {
     let new_change = change_management::create_change(
         args.description,
         args.requested_by,
-    )?;
+        args.branch_name,
+    )?;;
 
     println!("Change Request Created: {:?}", new_change);
 

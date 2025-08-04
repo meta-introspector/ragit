@@ -26,7 +26,7 @@ fn save_changes(changes: &[Change]) -> Result<()> {
     fs::write(path, contents).map_err(|e| anyhow!("Failed to write changes.json: {}", e))
 }
 
-pub fn create_change(description: String, requested_by: String) -> Result<Change> {
+pub fn create_change(description: String, requested_by: String, branch_name: Option<String>) -> Result<Change> {
     let mut changes = load_changes()?;
     let new_change = Change {
         id: uuid::Uuid::new_v4().to_string(),
@@ -43,6 +43,7 @@ pub fn create_change(description: String, requested_by: String) -> Result<Change
         verified_by: None,
         commit_id: None,
         compliance_notes: None,
+        branch_name,
     };
     changes.push(new_change.clone());
     save_changes(&changes)?;

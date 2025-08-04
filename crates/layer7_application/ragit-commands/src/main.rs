@@ -101,7 +101,8 @@ enum Commands {
     /// Query the ragit index
     Query(QueryArgs),
     /// Request a new change
-    ChangeRequest,
+    #[clap(external_subcommand)]
+    External(Vec<String>),
 }
 
 #[tokio::main]
@@ -190,22 +191,28 @@ async fn main() -> Result<()> {
             query_args.index_path = Some(PathBuf::from("/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"));
             query_command_main(query_args).await?;
         },
-        Commands::ChangeRequest => {
+        Commands::External(ext_args) => {
+            let subcommand = &ext_args[0];
+            let subcommand_args = &ext_args[1..];
+
             let mut cmd = Command::new("cargo");
             cmd.arg("run");
             cmd.arg("--package");
-            cmd.arg("ragit-command-change-request");
-            cmd.arg("--"); // Pass arguments to the binary
 
-            // Pass all remaining arguments to the subcommand
-            let mut args_iter = std::env::args().skip(2); // Skip "ragit" and "change-request"
-            while let Some(arg) = args_iter.next() {
-                cmd.arg(arg);
-            }
+            match subcommand.as_str() {
+                "change-request" => {
+                    cmd.arg("ragit-command-change-request");
+                    cmd.arg("--"); // Pass arguments to the binary
+                    cmd.args(subcommand_args);
 
-            let status = cmd.status()?;
-            if !status.success() {
-                anyhow::bail!("ragit-command-change-request failed with status: {}", status);
+                    let status = cmd.status()?;
+                    if !status.success() {
+                        anyhow::bail!("Subcommand {} failed with status: {}", subcommand, status);
+                    }
+                },
+                _ => {
+                    anyhow::bail!("Unknown subcommand: {}", subcommand);
+                }
             }
         }
     }
