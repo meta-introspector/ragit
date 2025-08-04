@@ -75,8 +75,13 @@ pub async fn add_bootstrap_files(
         }
     }
     memory_monitor.verbose(&format!("bootstrap_index_self: Found {} files to add", files_to_add.len()));
-    let absolute_files_to_add: Vec<String> = files_to_add.into_iter().map(|p| {
-        actual_root_dir.join(&p).to_string_lossy().into_owned()
+    let absolute_files_to_add: Vec<String> = files_to_add.into_iter().filter_map(|p| {
+        let abs_path = actual_root_dir.join(&p);
+        if abs_path.is_file() {
+            Some(abs_path.to_string_lossy().into_owned())
+        } else {
+            None
+        }
     }).collect();
 
     memory_monitor.verbose("bootstrap_index_self: Before add_files_command");
