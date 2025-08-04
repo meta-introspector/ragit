@@ -1,5 +1,6 @@
 use octocrab::{Octocrab, models::pulls::PullRequest};
 use anyhow::Result;
+use std::borrow::Cow;
 
 pub struct GitHubClient {
     octocrab: Octocrab,
@@ -25,7 +26,7 @@ impl GitHubClient {
         let pr = self.octocrab
             .pulls(&self.owner, &self.repo)
             .create(title, head, base)
-            .body(body.map(|s| s.to_string()))
+                        .body(body.map(Into::into))
             .send()
             .await?;
         Ok(pr)
