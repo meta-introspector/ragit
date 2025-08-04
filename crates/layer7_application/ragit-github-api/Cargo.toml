@@ -1,0 +1,10 @@
+[package]
+name = "ragit-github-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+octocrab = "0.20.0"
+tokio = { version = "1.43.0", features = ["full"] }
+anyhow = "1.0"
+async-trait = "0.1.80"

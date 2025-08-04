@@ -53,6 +53,7 @@ members = [
     "crates/layer7_application/ragit-build-index-worker-single-file",
     "crates/layer7_application/ragit-glossary-generator",
     "crates/layer7_application/ragit-mesh-agent",
+    "crates/layer7_application/ragit-github-api",
 
     # Layer 8 - Web
     "crates/layer8_web/ragit-wasm",
