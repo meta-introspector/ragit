@@ -1,10 +1,12 @@
 use anyhow::Result;
 use clap::Parser;
 use std::process::Command;
+use std::path::PathBuf;
 
 // #[global_allocator]
 // static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 use ragit_command_bootstrap::bootstrap_index_self;
+use ragit_commands::commands::query::{query_command_main, QueryArgs};
 
 
 #[derive(Parser, Debug)]
@@ -80,6 +82,14 @@ struct Args {
     /// Disable cleanup of temporary directory
     #[arg(long, global = true)]
     disable_cleanup: bool,
+
+    /// Target specific directories for indexing (all, submodules, crates, src, docs)
+    #[arg(long, global = true)]
+    target: Option<String>,
+
+    /// Path to the index directory
+    #[arg(long, global = true)]
+    index_path: Option<PathBuf>,
 }
 
 #[derive(Parser, Debug)]
@@ -88,6 +98,11 @@ enum Commands {
     Bootstrap,
     /// Run the new bootstrap process (fixed-size chunking)
     BootstrapNew,
+    /// Query the ragit index
+    Query(QueryArgs),
+    /// Request a new change
+    #[clap(external_subcommand)]
+    External(Vec<String>),
 }
 
 #[tokio::main]
@@ -117,6 +132,7 @@ async fn main() -> Result<()> {
                 args.disable_self_improvement,
                 args.disable_final_query,
                 args.disable_cleanup,
+                Some("all".to_string()),
             ).await?;
         },
         Commands::BootstrapNew => {
@@ -169,6 +185,34 @@ async fn main() -> Result<()> {
             let status = cmd.status()?;
             if !status.success() {
                 anyhow::bail!("ragit-build-index-worker-single-file failed with status: {}", status);
+            }
+        },
+        Commands::Query(mut query_args) => {
+            query_args.index_path = Some(PathBuf::from("/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"));
+            query_command_main(query_args).await?;
+        },
+        Commands::External(ext_args) => {
+            let subcommand = &ext_args[0];
+            let subcommand_args = &ext_args[1..];
+
+            let mut cmd = Command::new("cargo");
+            cmd.arg("run");
+            cmd.arg("--package");
+
+            match subcommand.as_str() {
+                "change-request" => {
+                    cmd.arg("ragit-command-change-request");
+                    cmd.arg("--"); // Pass arguments to the binary
+                    cmd.args(subcommand_args);
+
+                    let status = cmd.status()?;
+                    if !status.success() {
+                        anyhow::bail!("Subcommand {} failed with status: {}", subcommand, status);
+                    }
+                },
+                _ => {
+                    anyhow::bail!("Unknown subcommand: {}", subcommand);
+                }
             }
         }
     }

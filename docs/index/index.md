@@ -16,6 +16,10 @@ This index provides a structured overview of the Ragit project documentation, ca
     *   **Themes**: Concise project overview, categorized list of Ragit CLI commands.
     *   **Key Takeaways**: Quick reference for Ragit's functionalities (create, share, work with, get info, query, simulate pipeline, tutorial commands).
 
+*   **`glossary.md`**
+    *   **Themes**: Definitions of key terms and concepts.
+    *   **Key Takeaways**: Comprehensive reference for Ragit terminology.
+
 ## II. Architecture & Refactoring
 
 *   **`architecture.md`**
@@ -249,6 +253,10 @@ This section indexes key Rust modules and components identified during the sourc
 *   **`ragit-model`** (`crates/layer7_application/ragit-model/src/lib.rs`)
     *   **Key Components**: `Model` struct.
     *   **Role**: Responsible for managing and interacting with different language models.
+
+*   **`ragit-mesh-agent`** (`crates/layer7_application/ragit-mesh-agent/src/main.rs`)
+    *   **Key Components**: `Settings` struct, `main` function.
+    *   **Role**: Connects to a p2p network of other agents, using a private Solana validator for peer discovery.
 
 ### Legacy & Refactoring
 

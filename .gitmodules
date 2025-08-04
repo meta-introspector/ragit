@@ -1,0 +1,24 @@
+[submodule "vendor/meta-introspector/bootstrap"]
+	path = vendor/meta-introspector/bootstrap
+	url = https://github.com/meta-introspector/bootstrap
+[submodule "vendor/meta-introspector/solfunmeme"]
+	path = vendor/meta-introspector/solfunmeme
+	url = https://github.com/meta-introspector/solfunmeme
+[submodule "vendor/meta-introspector/solfunmeme-dioxus"]
+	path = vendor/meta-introspector/solfunmeme-dioxus
+	url = https://github.com/meta-introspector/solfunmeme-dioxus
+[submodule "vendor/meta-introspector/ai-agent-terraform"]
+	path = vendor/meta-introspector/ai-agent-terraform
+	url = https://github.com/jmikedupont2/ai-agent-terraform
+[submodule "vendor/meta-introspector/quasi-meta-meme"]
+	path = vendor/meta-introspector/quasi-meta-meme
+	url = https://github.com/meta-introspector/quasi-meta-meme
+[submodule "vendor/meta-introspector/meta-meme"]
+	path = vendor/meta-introspector/meta-meme
+	url = https://github.com/meta-introspector/meta-meme
+[submodule "vendor/meta-introspector/time"]
+	path = vendor/meta-introspector/time
+	url = https://github.com/meta-introspector/time
+[submodule "vendor/meta-introspector/agave-solana-validator"]
+	path = vendor/meta-introspector/agave-solana-validator
+	url = https://github.com/meta-introspector/agave-solana-validator

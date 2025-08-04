@@ -1,0 +1,7 @@
+pub mod initialize_core_components;
+pub mod initialize_solfunmeme_ecosystem;
+pub mod initialize_economic_social_layers;
+pub mod initialize_decentralized_privacy_layers;
+pub mod initialize_formal_introspection_layers;
+pub mod initialize_toolchain_bootstrapping_components;
+pub mod initialize_coin_intelligence_system;

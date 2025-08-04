@@ -15,15 +15,19 @@ The "Have a KitKat" meta-program is a user-defined workflow for pausing the curr
 - **Resolved `ApiError` cloning issues:** `ApiError` now correctly derives `Clone` by wrapping non-`Clone`able inner error types in `Arc`. Error handling in `run_worker_task.rs` and `ragit-model-provider/src/lib.rs` has been adjusted to use `ApiError::from(e)` and `map_err` with `Arc::new(e)` where necessary, and to clone `ApiError` instances when sending them through MPSC channels.
 - **Removed conflicting `From` implementation:** The custom `impl From<ApiError> for anyhow::Error` was removed from `ragit-types/src/api_error.rs` to resolve conflicts with `anyhow`'s built-in implementation.
 - **Fixed `thiserror` prefix errors:** Added whitespace to error messages in `ApiError` to resolve `thiserror` prefix warnings.
+- **Removed `OurMacro`**: All instances of the custom `OurMacro` derive have been removed from functions and `const` items, and replaced with standard Rust features or removed where unnecessary.
+- **Re-applied fixes**: All previous fixes have been re-applied after a `git restore` operation.
 
 ## New Critical Path:
-1.  **Enhance Memory Report with "Time Per Unit":**
+1.  **Resolve remaining compilation errors:** Continue to address any remaining compilation errors systematically.
+2.  **Run `cargo test`:** Once the project compiles, run the tests to ensure functionality is preserved.
+3.  **Enhance Memory Report with "Time Per Unit":**
     *   Modify `crates/layer1_physical/ragit-memory-monitor/src/print_memory_table.rs` to include a "Duration/Unit" column, calculating the average time spent per processed unit.
-2.  **Trace Index Flow (Input to Output):**
+4.  **Trace Index Flow (Input to Output):**
     *   Run the `bootstrap-new` command again.
     *   Observe the verbose output to confirm the flow of files being added, chunked, and indexed.
     *   Pay close attention to the `DEBUG: Adding chunk to index` messages to see the individual chunks being processed.
-3.  **Verify Markdown Export:**
+5.  **Verify Markdown Export:**
     *   Ensure the `export_chunks_main::write_chunks_to_markdown` function is being called and is correctly exporting the indexed chunks to markdown files in the temporary directory.
     *   After the `bootstrap-new` run, I will inspect the contents of the temporary directory (which is not cleaned up by default in verbose mode) to manually verify the validity and content of the generated markdown files.
 

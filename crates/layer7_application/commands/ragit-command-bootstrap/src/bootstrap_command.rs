@@ -21,8 +21,10 @@ pub async fn bootstrap_index_self(
     disable_self_improvement: bool,
     disable_final_query: bool,
     disable_cleanup: bool,
+    target: Option<String>,
 ) -> Result<(), anyhow::Error> {
     let mut cmd = Command::new(PathBuf::from("target/debug/ragit-build-index-worker-single-file"));
+    cmd.arg("bootstrap");
 
     if verbose {
 //        cmd.arg("--verbose");
@@ -68,6 +70,9 @@ pub async fn bootstrap_index_self(
     }
     if disable_cleanup {
         cmd.arg("--disable-cleanup");
+    }
+    if let Some(target_val) = target {
+        cmd.arg("--target").arg(target_val);
     }
 
     let output = cmd.output().await?;

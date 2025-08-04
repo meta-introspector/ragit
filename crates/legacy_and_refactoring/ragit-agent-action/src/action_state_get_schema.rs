@@ -1,17 +1,18 @@
 use super::action_state_struct::ActionState;
-use ragit_api::Schema;
+use ragit_types::schema::{Schema, integer_between, default_yesno};
+
 
 impl ActionState {
     pub fn get_schema(&self) -> Option<Schema> {
         if self.index.is_none() {
-            Some(Schema::integer_between(
+            Some(integer_between(
                 Some(1),
                 Some(self.actions.len() as i128),
             ))
         } else if !self.complete {
             None
         } else if self.r#continue.is_none() {
-            Some(Schema::default_yesno())
+            Some(default_yesno())
         } else {
             unreachable!()
         }

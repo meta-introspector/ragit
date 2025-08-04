@@ -1,0 +1,9 @@
+# Configuration for the Ragit Mesh Agent
+
+# The RPC URL for the private Solana validator.
+# This will be the central point for peer discovery.
+solana_rpc_url = "http://127.0.0.1:8899" # Replace with the actual validator IP
+
+# Path to the wallet keypair file for this specific agent.
+# Each agent on each phone should have its own unique identity.
+keypair_path = "~/.config/solana/id.json"

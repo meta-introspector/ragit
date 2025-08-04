@@ -54,6 +54,10 @@ pub enum Commands {
         disable_final_query: bool,
         #[clap(long)]
         disable_cleanup: bool,
+        #[clap(long)]
+        target: Option<String>,
+        #[clap(long)]
+        verbose: bool,
     },
     /// Query the ragit index
     Query {

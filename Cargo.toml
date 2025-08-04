@@ -49,7 +49,13 @@ members = [
     "crates/layer7_application/ragit-muse",
     "crates/layer7_application/server",
     "crates/layer7_application/commands/*",
+    "crates/layer7_application/commands/ragit-command-change-request",
     "crates/layer7_application/ragit-build-index-worker-single-file",
+    "crates/layer7_application/ragit-glossary-generator",
+    "crates/layer7_application/ragit-mesh-agent",
+
+    # Layer 8 - Web
+    "crates/layer8_web/ragit-wasm",
 
     # Legacy & Refactoring
     "crates/legacy_and_refactoring/ragit-agent",
@@ -74,8 +80,8 @@ members = [
     "crates/legacy_and_refactoring/ragit-muse-logic",
     
     "crates/legacy_and_refactoring/ragit-prompt-management",
-    "crates/legacy_and_refactoring/ragit-qa-system",
-    "crates/layer3_network/ragit-tfidf",
+    "crates/layer7_application/ragit-qa-qm",
+    "crates/layer3_network/ragit-tfidf", "crates/layer7_application/ragit-markdown-processor", "crates/layer7_application/ragit-chat-processor",
 ]
 exclude = [
     "crates/server",
@@ -114,6 +120,8 @@ exclude = [
     "crates/ragit-command-status",
     "crates/ragit-command-summary",
     "crates/ragit-command-version",
+    
+    "crates/layer7_application/commands/ragit-command-change-request",
 ]
 
 
