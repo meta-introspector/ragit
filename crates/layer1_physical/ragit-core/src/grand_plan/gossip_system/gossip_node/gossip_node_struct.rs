@@ -32,7 +32,7 @@ impl GossipNode {
             },
             GossipMessage::RequestHistory(from_block_id) => {
                 // Simulate sending back historical events
-                let events: Vec<SidechainEvent> = self.sidechain.chain.iter()
+                let _events: Vec<SidechainEvent> = self.sidechain.chain.iter()
                     .skip(from_block_id as usize)
                     .flat_map(|block| block.events.clone())
                     .collect();

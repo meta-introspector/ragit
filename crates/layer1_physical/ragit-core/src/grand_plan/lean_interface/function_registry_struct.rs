@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::grand_plan::lean_interface::lean_types::lean_types_enum::{LeanArgs, LeanResult, LeanValue};
+use crate::grand_plan::lean_interface::lean_types::lean_types_enum::{LeanArgs, LeanResult};
 
 #[derive(Default)]
 pub struct FunctionRegistry {

@@ -9,8 +9,8 @@ use syn::{parse_macro_input, DeriveInput};
 #[proc_macro_derive(OurMacro)]
 pub fn our_macro_derive(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
-    let name = &ast.ident;
-    let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
+    let _name = &ast.ident;
+    let (_impl_generics, _ty_generics, _where_clause) = ast.generics.split_for_impl();
 
     let expanded = quote! {
         // This is a placeholder for actual macro logic.

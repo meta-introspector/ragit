@@ -5,7 +5,7 @@ use crate::grand_plan::unified_stores::type_store_enum::TypeStore;
 use crate::grand_plan::abi_interface::abi_wrappers::helpers::to_abi_value_type_store::to_abi_value_type_store;
 
 pub fn wrap_the_cosmos(func: fn(&GrandUnifiedStore) -> &TypeStore) -> AbiFunction {
-    Box::new(move |args: AbiArgs| -> AbiResult {
+    Box::new(move |_args: AbiArgs| -> AbiResult {
         let mut temp_store = GrandUnifiedStore::new();
         temp_store.add_i64_store();
         let result = func(&temp_store);

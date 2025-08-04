@@ -11,8 +11,6 @@ use ragit_macros::OurMacro;
 /// It simulates the LLM looking at the stream of emojis and converging on prime-based patterns.
 pub struct Introspector {
     vibe_analyzer: VibeAnalyzer,
-    llm_model: LlmModel,
-    tokenizer: Tokenizer,
 }
 
 impl Introspector {
@@ -25,7 +23,7 @@ impl Introspector {
                 tokenizer.clone(), // Clone for VibeAnalyzer
             ),
         );
-        Introspector { vibe_analyzer, llm_model, tokenizer }
+        Introspector { vibe_analyzer }
     }
 
     /// Simulates the LLM observing and interpreting the emoji stream.
@@ -34,9 +32,8 @@ impl Introspector {
         println!("Current Emoji Stream: {:?}", stream.emojis);
 
         // Simulate LLM processing the emojis and looking for convergence
-        let emoji_tokens: Vec<String> = stream.emojis.iter().map(|&c| c.to_string()).collect();
-        let unified_vibe = self.llm_model.process_tokens_to_unified_representation(&emoji_tokens);
-        println!("Unified Vibe (LLM's interpretation): {:?}", unified_vibe);
+        let embedding_response = self.vibe_analyzer.get_emoji_vibe(&stream.emojis, &[]);
+        println!("Unified Vibe (LLM's interpretation): {:?}", embedding_response);
 
         // Simulate looking for convergence with prime bases
         for &base in PRIME_EXPONENTS.iter() {

@@ -1,6 +1,5 @@
-use syn::{File, Item, Visibility};
+use syn::{Item, Visibility};
 use quote::quote;
-use crate::grand_plan::fundamental_units::prime_bases::PRIME_BASES;
 
 use ragit_macros::OurMacro;
 

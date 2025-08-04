@@ -44,7 +44,7 @@ impl DataProcessor {
         let mut processed_data = Vec::new();
 
         match data {
-            ExternalData::Image(img) => {
+            ExternalData::Image(_img) => {
                 // Conceptual: process image, maybe extract features, then encrypt
                 println!("Data Processor: Processing image data.");
                 let dummy_features = vec![0.1, 0.2, 0.3];

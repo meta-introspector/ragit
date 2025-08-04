@@ -5,7 +5,7 @@ use crate::grand_plan::living_chunks_system::chunk_spawner::chunk_creation::crea
 use crate::grand_plan::living_chunks_system::chunk_spawner::metadata_generation::generate_formal_metadata::generate_formal_metadata;
 
 pub fn spawn_new_chunks(
-    execution_output: &str,
+    _execution_output: &str,
     spawning_chunk_path: &str,
 ) -> Vec<RagitChunk> {
     println!("Spawning new chunks from execution output of: {}", spawning_chunk_path);

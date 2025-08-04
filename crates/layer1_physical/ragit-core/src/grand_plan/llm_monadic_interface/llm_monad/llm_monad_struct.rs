@@ -19,7 +19,7 @@ impl LlmMonad {
     pub fn bind(mut self, operation: LlmOperation) -> Self {
         println!("\n--- LlmMonad: Executing {:?} ---", operation);
         let result = match operation {
-            LlmOperation::LoadModel(model_id) => {
+            LlmOperation::LoadModel(_model_id) => {
                 // Simulate loading the model
                 let model = LlmModel::new(12); // Example: 12 layers
                 self.model = Some(model.clone());

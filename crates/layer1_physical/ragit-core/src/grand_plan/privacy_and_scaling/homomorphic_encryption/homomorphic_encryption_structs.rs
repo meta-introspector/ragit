@@ -31,7 +31,7 @@ impl HomomorphicEncryption {
     }
 
     /// Conceptually decrypts data.
-    pub fn decrypt(&self, encrypted_data: &EncryptedValue) -> Vec<f64> {
+    pub fn decrypt(&self, _encrypted_data: &EncryptedValue) -> Vec<f64> {
         println!("HME: Decrypting data...");
         // In a real system, this would use a HME library.
         // For simulation, we'll just return a dummy value.

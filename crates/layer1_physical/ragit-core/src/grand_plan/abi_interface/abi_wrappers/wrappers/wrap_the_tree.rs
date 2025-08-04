@@ -5,7 +5,7 @@ use crate::grand_plan::binary_id_trees::universe_struct::Universe;
 use crate::grand_plan::abi_interface::abi_wrappers::helpers::to_abi_value_universe::to_abi_value_universe;
 
 pub fn wrap_the_tree(func: fn(&GrandUnifiedStore) -> Option<&Universe<char>>) -> AbiFunction {
-    Box::new(move |args: AbiArgs| -> AbiResult {
+    Box::new(move |_args: AbiArgs| -> AbiResult {
         let mut temp_store = GrandUnifiedStore::new();
         temp_store.add_char_store();
         let result = func(&temp_store);

@@ -5,7 +5,7 @@ use crate::grand_plan::binary_id_trees::universe_struct::Universe;
 use crate::grand_plan::abi_interface::abi_wrappers::helpers::to_abi_value_universe::to_abi_value_universe;
 
 pub fn wrap_the_pair(func: fn(&GrandUnifiedStore) -> Option<&Universe<char>>) -> AbiFunction {
-    Box::new(move |args: AbiArgs| -> AbiResult {
+    Box::new(move |_args: AbiArgs| -> AbiResult {
         // This wrapper assumes the GrandUnifiedStore is passed in a specific way,
         // or is globally accessible. For now, we'll use a placeholder.
         // In a real system, you'd deserialize the store from AbiValue.

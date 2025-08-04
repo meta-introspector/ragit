@@ -7,7 +7,7 @@ use crate::grand_plan::system_unification_numbers::numerical_unifier::concept_ma
 /// This method extracts the conceptual name from a `UnifiedConceptEnum`
 /// variant and attempts to map it to a unifying number using `unify_system_concept`.
 pub fn unify_unified_concept_enum(concept: &UnifiedConceptEnum) -> Option<UnifiedNumberConcept> {
-    let concept_name = format!("{:?}", concept).split('(').next().unwrap().to_string();
+    let _concept_name = format!("{:?}", concept).split('(').next().unwrap().to_string();
     // unify_system_concept(&concept_name)
     None // Temporarily return None
 }
