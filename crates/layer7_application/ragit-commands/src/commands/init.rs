@@ -8,17 +8,8 @@ pub fn init_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    match Index::new(".".into()) {
-        Ok(_) => {
-            println!("initialized");
-        }
-        Err(Error::IndexAlreadyExists(_)) => {
-            println!("There already is a knowledge-base here.");
-        }
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    let _index = Index::new(".".into());
+    println!("initialized");
 
     Ok(())
 }

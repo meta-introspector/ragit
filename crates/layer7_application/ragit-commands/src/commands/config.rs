@@ -51,7 +51,7 @@ pub async fn config_command_main(args: &[String]) -> Result<(), Error> {
                 }
             }
 
-            let previous_value = set_config_by_key(&mut index, key.clone(), value.clone())?;
+            let previous_value = index_set_config_by_key(&mut index, key.clone(), value.clone())?;
 
             match previous_value {
                 Some(prev) => {

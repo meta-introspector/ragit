@@ -77,7 +77,7 @@ pub use ragit_index_types::MergeMode;
 // pub use ragit_index_types::index_impl::init::init as index_init;
 // pub use ragit_index_types::index_impl::pull::pull as index_pull;
 // pub use ragit_index_types::index_impl::push::push as index_push;
-// pub use ragit_index_types::index_impl::set_config_by_key::set_config_by_key as index_set_config_by_key;
+pub use ragit_index_types::index_impl::set_config_by_key::index_set_config_by_key;
 // pub use ragit_index_types::index_impl::add_file_index::index_add_file_index; // Added for add_files_command
 
 // Re-exports from ragit-index-core
