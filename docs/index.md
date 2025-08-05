@@ -23,6 +23,11 @@ RAGIT is very different from the other RAG frameworks, focusing on a highly modu
 
 ### Submodules
 
+### Rust Crates
+
+*   [`solfunmeme_ontology_vibe`](./rust_code/solfunmeme_ontology_vibe.md)
+*   [`solfunmeme_clifford`](./rust_code/solfunmeme_clifford.md)
+
 *   **`bootstrap`**
     *   **Themes**: Bootstrap Microkernel, Mathematical Lattice Architecture, Prime Vibe Ontology, RDF, System Commitment.
     *   **Key Takeaways**: A self-aware system integrating mathematical frameworks with semantic processing for continuous evolution.
@@ -87,8 +92,10 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Chunks](./chunks.md)
 - [Configuration](./config.md)
 - [Contribution](./contribution.md)
+- [Embedding to Ontology Pipeline](./sops/embedding_to_ontology_pipeline.md)
 - [Evaluation](./eval.md)
 - [Glossary](./index/glossary.md)
+- [Hierarchical Search SOP](./sops/hierarchical_search_sop.md)
 - [Multi Turn](./multi_turn.md)
 - [Pipeline](./pipeline.md)
 - [Prompt Engineering](./prompt_engineering.md)

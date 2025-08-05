@@ -67,3 +67,4 @@ To find a specific term, you can browse the files in the `glossary_terms` subdir
 - [Emojlang](./glossary_terms/emojlang.md)
 - [ragit-mesh-agent](./glossary_terms/ragit_mesh_agent.md)
 - [Recursive Submodules](./glossary_terms/recursive_submodules.md)
+- [solfunmeme_ontology_vibe](./glossary_terms/solfunmeme_ontology_vibe.md)
