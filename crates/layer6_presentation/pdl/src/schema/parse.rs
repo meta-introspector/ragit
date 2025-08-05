@@ -1,4 +1,4 @@
-use super::{Constraint, Schema, SchemaType};
+use ragit_types::schema::{Constraint, Schema, SchemaType};
 use super::schema_parse_error::SchemaParseError;
 use super::token::{Token, GroupKind};
 use super::tokenize_state::TokenizeState;

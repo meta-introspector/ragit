@@ -1,6 +1,6 @@
 use super::schema_parse_error::SchemaParseError;
 use super::token::Token;
-use super::super::{Constraint, Schema};
+use ragit_types::schema::{Constraint, Schema};
 
 pub fn parse_constraint(tokens: &[Token]) -> Result<Constraint, SchemaParseError> {
     let mut index = 0;

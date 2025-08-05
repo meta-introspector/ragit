@@ -12,5 +12,3 @@ pub mod into_context;
 pub mod pdl_struct;
 pub mod schema;
 pub mod pdl_types;
-pub mod schema;
-pub mod pdl_types;

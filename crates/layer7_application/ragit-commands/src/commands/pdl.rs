@@ -1,4 +1,4 @@
-
+use crate::prelude::*;
 
 pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -84,7 +84,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         None => (None, None),
     };
     let arg_schema = match parsed_args.arg_flags.get("--schema") {
-        Some(schema) => Some(ragit_pdl::schema::parse::parse_schema(schema)?),
+        Some(schema) => Some(parse_schema(schema)?),
         None => None,
     };
     let pdl = parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;

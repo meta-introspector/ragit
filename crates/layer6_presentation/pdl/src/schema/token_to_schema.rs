@@ -1,6 +1,6 @@
 use super::schema_parse_error::SchemaParseError;
 use super::token::{Token, GroupKind};
-use super::super::{Constraint, Schema, SchemaType};
+use ragit_types::schema::{Constraint, Schema, SchemaType};
 
 pub fn token_to_schema(tokens: &[Token], index: &mut usize) -> Result<Schema, SchemaParseError> {
     let mut r#type = match tokens.get(*index) {
