@@ -1,20 +1,20 @@
 use anyhow::Result;
 use clap::Subcommand;
-use crate::dyim_command::dyim_command;
+use crate::dwim_command::dwim_command;
 
 #[derive(Debug, Subcommand)]
-pub enum DyimCommand {
+pub enum DwimCommand {
     /// Interpret free-form text to generate prompts
     #[command(external_subcommand)]
-    Dyim(Vec<String>),
+    Dwim(Vec<String>),
 }
 
-impl DyimCommand {
+impl DwimCommand {
     pub async fn run(self) -> Result<()> {
         match self {
-            DyimCommand::Dyim(args) => {
+            DwimCommand::Dwim(args) => {
                 let input = args.join(" ");
-                dyim_command(input).await
+                dwim_command(input).await
             }
         }
     }
