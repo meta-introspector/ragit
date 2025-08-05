@@ -129,6 +129,21 @@ exclude = [
     "crates/layer7_application/commands/ragit-command-change-request",
 ]
 
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+authors = ["Your Name <your.email@example.com>"]
+keywords = ["ragit", "ai", "llm", "knowledge-base"]
+license = "MIT"
+repository = "https://github.com/baehyunsol/ragit"
+documentation = "https://docs.rs/ragit"
+description = "git-like rag pipeline"
+homepage = "https://github.com/baehyunsol/ragit"
+
+[workspace.dependencies]
+lazy_static = "1.5.0"
+mownstr = "0.2.0"
+regex = "1.11.1"
 
 [dependencies]
 async-recursion = "1.1.1"
