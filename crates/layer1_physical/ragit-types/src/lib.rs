@@ -1,5 +1,5 @@
 pub mod pdl_error;
-pub use pdl_error::{PdlError, SchemaParseError};
+pub use pdl_error::PdlError;
 pub mod model;
 pub mod image;
 pub mod chunk;
@@ -27,7 +27,7 @@ pub use crate::chunk::chunk_struct::{Chunk, ChunkBuildInfo};
 pub mod ii_status;
 pub mod summary;
 pub mod schema;
-pub use crate::schema::Schema;
+pub use crate::schema::{Constraint, Schema, SchemaType};
 
 pub mod query;
 pub mod api_config;

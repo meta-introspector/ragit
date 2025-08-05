@@ -35,11 +35,3 @@ impl From<String> for PdlError {
         PdlError::Other(s)
     }
 }
-
-#[derive(Debug, Error)]
-pub enum SchemaParseError {
-    #[error("invalid schema: {0}")]
-    InvalidSchema(String),
-    #[error(transparent)]
-    Json(#[from] serde_json::Error),
-}

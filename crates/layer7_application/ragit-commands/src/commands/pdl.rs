@@ -1,4 +1,16 @@
-use crate::prelude::*;
+use serde_json::{Value, Map};
+use chrono::Local;
+use ragit_fs::{create_dir, read_string as fs_read_string, join as fs_join, exists};
+use ragit_utils::path_utils::str_to_pathbuf;
+use ragit_api::{get_model_by_name, Model, Request};
+use ragit_types::model::ModelRaw;
+use ragit_types::api_config::ApiConfig;
+use ragit_index_types::{index_struct::Index, load_mode::LoadMode};
+use ragit_types::pdl_types::{Message, Role};
+use ragit_pdl::parse_pdl_from_file;
+use ragit_pdl::schema::{parse::parse_schema, render::render_pdl_schema};
+use ragit_utils::{cli_types::{ArgParser, ArgType, ArgCount}, doc_utils::get_doc_content, error::Error, project_root::find_root};
+use tera;
 
 pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -49,9 +61,9 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         Some(model) => get_model_by_name(&models, model)?,
         None => match &index {
             Ok(Ok(index)) => get_model_by_name(&models, &index.api_config.model)?,
-            _ => match Index::load_config_from_home::<Value>("api.json") {
-                Ok(Some(Value::Object(api_config))) => match api_config.get("model") {
-                    Some(Value::String(model)) => get_model_by_name(&models, model)?,
+            _ => match Index::load_config_from_home::<ApiConfig>("api.json") {
+                Ok(Some(api_config)) => match api_config.model {
+                    Some(model) => get_model_by_name(&models, &model)?,
                     _ => return Err(Error::ModelNotSelected),
                 },
                 _ => return Err(Error::ModelNotSelected),
@@ -63,14 +75,14 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
             let s = fs_read_string(path)?;
             serde_json::from_str::<Value>(&s)?
         }
-        None => Value::Object(serde_json::Map::new()),
+        None => Value::Object(Map::new()),
     };
     let (dump_pdl_at, dump_json_at) = match parsed_args.arg_flags.get("--log") {
         Some(log_at) => {
             let now = Local::now();
 
             if !exists(&str_to_pathbuf(log_at)) {
-                create_dir(log_at)?;
+                create_dir(&str_to_pathbuf(log_at))?;
             }
 
             (
@@ -102,7 +114,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         messages: pdl.messages,
         schema: schema.clone(),
         model: model.clone(),
-        dump_pdl_at,
+        dump_pdl_at: dump_pdl_at.map(|p| p.to_string_lossy().to_string()),
         dump_json_at,
         dump_api_usage_at,
         temperature: None,

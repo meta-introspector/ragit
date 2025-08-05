@@ -24,7 +24,7 @@ pub async fn ls_models_command_main(args: &[String]) -> Result<(), Error> {
     let args = parsed_args.get_args();
     let index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
     let mut models = list_models(
-        &find_root()?.join("models.json"),
+        &find_root()?.join("models.json").to_string_lossy(),
         &|_| true,  // no filter
         &|model| model,  // no map
         &|model| model.name.to_string(),

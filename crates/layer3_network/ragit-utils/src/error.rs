@@ -114,7 +114,7 @@ pub enum Error {
     #[error(transparent)]
     PdlError(#[from] ragit_pdl::Error),
     #[error(transparent)]
-    PdlSchemaParseError(#[from] ragit_types::SchemaParseError),
+    PdlSchemaParseError(#[from] ragit_pdl::schema::schema_parse_error::SchemaParseError),
     #[error(transparent)]
     TeraError(#[from] tera::Error),
     #[error("broken inverted index: {0}")]

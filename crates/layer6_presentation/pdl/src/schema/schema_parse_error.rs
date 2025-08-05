@@ -12,4 +12,10 @@ pub enum SchemaParseError {
     ParseFloatError(#[from] std::num::ParseFloatError),
     #[error("UTF-8 error: {0}")]
     Utf8Error(#[from] std::string::FromUtf8Error),
+    #[error("Unexpected token: {0:?}")]
+    UnexpectedToken(crate::schema::token::Token),
+    #[error("Unexpected end of file")]
+    UnexpectedEof,
+    #[error("Invalid constraint: {0}")]
+    InvalidConstraint(String),
 }

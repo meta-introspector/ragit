@@ -1,6 +1,6 @@
-use ragit_types::schema::{Constraint, Schema, SchemaType};
+use ragit_types::schema::{Schema};
+use super::token::{Token};
 use super::schema_parse_error::SchemaParseError;
-use super::token::{Token, GroupKind};
 use super::tokenize_state::TokenizeState;
 
 pub fn parse_schema(s: &str) -> Result<Schema, SchemaParseError> {
@@ -14,7 +14,7 @@ pub fn parse_schema(s: &str) -> Result<Schema, SchemaParseError> {
 
     let mut index = 0;
     let result = super::token_to_schema::token_to_schema(&tokens, &mut index)?;
-    result.validate_constraint()?;
+    
 
     Ok(result)
 }

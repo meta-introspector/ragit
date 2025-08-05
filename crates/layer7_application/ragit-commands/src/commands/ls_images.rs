@@ -37,7 +37,7 @@ pub async fn ls_images_command_main(args: &[String]) -> Result<(), Error> {
         }
         for uid in query.get_chunk_uids() {
             let chunk = index.get_chunk_by_uid(uid)?;
-            for image_uid in chunk.images {
+            for image_uid in chunk.get_images() {
                 image_uids.push(image_uid);
             }
         }

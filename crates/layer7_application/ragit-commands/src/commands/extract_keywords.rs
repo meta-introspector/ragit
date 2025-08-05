@@ -17,7 +17,7 @@ pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error>
     let full_schema = parsed_args.get_flag(0).is_some();
     let json_mode = parsed_args.get_flag(1).is_some();
     let query = &parsed_args.get_args_exact(1)?[0];
-    let result = index.extract_keywords(query).await?;
+    let result = index.extract_keywords(query.to_string()).await?;
 
     if full_schema {
         if json_mode {
@@ -26,8 +26,7 @@ pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error>
             println!("keywords:");
             println!(
                 "{}",
-                result
-                    .keywords
+                result.0
                     .iter()
                     .map(|keyword| format!("    {keyword}"))
                     .collect::<Vec<_>>()
@@ -36,8 +35,7 @@ pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error>
             println!("extra:");
             println!(
                 "{}",
-                result
-                    .extra
+                result.1
                     .iter()
                     .map(|extra| format!("    {extra}"))
                     .collect::<Vec<_>>()
@@ -45,9 +43,9 @@ pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error>
             );
         }
     } else {
-        let mut keywords = result.keywords.clone();
+        let mut keywords = result.0.clone();
 
-        for e in result.extra.into_iter() {
+        for e in result.1.into_iter() {
             if !keywords.contains(&e) {
                 keywords.push(e);
             }

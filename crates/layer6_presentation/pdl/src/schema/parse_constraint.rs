@@ -1,10 +1,10 @@
+use ragit_types::schema::{Constraint};
 use super::schema_parse_error::SchemaParseError;
 use super::token::Token;
-use ragit_types::schema::{Constraint, Schema};
 
 pub fn parse_constraint(tokens: &[Token]) -> Result<Constraint, SchemaParseError> {
     let mut index = 0;
-    let mut result = Constraint::default();
+    let mut result = Constraint::MinLength(0); // Placeholder, will be replaced by actual parsing
 
     loop {
         let key = match tokens.get(index) {
@@ -32,23 +32,34 @@ pub fn parse_constraint(tokens: &[Token]) -> Result<Constraint, SchemaParseError
 
         match key.as_str() {
             k @ ("min" | "max" | "len_min" | "len_max") => match tokens.get(index) {
-                Some(n @ (Token::Integer(_) | Token::Float(_))) => {
+                Some(Token::Integer(n)) => {
                     if k == "min" || k == "len_min" {
-                        if result.min.is_some() {
-                            return Err(SchemaParseError::InvalidConstraint(format!(
-                                "A constraint `{key}` appears more than once."
-                            )));
+                        if let Constraint::Minimum(min_val) = result {
+                            return Err(SchemaParseError::InvalidConstraint(format!("Duplicate minimum constraint")));
                         }
 
-                        result.min = Some(n.to_string());
+                        result = Constraint::Minimum(*n as i128);
                     } else {
-                        if result.max.is_some() {
-                            return Err(SchemaParseError::InvalidConstraint(format!(
-                                "A constraint `{key}` appears more than once."
-                            )));
+                        if let Constraint::Maximum(max_val) = result {
+                            return Err(SchemaParseError::InvalidConstraint(format!("Duplicate maximum constraint")));
                         }
 
-                        result.max = Some(n.to_string());
+                        result = Constraint::Maximum(*n as i128);
+                    }
+                }
+                Some(Token::Float(n)) => {
+                    if k == "min" || k == "len_min" {
+                        if let Constraint::Minimum(min_val) = result {
+                            return Err(SchemaParseError::InvalidConstraint(format!("Duplicate minimum constraint")));
+                        }
+
+                        result = Constraint::Minimum(*n as i128);
+                    } else {
+                        if let Constraint::Maximum(max_val) = result {
+                            return Err(SchemaParseError::InvalidConstraint(format!("Duplicate maximum constraint")));
+                        }
+
+                        result = Constraint::Maximum(*n as i128);
                     }
                 }
                 Some(t) => {

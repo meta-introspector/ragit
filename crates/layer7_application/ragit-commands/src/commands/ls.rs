@@ -15,7 +15,8 @@ pub async fn ls_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let command = parsed_args.get_args().get(0).map(|arg| arg.as_str());
+    let args_vec = parsed_args.get_args();
+    let command = args_vec.get(0).map(|arg| arg.as_str());
 
     match command {
         Some("chunks") => ls_chunks_command_main(args).await?,

@@ -32,7 +32,7 @@ pub use ragit_pdl::escape_pdl_tokens::escape_pdl_tokens;
 pub use ragit_pdl::parse_pdl::parse_pdl_logic as pdl_parse_pdl;
 pub use ragit_pdl::parse_pdl_from_file::parse_pdl_from_file;
 pub use ragit_pdl::pdl_struct::Pdl as PdlStruct;
-pub use ragit_pdl::pdl_types::{Message, Role}; // Re-export Message and Role from pdl_types
+pub use ragit_types::pdl_types::{Message, Role};
 
 // Re-exports from ragit-utils
 pub use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount, Span, ParsedArgs};

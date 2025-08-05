@@ -44,16 +44,15 @@ pub async fn add_command_main(args: &[String]) -> Result<(), Error> {
         )));
     }
 
-    let result = index
-        .add_files_command(
-            &files,
-            add_mode.clone(),
-            dry_run || add_mode.clone() == Some(AddMode::Reject),
-        )
-        .await?;
+    let result = add_files_command(
+        &mut index,
+        &files,
+        add_mode.clone(),
+        dry_run || add_mode.clone() == Some(AddMode::Reject),
+    ).await?;
 
     if add_mode.clone() == Some(AddMode::Reject) && !dry_run {
-        index.add_files_command(&files, add_mode, dry_run).await?;
+        add_files_command(&mut index, &files, add_mode, dry_run).await?;
     }
 
     println!("{result}");

@@ -60,7 +60,7 @@ pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
         println!("{}", serde_json::to_string_pretty(&files)?);
     } else {
         for file in files {
-            println!("{}", file.path.to_string_lossy());
+            println!("{}", file.path.to_string());
         }
     }
 

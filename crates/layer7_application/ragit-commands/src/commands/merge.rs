@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use ragit_index_types::MergeMode;
 
 pub async fn merge_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -21,8 +22,7 @@ pub async fn merge_command_main(args: &[String]) -> Result<(), Error> {
         &parsed_args
             .get_flag(0)
             .unwrap_or_else(|| "--ignore".to_string()),
-    )
-    .unwrap();
+    )?;
     let dry_run = parsed_args.get_flag(1).is_some();
     let quiet = parsed_args.get_flag(2).is_some();
 

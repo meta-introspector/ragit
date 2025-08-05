@@ -23,7 +23,7 @@ pub async fn muse_summarize_command_main(args: &[String]) -> Result<(), Error> {
     let quiet = parsed_args.get_flag(1).is_some();
     let query = parsed_args.get_args();
 
-    let summary = index.summary(Some(summary_mode)).await?;
+    let summary = index.get_summary(Some(summary_mode)).await?;
 
     println!("{}", summary.unwrap_or_default());
 

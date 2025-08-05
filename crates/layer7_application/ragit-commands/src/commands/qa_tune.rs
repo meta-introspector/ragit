@@ -16,7 +16,7 @@ pub async fn qa_tune_command_main(args: &[String]) -> Result<(), Error> {
 
     for result in results.iter_mut() {
         let updated_log = serde_json::to_string_pretty(&results)?;
-        fs_write_string(&result_file, &updated_log, FsWriteMode::CreateOrTruncate)?;
+        fs_write_string(&result_file.to_string_lossy(), &updated_log, FsWriteMode::CreateOrTruncate)?;
     }
 
     Ok(())

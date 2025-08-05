@@ -72,7 +72,7 @@ pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), Error> {
         }
     } else {
         for chunk in chunks {
-            println!("{}", chunk.to_string());
+            println!("{:?}", chunk);
         }
     }
 

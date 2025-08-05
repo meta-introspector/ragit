@@ -166,7 +166,7 @@ pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
 
                 index.remove_local_model(&model_name)?;
             } else if all {
-                index.remove_all_local_models()?;
+                remove_all_local_models(&mut index)?;
             } else {
                 return Err(Error::CliError(CliError::new_message_with_span(
                     "Please specify which model to remove.".to_string(),

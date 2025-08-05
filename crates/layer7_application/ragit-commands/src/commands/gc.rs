@@ -27,7 +27,7 @@ pub fn gc_command_main(args: &[String]) -> Result<(), Error> {
         }
         "--all" => {
             let removed_logs = index.gc_logs()?;
-            let removed_images = index.gc_images()?;
+            let removed_images = gc_images(&mut index)?;
             index.gc_audit()?;
             println!("removed {removed_logs} log files, {removed_images} images and audit logs");
         }
