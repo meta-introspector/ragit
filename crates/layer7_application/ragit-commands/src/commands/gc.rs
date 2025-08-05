@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub fn gc_command_main(args: &[String]) -> Result<(), Error> {
+pub fn gc_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .flag(&["--logs", "--images", "--audit", "--all"])
     //     .parse(args, 2)?;

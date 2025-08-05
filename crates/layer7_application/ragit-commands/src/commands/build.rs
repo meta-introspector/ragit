@@ -19,7 +19,7 @@ pub async fn build_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let jobs = parsed_args
+    let _jobs = parsed_args
         .arg_flags
         .get("--jobs")
         .as_ref()

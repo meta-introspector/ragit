@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub async fn pull_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn pull_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .flag_with_default(&["--no-configs", "--configs"])
     //     .flag_with_default(&["--no-prompts", "--prompts"])

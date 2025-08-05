@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub async fn push_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn push_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .optional_arg_flag("--remote", ArgType::Path)
     //     .flag_with_default(&["--no-configs", "--configs"])

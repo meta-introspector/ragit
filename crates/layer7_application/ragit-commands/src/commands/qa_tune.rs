@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub async fn qa_tune_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn qa_tune_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .args(ArgType::Query, ArgCount::Any)
     //     .optional_flag(&["--json"])

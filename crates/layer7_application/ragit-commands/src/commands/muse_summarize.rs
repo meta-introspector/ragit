@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub async fn muse_summarize_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn muse_summarize_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .optional_flag(&["--force", "--cached"])
     //     .parse(args, 2)?;

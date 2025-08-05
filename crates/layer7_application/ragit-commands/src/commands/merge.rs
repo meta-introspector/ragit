@@ -1,7 +1,9 @@
-use crate::prelude::*;
-use ragit_index_types::MergeMode;
+// use ragit_index_types::MergeMode;
 
-pub async fn merge_command_main(args: &[String]) -> Result<(), Error> {
+use crate::Error;
+// use ragit_index_types::MergeMode;
+
+pub async fn merge_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .optional_flag(&["--ignore", "--force", "--interactive", "--reject"])
     //     .optional_flag(&["--dry-run"])
@@ -51,7 +53,6 @@ pub async fn merge_command_main(args: &[String]) -> Result<(), Error> {
     //                 dry_run,
     //             )
     //             .await?;
-    //     }
     // }
 
     Ok(())

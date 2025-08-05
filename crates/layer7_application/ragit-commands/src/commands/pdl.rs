@@ -6,7 +6,7 @@ use ragit_api::{get_model_by_name, Model, Request};
 use ragit_model::model_raw::ModelRaw;
 use ragit_types::api_config::ApiConfig;
 use ragit_index_types::{index_struct::Index, load_mode::LoadMode};
-use ragit_types::pdl_types::{Message, Role};
+
 use ragit_pdl::parse_pdl_from_file::parse_pdl_from_file;
 use ragit_pdl::schema::{parse::parse_schema, render::render_pdl_schema};
 use ragit_utils::{cli_types::{ArgParser, ArgType, ArgCount}, doc_utils::get_doc_content, error::Error, project_root::find_root};

@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub fn ii_reset_command_main(args: &[String]) -> Result<(), Error> {
+pub fn ii_reset_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new().parse(args, 2)?;
 
     // if parsed_args.show_help() {

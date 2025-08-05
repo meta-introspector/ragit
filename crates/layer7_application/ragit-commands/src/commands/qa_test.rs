@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 
 
-pub async fn qa_test_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn qa_test_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .args(ArgType::Query, ArgCount::Any)
     //     .parse(args, 2)?;
