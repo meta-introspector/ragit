@@ -12,4 +12,5 @@ ragit-utils = { path = "../../layer3_network/ragit-utils" }
 solfunmeme_embedding = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_embedding" }
 solfunmeme_clifford = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_clifford" }
 solfunmeme_ontology_vibe = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_ontology_vibe" }
+mownstr = { path = "../../../vendor/mownstr" }
 
