@@ -41,7 +41,7 @@ url = "2.5.4"
 wasm-logger = "0.2.0"
 
 ndarray = "0.15.6"
-tclifford = "0.1.0"
+tclifford = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/vendor/tclifford" }
 linfa = "0.7.1"
 linfa-preprocessing = "0.7.1"
 linfa-reduction = "0.7.1"

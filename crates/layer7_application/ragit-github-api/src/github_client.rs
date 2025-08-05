@@ -23,10 +23,14 @@ impl GitHubClient {
         base: String, // Target branch
         body: Option<String>,
     ) -> Result<PullRequest> {
-        let pr = self.octocrab
-            .pulls(&self.owner, &self.repo)
-            .create(title, head, base)
-                        .body(body.map(Into::into))
+        let pulls_api = self.octocrab.pulls(&self.owner, &self.repo);
+        let mut builder = pulls_api.create(title, head, base);
+
+        if let Some(body_content) = body {
+            builder = builder.body(body_content);
+        }
+
+        let pr = builder
             .send()
             .await?;
         Ok(pr)

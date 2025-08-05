@@ -196,3 +196,4 @@ lto = "fat"
 # mupdf does not compile without this patch on MacOS
 [patch.crates-io]
 pathfinder_simd = { git = "https://github.com/servo/pathfinder.git" }
+tclifford = { path = "vendor/meta-introspector/solfunmeme-dioxus/vendor/tclifford" }

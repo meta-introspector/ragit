@@ -16,9 +16,7 @@
 [submodule "vendor/meta-introspector/meta-meme"]
 	path = vendor/meta-introspector/meta-meme
 	url = https://github.com/meta-introspector/meta-meme
-[submodule "vendor/meta-introspector/time"]
-	path = vendor/meta-introspector/time
-	url = https://github.com/meta-introspector/time
+
 [submodule "vendor/meta-introspector/agave-solana-validator"]
 	path = vendor/meta-introspector/agave-solana-validator
 	url = https://github.com/meta-introspector/agave-solana-validator

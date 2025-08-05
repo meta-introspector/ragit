@@ -21,9 +21,8 @@ pub fn analyze_codebase(root_dir: &PathBuf) -> Result<Vec<FileAnalysis>> {
         .map(|entry| entry.into_path())
         .collect();
 
-    let mut analyzer = CodeAnalyzer::new(100, 0.8); // Initialize CodeAnalyzer
-
     let analyses: Vec<FileAnalysis> = rust_files.par_iter().filter_map(|file_path| {
+        let mut analyzer = CodeAnalyzer::new(100, 0.8); // Initialize CodeAnalyzer for each thread
         let content = std::fs::read_to_string(file_path).ok()?;
         let solfunmeme_analysis = analyzer.analyze_file(&content, file_path.to_string_lossy().into_owned()).ok()?;
 
