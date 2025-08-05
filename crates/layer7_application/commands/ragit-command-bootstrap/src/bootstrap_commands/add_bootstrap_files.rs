@@ -5,8 +5,8 @@ use ragit_index_core::add_files::add_files_command;
 use ragit_index_types::index_struct::Index;
 use crate::file_source::FileSource;
 use crate::file_copy_utils;
-use super::constants::BOOTSTRAP_PACKAGE_NAME;
 use ragit_memory_monitor::MemoryMonitor;
+use crate::file_source::GlobFileSource;
 
 pub async fn add_bootstrap_files(
     verbose: bool,
@@ -16,14 +16,20 @@ pub async fn add_bootstrap_files(
     max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
     max_files_to_process: Option<usize>,
+    target: Option<String>,
 ) -> Result<(), anyhow::Error> {
     memory_monitor.verbose("add_bootstrap_files: Starting to add bootstrap files.");
     memory_monitor.verbose("Running rag add.");
     memory_monitor.verbose(&format!("Found project root: {:?}", actual_root_dir));
-    let bootstrap_source = crate::file_source::CargoPackageFileSource { 
-        package_name: BOOTSTRAP_PACKAGE_NAME.to_string(),
-        project_root: actual_root_dir.to_str().unwrap().to_string(),
+
+    // Use GlobFileSource to include all Rust files in the project, including submodules
+    let glob_pattern = if let Some(target_glob) = target.clone() {
+        format!("{}/{}", actual_root_dir.to_string_lossy(), target_glob)
+    } else {
+        format!("{}/**/*.rs", actual_root_dir.to_string_lossy())
     };
+    let bootstrap_source = GlobFileSource { pattern: glob_pattern };
+
     let mut original_files_to_add = bootstrap_source.get_files(memory_monitor)?;
     if let Some(max_files) = max_files_to_process {
         if original_files_to_add.len() > max_files {

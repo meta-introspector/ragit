@@ -22,6 +22,8 @@ members = [
     # Layer 3
     "crates/layer3_network/ragit-index",
     "crates/layer3_network/ragit-utils",
+    "crates/layer3_network/solfunmeme-core-logic",
+    "crates/layer3_network/ragit-code-analyzer",
 
     # Layer 4
     "crates/layer4_transport/ragit-core-utils",

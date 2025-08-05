@@ -75,7 +75,13 @@ pub async fn bootstrap_index_self(
     if disable_cleanup {
         cmd.arg("--disable-cleanup");
     }
-    if let Some(target_val) = target {
+    let final_target_glob = match target.as_deref() {
+        Some("all") => Some("**/*.rs".to_string()),
+        Some("rust-analyzer") => Some("vendor/rust-analyzer/**/*.rs".to_string()),
+        _ => target,
+    };
+
+    if let Some(target_val) = final_target_glob {
         cmd.arg("--target").arg(target_val);
     }
 

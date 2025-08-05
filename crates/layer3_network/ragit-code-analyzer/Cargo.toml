@@ -1,0 +1,13 @@
+[package]
+name = "ragit-code-analyzer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+syn = { version = "2.0", features = ["full", "extra-traits"] } # For Rust AST parsing
+quote = "1.0" # Often used with syn, might be useful later
+rayon = "1.10" # For parallel iteration
+walkdir = "2.5" # For efficient directory traversal
+anyhow = "1.0" # For simplified error handling
+solfunmeme_core_logic = { path = "../solfunmeme-core-logic" }
+#./crates/layer3_network/solfunmeme-core-logic

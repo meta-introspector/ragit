@@ -22,3 +22,16 @@
 [submodule "vendor/meta-introspector/agave-solana-validator"]
 	path = vendor/meta-introspector/agave-solana-validator
 	url = https://github.com/meta-introspector/agave-solana-validator
+[submodule "vendor/rust-analyzer"]
+	path = vendor/rust-analyzer
+	url = https://github.com/rust-lang/rust-analyzer.git
+[submodule "vendor/coccinelleforrust"]
+	path = vendor/coccinelleforrust
+	url = https://gitlab.inria.fr/coccinelle/coccinelleforrust
+[submodule "vendor/ast-grep"]
+	path = vendor/ast-grep
+	url = https://github.com/ast-grep/ast-grep
+[submodule "vendor/rust-embed"]
+	path = vendor/rust-embed
+	url = https://git.sr.ht/~pyrossh/rust-embed
+
