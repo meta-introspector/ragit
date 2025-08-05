@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use serde_json::Value;
+use ragit_index_types::index_impl::set_config_by_key::index_set_config_by_key;
 
 pub async fn config_command_main(args: &[String]) -> Result<(), Error> {
     let mut index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;

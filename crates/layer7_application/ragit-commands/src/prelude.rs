@@ -56,16 +56,16 @@ pub use ragit_index_types::MergeMode;
 // pub use ragit_index_types::index_impl::audit::audit as index_audit;
 // pub use ragit_index_types::index_impl::build_ii::build_ii as index_build_ii;
 // pub use ragit_index_types::index_impl::config_methods::get_all_configs as index_get_all_configs;
-// 
 // pub use ragit_index_types::index_impl::get_images_of_file::get_images as index_get_images;
 // pub use ragit_index_types::index_impl::get_summary::get_summary as index_get_summary;
 // pub use ragit_index_types::index_impl::list_chunks::list_chunks as index_list_chunks;
 // pub use ragit_index_types::index_impl::list_files::list_files as index_list_files;
 // pub use ragit_index_types::index_impl::list_images::list_images as index_list_images;
+// pub use ragit_index_types::index_impl::get_model_by_name::index_get_model_by_name;
 // pub use ragit_index_types::index_impl::list_models::list_models as index_list_models;
 // pub use ragit_index_types::index_impl::list_terms::list_terms as index_list_terms;
 // pub use ragit_index_types::index_impl::merge::merge as index_merge;
-// pub use ragit_index_types::index_impl::model_access_methods::search_remote_models as index_search_remote_models;
+// pub ragit_index_types::index_impl::model_access_methods::search_remote_models as index_search_remote_models;
 // pub use ragit_index_types::index_impl::model_access_methods::fetch_remote_models as index_fetch_remote_models;
 // pub use ragit_index_types::index_impl::model_access_methods::fetch_all_remote_models as index_fetch_all_remote_models;
 // pub use ragit_index_types::index_impl::remove_local_model::remove_local_model as index_remove_local_model;
@@ -77,18 +77,28 @@ pub use ragit_index_types::MergeMode;
 // pub use ragit_index_types::index_impl::init::init as index_init;
 // pub use ragit_index_types::index_impl::pull::pull as index_pull;
 // pub use ragit_index_types::index_impl::push::push as index_push;
-pub use ragit_index_types::index_impl::set_config_by_key::index_set_config_by_key;
-// pub use ragit_index_types::index_impl::add_file_index::index_add_file_index; // Added for add_files_command
+// pub use ragit_index_types::index_impl::set_config_by_key::index_set_config_by_key;
+// pub use ragit_index_types::index_impl::add_file_index::index_add_file_index;
+// pub use ragit_index_types::index_impl::save_to_file::index_save_to_file;
+// pub use ragit_index_types::index_impl::get_uid_path::index_get_uid_path;
+// pub use ragit_index_types::index_impl::get_data_path::index_get_data_path;
+// pub use ragit_index_types::index_impl::remove::index_remove;
+// pub use ragit_index_types::index_impl::processed_files_insert::index_processed_files_insert;
+// pub use ragit_index_types::index_impl::update_ii_buffer::index_update_ii_buffer;
+// pub use ragit_index_types::index_impl::flush_ii_buffer::index_flush_ii_buffer;
+// pub use ragit_index_types::index_impl::reset_uid::index_reset_uid;
+// pub use ragit_index_types::index_impl::calculate_and_save_uid::index_calculate_and_and_save_uid;
+// pub use ragit_index_types::index_impl::add_image_description::index_add_image_description;
+// pub use ragit_index_types::index_impl::api_config_get_api_usage::index_api_config_get_api_usage;
+// pub use ragit_index_types::index_impl::load_prompts::load_prompts_from_directory;
 
 // Re-exports from ragit-index-core
 pub use ragit_index_core::add_files::add_files_command;
 pub use ragit_index_core::clone::clone_command;
 
-
-
 // Re-exports from ragit-query
 pub use ragit_query::query_helpers::uid_query;
-pub use ragit_query::UidQueryConfig; // Re-export UidQueryConfig
+pub use ragit_query::UidQueryConfig;
 
 // Re-exports from ragit-api (TestModel)
 pub use ragit_api::TestModel;
@@ -98,4 +108,4 @@ pub use ragit_pdl::schema::parse::parse_schema;
 pub use ragit_pdl::schema::render::render_pdl_schema;
 
 // Re-exports for QA System
-pub use ragit_qa_system::ModelQASystem;
+// pub use ragit_qa_system::ModelQASystem;

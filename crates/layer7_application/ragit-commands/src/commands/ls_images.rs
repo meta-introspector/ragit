@@ -1,9 +1,10 @@
-use crate::prelude::*;
-use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
-use ragit_utils::doc_utils::get_doc_content;
-use ragit_types::query_config::QueryConfig;
+use crate::Error;
+// use crate::prelude::*;
+// use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
+// use ragit_utils::doc_utils::get_doc_content;
+// use ragit_types::query_config::QueryConfig;
 
-pub async fn ls_images_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn ls_images_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .optional_flag(&["--uid-only", "--stat-only"])
     //     .optional_flag(&["--json"])

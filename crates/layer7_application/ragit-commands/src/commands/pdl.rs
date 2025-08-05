@@ -62,10 +62,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         None => match &index {
             Ok(Ok(index)) => get_model_by_name(&models, &index.api_config.model)?,
             _ => match Index::load_config_from_home::<ApiConfig>("api.json") {
-                Ok(Some(api_config)) => match api_config.model {
-                    model => get_model_by_name(&models, &model)?,
-                    _ => return Err(Error::ModelNotSelected),
-                },
+                Ok(Some(api_config)) => get_model_by_name(&models, &api_config.model)?,
                 _ => return Err(Error::ModelNotSelected),
             },
         },

@@ -1,10 +1,10 @@
-use crate::prelude::*;
-use crate::prelude::*;
-use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
-use ragit_utils::doc_utils::get_doc_content;
-use ragit_query::UidQueryConfig;
+use crate::Error;
+// use crate::prelude::*;
+// use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
+// use ragit_utils::doc_utils::get_doc_content;
+// use ragit_query::UidQueryConfig;
 
-pub async fn ls_files_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn ls_files_command_main(_args: &[String]) -> Result<(), Error> {
     // let parsed_args = ArgParser::new()
     //     .optional_flag(&["--processed", "--staged"])
     //     .optional_flag(&["--json"])

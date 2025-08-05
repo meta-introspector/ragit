@@ -32,7 +32,7 @@ pub async fn ls_terms_command_main(args: &[String]) -> Result<(), Error> {
 
         result
     } else {
-        let query = uid_query(&index, &args, ragit_query::UidQueryConfig::new().file_or_chunk_only().no_staged_file())?;;
+        let query = uid_query(&index, &args, ragit_query::UidQueryConfig::new().file_or_chunk_only().no_staged_file())?;
 
         if query.has_multiple_matches() {
             return Err(Error::CliError(CliError::new_message(format!(
