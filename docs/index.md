@@ -98,6 +98,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Hierarchical Search SOP](./sops/hierarchical_search_sop.md)
 - [Branching Strategy SOP](./sops/branching_strategy_sop.md)
 - [DWIM Embedding Pipeline Work Log](./quality_procedures/dwim_embedding_pipeline_work_log.md)
+- [Dependency Management SOP](./quality_procedures/dependency_management_sop.md)
 - [Multi Turn](./multi_turn.md)
 - [Pipeline](./pipeline.md)
 - [Prompt Engineering](./prompt_engineering.md)

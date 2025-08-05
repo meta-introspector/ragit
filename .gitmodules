@@ -33,3 +33,6 @@
 	path = vendor/rust-embed
 	url = https://git.sr.ht/~pyrossh/rust-embed
 
+[submodule "vendor/mownstr"]
+	path = vendor/mownstr
+	url = https://github.com/meta-introspector/mownstr
