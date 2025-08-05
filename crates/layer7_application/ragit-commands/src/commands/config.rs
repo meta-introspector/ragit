@@ -1,3 +1,5 @@
+use ragit_index_core::set_config_by_key;
+
 use crate::prelude::*;
 use serde_json::Value;
 

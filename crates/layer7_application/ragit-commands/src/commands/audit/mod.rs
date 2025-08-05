@@ -1,3 +1,4 @@
+use ragit_api::AuditRecord;
 use crate::prelude::*;
 
 mod args;
@@ -15,7 +16,7 @@ pub async fn audit_command_main(args: Vec<String>, _pre_args: ParsedArgs) -> Res
     } else {
         None
     })?;
-    let mut total = AuditRecordAt::default();
+    let mut total = AuditRecord::default();
 
     for a in result.values() {
         total += *a;

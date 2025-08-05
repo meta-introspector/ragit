@@ -1,3 +1,4 @@
+use ragit_index_core::clone::clone_command;
 use crate::prelude::*;
 
 pub async fn clone_command_main(args: &[String]) -> Result<(), Error> {
@@ -17,14 +18,15 @@ pub async fn clone_command_main(args: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let url = parsed_args.get_args_exact(1)?.get(0).unwrap();
+    let args = parsed_args.get_args_exact(1)?;
+    let url = args.get(0).unwrap();
     let depth = parsed_args
         .arg_flags
         .get("--depth")
         .map(|s| s.parse::<usize>().unwrap());
 
-    let mut index = Index::new(PathBuf::from("."))?;
-    index.clone(url, depth).await?;
+    let mut index = Index::new(PathBuf::from("."));
+    clone_command(&mut index, url, depth).await?;
 
     Ok(())
 }

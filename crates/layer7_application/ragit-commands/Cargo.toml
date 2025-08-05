@@ -29,6 +29,7 @@ ragit-fs = { path = "../../layer2_data_link/fs" }
 ragit-pdl = { path = "../../layer6_presentation/pdl" }
 ragit-types = { path = "../../layer1_physical/ragit-types" }
 ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-index-core = { path = "../../legacy_and_refactoring/ragit-index-core" }
 ragit-index-io = { path = "../../legacy_and_refactoring/ragit-index-io" }
 ragit-index = { path = "../../layer3_network/ragit-index" }
 ragit-index-query = { path = "../../legacy_and_refactoring/ragit-index-query" }
@@ -45,6 +46,7 @@ ragit-qa-system = { path = "../../legacy_and_refactoring/ragit-qa-system" }
 ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }
 tempfile = "3.20.0"
+ragit-model = { path = "../ragit-model" }
 
 # [dependencies.tikv-jemallocator]
 # version = "0.5"

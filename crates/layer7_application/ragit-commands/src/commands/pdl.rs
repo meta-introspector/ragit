@@ -3,11 +3,11 @@ use chrono::Local;
 use ragit_fs::{create_dir, read_string as fs_read_string, join as fs_join, exists};
 use ragit_utils::path_utils::str_to_pathbuf;
 use ragit_api::{get_model_by_name, Model, Request};
-use ragit_types::model::ModelRaw;
+use ragit_model::model_raw::ModelRaw;
 use ragit_types::api_config::ApiConfig;
 use ragit_index_types::{index_struct::Index, load_mode::LoadMode};
 use ragit_types::pdl_types::{Message, Role};
-use ragit_pdl::parse_pdl_from_file;
+use ragit_pdl::parse_pdl_from_file::parse_pdl_from_file;
 use ragit_pdl::schema::{parse::parse_schema, render::render_pdl_schema};
 use ragit_utils::{cli_types::{ArgParser, ArgType, ArgCount}, doc_utils::get_doc_content, error::Error, project_root::find_root};
 use tera;
@@ -63,7 +63,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
             Ok(Ok(index)) => get_model_by_name(&models, &index.api_config.model)?,
             _ => match Index::load_config_from_home::<ApiConfig>("api.json") {
                 Ok(Some(api_config)) => match api_config.model {
-                    Some(model) => get_model_by_name(&models, &model)?,
+                    model => get_model_by_name(&models, &model)?,
                     _ => return Err(Error::ModelNotSelected),
                 },
                 _ => return Err(Error::ModelNotSelected),
@@ -82,7 +82,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
             let now = Local::now();
 
             if !exists(&str_to_pathbuf(log_at)) {
-                create_dir(&str_to_pathbuf(log_at))?;
+                create_dir(log_at)?;
             }
 
             (

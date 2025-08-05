@@ -28,6 +28,6 @@ pub async fn build_command_main(args: &[String]) -> Result<(), Error> {
         .unwrap();
     let quiet = parsed_args.get_flag(0).is_some();
     let mut index = Index::load(find_root()?.into(), LoadMode::QuickCheck)?;
-    index.build_ii(quiet).await?;
+    index.build_ii(quiet)?;
     Ok(())
 }
