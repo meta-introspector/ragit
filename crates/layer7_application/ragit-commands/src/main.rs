@@ -9,6 +9,7 @@ use ragit_command_bootstrap::bootstrap_index_self;
 use ragit_commands::commands::query::{query_command_main, QueryArgs};
 use ragit_command_duplicate_chunks::{duplicate_chunks_command_main, DuplicateChunksArgs};
 use ragit_dyim::DyimCommand;
+use ragit_commands::commands::agent::AgentCommand;
 
 
 
@@ -107,6 +108,8 @@ enum Commands {
     Query(QueryArgs),
     /// Find and list duplicate chunks
     DuplicateChunks(DuplicateChunksArgs),
+    /// Agent commands
+    Agent(AgentCommand),
     
     /// Request a new change
     #[clap(external_subcommand)]
@@ -224,6 +227,9 @@ async fn main() -> Result<()> {
         },
         Commands::DuplicateChunks(args) => {
             duplicate_chunks_command_main(args).await?;
+        },
+        Commands::Agent(agent_cmd) => {
+            agent_cmd.run()?;
         },
         Commands::External(ext_args) => {
             let subcommand = &ext_args[0];

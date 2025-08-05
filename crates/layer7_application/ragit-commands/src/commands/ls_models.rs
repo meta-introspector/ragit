@@ -1,16 +1,6 @@
 use crate::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
-use ragit_utils::project_root::find_root;
-use ragit_utils::error::{Error, CliError};
-use std::path::PathBuf;
-use serde_json::Value;
-use std::collections::HashMap;
-use ragit_api::get_model_by_name;
-use ragit_api::list_models;
-use ragit_types::ApiError;
 
 pub async fn ls_models_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -84,11 +74,11 @@ pub async fn ls_models_command_main(args: &[String]) -> Result<(), Error> {
         for model in models {
             println!("----------");
             println!("name: {}", model.name);
-            println!("provider: {}", model.provider);
-            println!("cost: {}", model.cost);
-            println!("max_input_tokens: {}", model.max_input_tokens);
-            println!("max_output_tokens: {}", model.max_output_tokens);
-            println!("quality: {}", model.quality);
+            // println!("provider: {}", model.provider);
+            // println!("cost: {}", model.cost);
+            // println!("max_input_tokens: {}", model.max_input_tokens);
+            // println!("max_output_tokens: {}", model.max_output_tokens);
+            // println!("quality: {}", model.quality);
         }
     }
 

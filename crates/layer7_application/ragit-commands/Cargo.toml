@@ -32,11 +32,15 @@ ragit-utils = { path = "../../layer3_network/ragit-utils" }
 ragit-index-io = { path = "../../legacy_and_refactoring/ragit-index-io" }
 ragit-index = { path = "../../layer3_network/ragit-index" }
 ragit-index-query = { path = "../../legacy_and_refactoring/ragit-index-query" }
+ragit-query = { path = "../../layer4_transport/ragit-query" }
 ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }
 ragit-cli = { path = "../cli" }
 ragit-command-bootstrap = { path = "../commands/ragit-command-bootstrap" }
 ragit-command-duplicate-chunks = { path = "../commands/ragit-command-duplicate-chunks" }
 ragit-dyim = { path = "../ragit-dyim" }
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
+ragit-qa-system = { path = "../../legacy_and_refactoring/ragit-qa-system" }
+
 
 ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }

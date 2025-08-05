@@ -1,5 +1,7 @@
 use crate::prelude::*;
 
+
+
 pub async fn qa_test_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .args(ArgType::Query, ArgCount::Any)
@@ -14,15 +16,15 @@ pub async fn qa_test_command_main(args: &[String]) -> Result<(), Error> {
     let config = ApiConfig::default();
     let models = Index::get_initial_models()?;
     let qa_system = ModelQASystem::new(models, config.throttling_safety_margin.into());
-    let request = Request {
+    let request = Request::ChatRequest {
         messages: vec![Message::simple_message(Role::User, prompt)],
         model: Model::dummy(), // Will be overridden per model
-        ..Request::default()
+        ..Default::default()
     };
     let results = qa_system.test_request(request).await?;
     println!(
-        "{}",
-        ragit_api::qa_system::compare_results::compare_results(&qa_system.models, &results)
+        "{:?}",
+        results
     );
     // TODO: log_qa_results::log_qa_results(&results)?;
     Ok(())

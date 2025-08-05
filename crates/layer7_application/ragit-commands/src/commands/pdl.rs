@@ -1,6 +1,5 @@
-use crate::prelude::*;
-use ragit_fs::create_dir;
-use ragit_fs::read_string;
+
+
 pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
         .flag_with_default(&["--strict", "--no-strict"])
@@ -22,7 +21,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
     let strict_mode = parsed_args.get_flag(0).unwrap() == "--strict";
     let models = match parsed_args.arg_flags.get("--models") {
         Some(path) => {
-            let m = read_string(path)?;
+            let m = fs_read_string(path)?;
             let models_raw = serde_json::from_str::<Vec<ModelRaw>>(&m)?;
             let mut models = Vec::with_capacity(models_raw.len());
 
@@ -61,7 +60,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
     };
     let context = match parsed_args.arg_flags.get("--context") {
         Some(path) => {
-            let s = read_string(path)?;
+            let s = fs_read_string(path)?;
             serde_json::from_str::<Value>(&s)?
         }
         None => Value::Object(serde_json::Map::new()),
@@ -75,7 +74,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
             }
 
             (
-                Some(str_to_pathbuf(&join(
+                Some(str_to_pathbuf(&fs_join(
                     log_at,
                     &format!("{}.pdl", now.to_rfc3339()),
                 )?)),
@@ -85,7 +84,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         None => (None, None),
     };
     let arg_schema = match parsed_args.arg_flags.get("--schema") {
-        Some(schema) => Some(parse_schema(schema)?),
+        Some(schema) => Some(ragit_pdl::schema::parse::parse_schema(schema)?),
         None => None,
     };
     let pdl = parse_pdl_from_file(&pdl_at, &tera::Context::from_value(context)?, strict_mode)?;
@@ -99,7 +98,7 @@ pub async fn pdl_command_main(args: &[String]) -> Result<(), Error> {
         _ => None,
     };
 
-    let request = Request {
+    let request = Request::ChatRequest {
         messages: pdl.messages,
         schema: schema.clone(),
         model: model.clone(),

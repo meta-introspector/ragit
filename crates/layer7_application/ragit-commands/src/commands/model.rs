@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use serde_json::{Value, Map};
 
 pub async fn model_command_main(args: &[String]) -> Result<(), Error> {
     match args.get(2).map(|s| s.as_str()) {

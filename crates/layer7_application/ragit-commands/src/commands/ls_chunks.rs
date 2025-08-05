@@ -1,18 +1,8 @@
 use crate::prelude::*;
+use crate::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
-use ragit_utils::project_root::find_root;
-use ragit_utils::uid::uid_query;
-use ragit_utils::uid::UidQueryConfig;
-use ragit_utils::error::{Error, CliError};
-use std::path::PathBuf;
-use serde_json::Value;
-use std::collections::HashMap;
-use ragit_types::uid::Uid;
-use ragit_types::chunk::chunk_struct::Chunk;
-use ragit_types::ApiError;
+use ragit_query::UidQueryConfig;
 
 pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -45,11 +35,11 @@ pub async fn ls_chunks_command_main(args: &[String]) -> Result<(), Error> {
         }
         index.list_chunks(
             &|_| true,  // no filter
-            &|c| c,  // no map
+            &|c| c.clone(),  // no map
             &|chunk| chunk.source.sortable_string(),  // sort by source
         )?
     } else {
-        let query = uid_query(&index, &args, UidQueryConfig::new().file_or_chunk_only())?;
+        let query = uid_query(&index, &args, QueryConfig::new().file_or_chunk_only())?;
         let mut chunks = vec![];
         for uid in query.get_chunk_uids() {
             let chunk = index.get_chunk_by_uid(uid)?;

@@ -2,42 +2,22 @@ use crate::prelude::*;
 
 pub async fn qa_tune_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
-        .args(ArgType::String, ArgCount::Exact(1))
-        .args(ArgType::String, ArgCount::Exact(1))
-        .args(ArgType::String, ArgCount::Exact(1))
+        .args(ArgType::Query, ArgCount::Any)
+        .optional_flag(&["--json"])
         .parse(args, 2)?;
 
     if parsed_args.show_help() {
-        println!("Usage: rag qa-tune <result_file> <model_name> <user_score>");
+        println!("{}", get_doc_content("commands/qa-tune.txt"));
         return Ok(());
     }
 
-    let result_file = parsed_args.get_args_exact(1)?[0].clone();
-    let model_name = parsed_args.get_args_exact(2)?[0].clone();
-    let user_score = parsed_args.get_args_exact(3)?[0]
-        .parse::<f64>()
-        .map_err(|e| {
-            Error::CliError(CliError::new_message(format!(
-                "Invalid float for user_score: {}",
-                e
-            )))
-        })?;
+    let result_file = find_root()?.join(".ragit").join("qa_results.json");
+    let mut results: Vec<QueryResponse> = serde_json::from_str(&fs_read_string(&result_file)?)?;
 
-    let mut results: Vec<ModelQAResult> = serde_json::from_str(&read_string(&result_file)?)?;
-    if let Some(result) = results.iter_mut().find(|r| r.model_name == model_name) {
-        if user_score >= 0.0 && user_score <= 1.0 {
-            result.user_score = Some(user_score);
-            let updated_log = serde_json::to_string_pretty(&results)?;
-            write_string(&result_file, &updated_log, WriteMode::CreateOrTruncate)?;
-            println!(
-                "Updated user score for {} to {:.2} in {}",
-                model_name, user_score, result_file
-            );
-        } else {
-            println!("Error: User score must be between 0.0 and 1.0");
-        }
-    } else {
-        println!("Error: Model {} not found in {}", model_name, result_file);
+    for result in results.iter_mut() {
+        let updated_log = serde_json::to_string_pretty(&results)?;
+        fs_write_string(&result_file, &updated_log, FsWriteMode::CreateOrTruncate)?;
     }
+
     Ok(())
 }

@@ -1,6 +1,7 @@
 use crate::prelude::*;
+use serde_json::Value;
 
-pub fn config_command_main(args: &[String]) -> Result<(), Error> {
+pub async fn config_command_main(args: &[String]) -> Result<(), Error> {
     let mut index = Index::load(find_root()?.into(), LoadMode::OnlyJson)?;
 
     match args.get(2).map(|s| s.as_str()) {

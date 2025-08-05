@@ -1,18 +1,7 @@
 use crate::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
-use ragit_utils::project_root::find_root;
-use ragit_utils::uid::uid_query;
-use ragit_utils::uid::UidQueryConfig;
-use ragit_utils::error::{Error, CliError};
-use std::path::PathBuf;
-use serde_json::Value;
-use std::collections::HashMap;
-use ragit_types::uid::Uid;
-use ragit_types::image::ImageSchema;
-use ragit_schema::get_image_schema;
+use ragit_types::query_config::QueryConfig;
 
 pub async fn ls_images_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -35,11 +24,11 @@ pub async fn ls_images_command_main(args: &[String]) -> Result<(), Error> {
     let images = if args.is_empty() {
         index.list_images(
             &|_| true,  // no filter
-            &|image| image,  // no map
+            &|image| image.clone(),  // no map
             &|_| 0,  // no sort
         )?
     } else {
-        let query = uid_query(&index, &args, UidQueryConfig::new())?;
+        let query = uid_query(&index, &args, QueryConfig::new())?;
         let mut image_uids = vec![];
         for (_, uid) in query.get_processed_files() {
             for image_uid in index.get_images_of_file(uid)? {
@@ -60,7 +49,7 @@ pub async fn ls_images_command_main(args: &[String]) -> Result<(), Error> {
         }
         let mut result = Vec::with_capacity(image_uids.len());
         for image_uid in image_uids.iter() {
-            result.push(ragit_schema::get_image_schema(&index, *image_uid, false)?);
+            result.push(index.get_image_schema(*image_uid, false)?);
         }
         result
     };
@@ -75,7 +64,7 @@ pub async fn ls_images_command_main(args: &[String]) -> Result<(), Error> {
         for image in images.iter() {
             println!("----------");
             println!("uid: {}", image.uid);
-            println!("description: {}", image.description);
+            println!("explanation: {}", image.explanation);
         }
     }
 

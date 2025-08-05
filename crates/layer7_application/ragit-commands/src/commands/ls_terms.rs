@@ -1,16 +1,9 @@
 use crate::prelude::*;
+use crate::prelude::*;
 use ragit_utils::cli_types::{ArgParser, ArgType, ArgCount};
 use ragit_utils::doc_utils::get_doc_content;
-use ragit_index_io::index_struct::Index;
-use ragit_index::LoadMode;
-use ragit_utils::project_root::find_root;
-use ragit_utils::uid::uid_query;
-use ragit_utils::uid::UidQueryConfig;
-use ragit_utils::error::{Error, CliError};
-use std::path::PathBuf;
-use serde_json::Value;
-use std::collections::HashMap;
-use ragit_tfidf::ProcessedDoc;
+use ragit_query::UidQueryConfig;
+use ragit_types::processed_doc::ProcessedDoc;
 
 pub async fn ls_terms_command_main(args: &[String]) -> Result<(), Error> {
     let parsed_args = ArgParser::new()
@@ -39,7 +32,7 @@ pub async fn ls_terms_command_main(args: &[String]) -> Result<(), Error> {
 
         result
     } else {
-        let query = uid_query(&index, &args, UidQueryConfig::new().file_or_chunk_only().no_staged_file())?;
+        let query = uid_query(&index, &args, ragit_query::UidQueryConfig::new().file_or_chunk_only().no_staged_file())?;;
 
         if query.has_multiple_matches() {
             return Err(Error::CliError(CliError::new_message(format!(
