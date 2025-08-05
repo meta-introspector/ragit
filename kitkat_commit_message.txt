@@ -1,0 +1,28 @@
+feat: KitKat Break - Detailed Plan for ragit-commands Refactoring
+
+This commit marks a "KitKat break" to document the current state of refactoring and outline the new strategic plan for resolving compilation errors in the `ragit` project.
+
+**Current Problem Summary:**
+The `ragit-commands` crate is failing to compile due to several unresolved imports and method signature mismatches. Specifically:
+*   `set_config_by_key` is not found in scope in `config.rs`. I've attempted to import it from `ragit-index-core`, but there's an issue with its visibility or path.
+*   `clone_command` in `clone.rs` is also having import issues.
+*   Other errors related to `Keywords` fields (`result.1`), `ChunkSchema` fields (`source`, `uid`), `file_count` on `Index`, `to_string_lossy` on `String`, `file_only` on `QueryConfig`, `get_images` on `ChunkSchema`, `MergeMode` variants, `merge` method on `Index`, `search_remote_models`, `fetch_remote_models`, `fetch_all_remote_models`, `remove_local_model`, `remove_all_local_models` on `Index`, `get_summary` on `Index`, `ModelQASystem::new`, `functional record update syntax` in `qa_test.rs`, `fs_read_string` in `qa_tune.rs`, and `gc_logs`, `gc_images`, `gc_audit`, `reset_ii` on `Index` are still present.
+
+The core issue seems to be a disconnect between the `ragit-commands` crate and the refactored `ragit-index-core` and `ragit-index-types` crates, where many functions and methods have been moved or changed.
+
+**New Strategic Plan:**
+The previous attempts to fix errors one by one were inefficient due to the cascading nature of the refactoring. The new plan will be more systematic:
+
+1.  **Review `ragit-index-core` and `ragit-index-types` APIs:** Instead of guessing, I will thoroughly examine the `lib.rs` files and relevant modules in `ragit-index-core` and `ragit-index-types` to understand the *correct* public API for `Index` methods and related functions. This includes:
+    *   `crates/legacy_and_refactoring/ragit-index-core/src/lib.rs`
+    *   `crates/layer3_network/ragit-index-types/src/index_impl/mod.rs` (and its sub-modules)
+    *   `crates/layer3_network/ragit-index-types/src/lib.rs`
+
+2.  **Centralize Imports in `ragit-commands/src/prelude.rs`:** Once the correct API is understood, I will update `ragit-commands/src/prelude.rs` to correctly import all necessary functions and types from `ragit-index-core`, `ragit-index-types`, and other relevant crates. This will ensure consistency and reduce redundant `use` statements in individual command files.
+
+3.  **Systematically Fix `ragit-commands` files:** After updating the `prelude`, I will go through each file in `crates/layer7_application/ragit-commands/src/commands/` and:
+    *   Remove any redundant or incorrect `use` statements that are now covered by `prelude.rs`.
+    *   Adjust function calls and method calls to match the correct signatures and paths identified in step 1.
+    *   Address any remaining type mismatches or field access errors based on the updated understanding of the data structures.
+
+4.  **Iterative Build and Verify:** After each significant change (e.g., fixing a command file), I will run `cargo build` to verify progress and identify new errors introduced by the changes.
