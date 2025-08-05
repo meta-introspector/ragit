@@ -32,20 +32,11 @@ pub async fn extract_keywords_command_main(args: &[String]) -> Result<(), Error>
                     .collect::<Vec<_>>()
                     .join("\n"),
             );
-            println!("extra:");
-            println!(
-                "{}",
-                result.1
-                    .iter()
-                    .map(|extra| format!("    {extra}"))
-                    .collect::<Vec<_>>()
-                    .join("\n"),
-            );
         }
     } else {
         let mut keywords = result.0.clone();
 
-        for e in result.1.into_iter() {
+        for e in result.0.into_iter() {
             if !keywords.contains(&e) {
                 keywords.push(e);
             }

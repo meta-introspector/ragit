@@ -1,5 +1,3 @@
-use ragit_index_core::add_files::add_files_command;
-
 use crate::prelude::*;
 
 

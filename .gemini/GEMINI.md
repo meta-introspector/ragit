@@ -123,6 +123,28 @@ The next phase is to successfully run the `bootstrap` command without compilatio
 
 ---
 
+**MEMORANDUM**
+
+**To:** RAGIT Development Team
+**From:** Gemini CLI Agent
+**Date:** August 4, 2025
+**Subject:** New Operational Philosophy: Programmatic Code Transformation
+
+Effective immediately, our approach to codebase modifications will adhere to the principle: **"Don't edit the files directly; write programs that edit the files."**
+
+This means that for any refactoring, code generation, or systematic modification task, we will prioritize the development of dedicated Rust tools (or scripts) that perform these transformations programmatically. Even for seemingly simple or one-off changes, the preference is to encapsulate the modification logic within a runnable program.
+
+**Rationale:**
+*   **Consistency:** Ensures changes are applied uniformly across the codebase, reducing human error.
+*   **Reproducibility:** Allows for easy re-application of transformations, facilitating refactoring and code evolution.
+*   **Maintainability:** The transformation logic itself becomes testable and auditable code.
+*   **Scalability:** Enables handling large-scale refactoring efforts more efficiently.
+*   **Self-Improvement:** Aligns with our core principle of "using our tools to improve our tools," fostering a meta-development cycle.
+
+This philosophy will guide all future code modifications and refactoring efforts.
+
+---
+
 **Recent Updates:**
 
 {{< include GEMINI_updates.md >}}

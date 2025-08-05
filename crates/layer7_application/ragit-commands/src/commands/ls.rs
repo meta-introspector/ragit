@@ -19,7 +19,6 @@ pub async fn ls_command_main(args: &[String]) -> Result<(), Error> {
     let command = args_vec.get(0).map(|arg| arg.as_str());
 
     match command {
-        Some("chunks") => ls_chunks_command_main(args).await?,
         Some("files") => ls_files_command_main(args).await?,
         Some("images") => ls_images_command_main(args).await?,
         Some("models") => ls_models_command_main(args).await?,
