@@ -39,3 +39,6 @@
 [submodule "vendor/sophia_rs"]
 	path = vendor/sophia_rs
 	url = https://github.com/meta-introspector/sophia_rs.git
+[submodule "vendor/tclifford"]
+	path = vendor/tclifford
+	url = https://github.com/grumyantsev/tclifford
