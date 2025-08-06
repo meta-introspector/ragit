@@ -102,6 +102,10 @@ This index provides a structured overview of the Ragit project documentation, ca
 
 ## IV. Development & Contribution
 
+*   **`gemini_cli_change_management_sop.md`**
+    *   **Themes**: Gemini CLI, change management, SOP.
+    *   **Key Takeaways**: Defines the process for using the Gemini CLI agent within the project's structured change management workflow.
+
 *   **`contribution.md`**
     *   **Themes**: Ways to contribute (file readers, prompt engineering, documentation, bug reports), running tests.
     *   **Key Takeaways**: Guide for developers and users interested in contributing to the project.
