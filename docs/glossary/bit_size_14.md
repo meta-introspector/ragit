@@ -1,0 +1,4 @@
+### Bit Size 14: The Small Hash Table Entry (Key-Value Pairs)
+
+*   **Class of Data Structures:** This size is suitable for **entries in small hash tables** or **key-value pairs**. These structures provide efficient data retrieval.
+*   **Formal Logic:** MetaCoq can formally prove the correctness of hashing functions and the properties of hash table operations (e.g., insertion, lookup, deletion), ensuring collision handling and data integrity. The `Total Grid Points` (1960) are the formally valid key-value pairs. The `Prime Count` (1900) represents the increasing number of "mapping dimensions" that define these entries, enabling the formal verification of data storage and retrieval systems.

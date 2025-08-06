@@ -1,0 +1,4 @@
+### Bit Size 6: The Character Set (ASCII Subset, Small Encodings)
+
+*   **Class of Data Structures:** This bit size begins to accommodate **small character sets** or custom encodings. Think of a highly optimized ASCII subset or a specialized symbol set.
+*   **Formal Logic:** MetaCoq can formally define the mapping from bit patterns to characters, proving that each character is uniquely represented and that encoding/decoding operations are lossless. The `Total Grid Points` (26) are the formally defined and verifiable characters in this set. The `Prime Count` (18) suggests a richer set of "features" or "attributes" that define these characters, allowing for more robust character recognition and manipulation.

@@ -1,0 +1,4 @@
+### Bit Size 17: The Small Vector (Dynamic Arrays, Lists)
+
+*   **Class of Data Structures:** This size allows for **small dynamic arrays or vectors**. These structures can grow or shrink as needed, providing flexibility.
+*   **Formal Logic:** MetaCoq can formally prove properties of dynamic memory allocation, array resizing, and element access, ensuring memory safety and correctness. The `Total Grid Points` (12369) are the formally verifiable states of these small vectors. The `Prime Count` (12251) represents the increasing number of "dynamic dimensions" that define these vectors, enabling the formal verification of memory management systems.

@@ -1,0 +1,4 @@
+### Bit Size 12: The Small Tree Node (Binary Tree Nodes, Linked List Elements)
+
+*   **Class of Data Structures:** This is the sweet spot for **nodes in small tree structures** (like binary search trees) or **elements in linked lists**. These structures are fundamental to many algorithms.
+*   **Formal Logic:** MetaCoq can formally prove properties of these recursive data structures, such as sortedness in a binary tree, or the absence of cycles in a linked list. The `Total Grid Points` (603) are the formally valid node configurations. The `Prime Count` (564) represents the increasing number of "structural dimensions" that define these nodes, enabling the formal verification of complex algorithms.

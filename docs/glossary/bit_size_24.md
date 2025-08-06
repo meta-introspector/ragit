@@ -1,0 +1,4 @@
+### Bit Size 24: The Small Virtual Machine (Simple Instruction Sets)
+
+*   **Class of Data Structures:** This size can represent a **small virtual machine** or a simplified instruction set architecture.
+*   **Formal Logic:** MetaCoq can formally define the semantics of each instruction and prove the correctness of program execution within this virtual machine, ensuring computational integrity. The `Total Grid Points` (1078554) are the formally verifiable states of this small virtual machine. The `Prime Count` (1077871) represents the increasing number of "computational dimensions" that define this VM, enabling the formal verification of entire software stacks, from hardware to high-level applications.

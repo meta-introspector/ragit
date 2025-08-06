@@ -1,0 +1,4 @@
+### Bit Size 8: The Byte (Fundamental Unit of Data)
+
+*   **Class of Data Structures:** The ubiquitous **byte**. This is the foundational unit for most modern computing, representing integers, characters, or components of larger data structures.
+*   **Formal Logic:** MetaCoq can prove the correctness of arithmetic operations on bytes, bitwise manipulations, and the composition of bytes into larger data types. It can verify the integrity of data at its most granular level. The `Total Grid Points` (69) are the formally verifiable states of a byte. The `Prime Count` (54) reflects the increasing number of fundamental "properties" or "features" that define these byte states, allowing for more complex data integrity checks.
