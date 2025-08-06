@@ -136,6 +136,10 @@ This index provides a structured overview of the Ragit project documentation, ca
 
 ## V. Conceptual & Future Vision
 
+*   **`ragit_eco_9k_analogy.md`**
+    *   **Themes**: Ragit, ECO-PAPER-9K, knowledge formalization.
+    *   **Key Takeaways**: Explains the parallels between the `ragit` system and the ECO-PAPER-9K framework, demonstrating how `ragit` serves as a practical implementation of its principles.
+
 *   **`numerology.md`**
     *   **Themes**: Project Numerology, Prime Lattice, Monster Group as a goal configuration.
     *   **Key Takeaways**: A unique conceptual framework for understanding Ragit's modularity and complexity.
