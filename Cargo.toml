@@ -8,8 +8,8 @@ repository = "https://github.com/baehyunsol/ragit"
 documentation = "https://docs.rs/ragit"
 
 [workspace]
-members = [
-    "crates/prime-bit-counter",
+members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
+    "crates/prime-bit-counter", "crates/word_counter",
 ]
 exclude = [
     "crates/server",
