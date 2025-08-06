@@ -56,20 +56,20 @@ csv = "1.3.1"
 markdown = "1.0.0"
 urlencoding = "2.1.3"
 scraper = "0.23.1"
-rrust_kontekst = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/rrust_kontekst"}
+rrust_kontekst = {path = "../../layer3_network/rrust_kontekst"}
 #orbital_sim_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/orbital_sim_lib"}
 #core_data_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib"}
 #emoji_matrix_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/emoji_matrix_lib"}
-rrust_kontekst_base = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/rrust_kontekst_base"}
-solfunmeme_extractor = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_extractor"}
+rrust_kontekst_base = {path = "../../layer3_network/rrust_kontekst_base"}
+solfunmeme_extractor = {path = "../../layer3_network/solfunmeme_extractor"}
 #component_builder_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/component_builder_lib"}
 #component_registry_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/component_registry_lib"}
 #component_emoji_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/component_emoji_lib"}
 #playground_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/playground_lib"}
-views_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/views_lib"}
-solfunmeme_models = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_models"}
-shared_types_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/shared_types_lib"}
-signals_lib = {path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/signals_lib"}
+views_lib = {path = "../../layer7_application/views_lib"}
+solfunmeme_models = {path = "../../layer7_application/solfunmeme_models"}
+shared_types_lib = {path = "../../layer1_physical/shared_types_lib"}
+signals_lib = {path = "../../layer6_presentation/signals_lib"}
 ctor = "0.4.2"
 tracing = "0.1.41"
 curve25519-dalek = "4.1.3"

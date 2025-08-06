@@ -13,6 +13,7 @@ members = [
     "crates/layer1_physical/ragit-core",
     "crates/layer1_physical/ragit-types",
     "crates/layer1_physical/ragit-file-error",
+    "crates/layer1_physical/shared_types_lib",
 
     # Layer 2
     "crates/layer2_data_link/fs",
@@ -24,11 +25,17 @@ members = [
     "crates/layer3_network/ragit-utils",
     "crates/layer3_network/solfunmeme-core-logic",
     "crates/layer3_network/ragit-code-analyzer",
+    "crates/layer3_network/rrust_kontekst",
+    "crates/rrust_kontekst_base",
+    "crates/rrust_kontekst_macros",
+    "crates/layer3_network/solfunmeme_extractor",
+    "crates/layer3_network/solfunmeme_embedding",
 
     # Layer 4
     "crates/layer4_transport/ragit-core-utils",
     "crates/layer4_transport/ragit-query",
     "crates/layer4_transport/ragit-readers",
+    "crates/layer4_transport/solfunmeme_clifford",
 
     # Layer 5
     "crates/layer5_session/ragit-config",
@@ -40,6 +47,9 @@ members = [
     "crates/layer6_presentation/pdl",
     "crates/layer6_presentation/ragit-model-query-response",
     "crates/layer6_presentation/ragit-schema",
+    "crates/layer6_presentation/signals_lib",
+    "crates/layer6_presentation/solfunmeme_ontology_vibe",
+    "crates/layer6_presentation/solfunmeme_rdf_utils",
 
     # Layer 7
     "crates/layer7_application/api",
@@ -58,6 +68,8 @@ members = [
     "crates/layer7_application/ragit-mesh-agent",
     "crates/layer7_application/ragit-github-api",
     "crates/layer7_application/ragit-dwim",
+    "crates/layer7_application/views_lib",
+    "crates/layer7_application/solfunmeme_models",
 
     # Layer 8 - Web
     "crates/layer8_web/ragit-wasm",
@@ -142,11 +154,11 @@ homepage = "https://github.com/baehyunsol/ragit"
 
 [workspace.dependencies]
 lazy_static = "1.5.0"
-mownstr = "0.2.0"
+mownstr = { path = "./vendor/mownstr" }
 regex = "1.11.1"
 resiter = "0.5.0"
-sophia_api = { version = "0.8.0", default-features = false }
-sophia_iri = { version = "0.8.0", default-features = false }
+sophia_api = { path = "./vendor/sophia_rs/api" }
+sophia_iri = { path = "./vendor/sophia_rs/iri" }
 thiserror = "1.0"
 test-case = "2.2.2"
 toml = "0.8.0"
@@ -193,10 +205,11 @@ tikv-jemallocator = { version = "0.5", optional = true }
 tokio = { version = "1.43.0", features = ["full"] }
 url = "2.5.4"
 zstd = "0.13.3"
+ragit-dwim = { path = "./crates/layer7_application/ragit-dwim" }
 
-solfunmeme_embedding = { path = "vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_embedding" }
-solfunmeme_clifford = { path = "vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_clifford" }
-solfunmeme_ontology_vibe = { path = "vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_ontology_vibe" }
+solfunmeme_embedding = { path = "./crates/layer3_network/solfunmeme_embedding" }
+solfunmeme_clifford = { path = "./crates/layer4_transport/solfunmeme_clifford" }
+solfunmeme_ontology_vibe = { path = "./crates/layer6_presentation/solfunmeme_ontology_vibe" }
 sophia_api = { workspace = true }
 sophia_iri = { workspace = true }
 mownstr = { workspace = true }

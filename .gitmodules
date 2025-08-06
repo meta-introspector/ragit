@@ -35,4 +35,7 @@
 
 [submodule "vendor/mownstr"]
 	path = vendor/mownstr
-	url = https://github.com/meta-introspector/mownstr
+	url = https://github.com/meta-introspector/mownstr.git
+[submodule "vendor/sophia_rs"]
+	path = vendor/sophia_rs
+	url = https://github.com/meta-introspector/sophia_rs.git
