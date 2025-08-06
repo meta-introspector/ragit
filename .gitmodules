@@ -42,3 +42,6 @@
 [submodule "vendor/tclifford"]
 	path = vendor/tclifford
 	url = https://github.com/grumyantsev/tclifford
+[submodule "index/solfunmeme-index"]
+	path = index/solfunmeme-index
+	url = https://huggingface.co/datasets/introspector/solfunmeme-index
