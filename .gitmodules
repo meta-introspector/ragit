@@ -45,3 +45,6 @@
 [submodule "index/solfunmeme-index"]
 	path = index/solfunmeme-index
 	url = https://huggingface.co/datasets/introspector/solfunmeme-index
+[submodule "idx"]
+	path = idx
+	url = https://huggingface.co/datasets/introspector/solfunmeme-index/

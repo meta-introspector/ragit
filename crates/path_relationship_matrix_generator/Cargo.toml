@@ -1,11 +1,11 @@
 [package]
-name = "word_counter"
+name = "path_relationship_matrix_generator"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-regex = "1.5"
+walkdir = "2.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-toml = "0.5"
-walkdir = "2.3"
+path-clean = "1.0"
+num_enum = "0.7"

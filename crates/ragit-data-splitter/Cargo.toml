@@ -1,11 +1,11 @@
 [package]
-name = "word_counter"
+name = "ragit-data-splitter"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-regex = "1.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-toml = "0.5"
+anyhow = "1.0"
 walkdir = "2.3"
+rayon = "1.5" # Added for parallel processing

@@ -9,7 +9,8 @@ documentation = "https://docs.rs/ragit"
 
 [workspace]
 members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
-    "crates/prime-bit-counter", "crates/word_counter",
+    "crates/prime-bit-counter", "crates/word_counter", "crates/term_report_generator",
+    "crates/directory_reorganizer", "crates/path_relationship_matrix_generator", "crates/tree_term_reporter", "crates/term_quiz_master", "crates/semantic_term_processor",
 ]
 exclude = [
     "crates/server",
@@ -70,6 +71,15 @@ regex = "1.11.1"
 resiter = "0.5.0"
 sophia_api = { path = "./vendor/sophia_rs/api" }
 sophia_iri = { path = "./vendor/sophia_rs/iri" }
+sophia_term = { path = "./vendor/sophia_rs/term" }
+sophia_turtle = { path = "./vendor/sophia_rs/turtle" }
+sophia_rio = { path = "./vendor/sophia_rs/rio" }
+sophia_isomorphism = { path = "./vendor/sophia_rs/isomorphism" }
+oxiri = "0.2.11"
+criterion = "0.5"
+rand = "0.8"
+rio_turtle = "0.1.0"
+rio_api = "0.1.0"
 thiserror = "1.0"
 test-case = "2.2.2"
 toml = "0.8.0"
@@ -94,6 +104,4 @@ inherits = "release"
 codegen-units = 1
 lto = "fat"
 
-# mupdf does not compile without this patch on MacOS
-[patch.crates-io]
-pathfinder_simd = { git = "https://github.com/servo/pathfinder.git" }
+
