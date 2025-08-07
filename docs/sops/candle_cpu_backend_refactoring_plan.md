@@ -32,57 +32,28 @@ To extract all remaining operation-specific `struct`s, `trait`s, and their `impl
     *   `UpsampleNearest1D` (`ops/upsample_nearest_1d.rs`)
     *   `UpsampleNearest2D` (`ops/upsample_nearest_2d.rs`)
     *   `WCond` (`ops/wcond.rs`)
+    *   `MatMul` (`ops/mat_mul.rs`)
+    *   `elu` (`ops/elu.rs`)
+    *   `CpuStorage` and its `impl CpuStorage` (`ops/impl_cpu_storage.rs`)
+    *   `impl BackendStorage for CpuStorage` (`ops/impl_backend_storage_for_cpu_storage.rs`)
+    *   `CpuDevice` and its `impl BackendDevice for CpuDevice` (`ops/impl_backend_device_for_cpu_device.rs`)
+    *   `copy2d_` (`ops/copy2d.rs`)
+    *   `copy_strided_src_` (`ops/copy_strided_src.rs`)
 
 *   **Remaining in `mod.rs` (to be extracted):**
-    *   `struct MatMul` and its `impl Map2 for MatMul`
-    *   `fn elu`
-    *   `pub enum CpuStorage` and its `impl CpuStorage` and `impl BackendStorage for CpuStorage`
-    *   `pub enum CpuStorageRef`
-    *   `pub struct CpuDevice` and its `impl BackendDevice for CpuDevice`
-    *   `fn copy2d_`
-    *   `fn copy_strided_src_`
+    *   None - `mod.rs` should now only contain `pub mod` and `pub use` statements.
 
 ## 5. Detailed Steps for Remaining Refactoring
 
-1.  **Extract `MatMul` and its `impl Map2` block:**
-    *   Create `ops/mat_mul.rs`.
-    *   Move `struct MatMul` and its `impl Map2 for MatMul` block to `ops/mat_mul.rs`.
-    *   Add the standard metadata header to `ops/mat_mul.rs`.
-    *   Update `mod.rs` to remove the extracted code and add `pub mod mat_mul;`.
+1.  **Create `prelude.rs`:**
+    *   Create `candle-core/src/cpu_backend/ops/prelude.rs`.
+    *   Consolidate common `use` statements from the extracted files into this `prelude.rs`.
 
-2.  **Extract `elu` function:**
-    *   Create `ops/elu.rs`.
-    *   Move `fn elu` to `ops/elu.rs`.
-    *   Add the standard metadata header to `ops/elu.rs`.
-    *   Update `mod.rs` to remove the extracted code and add `pub mod elu;`.
+2.  **Update `mod.rs`:**
+    *   Ensure `mod.rs` only contains `pub mod` declarations for the new files in `ops/` and `pub use` statements for the `prelude`.
 
-3.  **Extract `CpuStorage` and `CpuStorageRef` and their `impl` blocks:**
-    *   Create `ops/cpu_storage.rs`.
-    *   Move `pub enum CpuStorage`, `pub enum CpuStorageRef`, and their `impl CpuStorage` and `impl BackendStorage for CpuStorage` blocks to `ops/cpu_storage.rs`.
-    *   Add the standard metadata header to `ops/cpu_storage.rs`.
-    *   Update `mod.rs` to remove the extracted code and add `pub mod cpu_storage;`.
-
-4.  **Extract `CpuDevice` and its `impl` block:**
-    *   Create `ops/cpu_device.rs`.
-    *   Move `pub struct CpuDevice` and its `impl BackendDevice for CpuDevice` block to `ops/cpu_device.rs`.
-    *   Add the standard metadata header to `ops/cpu_device.rs`.
-    *   Update `mod.rs` to remove the extracted code and add `pub mod cpu_device;`.
-
-5.  **Extract `copy2d_` function:**
-    *   Create `ops/copy2d.rs`.
-    *   Move `fn copy2d_` to `ops/copy2d.rs`.
-    *   Add the standard metadata header to `ops/copy2d.rs`.
-    *   Update `mod.rs` to remove the extracted code and add `pub mod copy2d;`.
-
-6.  **Extract `copy_strided_src_` function:**
-    *   Create `ops/copy_strided_src.rs`.
-    *   Move `fn copy_strided_src_` to `ops/copy_strided_src.rs`.
-    *   Add the standard metadata header to `ops/copy_strided_src.rs`.
-    *   Update `mod.rs` to remove the extracted code and add `pub mod copy_strided_src;`.
-
-7.  **Clean up `mod.rs`:**
-    *   Ensure `mod.rs` only contains `pub mod` declarations for the new files in `ops/` and necessary `use` statements.
-    *   Remove any remaining constants or `TODO` comments that are no longer relevant after refactoring.
+3.  **Update Extracted Files:**
+    *   Replace redundant `use` statements in the extracted files with `use super::prelude::*;`.
 
 ## 6. Verification
 *   Run `cargo build` from the `ragit` root to ensure no compilation errors.
