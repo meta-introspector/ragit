@@ -1,0 +1,4 @@
+### Bit Size 3: The Enumerated Type (Simple Finite Sets)
+
+*   **Class of Data Structures:** We move to **enumerated types** or small, fixed-size sets. Think of a traffic light (Red, Yellow, Green) or a simple state machine with a few defined states.
+*   **Formal Logic:** Verification extends to proving properties of these finite state machines. MetaCoq can define and prove the transitions between states, ensuring no invalid states are reachable. The `Total Grid Points` (5) represent the distinct, provable states or values this type can hold. The `Prime Count` (4) suggests a slightly richer set of underlying "axioms" or fundamental distinctions that define these states. The `Prime/Grid Ratio` (0.8000) indicates a slight redundancy or flexibility, allowing for more expressive definitions within the formal system.

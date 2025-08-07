@@ -1,0 +1,4 @@
+### Bit Size 11: The Small Object (Simple Class Instances)
+
+*   **Class of Data Structures:** This bit size can represent **small object instances** with a limited number of properties. Think of a basic `Point` object (x, y coordinates) or a simple `Color` object (RGB values).
+*   **Formal Logic:** MetaCoq can formally define the invariants of these objects, proving that their properties always remain within valid ranges and that methods operate correctly. The `Total Grid Points` (339) are the formally valid object states. The `Prime Count` (309) represents the increasing number of "object dimensions" that define these instances, enabling the formal verification of object-oriented programs.

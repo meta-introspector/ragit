@@ -1,0 +1,4 @@
+### Bit Size 4: The Nibble (Basic Bitfields & Flags)
+
+*   **Class of Data Structures:** This is the domain of **bitfields** and **flag sets**. A 4-bit nibble can represent 16 distinct combinations, perfect for encoding small sets of options or status indicators.
+*   **Formal Logic:** MetaCoq can formally define and prove the behavior of bitwise operations (e.g., setting, clearing, toggling specific flags) and the interpretation of these bit patterns into meaningful states. The `Total Grid Points` (9) are the formally recognized, distinct configurations of these flags. The `Prime Count` (6) provides the underlying "dimensions" for these configurations, ensuring their unique and verifiable nature.

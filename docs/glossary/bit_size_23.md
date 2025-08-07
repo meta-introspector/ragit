@@ -1,0 +1,4 @@
+### Bit Size 23: The Small Knowledge Graph (Ontology Triples)
+
+*   **Class of Data Structures:** This size is suitable for **small knowledge graphs** or collections of ontology triples (subject-predicate-object).
+*   **Formal Logic:** MetaCoq can formally define the axioms and rules of the ontology, proving the consistency of the knowledge graph and the correctness of inference operations. The `Total Grid Points` (564687) are the formally verifiable states of these small knowledge graphs. The `Prime Count` (564163) represents the increasing number of "semantic dimensions" that define these graphs, enabling the formal verification of knowledge representation systems.

@@ -1,0 +1,4 @@
+### Bit Size 19: The Small Image (Tiny Bitmaps, Icons)
+
+*   **Class of Data Structures:** This size can represent **tiny bitmap images** or **icons**.
+*   **Formal Logic:** MetaCoq can formally define image properties (e.g., dimensions, pixel values) and prove the correctness of image processing operations (e.g., scaling, rotation), ensuring visual integrity. The `Total Grid Points` (43578) are the formally verifiable states of these small images. The `Prime Count` (43390) represents the increasing number of "visual dimensions" that define these images, enabling the formal verification of graphics rendering pipelines.

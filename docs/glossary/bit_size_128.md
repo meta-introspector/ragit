@@ -1,0 +1,4 @@
+### Bit Size 128: The Symmetric Security Level (AES-128, Secure Identifiers)
+
+*   **Class of Data Structures:** This bit size is the standard for **symmetric encryption keys** (e.g., AES-128), universally unique identifiers (UUIDs), and secure session tokens. It represents a security level generally considered robust against classical brute-force attacks.
+*   **Formal Logic:** MetaCoq can formally prove the security properties of protocols built with AES-128, ensuring confidentiality and integrity. The `Total Grid Points` (2^128) represent an astronomically large space, making exhaustive key searches computationally impossible. The `Prime Count` continues to grow, reflecting the increasing complexity of the underlying mathematical fields and groups used to construct these secure elements. Formal verification here ensures that the cryptographic strength is not undermined by implementation flaws.

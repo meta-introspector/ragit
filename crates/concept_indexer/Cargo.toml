@@ -1,0 +1,11 @@
+[package]
+name = "concept_indexer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+regex = "1.5"
+walkdir = "2.3"
+ragit-utils = { path = "../layer3_network/ragit-utils" }
+sysinfo = "0.30"
+memory-stats = "1.0.0"

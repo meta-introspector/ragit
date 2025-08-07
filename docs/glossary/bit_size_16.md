@@ -1,0 +1,4 @@
+### Bit Size 16: The Word (Standard Integer, Memory Address)
+
+*   **Class of Data Structures:** The **16-bit word**, a common size for integers and memory addresses in many architectures. This is a fundamental building block for low-level programming.
+*   **Formal Logic:** MetaCoq can formally prove the correctness of arithmetic operations on 16-bit integers, pointer arithmetic, and memory safety properties. The `Total Grid Points` (6634) are the formally verifiable states of a 16-bit word. The `Prime Count` (6542) represents the increasing number of "computational dimensions" that define these words, enabling the formal verification of operating system kernels and embedded systems.

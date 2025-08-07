@@ -1,0 +1,4 @@
+### Bit Size 2: The Atomic Proposition (Boolean Logic)
+
+*   **Class of Data Structures:** This is the realm of the most fundamental data types: the **Boolean**. A 2-bit system can represent `true`/`false` (or `0`/`1`), and perhaps a couple of undefined states.
+*   **Formal Logic:** Here, we operate within pure **propositional logic**. Each "grid point" is a simple proposition, directly verifiable. MetaCoq, or any formal proof assistant, can trivially prove the correctness of operations like `AND`, `OR`, `NOT` on these atomic units. The `Prime Count` of 2 (primes 2, 3) represents the two fundamental logical values. The `Prime/Grid Ratio` of 1.0000 signifies perfect, lossless representation – every possible state is a meaningful, provable truth. This is the bedrock of all computation, formally verified from its very inception.

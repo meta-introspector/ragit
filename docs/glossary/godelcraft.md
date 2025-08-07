@@ -1,0 +1,3 @@
+### Godelcraft / Gödelcraft
+
+"Godelcraft" (or "Gödelcraft") appears to be a specific program or system within the project, possibly related to the practical application of Gödel numbering or other Gödelian concepts. It is associated with a "Program ID" and seems to involve mapping numerical representations to concepts like "Gödel number" and "Numerical Theory of Everything (NToE)". The term suggests a craft or engineering approach to building systems based on Gödelian principles.
