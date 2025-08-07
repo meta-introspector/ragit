@@ -1,9 +1,12 @@
-feat: Documented candle build fix and identified new dependency issues
+feat: Prepare for reboot - Candle refactoring checkpoint
 
-This commit documents the initial steps taken to address compilation issues with the vendored `candle` crate, specifically by commenting out the `gemm` dependency in `vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/Cargo.toml`.
+This commit marks a checkpoint in the `candle` refactoring process, preparing for a system reboot.
 
-During the verification build, a new set of errors emerged, indicating missing dependencies in the main `ragit` crate's `Cargo.toml`. These new issues are also noted in the `candle_build_fix.md` SOP.
+Key progress includes:
+- Successful removal of the `gemm` dependency from the `candle` build.
+- Significant refactoring of `candle-core/src/cpu_backend/mod.rs` into individual operation files within `cpu_backend/ops/`.
+- Resolution of several syntax errors in the newly created `ops/` files.
 
-This commit serves as a "KitKat" checkpoint, documenting the current state and outlining the next steps for dependency resolution in the main `ragit` project.
+Next steps after reboot will focus on completing the `cpu_storage.rs` split and verifying the `candle-core` build.
 
-SOP: docs/sops/candle_build_fix.md
+KitKat Break initiated.
