@@ -10,7 +10,7 @@ documentation = "https://docs.rs/ragit"
 [workspace]
 members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "crates/prime-bit-counter", "crates/word_counter", "crates/term_report_generator",
-    "crates/directory_reorganizer", "crates/path_relationship_matrix_generator", "crates/tree_term_reporter", "crates/term_quiz_master", "crates/semantic_term_processor",
+    "crates/directory_reorganizer", "crates/path_relationship_matrix_generator", "crates/tree_term_reporter", "crates/term_quiz_master", "crates/semantic_term_processor", "tests/huggingface-candle-datasets-test",
 ]
 exclude = [
     "crates/server",
@@ -63,6 +63,7 @@ repository = "https://github.com/baehyunsol/ragit"
 documentation = "https://docs.rs/ragit"
 description = "git-like rag pipeline"
 homepage = "https://github.com/baehyunsol/ragit"
+categories = ["science"]
 
 [workspace.dependencies]
 lazy_static = "1.5.0"
@@ -84,8 +85,21 @@ thiserror = "1.0"
 test-case = "2.2.2"
 toml = "0.8.0"
 serde = { version = "1.0.218", features = ["derive"] }
+accelerate-src = { version = "0.3.2" }
 
 [dependencies]
+ragit-agent = { path = "crates/legacy_and_refactoring/ragit-agent" }
+ragit-index = { path = "crates/layer3_network/ragit-index" }
+ragit-model = { path = "crates/layer7_application/ragit-model" }
+ragit-model-query-response = { path = "crates/layer6_presentation/ragit-model-query-response" }
+ragit-types = { path = "crates/layer1_physical/ragit-types" }
+ragit-utils = { path = "crates/layer3_network/ragit-utils" }
+lazy_static = "1.5.0"
+regex = "1.10.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+sha3 = "0.10.8"
 num-prime = "0.4.0"
 sysinfo = "0.30.13"
 
