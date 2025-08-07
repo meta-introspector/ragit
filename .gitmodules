@@ -48,3 +48,6 @@
 [submodule "idx"]
 	path = idx
 	url = https://huggingface.co/datasets/introspector/solfunmeme-index/
+[submodule "vendor/meta-introspector/hugging-face-dataset-validator-rust"]
+	path = vendor/meta-introspector/hugging-face-dataset-validator-rust
+	url = https://github.com/meta-introspector/hugging-face-dataset-validator-rust
