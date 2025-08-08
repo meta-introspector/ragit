@@ -6,6 +6,7 @@ use anyhow::Result;
 async fn main() -> Result<()> {
     let mut monitor = MemoryMonitor::new(true, None, None);
 
+    monitor.verbose("Starting memory test.");
     monitor.capture_and_log_snapshot("Start of program");
 
     // Initialize MetaMemeEngine
@@ -15,6 +16,7 @@ async fn main() -> Result<()> {
     // Example usage of MetaMemeEngine (replace with actual crashing scenario if known)
     // For now, we'll just generate a simple poem to observe memory.
     for i in 0..1000 {
+        monitor.verbose(&format!("Generating poem {}...", i));
         let poem = engine.generate_poem("🌀🎭🧬").await?;
         monitor.process_unit();
         monitor.capture_and_log_snapshot(&format!("After generating poem {}", i));
@@ -24,6 +26,7 @@ async fn main() -> Result<()> {
         tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
     }
 
+    monitor.verbose("Memory test finished.");
     monitor.print_final_report();
 
     Ok(())
