@@ -12,6 +12,7 @@ pub fn print_memory_table(snapshots: Vec<MemorySnapshot>) {
     table.add_column(Column::new("Total".to_string(), 15));
     table.add_column(Column::new("Used".to_string(), 15));
     table.add_column(Column::new("Used Delta".to_string(), 15));
+    table.add_column(Column::new("RSS Delta".to_string(), 15));
     table.add_column(Column::new("Units".to_string(), 10));
     table.add_column(Column::new("Used Delta/Unit".to_string(), 20));
     table.add_column(Column::new("Duration/Unit".to_string(), 20));
@@ -36,6 +37,7 @@ pub fn print_memory_table(snapshots: Vec<MemorySnapshot>) {
             format_bytes(snapshot.total_memory),
             format_bytes(snapshot.used_memory),
             format_signed_bytes(snapshot.used_delta),
+            format_signed_bytes(snapshot.rss_delta),
             snapshot.units_processed.to_string(),
             format_signed_bytes(used_delta_per_unit),
             format!("{:.2?}ns", duration_per_unit),

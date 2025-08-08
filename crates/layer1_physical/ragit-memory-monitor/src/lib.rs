@@ -58,6 +58,7 @@ impl MemoryMonitor {
 
     pub fn capture_and_log_snapshot(&mut self, step_name: &str) {
         let current_time = std::time::Instant::now();
+        self.sys.refresh_processes();
         let mut current_process_memory_kb = 0;
         if let Some(process) = self.sys.process(sysinfo::Pid::from_u32(std::process::id())) {
             current_process_memory_kb = process.memory() / 1024;

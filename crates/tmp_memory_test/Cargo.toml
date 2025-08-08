@@ -1,0 +1,10 @@
+[package]
+name = "tmp_memory_test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-memory-monitor = { path = "../../crates/layer1_physical/ragit-memory-monitor" }
+solfunmeme-metameme = { path = "../../vendor/solfunmeme-metameme" }
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }
