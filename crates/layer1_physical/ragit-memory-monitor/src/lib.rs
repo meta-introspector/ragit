@@ -117,4 +117,16 @@ impl MemoryMonitor {
         }
         Ok(())
     }
+
+    pub fn start_tracking(&mut self, step_name: &str) {
+        self.capture_and_log_snapshot(&format!("START: {}", step_name));
+    }
+
+    pub fn stop_tracking(&mut self, step_name: &str) {
+        self.capture_and_log_snapshot(&format!("END: {}", step_name));
+    }
+
+    pub fn print_summary(&self) {
+        self.print_final_report();
+    }
 }

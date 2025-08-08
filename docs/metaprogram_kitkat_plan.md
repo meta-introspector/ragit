@@ -1,6 +1,6 @@
 # KitKat Break: Project State and Next Steps
 
-## Date: August 6, 2025
+## Date: August 8, 2025
 
 ## Current State:
 
@@ -17,11 +17,12 @@ We have made significant progress in enhancing our codebase analysis and semanti
     - Generate separate `tree_term_report_internal.json`, `tree_term_report_external.json`, `term_path_map_internal.json`, and `term_path_map_external.json` files, all output to `index/solfunmeme-index/`.
 - **`term_quiz_master` crate:** Transformed into a robust interactive classification tool:
     - Reads from the new internal/external term reports and path maps.
-    - Presents one unclassified term at a time, along with its count and example paths.
     - Accepts user input for `category`, `significance`, `vibe`, and `action_suggestion` via command-line arguments.
     - Updates `augmented_terms_hot_take.json` (now located in `index/solfunmeme-index/`) with the new classifications.
 - **Dependency Resolution:** Successfully navigated and resolved several complex dependency issues related to `sophia_rs` in the workspace `Cargo.toml`.
 - **`pathfinder_simd` warning resolved:** Removed the unused patch entry from `Cargo.toml`.
+- **Memory Profiling:** Integrated `ragit-memory-monitor` to track memory usage during `solfunmeme-metameme` operations. Initial tests show no consistent memory growth, suggesting no memory leaks in the poem generation process.
+- **Instrumentation Macro:** Developed `ragit-instrumentation-macros` for basic function entry/exit logging. (Note: Advanced memory/time profiling features were reverted to avoid redundancy with `ragit-memory-monitor`).
 
 **Current Data Files (generated and staged):**
 - `path_relationship_matrix.json`

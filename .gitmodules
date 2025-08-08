@@ -54,3 +54,6 @@
 [submodule "vendor/solfunmeme-metameme"]
 	path = vendor/solfunmeme-metameme
 	url = https://github.com/meta-introspector/solfunmeme-metameme
+[submodule "vendor/amazon-q-developer-cli"]
+	path = vendor/amazon-q-developer-cli
+	url = https://github.com/meta-introspector/amazon-q-developer-cli
