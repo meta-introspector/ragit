@@ -110,6 +110,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Documentation Storage SOP](./sops/documentation_storage_sop.md)
 - [Git Automation SOP](./sops/git_automation_sop.md)
 - [Architecture](./architecture.md)
+- [ZOS Bootstrap ZOS](./zos_bootstrap_zos.md)
 
 ## Interactive documents
 
