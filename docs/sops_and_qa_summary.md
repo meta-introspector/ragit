@@ -11,6 +11,7 @@ This document summarizes the key Standard Operating Procedures (SOPs) and Qualit
 *   **`hierarchical_search_sop.md`**: A structured search strategy, starting with the highest-level information (tree, manifests) and progressively moving to more granular searches (docs, ontologies, source code).
 *   **`sophia_integration.md`**: The `sophia` RDF library is abstracted behind the `solfunmeme_rdf_utils` crate to simplify its use and manage its complexity.
 *   **`documentation_storage_sop.md`**: Standardized procedure for storing, organizing, and managing all project documentation.
+*   **`git_automation_sop.md`**: Principles and procedures for automating repetitive Git workflows.
 
 ## Quality Procedures (`docs/quality_procedures/`)
 

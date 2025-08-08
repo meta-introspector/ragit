@@ -108,6 +108,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Prompt Engineering](./prompt_engineering.md)
 - [Quick Guide](./quick_guide.md)
 - [Documentation Storage SOP](./sops/documentation_storage_sop.md)
+- [Git Automation SOP](./sops/git_automation_sop.md)
 - [Architecture](./architecture.md)
 
 ## Interactive documents
