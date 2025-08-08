@@ -10,6 +10,7 @@ This document summarizes the key Standard Operating Procedures (SOPs) and Qualit
 *   **`embedding_to_ontology_pipeline.md`**: A defined process for adding new terms to the ontology with semantic vector representations using `solfunmeme_embedding`, `solfunmeme_clifford`, and `solfunmeme_ontology_vibe`.
 *   **`hierarchical_search_sop.md`**: A structured search strategy, starting with the highest-level information (tree, manifests) and progressively moving to more granular searches (docs, ontologies, source code).
 *   **`sophia_integration.md`**: The `sophia` RDF library is abstracted behind the `solfunmeme_rdf_utils` crate to simplify its use and manage its complexity.
+*   **`documentation_storage_sop.md`**: Standardized procedure for storing, organizing, and managing all project documentation.
 
 ## Quality Procedures (`docs/quality_procedures/`)
 
