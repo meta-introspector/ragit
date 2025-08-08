@@ -26,3 +26,6 @@ t_models'
 commit_message.txt
 temp_commit_message.txt
 #*#
+emoji_analysis_data.json
+*.json
+# Large data files
