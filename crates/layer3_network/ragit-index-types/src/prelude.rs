@@ -8,7 +8,7 @@ pub use ragit_types::model::Model;
 pub use ragit_types::query::QueryConfig;
 pub use ragit_types::uid::Uid;
 pub use ragit_types::uid::UidError;
-pub use ragit_utils::ragit_path_utils::{get_normalized_abs_pathbuf, get_rag_path, get_uid_path, join_paths};
+pub use ragit_utils::ragit_path_utils::{get_normalized_abs_pathbuf, get_rag_path, get_uid_path};
 pub use std::collections::{HashMap, HashSet};
 pub use std::path::{Path, PathBuf};
 pub use std::result::Result;

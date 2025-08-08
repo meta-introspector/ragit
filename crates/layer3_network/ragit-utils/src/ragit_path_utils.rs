@@ -9,7 +9,7 @@ pub fn get_rag_path(root_dir: &PathBuf, rel_path: &PathBuf) -> Result<PathBuf, E
     let abs_root_dir = PathBuf::from(normalize(&abs_root_dir_str)?.as_str());
     let joined_path = join(abs_root_dir.to_str().unwrap(), rel_path.to_str().unwrap())?;
     Ok(PathBuf::from(
-        normalize(joined_path.to_str().unwrap())?.as_str(),
+        normalize(joined_path.as_str())?.as_str(),
     ))
 }
 
