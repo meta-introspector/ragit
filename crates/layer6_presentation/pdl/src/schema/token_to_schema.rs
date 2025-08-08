@@ -1,9 +1,9 @@
 use super::schema_parse_error::SchemaParseError;
 use super::token::{Token, GroupKind};
-use ragit_types::schema::{Constraint, Schema, SchemaType, default_string, default_integer, default_float, default_boolean, default_yesno, default_code, default_task_list, default_array};
+use ragit_types::schema::{Schema, default_string, default_integer, default_float, default_boolean, default_yesno, default_code, default_task_list, default_array};
 
 pub fn token_to_schema(tokens: &[Token], index: &mut usize) -> Result<Schema, SchemaParseError> {
-    let mut r#type = match tokens.get(*index) {
+    let r#type = match tokens.get(*index) {
         Some(t @ Token::Literal(s)) => match s.as_str() {
             "str" | "string" => default_string(),
             "int" | "integer" => default_integer(),

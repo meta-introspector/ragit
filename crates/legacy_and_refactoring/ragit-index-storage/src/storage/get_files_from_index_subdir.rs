@@ -16,13 +16,13 @@ pub fn get_files_from_index_subdir(
     ).map_err(|e| ApiError::Internal(format!("Failed to join paths: {}", e)))?;
 
     for internal in read_dir(base_path_str.as_str(), false)? {
-        if !is_dir(&PathBuf::from(internal.clone())) {
+        if !is_dir(internal.as_str()) {
             continue;
         }
 
         for file_path in read_dir(internal.as_str(), false)? {
             if let Some(ext_filter) = extension_filter {
-                if let Ok(Some(ext)) = extension(&PathBuf::from(file_path.clone())) {
+                if let Ok(Some(ext)) = extension(file_path.as_str()) {
                     if ext == ext_filter {
                         result.push(PathBuf::from(file_path));
                     }

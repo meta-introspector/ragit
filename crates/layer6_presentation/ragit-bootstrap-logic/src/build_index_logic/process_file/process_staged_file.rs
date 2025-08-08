@@ -16,8 +16,7 @@ pub fn process_staged_file(
 ) -> Result<()> {
     memory_monitor.verbose(&format!("Processing file: {:?}", file_path_buf));
     let content = fs::read_to_string(file_path_buf)?;
-    memory_monitor.verbose(&format!("Content of file {:?}: 
-{}", file_path_buf, content));
+    memory_monitor.verbose(&format!("File size: {} bytes", content.len()));
     memory_monitor.verbose(&format!("Content length: {}", content.len()));
     memory_monitor.verbose(&format!("Chunk size: {}", build_config.chunk_size));
     let chunks: Vec<&str> = splitter.chunks(&content, build_config.chunk_size).collect();

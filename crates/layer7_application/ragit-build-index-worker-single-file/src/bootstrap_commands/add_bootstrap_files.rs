@@ -2,22 +2,19 @@ use anyhow::Result;
 use std::path::PathBuf;
 
 use ragit_index_types::index_struct::Index;
-use super::file_source::{FileSource, CargoPackageFileSource, GlobFileSource}; // Import GlobFileSource
+use super::file_source::{FileSource, CargoPackageFileSource, GlobFileSource};
 
 use super::constants::BOOTSTRAP_PACKAGE_NAME;
 use ragit_memory_monitor::MemoryMonitor;
 
-// Define AddResult and AddMode locally for synchronous operation
 pub struct AddResult {
     pub added_files: usize,
     pub added_chunks: usize,
 }
 
 pub enum AddMode {
-    // Define variants if needed, otherwise keep empty
 }
 
-// Synchronous version of add_files_command
 pub fn add_files_sync(
     index: &mut Index,
     files: &[String],
@@ -32,7 +29,7 @@ pub fn add_files_sync(
             index.staged_files.push(path);
             added_files += 1;
             if verbose {
-                println!("Adding file {}/{}: {}", i + 1, files.len(), file);
+                println!("Adding file {}/{}", i + 1, files.len());
             }
         }
     }
@@ -45,7 +42,6 @@ pub fn add_files_sync(
 
 pub async fn add_bootstrap_files(
     actual_root_dir: &PathBuf,
-    
     index: &mut Index,
     max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
@@ -84,7 +80,7 @@ pub async fn add_bootstrap_files(
             files_to_add.truncate(max_files);
         }
     }
-    memory_monitor.verbose(&format!("bootstrap_index_self: Found {} files to add", files_to_add.len()));
+        memory_monitor.verbose(&format!("CargoPackageFileSource: Found {} files.", files_to_add.len()));
     let absolute_files_to_add: Vec<String> = files_to_add.into_iter().filter_map(|p| {
         let abs_path = actual_root_dir.join(&p);
         if abs_path.is_file() {

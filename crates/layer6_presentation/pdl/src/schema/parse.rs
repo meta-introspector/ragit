@@ -1,7 +1,5 @@
 use ragit_types::schema::{Schema};
-use super::token::{Token};
 use super::schema_parse_error::SchemaParseError;
-use super::tokenize_state::TokenizeState;
 
 pub fn parse_schema(s: &str) -> Result<Schema, SchemaParseError> {
     let mut index = 0;

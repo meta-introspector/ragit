@@ -43,14 +43,13 @@ pub async fn run() -> Result<()> {
 
     let mut memory_monitor = MemoryMonitor::new(verbose, None, None); // time_threshold_ms and memory_threshold_bytes are None for now
 
-    memory_monitor.capture_and_log_snapshot(BEFORE_SETUP_ENV);
+    memory_monitor.capture_and_log_snapshot("Initial");
 
     let (actual_root_dir, temp_dir, mut index) = setup_environment(
         verbose,
         max_memory_gb,
         &mut memory_monitor,
     ).await?;
-    println!("DEBUG: Actual root directory: {:?}", actual_root_dir);
 
     memory_monitor.capture_and_log_snapshot(AFTER_SETUP_ENV);
 
@@ -103,16 +102,16 @@ pub async fn run() -> Result<()> {
         
         export_chunks_main::write_chunks_to_markdown(verbose, &temp_dir, &index, max_memory_gb, &mut memory_monitor, max_iterations).await?;
     } else {
-        memory_monitor.verbose("bootstrap_index_self: Skipping writing chunks to markdown as requested.");
+        memory_monitor.verbose("Skipping writing chunks to markdown as requested.");
     }
 
-    if !disable_self_improvement {
+    if !args.disable_self_improvement {
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_self_improvement")?;
         
         perform_self_improvement(verbose, &actual_root_dir, &temp_dir, &index, max_memory_gb, &mut memory_monitor).await?;
     }
 
-    if !disable_final_query {
+    if !args.disable_final_query {
         memory_monitor.check_memory_limit(max_memory_gb, "Before perform_final_reflective_query")?;
         
         perform_final_reflective_query(verbose, &index, max_memory_gb, &mut memory_monitor).await?;
@@ -122,16 +121,17 @@ pub async fn run() -> Result<()> {
     memory_monitor.print_final_report();
 
     // Count words in chunks and print to stdout
-    // Print memory usage table
-    memory_monitor.print_final_report();
-
-    // Count words in chunks and print to stdout
     let word_counts = ragit_index_types::word_counter::count_words_in_chunks(&index);
-    println!("\nWord Counts:\n{:?}", word_counts);
+    println!("
+Word Counts:
+{:?}", word_counts);
 
     // Clean up the temporary directory
     if !disable_cleanup {
         fs::remove_dir_all(&temp_dir)?;
+        memory_monitor.verbose(&format!("{:?}{:?}", CLEANUP_TEMP_DIR, temp_dir));
+    } else {
+        memory_monitor.verbose("Skipping cleanup of temporary directory as requested.");
     }
 
     Ok(())
