@@ -12,12 +12,21 @@ pub async fn add_files_command(
 ) -> Result<AddResult, ApiError> {
     println!("DEBUG: Entering add_files_command. Staged files before: {}", index.staged_files.len());
     let mut added_files = 0;
-    for file in files {
+    let total_files = files.len();
+    let mut next_percentage_log = 10;
+
+    for (i, file) in files.iter().enumerate() {
         let path = PathBuf::from(file);
         if !index.staged_files.contains(&path) {
             index.staged_files.push(path.clone());
             added_files += 1;
-            println!("DEBUG: Added file to staged_files: {:?}", path);
+        }
+
+        let current_percentage = ((i + 1) as f64 / total_files as f64 * 100.0) as usize;
+
+        if current_percentage >= next_percentage_log {
+            println!("DEBUG: Adding files to index: {}% complete.", next_percentage_log);
+            next_percentage_log += 10;
         }
     }
     println!("DEBUG: Exiting add_files_command. Staged files after: {}", index.staged_files.len());

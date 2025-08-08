@@ -1,5 +1,6 @@
 use anyhow::Result;
 use std::path::PathBuf;
+use tokio::sync::mpsc;
 
 use ragit_index_core::add_files::add_files_command;
 use ragit_index_types::index_struct::Index;
@@ -12,17 +13,17 @@ pub async fn add_bootstrap_files(
     verbose: bool,
     actual_root_dir: &PathBuf,
     temp_dir: &PathBuf,
-    index: &mut Index,
     max_memory_gb: Option<u64>,
     memory_monitor: &mut MemoryMonitor,
     max_files_to_process: Option<usize>,
     target: Option<String>,
-) -> Result<(), anyhow::Error> {
+) -> Result<mpsc::Receiver<PathBuf>, anyhow::Error> {
     memory_monitor.verbose("add_bootstrap_files: Starting to add bootstrap files.");
     memory_monitor.verbose("Running rag add.");
     memory_monitor.verbose(&format!("Found project root: {:?}", actual_root_dir));
 
-    // Use GlobFileSource to include all Rust files in the project, including submodules
+    let (tx, rx) = mpsc::channel(100); // Create a channel with a buffer of 100
+
     let glob_pattern = if let Some(target_glob) = target.clone() {
         format!("{}/{}", actual_root_dir.to_string_lossy(), target_glob)
     } else {
@@ -38,26 +39,29 @@ pub async fn add_bootstrap_files(
         }
     }
     memory_monitor.verbose(&format!("Found {} files to add", original_files_to_add.len()));
-    let temp_files_to_add = file_copy_utils::copy_files_to_temp_dir(
-        &actual_root_dir,
-        &temp_dir,
-        original_files_to_add,
-        verbose,
-        memory_monitor,
-    ).await?;
 
-    let relative_temp_files_to_add = temp_files_to_add.iter().map(|p| {
-        p.strip_prefix(&temp_dir).unwrap().to_string_lossy().into_owned()
-    }).collect::<Vec<String>>();
-    memory_monitor.verbose(&format!("Chunks in index before add_files_command: {}", index.chunks.len()));
-    memory_monitor.verbose("Adding files to index.");
-    memory_monitor.capture_and_log_snapshot("Before add_files_command");
-    memory_monitor.check_memory_limit(max_memory_gb, "Before add_files_command")?;
-    add_files_command(index, &relative_temp_files_to_add, None, false).await?;
-    memory_monitor.verbose("Files added to index.");
-    memory_monitor.capture_and_log_snapshot("After add_files_command");
-    memory_monitor.verbose(&format!("Chunks in index after add_files_command: {}", index.chunks.len()));
-    memory_monitor.check_memory_limit(max_memory_gb, "After add_files_command")?;
-    memory_monitor.verbose("add_bootstrap_files: Finished adding bootstrap files.");
-    Ok(())
+    let temp_dir_clone = temp_dir.clone();
+    let actual_root_dir_clone = actual_root_dir.clone();
+    let verbose_clone = verbose;
+    let memory_monitor_clone = memory_monitor.clone(); // Clone memory_monitor for the spawned task
+
+    tokio::spawn(async move {
+        let temp_files_to_add = file_copy_utils::copy_files_to_temp_dir(
+            &actual_root_dir_clone,
+            &temp_dir_clone,
+            original_files_to_add,
+            verbose_clone,
+            &mut memory_monitor_clone.clone(), // Pass a mutable clone
+        ).await.expect("Failed to copy files to temp dir");
+
+        for file_path in temp_files_to_add {
+            if let Err(e) = tx.send(file_path).await {
+                eprintln!("Failed to send file path through channel: {}", e);
+                break;
+            }
+        }
+        // Sender will be dropped here, signaling the end of the stream
+    });
+
+    Ok(rx)
 }

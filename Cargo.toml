@@ -14,6 +14,7 @@ members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "vendor/solfunmeme-metameme",
     "crates/layer7_application/ragit-build-index-worker-single-file",
 ]
+default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
 exclude = [
     "crates/server",
     "crates/ragit-agent-action",

@@ -35,7 +35,7 @@ pub async fn build_chunks(
         index.build_config.clone(),
     ).await?;
     println!("build_chunks: FileReader initialized. Can generate chunk: {}", fd.can_generate_chunk());
-    println!("build_chunks: Processing file: {:?}", file);
+    println!("build_chunks: Processing file: {}", file.file_name().unwrap().to_string_lossy());
     let build_info = ChunkBuildInfo::new(
         fd.file_reader_key(),
         prompt_hash.clone(),

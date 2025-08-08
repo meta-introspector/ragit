@@ -10,3 +10,4 @@ ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
 ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }
 ragit-types = { path = "../../layer1_physical/ragit-types" }
 text-splitter = "0.3.0"
+tokio = { version = "1.43.0", features = ["full", "process", "sync"] }

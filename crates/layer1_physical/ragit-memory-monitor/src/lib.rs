@@ -44,7 +44,12 @@ impl MemoryMonitor {
     pub fn verbose(&self, message: &str) {
         if self.verbose {
             let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S%.3f");
-            println!("[{timestamp}] [INFO] {message}");
+            let truncated_message = if message.len() > 300 {
+                format!("{}... (truncated)", &message[..300])
+            } else {
+                message.to_string()
+            };
+            println!("[{timestamp}] [INFO] {truncated_message}");
         }
     }
 

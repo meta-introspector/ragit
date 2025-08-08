@@ -1,0 +1,53 @@
+[2025-08-08 14:21:09.764] [INFO] Starting bootstrap process.
+[2025-08-08 14:21:09.770] [INFO] Setting up environment...
+[2025-08-08 14:21:09.770] [INFO] bootstrap_index_self: Created temporary directory: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+[2025-08-08 14:21:09.770] [INFO] setup_environment: Attempting to create .ragit directory: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/.ragit"
+[2025-08-08 14:21:09.770] [INFO] setup_environment: .ragit directory already exists.
+[2025-08-08 14:21:09.770] [INFO] setup_environment: Initialized new Index struct.
+[2025-08-08 14:21:09.770] [INFO] setup_environment: Index file path: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/.ragit/index.json"
+[2025-08-08 14:21:09.770] [INFO] setup_environment: Successfully saved index to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/.ragit/index.json"
+[2025-08-08 14:21:09.771] [INFO] bootstrap_index_self: Initialized new index in "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+[2025-08-08 14:21:09.775] [INFO] Temporary directory: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+[2025-08-08 14:21:09.778] [INFO] Environment setup complete.
+[2025-08-08 14:21:09.778] [INFO] Configuring memory settings...
+[2025-08-08 14:21:09.778] [INFO] Configuring memory settings.
+[2025-08-08 14:21:09.778] [INFO] Set max_chunk_size to 256
+[2025-08-08 14:21:09.778] [INFO] Set max_summary_len to 500
+[2025-08-08 14:21:09.778] [INFO] Set min_summary_len to 100
+[2025-08-08 14:21:09.782] [INFO] Memory settings configured.
+[2025-08-08 14:21:09.782] [INFO] Copying prompts...
+[2025-08-08 14:21:09.782] [INFO] bootstrap_index_self: Copying prompts
+[2025-08-08 14:21:09.785] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/agent.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/agent.pdl"
+[2025-08-08 14:21:09.785] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/answer_query.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/answer_query.pdl"
+[2025-08-08 14:21:09.785] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/describe_image.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/describe_image.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/extract_keyword.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/extract_keyword.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/multi_turn.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/multi_turn.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/raw.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/raw.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/rerank_summary.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/rerank_summary.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/summarize.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/summarize.pdl"
+[2025-08-08 14:21:09.786] [INFO] DEBUG: summarize.pdl copied to: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/summarize.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/summarize_chunks.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/summarize_chunks.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_calliope.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_calliope.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_clio.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_clio.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_erato.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_erato.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_euterpe.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_euterpe.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_melpomene.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_melpomene.pdl"
+[2025-08-08 14:21:09.786] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_polyhymnia.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_polyhymnia.pdl"
+[2025-08-08 14:21:09.787] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_terpsichore.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_terpsichore.pdl"
+[2025-08-08 14:21:09.787] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_thalia.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_thalia.pdl"
+[2025-08-08 14:21:09.787] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_urania.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_urania.pdl"
+[2025-08-08 14:21:09.787] [INFO] bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/grand_plan_discussion.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/grand_plan_discussion.pdl"
+[2025-08-08 14:21:09.790] [INFO] Prompts copied and loaded.
+[2025-08-08 14:21:09.790] [INFO] Adding bootstrap files...
+[2025-08-08 14:21:09.790] [INFO] bootstrap_index_self: Running rag add
+[2025-08-08 14:21:09.790] [INFO] bootstrap_index_self: Found project root: "/data/data/com.termux/files/home/storage/github/ragit"
+[2025-08-08 14:21:09.790] [INFO] Using CargoPackageFileSource.
+CargoPackageFileSource: Found 17681 files.
+[2025-08-08 14:21:10.808] [INFO] CargoPackageFileSource: Found 17681 files.
+[2025-08-08 14:21:10.884] [INFO] bootstrap_index_self: Before add_files_command
+Adding files to index: 10% complete.
+Adding files to index: 20% complete.
+Adding files to index: 30% complete.
+Adding files to index: 40% complete.
+Adding files to index: 50% complete.
+Adding files to index: 60% complete.

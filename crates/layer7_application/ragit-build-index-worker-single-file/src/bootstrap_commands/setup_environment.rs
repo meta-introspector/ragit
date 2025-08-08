@@ -41,3 +41,5 @@ pub async fn setup_environment(
     memory_monitor.capture_and_log_snapshot("After index initialization");
     Ok((actual_root_dir, temp_dir, index))
 }
+
+

@@ -44,7 +44,7 @@ impl FileSource for CargoPackageFileSource {
                 },
             }
         }
-        memory_monitor.verbose(&format!("CargoPackageFileSource: Found files: {:?}", files));
+        memory_monitor.verbose(&format!("CargoPackageFileSource: Found {} files.", files.len()));
         Ok(files)
     }
 }
@@ -71,7 +71,7 @@ impl FileSource for GlobFileSource {
                 },
             }
         }
-        memory_monitor.verbose(&format!("GlobFileSource: Found files: {:?}", files));
+        memory_monitor.verbose(&format!("GlobFileSource: Found {} files.", files.len()));
         Ok(files)
     }
 }

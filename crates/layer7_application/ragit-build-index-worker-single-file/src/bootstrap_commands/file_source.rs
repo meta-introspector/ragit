@@ -47,7 +47,7 @@ impl FileSource for CargoPackageFileSource {
                 }
             }
         }
-        println!("CargoPackageFileSource: Found files: {:?}", files);
+        println!("CargoPackageFileSource: Found {} files.", files.len());
         Ok(files)
     }
 }
