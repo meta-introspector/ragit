@@ -111,6 +111,7 @@ Other than those 3 platforms, I haven't tested ragit on any platform.
 - [Git Automation SOP](./sops/git_automation_sop.md)
 - [Architecture](./architecture.md)
 - [ZOS Bootstrap ZOS](./zos_bootstrap_zos.md)
+- [Candle Coccinelle Refactoring Log](./refactoring_logs/candle_coccinelle_refactoring.md)
 
 ## Interactive documents
 
