@@ -46,4 +46,8 @@ pub struct Args {
     /// Do not recurse into Git submodules when updating.
     #[clap(long)]
     pub no_submodules: bool,
+
+    /// Generate Parquet files from the augmented terms.
+    #[clap(long)]
+    pub generate_parquet: bool,
 }

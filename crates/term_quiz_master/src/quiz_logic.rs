@@ -11,8 +11,10 @@ use super::term_path_map::TermPathMap;
 use super::augmented_term_entry::AugmentedTermEntry;
 use super::augmented_terms::AugmentedTerms;
 use crate::update_logic::run_update_command;
+use hf_dataset_validator::hf_dataset_converter;
+use tokio;
 
-pub fn run_quiz() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn run_quiz() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
     if args.update {
@@ -126,6 +128,13 @@ pub fn run_quiz() -> Result<(), Box<dyn std::error::Error>> {
     fs::write(&augmented_terms_path, updated_json.as_bytes())?;
 
     println!("\nSuccessfully classified '{}'. Updated {}.", target_term_str, augmented_terms_path.display());
+
+    if args.generate_parquet {
+        println!("Generating Parquet files...");
+        let output_dir = PathBuf::from("./idx"); // Output to the idx submodule
+        hf_dataset_converter::create_huggingface_dataset(&augmented_terms_path.to_string_lossy(), &output_dir.to_string_lossy()).await?;
+        println!("Parquet files generated successfully in {}.", output_dir.display());
+    }
 
     Ok(())
 }
