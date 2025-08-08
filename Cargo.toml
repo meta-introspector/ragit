@@ -10,7 +10,7 @@ documentation = "https://docs.rs/ragit"
 [workspace]
 members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "crates/prime-bit-counter", "crates/word_counter", "crates/term_report_generator",
-    "crates/directory_reorganizer", "crates/path_relationship_matrix_generator", "crates/tree_term_reporter", "crates/term_quiz_master", "crates/semantic_term_processor", "tests/huggingface-candle-datasets-test",
+    "crates/directory_reorganizer", "crates/path_relationship_matrix_generator", "crates/tree_term_reporter", "crates/term_quiz_master", "crates/semantic_term_processor", "tests/huggingface-candle-datasets-test", "refactor_tool",
 ]
 exclude = [
     "crates/server",

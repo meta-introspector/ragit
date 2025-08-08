@@ -11,10 +11,10 @@ use super::term_path_map::TermPathMap;
 use super::augmented_term_entry::AugmentedTermEntry;
 use super::augmented_terms::AugmentedTerms;
 use crate::update_logic::run_update_command;
-use hf_dataset_validator::hf_dataset_converter;
-use tokio;
+// use hf_dataset_validator::hf_dataset_converter;
+// use tokio;
 
-pub async fn run_quiz() -> Result<(), Box<dyn std::error::Error>> {
+pub fn run_quiz() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
     if args.update {
@@ -22,7 +22,7 @@ pub async fn run_quiz() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let base_dir = PathBuf::from("/data/data/com.termux/files/home/storage/github/ragit/index/solfunmeme-index");
+    let base_dir = PathBuf::from("./idx");
     let tree_term_report_path = base_dir.join("tree_term_report_internal.json");
     let augmented_terms_path = base_dir.join("augmented_terms_hot_take.json");
     let term_path_map_path = base_dir.join("term_path_map_internal.json");
@@ -43,6 +43,14 @@ pub async fn run_quiz() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         AugmentedTerms { augmented_terms: Vec::new() }
     };
+
+    // if args.generate_parquet {
+    //     println!("Generating Parquet files...");
+    //     let output_dir = PathBuf::from("./idx"); // Output to the idx submodule
+    //     hf_dataset_validator::hf_dataset_converter::create_huggingface_dataset_from_augmented_terms(&augmented_terms, &output_dir.to_string_lossy()).await?;
+    //     println!("Parquet files generated successfully in {}.", output_dir.display());
+    //     return Ok(()); // Exit after generating parquet
+    // }
 
     let classified_terms: HashSet<String> = augmented_terms.augmented_terms.iter().map(|t| t.term.clone()).collect();
 
