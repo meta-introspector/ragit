@@ -129,6 +129,10 @@ sysinfo = "0.30.13"
 async-recursion = "1.1.1"
 chrono = "0.4.41"
 
+[[bin]]
+name = "run_chunk_comparison"
+path = "run_chunk_comparison.rs"
+
 [features]
 default = []
 full = []

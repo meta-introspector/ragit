@@ -28,11 +28,18 @@ Each attempted fix for one set of errors often led to new, cascading errors in o
 
 The `replace` tool, while useful for precise string substitutions, proved to be overly sensitive for large-scale, structural code modifications. Its strict requirement for exact `old_string` matches (including invisible whitespace and newline characters) made iterative debugging and fixing extremely difficult. Even after `read_file` to get the exact content, subtle differences could lead to `0 occurrences found` errors, forcing repeated manual inspection and re-attempts.
 
-### 4. Path Forward
+### 4. Path Forward: A Programmatic Approach
 
-The strategy of manually converting `ast-grep` into a single, self-contained package is not practical for long-term maintenance or efficient development. It effectively requires becoming a full-time maintainer of a custom `ast-grep` build, which is unsustainable.
+While the initial manual conversion strategy proved challenging, the goal of integrating `ast-grep` as a self-contained component remains. The core lesson is that manual modification is not a scalable or repeatable solution.
 
-Therefore, the recommended path forward is:
+Therefore, we are adopting a new, programmatic approach to this refactoring effort:
 
-1.  **Revert all changes made to `vendor/ast-grep/`:** Restore all `Cargo.toml` files within `vendor/ast-grep/` to their original, intended workspace configuration. This will allow `ast-grep` to be built as a proper Cargo workspace.
-2.  **Utilize `coccinelleforrust` for Refactoring:** `coccinelleforrust` has been successfully built and is designed for structural code transformations using Semantic Patch Language (SmPL). This tool offers a more suitable and efficient approach for the refactoring tasks at hand, bypassing the complex build issues encountered with `ast-grep`.
+1.  **Embrace Programmatic Transformation:** We will not be reverting the changes. Instead, we will treat the `ast-grep` source code as a target for automated transformation. The principle is: "Don't edit the files directly; write programs that edit the files."
+2.  **Leverage `coccinelleforrust`:** The `coccinelleforrust` tool, which is already operational, will be our primary instrument. We will develop a series of Semantic Patch Language (SmPL) scripts (`.cocci` files) to systematically address the compilation errors.
+3.  **Iterative Refactoring Cycle:** The process will be iterative:
+    *   Identify a specific, recurring compilation error (e.g., unresolved imports, ambiguous types).
+    *   Develop a `coccinelleforrust` script to fix that specific class of error across the entire `ast-grep` codebase.
+    *   Apply the script to transform the code.
+    *   Attempt to compile, identify the next error, and repeat the cycle.
+
+This strategy transforms the one-off, manual effort into a repeatable, maintainable, and automated process. The final output will be a set of scripts that can reliably convert the original `ast-grep` workspace into a version that is fully integrated and buildable within the `ragit` ecosystem.

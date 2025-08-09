@@ -1,0 +1,1 @@
+We will treat code as data and lift it into a novel neural network we will build in place with no training to help us guide our work. We will precalculate the weights with an algorithm instead of random.
