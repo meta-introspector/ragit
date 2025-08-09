@@ -57,3 +57,21 @@
 [submodule "vendor/amazon-q-developer-cli"]
 	path = vendor/amazon-q-developer-cli
 	url = https://github.com/meta-introspector/amazon-q-developer-cli
+[submodule "vendor/google-oauth"]
+	path = vendor/google-oauth
+	url = https://github.com/caojen/google-oauth
+[submodule "vendor/llm"]
+	path = vendor/llm
+	url = https://github.com/graniet/llm
+[submodule "vendor/llmclient"]
+	path = vendor/llmclient
+	url = https://github.com/intelligentnet/llmclient
+[submodule "vendor/ask_gemini"]
+	path = vendor/ask_gemini
+	url = https://github.com/vvmspace/ask_gemini
+[submodule "vendor/google-ai-rs"]
+	path = vendor/google-ai-rs
+	url = https://github.com/veecore/google-ai-rs
+[submodule "vendor/askrepo"]
+	path = vendor/askrepo
+	url = https://github.com/laiso/askrepo
