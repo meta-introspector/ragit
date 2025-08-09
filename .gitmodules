@@ -108,3 +108,6 @@
 [submodule "vendor/rem"]
 	path = vendor/rem
 	url = https://github.com/verse-lab/rem
+[submodule "vendor/rust-clippy"]
+	path = vendor/rust-clippy
+	url = https://github.com/rust-lang/rust-clippy
