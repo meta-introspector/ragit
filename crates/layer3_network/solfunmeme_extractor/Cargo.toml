@@ -19,7 +19,7 @@ js-sys = "0.3.69"
 markdown = "1.0.0"
 dioxus-html = "0.6.3"
 rrust_kontekst = { path = "../rrust_kontekst" }
-solfunmeme_function_analysis = { path = "../solfunmeme_function_analysis" }
+solfunmeme_function_analysis = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_function_analysis" }
 # solfunmeme_embedding = { path = "../solfunmeme_embedding" }
 # solfunmeme_clifford = { path = "../solfunmeme_clifford" }
 # candle-core = { version = "0.5.1" }

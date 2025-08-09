@@ -12,7 +12,15 @@ anyhow = "1.0" # For simplified error handling
 solfunmeme_core_logic = { path = "../solfunmeme-core-logic" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+clap = { version = "4.0", features = ["derive"] } # For CLI arguments
+tokio = { version = "1.0", features = ["full"] } # For async main
+arrow = { version = "56.0.0", features = ["prettyprint"] } # For Arrow data structures
+parquet = { version = "56.0.0", features = ["arrow"] } # For Parquet file format
 
 [[bin]]
 name = "vectorize_tree"
 path = "src/bin/vectorize_tree.rs"
+
+[[bin]]
+name = "rust_indexer"
+path = "src/bin/rust_indexer.rs"

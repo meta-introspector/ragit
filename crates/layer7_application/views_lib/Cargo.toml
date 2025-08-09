@@ -7,6 +7,6 @@ publish = false
 
 [dependencies]
 dioxus = { version = "0.6.3", features = ["router"] }
-core_data_lib = { path = "../core_data_lib" }
-shared_types_lib = { path = "../shared_types_lib" }
-signals_lib = { path = "../signals_lib" }
+core_data_lib = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib" }
+shared_types_lib = { path = "../../../crates/layer1_physical/shared_types_lib" }
+signals_lib = { path = "../../../crates/layer6_presentation/signals_lib" }

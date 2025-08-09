@@ -5,7 +5,7 @@ edition = "2024"
 license = "AGPL-3.0"
 
 [dependencies]
-tclifford = { path = "../../vendor/tclifford" }
+tclifford = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/vendor/tclifford" }
 
 
 rand = "0.8"

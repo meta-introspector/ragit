@@ -62,7 +62,7 @@ fn parse_params_array(meta: ParseNestedMeta, target: &mut Vec<String>) -> Result
         } else {
             Err(nested_meta.error("expected value in array"))
         }
-    })
+    });
 }
 
 fn generate_handler_function(
@@ -241,7 +241,8 @@ fn parse_macro_args_helper(args: TokenStream) -> syn::Result<McpConfig> {
                 Ok(())
             }
         }
-    });
+    }
+});
     
     parser.parse2(args2)?;
     
