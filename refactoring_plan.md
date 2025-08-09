@@ -13,6 +13,14 @@ This means each distinct conceptual unit (struct, enum, constant, public functio
 
 We have successfully completed the refactoring of all modules within `ragit-core/src/grand_plan` to adhere to the "one module = one concept = one function = one vibe" principle. For each refactored item, the conceptual `#[derive(OurMacro)]` has been applied.
 
+**Temporary Code Disablement Strategy:**
+
+Due to persistent compilation issues with certain vendored dependencies (`candle` and `sophia_api`), a decision has been made to temporarily disable the problematic code sections using comments rather than attempting immediate, complex fixes. This allows for stabilization of the main development line and enables progress on other critical tasks. These disabled sections will be revisited and properly addressed in a future phase, potentially with a more automated refactoring approach.
+
+**`ragit-dwim` (Do What I Mean) Tool Development:**
+
+The `ragit-dwim` tool is envisioned as a key component for future development, enabling dynamic discovery of relevant SOPs, tool usage, and file-based RAG memories based on user intent. While currently non-functional, its development is a high-priority future task. This will significantly streamline the development workflow and adherence to project standards.
+
 **Modules Processed (and their new granular structure):**
 
 *   **`fundamental_unit.rs`** -> `grand_plan/fundamental_units/`

@@ -13,7 +13,9 @@ members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "crates/directory_reorganizer", "crates/path_relationship_matrix_generator", "crates/tree_term_reporter", "crates/term_quiz_master", "crates/semantic_term_processor", "tests/huggingface-candle-datasets-test", "refactor_tool", "crates/tmp_memory_test", "crates/rrust_kontekst_macros/ragit-instrumentation-macros",
     "vendor/solfunmeme-metameme",
     "crates/layer7_application/ragit-build-index-worker-single-file",
-    "crates/layer7_application/commands/ragit-command-bootstrap",
+        "crates/layer7_application/commands/ragit-command-bootstrap",
+    "vendor/amazon-q-developer-cli",
+
 ]
 default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
 exclude = [
@@ -70,37 +72,37 @@ homepage = "https://github.com/baehyunsol/ragit"
 categories = ["science"]
 
 [workspace.dependencies]
-lazy_static = "1.5.0"
-mownstr = { path = "./vendor/mownstr" }
-regex = "1.11.1"
-resiter = "0.5.0"
-sophia_api = { path = "./vendor/sophia_rs/api" }
-sophia_iri = { path = "./vendor/sophia_rs/iri" }
-sophia_term = { path = "./vendor/sophia_rs/term" }
-sophia_turtle = { path = "./vendor/sophia_rs/turtle" }
-sophia_rio = { path = "./vendor/sophia_rs/rio" }
-sophia_isomorphism = { path = "./vendor/sophia_rs/isomorphism" }
-oxiri = "0.2.11"
-criterion = "0.5"
-rand = "0.8"
-rio_turtle = "0.1.0"
-rio_api = "0.1.0"
-thiserror = "1.0"
-test-case = "2.2.2"
-toml = "0.8.0"
-serde = { version = "1.0.218", features = ["derive"] }
-accelerate-src = { version = "0.3.2" }
-anyhow = "1.0"
-axum = "0.7"
-tower = "0.4"
-tower-http = { version = "0.5", features = ["cors", "fs"] }
-hyper = { version = "1.0", features = ["full"] }
-uuid = { version = "1.0", features = ["v4"] }
-serde_json = "1.0"
-log = "0.4"
-env_logger = "0.10"
-clap = { version = "4.0", features = ["derive"] }
-tokio = { version = "1.0", features = ["full"] }
+# lazy_static = "1.5.0"
+# mownstr = { path = "./vendor/mownstr" }
+# regex = "1.11.1"
+# resiter = "0.5.0"
+# sophia_api = { path = "./vendor/sophia_rs/api" }
+# sophia_iri = { path = "./vendor/sophia_rs/iri" }
+# sophia_term = { path = "./vendor/sophia_rs/term" }
+# sophia_turtle = { path = "./vendor/sophia_rs/turtle" }
+# sophia_rio = { path = "./vendor/sophia_rs/rio" }
+# sophia_isomorphism = { path = "./vendor/sophia_rs/isomorphism" }
+# oxiri = "0.2.11"
+# criterion = "0.5"
+# rand = "0.8"
+# rio_turtle = "0.1.0"
+# rio_api = "0.1.0"
+# thiserror = "1.0"
+# test-case = "2.2.2"
+# toml = "0.8.0"
+# serde = { version = "1.0.218", features = ["derive"] }
+# accelerate-src = { version = "0.3.2" }
+# anyhow = "1.0"
+# axum = "0.7"
+# tower = "0.4"
+# tower-http = { version = "0.5", features = ["cors", "fs"] }
+# hyper = { version = "1.0", features = ["full"] }
+# uuid = { version = "1.0", features = ["v4"] }
+# serde_json = "1.0"
+# log = "0.4"
+# env_logger = "0.10"
+# clap = { version = "4.0", features = ["derive"] }
+# tokio = { version = "1.0", features = ["full"] }
 
 [dependencies]
 ragit-agent = { path = "crates/legacy_and_refactoring/ragit-agent" }

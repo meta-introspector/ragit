@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 use ragit_index_types::index_struct::Index;
 use ragit_memory_monitor::MemoryMonitor;
-use super::get_staged_files::get_staged_files;
+
 use text_splitter::{TextSplitter, Characters};
 use ragit_types::build_config::BuildConfig;
 use super::process_file::process_staged_file::process_staged_file;
