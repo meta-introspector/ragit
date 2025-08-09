@@ -111,3 +111,6 @@
 [submodule "vendor/rust-clippy"]
 	path = vendor/rust-clippy
 	url = https://github.com/rust-lang/rust-clippy
+[submodule "pilot-agent-cli"]
+	path = pilot-agent-cli
+	url = https://github.com/benoitrolland/pilot-agent-cli.git
