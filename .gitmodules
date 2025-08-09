@@ -75,3 +75,36 @@
 [submodule "vendor/askrepo"]
 	path = vendor/askrepo
 	url = https://github.com/laiso/askrepo
+[submodule "vendor/frustum"]
+	path = vendor/frustum
+	url = https://github.com/eviltak/frustum
+[submodule "vendor/em-refactor"]
+	path = vendor/em-refactor
+	url = https://github.com/peroveri/em-refactor
+[submodule "vendor/scientisto"]
+	path = vendor/scientisto
+	url = https://github.com/Teebor-Choka/scientisto
+[submodule "vendor/ploke"]
+	path = vendor/ploke
+	url = https://github.com/josephleblanc/ploke
+[submodule "vendor/comby-rust"]
+	path = vendor/comby-rust
+	url = https://github.com/huitseeker/comby-rust
+[submodule "vendor/rust-refactor"]
+	path = vendor/rust-refactor
+	url = https://github.com/GSam/rust-refactor
+[submodule "vendor/comby"]
+	path = vendor/comby
+	url = https://github.com/comby-tools/comby
+[submodule "vendor/refren"]
+	path = vendor/refren
+	url = https://github.com/bm371613/refren
+[submodule "vendor/spacemod"]
+	path = vendor/spacemod
+	url = https://github.com/untitaker/spacemod
+[submodule "vendor/extricrate"]
+	path = vendor/extricrate
+	url = https://github.com/nitnelave/extricrate
+[submodule "vendor/rem"]
+	path = vendor/rem
+	url = https://github.com/verse-lab/rem
