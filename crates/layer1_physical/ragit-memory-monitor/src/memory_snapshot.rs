@@ -1,4 +1,5 @@
 #[derive(Clone)]
+#[derive(Debug)]
 pub struct MemorySnapshot {
     pub step: String,
     pub total_memory: u64,

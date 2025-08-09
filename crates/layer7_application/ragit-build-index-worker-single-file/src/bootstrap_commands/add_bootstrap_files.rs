@@ -43,7 +43,7 @@ pub async fn add_bootstrap_files(
         }
     };
 
-    let mut files_to_add = files_to_add_source.get_files(&mut memory_monitor.lock().unwrap())?;
+    let mut files_to_add = files_to_add_source.get_files()?;
 
     if let Some(max_files) = max_files_to_process {
         if files_to_add.len() > max_files {

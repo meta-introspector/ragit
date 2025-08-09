@@ -12,6 +12,7 @@ use crate::memory_snapshot::MemorySnapshot;
 use crate::print_memory_table::print_memory_table;
 use crate::capture_memory_snapshot::capture_memory_snapshot;
 
+#[derive(Debug)]
 pub struct MemoryMonitor {
     sys: System,
     last_snapshot_data: Option<(u64, u64, u64)>,
@@ -21,6 +22,21 @@ pub struct MemoryMonitor {
     verbose: bool,
     time_threshold_ms: Option<u128>,
     memory_threshold_bytes: Option<u64>,
+}
+
+impl Clone for MemoryMonitor {
+    fn clone(&self) -> Self {
+        MemoryMonitor {
+            sys: System::new_all(),
+            last_snapshot_data: self.last_snapshot_data.clone(),
+            snapshots: self.snapshots.clone(),
+            last_snapshot_time: self.last_snapshot_time.clone(),
+            units_processed_since_last_snapshot: self.units_processed_since_last_snapshot,
+            verbose: self.verbose,
+            time_threshold_ms: self.time_threshold_ms,
+            memory_threshold_bytes: self.memory_threshold_bytes,
+        }
+    }
 }
 
 impl MemoryMonitor {
