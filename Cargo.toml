@@ -17,10 +17,9 @@ members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "vendor/amazon-q-developer-cli",
     "vendor/amazon-q-developer-cli/crates/gemini-auth",     "crates/ragit-compilation-analysis",
     "crates/layer3_network/ragit-code-analyzer",
-    "vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib",
-    
-    
-
+        "vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib",
+    "crates/rrust_kontekst_proc_macros",
+    "vendor/ast-grep",
 ]
 default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
 exclude = [
@@ -63,6 +62,7 @@ exclude = [
     
     "crates/layer7_application/commands/ragit-command-change-request",
     "vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_clifford",
+    "vendor/sophia_rs",
 ]
 
 [workspace.package]

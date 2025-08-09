@@ -63,6 +63,7 @@ fn parse_params_array(meta: ParseNestedMeta, target: &mut Vec<String>) -> Result
             Err(nested_meta.error("expected value in array"))
         }
     });
+    Ok(())
 }
 
 fn generate_handler_function(
@@ -147,6 +148,8 @@ fn generate_registration(
                 eprintln!("Failed to register MCP tool '{}': {}", #tool_name, e);
             }
         }
+    }
+}
 
 fn generate_metadata(
     config: &McpConfig,
@@ -241,8 +244,7 @@ fn parse_macro_args_helper(args: TokenStream) -> syn::Result<McpConfig> {
                 Ok(())
             }
         }
-    }
-});
+    });
     
     parser.parse2(args2)?;
     
