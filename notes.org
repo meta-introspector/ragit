@@ -1,0 +1,3 @@
+  cargo run --release --package term_report_generator
+  cargo run --package term_quiz_master -- --update --recurse-submodules
+  cargo run ragit-build-index-worker-single-file -- --bootstrap[<0;50;7M
