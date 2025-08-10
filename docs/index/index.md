@@ -166,6 +166,10 @@ This index provides a structured overview of the Ragit project documentation, ca
     *   **Themes**: Rust, quiz server, model sampling, weight updating.
     *   **Key Takeaways**: How to interact with the quiz server to sample the model and update its weights.
 
+*   **`self_improvement_sop.md`**
+    *   **Themes**: Gemini CLI, self-improvement, embedding refinement, knowledge base expansion, tool development.
+    *   **Key Takeaways**: Defines the process for continuous self-improvement of the `ragit` system by the Gemini CLI agent.
+
 ## VI. Source Code Modules & Components
 
 This section indexes key Rust modules and components identified during the source code review, linking them to their definitions and explaining their role within the Ragit architecture.
