@@ -19,8 +19,11 @@ To quickly get up to speed with the Gemini CLI and our project workflow, follow 
     npx https://github.com/google-gemini/gemini-cli
     ```
 
-2.  **Say the Magic Words:**
+2.  **Say the Magic Words & Update the Model:**
     Once the CLI is installed, say "GM, WB, LG" to initiate your daily workflow. These acronyms are explained in detail in our [Onboarding SOP](./docs/sops/onboarding.md).
+
+    **Leveraging Gemini for Model Updates:**
+    The Gemini CLI is not just for general tasks; it's a powerful tool for directly interacting with and updating the project's underlying models, including term embeddings. You can instruct Gemini to refine model data, and it will follow a structured procedure to ensure quality and auditability. For detailed instructions on how to use Gemini to update the model, refer to the [Gemini CLI Model Update Procedure](./docs/sops/gemini_cli_model_update_sop.md).
 
 ## Why another RAG framework?
 
