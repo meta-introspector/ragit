@@ -140,6 +140,10 @@ This index provides a structured overview of the Ragit project documentation, ca
 
 ## V. Conceptual & Future Vision
 
+*   **`grand_plan.md`**
+    *   **Themes**: Autonomous agent, self-improvement, software development, API utilization.
+    *   **Key Takeaways**: Outlines the vision for an autonomous, self-improving development agent that can perform a wide range of software engineering tasks using its own API.
+
 *   **`ragit_eco_9k_analogy.md`**
     *   **Themes**: Ragit, ECO-PAPER-9K, knowledge formalization.
     *   **Key Takeaways**: Explains the parallels between the `ragit` system and the ECO-PAPER-9K framework, demonstrating how `ragit` serves as a practical implementation of its principles.
@@ -151,6 +155,16 @@ This index provides a structured overview of the Ragit project documentation, ca
 *   **`solfunmeme_metaemojiwasm.md`**
     *   **Themes**: Integrating Gemini API, agent-callable functionality, MetaEmojiWASM module, Solfunmeme philosophy.
     *   **Key Takeaways**: Vision for advanced, portable, and semantically rich integration with AI agents.
+
+## VI. Standard Operating Procedures (SOPs)
+
+*   **`daemonization_sop.md`**
+    *   **Themes**: Rust, daemonization, server, background process.
+    *   **Key Takeaways**: How to create a robust, daemonized Rust server that can be managed through its PID file and a graceful shutdown endpoint.
+
+*   **`quiz_server_sop.md`**
+    *   **Themes**: Rust, quiz server, model sampling, weight updating.
+    *   **Key Takeaways**: How to interact with the quiz server to sample the model and update its weights.
 
 ## VI. Source Code Modules & Components
 
