@@ -3,6 +3,9 @@ use serde::Serialize;
 use ragit_feature_extractor::FileReport;
 use rand::prelude::*;
 use rand::thread_rng;
+use ndarray::Array2;
+use linfa::prelude::*;
+use linfa_reduction::Pca;
 
 #[derive(Debug, Serialize)]
 struct TreeNode {
@@ -110,6 +113,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     root.aggregate_term_counts();
     root.calculate_weights_and_fractions(0.0);
+
+    // Perform PCA on total_vector embeddings
+    println!("\n--- PCA Results (2D) ---");
+    let embedding_dimension = all_reports.first().map_or(0, |r| r.total_vector.len());
+    if embedding_dimension > 0 {
+        let records: Vec<Vec<f64>> = all_reports.iter().map(|r| r.total_vector.clone()).collect();
+        let dataset = Dataset::from(Array2::from_shape_vec((records.len(), embedding_dimension), records.into_iter().flatten().collect()).unwrap());
+
+        let pca = Pca::params(2).fit(&dataset).unwrap();
+        let reduced_data = pca.transform(&dataset);
+
+        for (i, file_report) in all_reports.iter().enumerate() {
+            println!("File: {:?}, PCA: {:?}", file_report.file_name, reduced_data.records[i]);
+        }
+    } else {
+        println!("No embeddings to perform PCA on.");
+    }
+    println!("------------------------");
 
     // Select samples for evaluation
     let mut selected_reports = Vec::new();
