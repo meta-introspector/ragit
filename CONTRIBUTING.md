@@ -64,6 +64,17 @@ Clear documentation is key to collaboration:
 *   Expand the glossary of terms.
 *   Write tutorials and guides for new features.
 
+## Image Generation for Social Media
+
+We're leveraging AI models to create compelling visuals for our social media campaigns. If you're an AI artist or have access to image generation models, please consider contributing!
+
+### Image Request Guidelines:
+
+*   **Core Themes**: AI Collaboration, Code Understanding, Semantic AI, Growth/Evolution, Hyperspace/Neural Networks.
+*   **Ragit/SOLFUNMEME Branding**: Subtle inclusion of Ragit's themes (e.g., git-like, tree structures, memes, vibes, emojis).
+*   **Prompts**: We'll provide specific prompts for each image request. Please interpret them creatively.
+*   **Sharing**: Share your creations in our Discord's `#ai-art-showcase` channel. We'll feature the best ones in our official posts!
+
 ## Suggesting New Dimensions (Advanced Contribution)
 
 We are building a collaborative neural network where users can suggest entirely new dimensions of semantic understanding. If you have an idea for a new dimension:
