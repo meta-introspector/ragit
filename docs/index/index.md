@@ -158,6 +158,10 @@ This index provides a structured overview of the Ragit project documentation, ca
 
 ## VI. Standard Operating Procedures (SOPs)
 
+*   **`onboarding.md`**
+    *   **Themes**: New user setup, daily workflow acronyms (GM, WB, LG), review of SOPs.
+    *   **Key Takeaways**: Essential steps for new team members to get started with the Gemini CLI and understand core communication practices.
+
 *   **`daemonization_sop.md`**
     *   **Themes**: Rust, daemonization, server, background process.
     *   **Key Takeaways**: How to create a robust, daemonized Rust server that can be managed through its PID file and a graceful shutdown endpoint.

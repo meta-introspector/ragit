@@ -9,6 +9,19 @@ rag build;
 rag query "What makes ragit special?";
 ```
 
+## Getting Started
+
+To quickly get up to speed with the Gemini CLI and our project workflow, follow these two simple steps:
+
+1.  **Install the Gemini CLI:**
+    Open your terminal and run:
+    ```bash
+    npx https://github.com/google-gemini/gemini-cli
+    ```
+
+2.  **Say the Magic Words:**
+    Once the CLI is installed, say "GM, WB, LG" to initiate your daily workflow. These acronyms are explained in detail in our [Onboarding SOP](./docs/sops/onboarding.md).
+
 ## Why another RAG framework?
 
 RAGIT is very different from the other RAG frameworks.
