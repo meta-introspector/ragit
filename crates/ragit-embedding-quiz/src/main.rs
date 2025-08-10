@@ -10,6 +10,7 @@ struct Question {
     id: usize,
     text: String,
     embedding: Vec<f32>,
+    is_missing_embedding: bool, // New field
 }
 
 #[derive(Clone)]
@@ -43,9 +44,13 @@ impl Model {
             raw_embeddings.insert(term, new_embedding);
         }
 
-        let questions: Vec<Question> = raw_embeddings.into_iter().enumerate().map(|(id, (text, embedding))| {
-            Question { id, text, embedding }
+        let mut questions: Vec<Question> = raw_embeddings.into_iter().enumerate().map(|(id, (text, embedding))| {
+            let is_missing_embedding = !embeddings_str.contains(&format!("\"{}\":", text)); // Check if original file contained it
+            Question { id, text, embedding, is_missing_embedding }
         }).collect();
+
+        // Sort questions to prioritize missing embeddings
+        questions.sort_by(|a, b| b.is_missing_embedding.cmp(&a.is_missing_embedding));
 
         let weights = vec![1.0; questions.len()];
         Self { questions, weights }
@@ -135,6 +140,9 @@ fn main() {
                 println!("Question ID: {}", question.id);
                 println!("Question Text: {}", question.text);
                 println!("Current Embedding: {:?}", question.embedding);
+                if question.is_missing_embedding {
+                    println!("This is a new term. Please provide an embedding.");
+                }
 
                 let similar_embeddings = model.find_similar_embeddings(&question);
                 if !similar_embeddings.is_empty() {
@@ -150,21 +158,26 @@ fn main() {
         Commands::Answer { question_id, submitted_embedding_str } => {
             let submitted_embedding = parse_embedding(submitted_embedding_str)
                 .expect("Invalid embedding format");
-            if let Some(question) = model.questions.get(*question_id) {
-                let distance = Model::calculate_distance(&question.embedding, &submitted_embedding);
-                let is_correct = distance < 0.1; // Threshold for correctness
+            if let Some(question) = model.questions.get_mut(*question_id) {
+                if question.is_missing_embedding {
+                    question.embedding = submitted_embedding.clone(); // Directly set embedding for new terms
+                    question.is_missing_embedding = false; // Mark as no longer missing
+                    println!("New embedding added for Question ID: {}", question_id);
+                } else {
+                    let distance = Model::calculate_distance(&question.embedding, &submitted_embedding);
+                    let is_correct = distance < 0.1; // Threshold for correctness
 
-                if !is_correct {
-                    model.update_embedding(*question_id, submitted_embedding.clone());
+                    if !is_correct {
+                        model.update_embedding(*question_id, submitted_embedding.clone());
+                    }
+                    model.update_weight(*question_id, is_correct);
+                    println!("Answer submitted for Question ID: {}", question_id);
+                    println!("Correct: {}", is_correct);
+                    if !is_correct {
+                        println!("Embedding updated.");
+                    }
                 }
-                model.update_weight(*question_id, is_correct);
-                model.save();
-
-                println!("Answer submitted for Question ID: {}", question_id);
-                println!("Correct: {}", is_correct);
-                if !is_correct {
-                    println!("Embedding updated.");
-                }
+                model.save(); // Save after any update
             } else {
                 println!("Question ID {} not found.", question_id);
             }
