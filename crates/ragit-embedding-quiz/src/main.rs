@@ -22,7 +22,26 @@ impl Model {
     fn new() -> Self {
         let embeddings_path = format!("{}/../../term_embeddings.json", env!("CARGO_MANIFEST_DIR"));
         let embeddings_str = fs::read_to_string(&embeddings_path).expect("Could not read term_embeddings.json");
-        let raw_embeddings: HashMap<String, Vec<f32>> = serde_json::from_str(&embeddings_str).expect("Could not parse term_embeddings.json");
+        let mut raw_embeddings: HashMap<String, Vec<f32>> = serde_json::from_str(&embeddings_str).expect("Could not parse term_embeddings.json");
+
+        // Process snake_case terms
+        let mut terms_to_add = Vec::new();
+        for (term, _) in raw_embeddings.iter() {
+            if term.contains('_') {
+                for sub_term in term.split('_') {
+                    if !raw_embeddings.contains_key(sub_term) {
+                        terms_to_add.push(sub_term.to_string());
+                    }
+                }
+            }
+        }
+
+        let mut rng = thread_rng();
+        for term in terms_to_add {
+            // Generate a random 8-dimensional embedding for new terms
+            let new_embedding: Vec<f32> = (0..8).map(|_| rng.gen_range(0.0..1.0)).collect();
+            raw_embeddings.insert(term, new_embedding);
+        }
 
         let questions: Vec<Question> = raw_embeddings.into_iter().enumerate().map(|(id, (text, embedding))| {
             Question { id, text, embedding }
@@ -66,6 +85,20 @@ impl Model {
     fn calculate_distance(embedding1: &[f32], embedding2: &[f32]) -> f32 {
         embedding1.iter().zip(embedding2.iter()).map(|(a, b)| (a - b).powi(2)).sum::<f32>().sqrt()
     }
+
+    fn find_similar_embeddings(&self, target_question: &Question) -> Vec<(Question, f32)> {
+        let mut similarities: Vec<(Question, f32)> = self.questions.iter()
+            .filter(|q| q.id != target_question.id) // Exclude the target question itself
+            .map(|q| {
+                let distance = Model::calculate_distance(&target_question.embedding, &q.embedding);
+                (q.clone(), distance)
+            })
+            .collect();
+
+        similarities.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal)); // Sort by distance (ascending)
+
+        similarities.into_iter().take(5).collect() // Take top 5 most similar (smallest distance)
+    }
 }
 
 #[derive(Parser)]
@@ -102,6 +135,14 @@ fn main() {
                 println!("Question ID: {}", question.id);
                 println!("Question Text: {}", question.text);
                 println!("Current Embedding: {:?}", question.embedding);
+
+                let similar_embeddings = model.find_similar_embeddings(&question);
+                if !similar_embeddings.is_empty() {
+                    println!("\nMost Similar Embeddings:");
+                    for (sim_q, distance) in similar_embeddings {
+                        println!("  - ID: {}, Text: {}, Distance: {:.4}, Embedding: {:?}", sim_q.id, sim_q.text, distance, sim_q.embedding);
+                    }
+                }
             } else {
                 println!("No questions available.");
             }
