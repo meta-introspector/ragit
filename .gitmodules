@@ -114,3 +114,6 @@
 [submodule "pilot-agent-cli"]
 	path = pilot-agent-cli
 	url = https://github.com/benoitrolland/pilot-agent-cli.git
+[submodule "spinoffs/model-builder-quiz"]
+	path = spinoffs/model-builder-quiz
+	url = https://github.com/meta-introspector/solfunmeme-model-builder-quiz
