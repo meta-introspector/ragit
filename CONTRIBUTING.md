@@ -74,7 +74,13 @@ We are building a collaborative neural network where users can suggest entirely 
 
 ## Getting Help
 
-*   **Discord**: Join our Discord community [Discord Invite Link - Placeholder] for real-time chat and support.
+*   **Official Communication Channel**: [https://codeberg.org/introspector/SOLFUNMEME](https://codeberg.org/introspector/SOLFUNMEME)
+*   **Discord**: Join our Discord community [https://discord.gg/WASKdrBBzu](https://discord.gg/WASKdrBBzu) for real-time chat and support.
+*   **Telegram**: [https://t.me/introsp3ctor](https://t.me/introsp3ctor)
+*   **LinkedIn**: [https://www.linkedin.com/posts/jamesmikedupont_join-the-str-discord-server-activity-7285429593245724673-mWPR?utm_source=share&utm_medium=member_android](https://www.linkedin.com/posts/jamesmikedupont_join-the-str-discord-server-activity-7285429593245724673-mWPR?utm_source=share&utm_medium=member_android)
+*   **Dev Twitter**: [https://twitter.com/introsp3ctor/](https://twitter.com/introsp3ctor/)
+*   **Official Twitter**: [https://x.com/zos_sfm](https://x.com/zos_sfm)
+*   **Website**: [https://solfunmeme.com](https://solfunmeme.com)
 *   **GitHub Issues**: Open an issue on GitHub for bugs, feature requests, or questions.
 
 Thank you for contributing to Ragit! Together, we can build the future of code intelligence.
