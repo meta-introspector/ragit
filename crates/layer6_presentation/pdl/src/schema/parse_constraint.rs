@@ -34,13 +34,13 @@ pub fn parse_constraint(tokens: &[Token]) -> Result<Constraint, SchemaParseError
             k @ ("min" | "max" | "len_min" | "len_max") => match tokens.get(index) {
                 Some(Token::Integer(n)) => {
                     if k == "min" || k == "len_min" {
-                        if let Constraint::Minimum(min_val) = result {
+                        if let Constraint::Minimum(_min_val) = result {
                             return Err(SchemaParseError::InvalidConstraint(format!("Duplicate minimum constraint")));
                         }
 
                         result = Constraint::Minimum(*n as i128);
                     } else {
-                        if let Constraint::Maximum(max_val) = result {
+                        if let Constraint::Maximum(_max_val) = result {
                             return Err(SchemaParseError::InvalidConstraint(format!("Duplicate maximum constraint")));
                         }
 
@@ -49,13 +49,13 @@ pub fn parse_constraint(tokens: &[Token]) -> Result<Constraint, SchemaParseError
                 }
                 Some(Token::Float(n)) => {
                     if k == "min" || k == "len_min" {
-                        if let Constraint::Minimum(min_val) = result {
+                        if let Constraint::Minimum(_min_val) = result {
                             return Err(SchemaParseError::InvalidConstraint(format!("Duplicate minimum constraint")));
                         }
 
                         result = Constraint::Minimum(*n as i128);
                     } else {
-                        if let Constraint::Maximum(max_val) = result {
+                        if let Constraint::Maximum(_max_val) = result {
                             return Err(SchemaParseError::InvalidConstraint(format!("Duplicate maximum constraint")));
                         }
 

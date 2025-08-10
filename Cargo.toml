@@ -19,7 +19,7 @@ members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "crates/layer3_network/ragit-code-analyzer",
         "vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib",
     "crates/rrust_kontekst_proc_macros",
-    "vendor/ast-grep", "crates/ragit-feature-extractor",
+    "vendor/ast-grep", "crates/ragit-feature-extractor", "crates/quiz_server",
 ]
 default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
 exclude = [
@@ -99,7 +99,8 @@ categories = ["science"]
 # serde = { version = "1.0.218", features = ["derive"] }
 # accelerate-src = { version = "0.3.2" }
 # anyhow = "1.0"
-# axum = "0.7"
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
 # tower = "0.4"
 # tower-http = { version = "0.5", features = ["cors", "fs"] }
 # hyper = { version = "1.0", features = ["full"] }
@@ -131,7 +132,8 @@ chrono = "0.4.41"
 rand = "0.8.5"
 ragit-feature-extractor = { path = "crates/ragit-feature-extractor" }
 ndarray = "0.15"
-linfa-reduction = { version = "0.7", features = ["ndarray"] }
+linfa = "0.7"
+linfa-reduction = "0.7"
 
 [[bin]]
 name = "run_chunk_comparison"
@@ -145,6 +147,7 @@ path = "build_file_tree.rs"
 
 [features]
 default = []
+jemalloc = []
 full = []
 
 # This feature only affects `rag version --build-options`.

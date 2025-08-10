@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::io::{BufReader, BufRead};
 use serde::{Deserialize, Serialize};
-use rand::prelude::IndexedRandom;
+
 use regex::Regex;
 use itertools::Itertools;
 

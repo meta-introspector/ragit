@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use serde::Serialize;
 use ragit_feature_extractor::FileReport;
 use rand::prelude::*;
-use rand::thread_rng;
+
 use ndarray::Array2;
 use linfa::prelude::*;
 use linfa_reduction::Pca;
@@ -122,10 +122,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let dataset = Dataset::from(Array2::from_shape_vec((records.len(), embedding_dimension), records.into_iter().flatten().collect()).unwrap());
 
         let pca = Pca::params(2).fit(&dataset).unwrap();
-        let reduced_data = pca.transform(&dataset);
+        let reduced_data = pca.transform(dataset);
 
         for (i, file_report) in all_reports.iter().enumerate() {
-            println!("File: {:?}, PCA: {:?}", file_report.file_name, reduced_data.records[i]);
+            println!("File: {}, PCA: {:?}", file_report.file_name, reduced_data.records.row(i));
         }
     } else {
         println!("No embeddings to perform PCA on.");
