@@ -156,6 +156,10 @@ This index provides a structured overview of the Ragit project documentation, ca
 
 This section indexes key Rust modules and components identified during the source code review, linking them to their definitions and explaining their role within the Ragit architecture.
 
+*   **`core_library.md`** (`src/lib.rs`)
+    *   **Themes**: Main library entry point, module organization, centralized re-exports, global allocator, versioning guidelines.
+    *   **Key Takeaways**: Explains the central role of `src/lib.rs` in defining the project's top-level structure and making core functionalities accessible.
+
 ### Layer 1: Physical
 
 *   **`ragit-core`** (`crates/layer1_physical/ragit-core/src/lib.rs`)
