@@ -19,7 +19,7 @@ members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "crates/layer3_network/ragit-code-analyzer",
         "vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib",
     "crates/rrust_kontekst_proc_macros",
-    "vendor/ast-grep", "crates/ragit-feature-extractor", "crates/quiz_server",
+    "vendor/ast-grep", "crates/ragit-feature-extractor",     "crates/quiz_server", "crates/ragit-command-quiz", "crates/layer7_application/ragit-commands",
 ]
 default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
 exclude = [
@@ -61,7 +61,7 @@ exclude = [
     "crates/ragit-command-version",
     
     "crates/layer7_application/commands/ragit-command-change-request",
-    "vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_clifford",
+    "crates/layer4_transport/solfunmeme_clifford",
     "vendor/sophia_rs",
 ]
 
@@ -78,62 +78,65 @@ homepage = "https://github.com/baehyunsol/ragit"
 categories = ["science"]
 
 [workspace.dependencies]
-# lazy_static = "1.5.0"
-# mownstr = { path = "./vendor/mownstr" }
-# regex = "1.11.1"
-# resiter = "0.5.0"
-# sophia_api = { path = "./vendor/sophia_rs/api" }
-# sophia_iri = { path = "./vendor/sophia_rs/iri" }
-# sophia_term = { path = "./vendor/sophia_rs/term" }
-# sophia_turtle = { path = "./vendor/sophia_rs/turtle" }
-# sophia_rio = { path = "./vendor/sophia_rs/rio" }
-# sophia_isomorphism = { path = "./vendor/sophia_rs/isomorphism" }
-# oxiri = "0.2.11"
-# criterion = "0.5"
-# rand = "0.8"
-# rio_turtle = "0.1.0"
-# rio_api = "0.1.0"
-# thiserror = "1.0"
-# test-case = "2.2.2"
-# toml = "0.8.0"
-# serde = { version = "1.0.218", features = ["derive"] }
 # accelerate-src = { version = "0.3.2" }
 # anyhow = "1.0"
-axum = "0.7"
-tokio = { version = "1", features = ["full"] }
+# clap = { version = "4.0", features = ["derive"] }
+# criterion = "0.5"
+# env_logger = "0.10"
+# hyper = { version = "1.0", features = ["full"] }
+# lazy_static = "1.5.0"
+# log = "0.4"
+# mownstr = { path = "./vendor/mownstr" }
+# oxiri = "0.2.11"
+# rand = "0.8"
+# regex = "1.11.1"
+# resiter = "0.5.0"
+# rio_api = "0.1.0"
+# rio_turtle = "0.1.0"
+# serde = { version = "1.0.218", features = ["derive"] }
+# serde_json = "1.0"
+# sophia_api = { path = "./vendor/sophia_rs/api" }
+# sophia_iri = { path = "./vendor/sophia_rs/iri" }
+# sophia_isomorphism = { path = "./vendor/sophia_rs/isomorphism" }
+# sophia_rio = { path = "./vendor/sophia_rs/rio" }
+# sophia_term = { path = "./vendor/sophia_rs/term" }
+# sophia_turtle = { path = "./vendor/sophia_rs/turtle" }
+# test-case = "2.2.2"
+# thiserror = "1.0"
+# tokio = { version = "1.0", features = ["full"] }
+# toml = "0.8.0"
 # tower = "0.4"
 # tower-http = { version = "0.5", features = ["cors", "fs"] }
-# hyper = { version = "1.0", features = ["full"] }
 # uuid = { version = "1.0", features = ["v4"] }
-# serde_json = "1.0"
-# log = "0.4"
-# env_logger = "0.10"
-# clap = { version = "4.0", features = ["derive"] }
-# tokio = { version = "1.0", features = ["full"] }
+axum = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+tokio = { version = "1", features = ["full"] }
 
 [dependencies]
+async-recursion = "1.1.1"
+chrono = "0.4.41"
+lazy_static = "1.5.0"
+linfa = "0.7"
+linfa-reduction = "0.7"
+ndarray = "0.15"
+num-prime = "0.4.0"
 ragit-agent = { path = "crates/legacy_and_refactoring/ragit-agent" }
+ragit-feature-extractor = { path = "crates/ragit-feature-extractor" }
 ragit-index = { path = "crates/layer3_network/ragit-index" }
 ragit-model = { path = "crates/layer7_application/ragit-model" }
 ragit-model-query-response = { path = "crates/layer6_presentation/ragit-model-query-response" }
+ragit-pdl = { path = "crates/layer6_presentation/pdl" }
 ragit-types = { path = "crates/layer1_physical/ragit-types" }
 ragit-utils = { path = "crates/layer3_network/ragit-utils" }
-ragit-pdl = { path = "crates/layer6_presentation/pdl" }
-lazy_static = "1.5.0"
+rand = "0.8.5"
 regex = "1.10.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1", features = ["full"] }
 sha3 = "0.10.8"
-num-prime = "0.4.0"
 sysinfo = "0.30.13"
-async-recursion = "1.1.1"
-chrono = "0.4.41"
-rand = "0.8.5"
-ragit-feature-extractor = { path = "crates/ragit-feature-extractor" }
-ndarray = "0.15"
-linfa = "0.7"
-linfa-reduction = "0.7"
+tokio = { version = "1", features = ["full"] }
 
 [[bin]]
 name = "run_chunk_comparison"

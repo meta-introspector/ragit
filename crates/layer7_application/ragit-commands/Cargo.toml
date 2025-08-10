@@ -38,6 +38,7 @@ ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-que
 ragit-cli = { path = "../cli" }
 ragit-command-bootstrap = { path = "../commands/ragit-command-bootstrap" }
 ragit-command-duplicate-chunks = { path = "../commands/ragit-command-duplicate-chunks" }
+ragit-command-quiz = { path = "../../ragit-command-quiz" }
 ragit-dwim = { path = "../ragit-dwim" }
 ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
 ragit-qa-system = { path = "../../legacy_and_refactoring/ragit-qa-system" }

@@ -10,6 +10,7 @@ use ragit_commands::commands::query::{query_command_main, QueryArgs};
 use ragit_command_duplicate_chunks::{duplicate_chunks_command_main, DuplicateChunksArgs};
 use ragit_dyim::DyimCommand;
 use ragit_commands::commands::agent::AgentCommand;
+use ragit_command_quiz;
 
 
 
@@ -110,6 +111,8 @@ enum Commands {
     DuplicateChunks(DuplicateChunksArgs),
     /// Agent commands
     Agent(AgentCommand),
+    /// Quiz commands
+    Quiz(ragit_command_quiz::Cli),
     
     /// Request a new change
     #[clap(external_subcommand)]
@@ -230,6 +233,9 @@ async fn main() -> Result<()> {
         },
         Commands::Agent(agent_cmd) => {
             agent_cmd.run()?;
+        },
+        Commands::Quiz(quiz_cli) => {
+            quiz_cli.run().await?;
         },
         Commands::External(ext_args) => {
             let subcommand = &ext_args[0];
