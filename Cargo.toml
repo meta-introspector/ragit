@@ -111,8 +111,6 @@ categories = ["science"]
 # tokio = { version = "1.0", features = ["full"] }
 
 [dependencies]
-
-rand = "0.8.5"
 ragit-agent = { path = "crates/legacy_and_refactoring/ragit-agent" }
 ragit-index = { path = "crates/layer3_network/ragit-index" }
 ragit-model = { path = "crates/layer7_application/ragit-model" }
@@ -130,10 +128,15 @@ num-prime = "0.4.0"
 sysinfo = "0.30.13"
 async-recursion = "1.1.1"
 chrono = "0.4.41"
+rand = "0.8.5"
 
 [[bin]]
 name = "run_chunk_comparison"
 path = "run_chunk_comparison.rs"
+
+[[bin]]
+name = "report_path_embeddings"
+path = "report_path_embeddings.rs"
 
 [features]
 default = []
