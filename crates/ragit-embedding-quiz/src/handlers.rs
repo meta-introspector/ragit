@@ -34,7 +34,7 @@ pub fn handle_answer_command(model: &mut Model, question_id: usize, submitted_em
             let is_correct = distance < 0.1; // Threshold for correctness
 
             if !is_correct {
-                model.update_embedding(*question_id, submitted_embedding.clone());
+                model.update_embedding(question_id, submitted_embedding.clone());
             }
             model.update_weight(question_id, is_correct);
             println!("Answer submitted for Question ID: {}", question_id);

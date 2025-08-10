@@ -9,3 +9,4 @@ tokio = { workspace = true, features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 daemonize = "0.5.0"
 rand = "0.8.5"
+serde_json = "1.0"

@@ -1,0 +1,16 @@
+[
+  {"term1": "0026_imp_recovery", "term2": "recovery"},
+  {"term1": "0019_let_recover", "term2": "recover"},
+  {"term1": "_code_fix_job_status", "term2": "code"},
+  {"term1": "_code_fix_job_status", "term2": "fix"},
+  {"term1": "_code_fix_job_status", "term2": "status"},
+  {"term1": "0034_bad_box_pattern", "term2": "pattern"},
+  {"term1": "0040_raw_struct_item_field", "term2": "struct"},
+  {"term1": "0040_raw_struct_item_field", "term2": "field"},
+  {"term1": "_chat_message_interaction_type", "term2": "chat"},
+  {"term1": "_chat_message_interaction_type", "term2": "message"},
+  {"term1": "_chat_message_interaction_type", "term2": "type"},
+  {"term1": "0063_variadic_fun", "term2": "fun"},
+  {"term1": "0068_item_modifiers", "term2": "item"},
+  {"term1": "0068_item_modifiers", "term2": "modifiers"}
+]

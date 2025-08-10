@@ -19,7 +19,7 @@ members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "crates/layer3_network/ragit-code-analyzer",
         "vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib",
     "crates/rrust_kontekst_proc_macros",
-    "vendor/ast-grep", "crates/ragit-feature-extractor",     "crates/quiz_server", "crates/ragit-command-quiz", "crates/layer7_application/ragit-commands",
+    "vendor/ast-grep", "crates/ragit-feature-extractor",     "crates/quiz_server", "crates/ragit-command-quiz", "crates/layer7_application/ragit-commands", "crates/ragit-embedding-quiz",
 ]
 default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
 exclude = [

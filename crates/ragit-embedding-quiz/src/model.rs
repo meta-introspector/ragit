@@ -47,7 +47,9 @@ impl Model {
         }
 
         let mut questions: Vec<Question> = raw_embeddings.into_iter().enumerate().map(|(id, (text, embedding))| {
-            let is_missing_embedding = !embeddings_str.contains(&format!("\"{{}}\":", text));
+	    let text2 = format!("{}", text);
+	    let text3 = "\"{".to_owned() + &text2 + "}\":";
+            let is_missing_embedding = !embeddings_str.contains(&text3);
             Question { id, text, embedding, is_missing_embedding }
         }).collect();
 

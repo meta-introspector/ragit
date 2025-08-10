@@ -11,13 +11,15 @@ use std::sync::{Arc, Mutex};
 use daemonize::Daemonize;
 use rand::prelude::*;
 use std::fs;
+use std::collections::HashMap;
+use std::io::Write;
 
 // Model
-#[derive(Clone)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 struct Question {
     id: usize,
     text: String,
-    answer: String,
+    embedding: Vec<f32>,
 }
 
 #[derive(Clone)]
@@ -28,11 +30,14 @@ struct Model {
 
 impl Model {
     fn new() -> Self {
-        let questions = vec![
-            Question { id: 0, text: "What is the capital of France?".to_string(), answer: "Paris".to_string() },
-            Question { id: 1, text: "What is 2 + 2?".to_string(), answer: "4".to_string() },
-            Question { id: 2, text: "What is the color of the sky?".to_string(), answer: "Blue".to_string() },
-        ];
+        let embeddings_path = format!("{}/../../term_embeddings.json", env!("CARGO_MANIFEST_DIR"));
+        let embeddings_str = fs::read_to_string(embeddings_path).expect("Could not read term_embeddings.json");
+        let raw_embeddings: HashMap<String, Vec<f32>> = serde_json::from_str(&embeddings_str).expect("Could not parse term_embeddings.json");
+
+        let questions: Vec<Question> = raw_embeddings.into_iter().enumerate().map(|(id, (text, embedding))| {
+            Question { id, text, embedding }
+        }).collect();
+
         let weights = vec![1.0; questions.len()];
         Self { questions, weights }
     }
@@ -48,6 +53,19 @@ impl Model {
         } else {
             self.weights[question_id] *= 0.9;
         }
+    }
+
+    fn update_embedding(&mut self, question_id: usize, submitted_embedding: Vec<f32>) {
+        if let Some(question) = self.questions.get_mut(question_id) {
+            // Simple averaging for now
+            for i in 0..question.embedding.len() {
+                question.embedding[i] = (question.embedding[i] + submitted_embedding[i]) / 2.0;
+            }
+        }
+    }
+
+    fn calculate_distance(embedding1: &[f32], embedding2: &[f32]) -> f32 {
+        embedding1.iter().zip(embedding2.iter()).map(|(a, b)| (a - b).powi(2)).sum::<f32>().sqrt()
     }
 }
 
@@ -68,7 +86,7 @@ struct QuizQuestion {
 #[derive(Deserialize)]
 struct Answer {
     question_id: usize,
-    submitted_answer: String,
+    submitted_embedding: Vec<f32>,
 }
 
 #[derive(Serialize)]
@@ -103,16 +121,38 @@ async fn quiz_handler(State(state): State<AppState>) -> Json<Option<QuizQuestion
     Json(question)
 }
 
-async fn answer_handler(State(state): State<AppState>, Json(answer): Json<Answer>) -> Json<AnswerResponse> {
+async fn answer_handler(State(state): State<AppState>, payload: Json<serde_json::Value>) -> Json<AnswerResponse> {
+    println!("Received raw JSON payload: {:?}", payload);
+
+    let answer: Answer = serde_json::from_value(payload.0).expect("Failed to deserialize Answer");
+
     let mut model = state.model.lock().unwrap();
-    let correct = if let Some(question) = model.questions.iter().find(|q| q.id == answer.question_id) {
-        let correct = question.answer == answer.submitted_answer;
-        model.update_weight(answer.question_id, correct);
-        correct
+    let correct = if let Some(question) = model.questions.get(answer.question_id) {
+        let distance = Model::calculate_distance(&question.embedding, &answer.submitted_embedding);
+        let is_correct = distance < 0.1; // Threshold for correctness
+        if !is_correct {
+            model.update_embedding(answer.question_id, answer.submitted_embedding);
+        }
+        model.update_weight(answer.question_id, is_correct);
+        is_correct
     } else {
         false
     };
     Json(AnswerResponse { correct })
+}
+
+async fn debug_answer_handler(payload: Json<serde_json::Value>) -> &'static str {
+    let log_path = format!("{}/../../tmp/debug_payload.log", env!("CARGO_MANIFEST_DIR"));
+    let mut file = fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&log_path)
+        .expect("Could not open debug_payload.log");
+
+    writeln!(file, "Received raw JSON payload on debug endpoint: {:?}", payload)
+        .expect("Could not write to debug_payload.log");
+
+    "Debug endpoint reached! Check debug_payload.log"
 }
 
 // Main
@@ -151,6 +191,7 @@ async fn run_server() {
         .route("/stop", get(stop_handler))
         .route("/quiz", get(quiz_handler))
         .route("/answer", post(answer_handler))
+        .route("/debug_answer", post(debug_answer_handler))
         .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
