@@ -111,6 +111,8 @@ categories = ["science"]
 # tokio = { version = "1.0", features = ["full"] }
 
 [dependencies]
+
+rand = "0.8.5"
 ragit-agent = { path = "crates/legacy_and_refactoring/ragit-agent" }
 ragit-index = { path = "crates/layer3_network/ragit-index" }
 ragit-model = { path = "crates/layer7_application/ragit-model" }
