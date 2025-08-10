@@ -164,7 +164,11 @@ This index provides a structured overview of the Ragit project documentation, ca
 
 *   **`quiz_server_sop.md`**
     *   **Themes**: Rust, quiz server, model sampling, weight updating.
-    *   **Key Takeaways**: How to interact with the quiz server to sample the model and update its weights.
+    *   **Key Key Takeaways**: How to interact with the quiz server to sample the model and update its weights.
+
+*   **`self_improvement_sop.md`**
+    *   **Themes**: Gemini CLI, self-improvement, embedding refinement, knowledge base expansion, tool development.
+    *   **Key Takeaways**: Defines the process for continuous self-improvement of the `ragit` system by the Gemini CLI agent.
 
 *   **`self_improvement_sop.md`**
     *   **Themes**: Gemini CLI, self-improvement, embedding refinement, knowledge base expansion, tool development.
