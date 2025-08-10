@@ -1,186 +1,30 @@
-use clap::{Parser, Subcommand};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::fs;
-use rand::prelude::*;
+mod model;
+mod cli;
+mod handlers;
 
-// Model
-#[derive(Clone, Debug, Serialize, Deserialize)]
-struct Question {
-    id: usize,
-    text: String,
-    embedding: Vec<f32>,
-    is_missing_embedding: bool, // New field
-}
-
-#[derive(Clone)]
-struct Model {
-    questions: Vec<Question>,
-    weights: Vec<f32>,
-}
-
-impl Model {
-    fn new() -> Self {
-        let embeddings_path = format!("{}/../../term_embeddings.json", env!("CARGO_MANIFEST_DIR"));
-        let embeddings_str = fs::read_to_string(&embeddings_path).expect("Could not read term_embeddings.json");
-        let mut raw_embeddings: HashMap<String, Vec<f32>> = serde_json::from_str(&embeddings_str).expect("Could not parse term_embeddings.json");
-
-        // Process snake_case terms
-        let mut terms_to_add = Vec::new();
-        for (term, _) in raw_embeddings.iter() {
-            if term.contains('_') {
-                for sub_term in term.split('_') {
-                    if !raw_embeddings.contains_key(sub_term) {
-                        terms_to_add.push(sub_term.to_string());
-                    }
-                }
-            }
-        }
-
-        let mut rng = thread_rng();
-        for term in terms_to_add {
-            // Generate a random 8-dimensional embedding for new terms
-            let new_embedding: Vec<f32> = (0..8).map(|_| rng.gen_range(0.0..1.0)).collect();
-            raw_embeddings.insert(term, new_embedding);
-        }
-
-        let mut questions: Vec<Question> = raw_embeddings.into_iter().enumerate().map(|(id, (text, embedding))| {
-            let is_missing_embedding = !embeddings_str.contains(&format!("\"{}\":", text)); // Check if original file contained it
-            Question { id, text, embedding, is_missing_embedding }
-        }).collect();
-
-        // Sort questions to prioritize missing embeddings
-        questions.sort_by(|a, b| b.is_missing_embedding.cmp(&a.is_missing_embedding));
-
-        let weights = vec![1.0; questions.len()];
-        Self { questions, weights }
-    }
-
-    fn save(&self) {
-        let embeddings_path = format!("{}/../../term_embeddings.json", env!("CARGO_MANIFEST_DIR"));
-        let mut raw_embeddings = HashMap::new();
-        for q in &self.questions {
-            raw_embeddings.insert(q.text.clone(), q.embedding.clone());
-        }
-        let json_str = serde_json::to_string_pretty(&raw_embeddings).expect("Could not serialize embeddings");
-        fs::write(&embeddings_path, json_str).expect("Could not write term_embeddings.json");
-    }
-
-    fn get_question(&self) -> Option<Question> {
-        let mut rng = thread_rng();
-        self.questions.choose_weighted(&mut rng, |item| self.weights[item.id]).ok().cloned()
-    }
-
-    fn update_weight(&mut self, question_id: usize, correct: bool) {
-        if correct {
-            self.weights[question_id] *= 1.1;
-        } else {
-            self.weights[question_id] *= 0.9;
-        }
-    }
-
-    fn update_embedding(&mut self, question_id: usize, submitted_embedding: Vec<f32>) {
-        if let Some(question) = self.questions.get_mut(question_id) {
-            for i in 0..question.embedding.len() {
-                question.embedding[i] = (question.embedding[i] + submitted_embedding[i]) / 2.0;
-            }
-        }
-    }
-
-    fn calculate_distance(embedding1: &[f32], embedding2: &[f32]) -> f32 {
-        embedding1.iter().zip(embedding2.iter()).map(|(a, b)| (a - b).powi(2)).sum::<f32>().sqrt()
-    }
-
-    fn find_similar_embeddings(&self, target_question: &Question) -> Vec<(Question, f32)> {
-        let mut similarities: Vec<(Question, f32)> = self.questions.iter()
-            .filter(|q| q.id != target_question.id) // Exclude the target question itself
-            .map(|q| {
-                let distance = Model::calculate_distance(&target_question.embedding, &q.embedding);
-                (q.clone(), distance)
-            })
-            .collect();
-
-        similarities.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal)); // Sort by distance (ascending)
-
-        similarities.into_iter().take(5).collect() // Take top 5 most similar (smallest distance)
-    }
-}
-
-#[derive(Parser)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    #[command(subcommand)]
-    command: Commands,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    /// Get a quiz question
-    Quiz,
-    /// Submit an answer to a quiz question
-    Answer {
-        question_id: usize,
-        submitted_embedding_str: String,
-    },
-}
-
-fn parse_embedding(s: &str) -> Result<Vec<f32>, String> {
-    s.split(',')
-        .map(|s| s.trim().parse::<f32>().map_err(|e| format!("Invalid float: {}", e)))
-        .collect()
-}
+use clap::Parser;
+use model::Model;
+use cli::{Cli, Commands, parse_embedding};
+use handlers::{handle_quiz_command, handle_answer_command, handle_suggest_terms_command, handle_train_command};
 
 fn main() {
     let cli = Cli::parse();
     let mut model = Model::new();
 
-    match &cli.command {
+    match cli.command {
         Commands::Quiz => {
-            if let Some(question) = model.get_question() {
-                println!("Question ID: {}", question.id);
-                println!("Question Text: {}", question.text);
-                println!("Current Embedding: {:?}", question.embedding);
-                if question.is_missing_embedding {
-                    println!("This is a new term. Please provide an embedding.");
-                }
-
-                let similar_embeddings = model.find_similar_embeddings(&question);
-                if !similar_embeddings.is_empty() {
-                    println!("\nMost Similar Embeddings:");
-                    for (sim_q, distance) in similar_embeddings {
-                        println!("  - ID: {}, Text: {}, Distance: {:.4}, Embedding: {:?}", sim_q.id, sim_q.text, distance, sim_q.embedding);
-                    }
-                }
-            } else {
-                println!("No questions available.");
-            }
+            handle_quiz_command(&mut model);
         },
         Commands::Answer { question_id, submitted_embedding_str } => {
-            let submitted_embedding = parse_embedding(submitted_embedding_str)
+            let submitted_embedding = parse_embedding(&submitted_embedding_str)
                 .expect("Invalid embedding format");
-            if let Some(question) = model.questions.get_mut(*question_id) {
-                if question.is_missing_embedding {
-                    question.embedding = submitted_embedding.clone(); // Directly set embedding for new terms
-                    question.is_missing_embedding = false; // Mark as no longer missing
-                    println!("New embedding added for Question ID: {}", question_id);
-                } else {
-                    let distance = Model::calculate_distance(&question.embedding, &submitted_embedding);
-                    let is_correct = distance < 0.1; // Threshold for correctness
-
-                    if !is_correct {
-                        model.update_embedding(*question_id, submitted_embedding.clone());
-                    }
-                    model.update_weight(*question_id, is_correct);
-                    println!("Answer submitted for Question ID: {}", question_id);
-                    println!("Correct: {}", is_correct);
-                    if !is_correct {
-                        println!("Embedding updated.");
-                    }
-                }
-                model.save(); // Save after any update
-            } else {
-                println!("Question ID {} not found.", question_id);
-            }
+            handle_answer_command(&mut model, question_id, submitted_embedding);
+        },
+        Commands::SuggestTerms => {
+            handle_suggest_terms_command(&model);
+        },
+        Commands::Train { training_data_path, learning_rate } => {
+            handle_train_command(&mut model, &training_data_path, learning_rate);
         },
     }
 }
