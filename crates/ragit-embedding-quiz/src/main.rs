@@ -5,7 +5,7 @@ mod handlers;
 use clap::Parser;
 use model::Model;
 use cli::{Cli, Commands, parse_embedding};
-use handlers::{handle_quiz_command, handle_answer_command, handle_suggest_terms_command, handle_train_command};
+use handlers::{handle_quiz_command, handle_answer_command, handle_suggest_terms_command, handle_train_command, handle_query_command, handle_add_vector_command};
 
 fn main() {
     let cli = Cli::parse();
@@ -25,6 +25,12 @@ fn main() {
         },
         Commands::Train { training_data_path, learning_rate } => {
             handle_train_command(&mut model, &training_data_path, learning_rate);
+        },
+        Commands::Query { terms } => {
+            handle_query_command(&model, &terms);
+        },
+        Commands::AddVector { term, embedding_str } => {
+            handle_add_vector_command(&mut model, &term, &embedding_str);
         },
     }
 }

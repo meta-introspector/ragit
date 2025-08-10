@@ -29,4 +29,14 @@ pub enum Commands {
         training_data_path: String,
         learning_rate: Option<f32>,
     },
+    /// Query for terms based on a list of input terms
+    Query {
+        #[arg(num_args = 1..)]
+        terms: Vec<String>,
+    },
+    /// Add a new term and its embedding
+    AddVector {
+        term: String,
+        embedding_str: String,
+    },
 }
