@@ -20,7 +20,7 @@ pub struct FileReport {
     pub triples: Vec<(String, String, String)> ,
 }
 
-pub fn get_sampled_reports() -> Result<Vec<FileReport>, Box<dyn std::error::Error>> {
+pub fn get_all_file_reports() -> Result<Vec<FileReport>, Box<dyn std::error::Error>> {
     let term_embeddings_path = "term_embeddings.json";
     let index_file_path = "index.rs.txt";
     let embedding_dimension = 8;
@@ -113,35 +113,5 @@ pub fn get_sampled_reports() -> Result<Vec<FileReport>, Box<dyn std::error::Erro
         });
     }
 
-    // Calculate magnitudes and sort
-    let mut reports_with_magnitude: Vec<(FileReport, f64)> = reports
-        .into_iter()
-        .map(|r| {
-            let magnitude = r.total_vector.iter().map(|&x| x * x).sum::<f64>().sqrt();
-            (r, magnitude)
-        })
-        .collect();
-
-    reports_with_magnitude.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-
-    // Select samples
-    let mut selected_reports = Vec::new();
-    if let Some(min_report) = reports_with_magnitude.first() {
-        selected_reports.push(min_report.0.clone());
-    }
-    if let Some(max_report) = reports_with_magnitude.last() {
-        selected_reports.push(max_report.0.clone());
-    }
-
-    let mut rng = rand::rng();
-    let sample_size = if reports_with_magnitude.len() > 10 { 8 } else { reports_with_magnitude.len() };
-    let random_samples = reports_with_magnitude
-        .choose_multiple(&mut rng, sample_size)
-        .cloned()
-        .map(|(r, _)| r)
-        .collect::<Vec<FileReport>>();
-
-    selected_reports.extend(random_samples);
-
-    Ok(selected_reports)
+    Ok(reports)
 }

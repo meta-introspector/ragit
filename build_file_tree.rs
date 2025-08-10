@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use serde::Serialize;
 use ragit_feature_extractor::FileReport;
+use rand::prelude::*;
+use rand::thread_rng;
 
 #[derive(Debug, Serialize)]
 struct TreeNode {
@@ -97,11 +99,11 @@ fn find_lca<'a>(root: &'a TreeNode, path1_parts: &[&'a str], path2_parts: &[&'a 
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Call ragit-feature-extractor to get sampled reports
-    let sampled_reports = ragit_feature_extractor::get_sampled_reports()?;
+    let all_reports = ragit_feature_extractor::get_all_file_reports()?;
 
     let mut root = TreeNode::new("root");
 
-    for report in &sampled_reports {
+    for report in &all_reports {
         let path_parts: Vec<&str> = report.file_name.split('/').collect();
         root.add_path(&path_parts, report);
     }
@@ -109,17 +111,47 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     root.aggregate_term_counts();
     root.calculate_weights_and_fractions(0.0);
 
+    // Select samples for evaluation
+    let mut selected_reports = Vec::new();
+    let mut reports_with_magnitude: Vec<(ragit_feature_extractor::FileReport, f64)> = all_reports
+        .into_iter()
+        .map(|r| {
+            let magnitude = r.total_vector.iter().map(|&x| x * x).sum::<f64>().sqrt();
+            (r, magnitude)
+        })
+        .collect();
+
+    reports_with_magnitude.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+    if let Some(min_report) = reports_with_magnitude.first() {
+        selected_reports.push(min_report.0.clone());
+    }
+    if let Some(max_report) = reports_with_magnitude.last() {
+        selected_reports.push(max_report.0.clone());
+    }
+
+    let mut rng = rand::thread_rng(); // Use thread_rng for simplicity
+    let sample_size = if reports_with_magnitude.len() > 10 { 8 } else { reports_with_magnitude.len() };
+    let random_samples = reports_with_magnitude
+        .choose_multiple(&mut rng, sample_size)
+        .cloned()
+        .map(|(r, _)| r)
+        .collect::<Vec<ragit_feature_extractor::FileReport>>();
+
+    selected_reports.extend(random_samples);
+
     // Print the tree
     println!("--- File Tree ---");
     println!("{:#?}", root);
     println!("-----------------");
 
     // Find and report common denominators (LCA) for sampled files
-    println!("\n--- Common Denominators (LCA) for Sampled Files ---");
-    for i in 0..sampled_reports.len() {
-        for j in i + 1..sampled_reports.len() {
-            let report1 = &sampled_reports[i];
-            let report2 = &sampled_reports[j];
+    println!("
+--- Common Denominators (LCA) for Sampled Files ---");
+    for i in 0..selected_reports.len() {
+        for j in i + 1..selected_reports.len() {
+            let report1 = &selected_reports[i];
+            let report2 = &selected_reports[j];
 
             let path1_parts: Vec<&str> = report1.file_name.split('/').collect();
             let path2_parts: Vec<&str> = report2.file_name.split('/').collect();
