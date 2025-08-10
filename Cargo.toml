@@ -19,7 +19,7 @@ members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
     "crates/layer3_network/ragit-code-analyzer",
         "vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib",
     "crates/rrust_kontekst_proc_macros",
-    "vendor/ast-grep",
+    "vendor/ast-grep", "crates/ragit-feature-extractor",
 ]
 default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
 exclude = [
@@ -129,14 +129,17 @@ sysinfo = "0.30.13"
 async-recursion = "1.1.1"
 chrono = "0.4.41"
 rand = "0.8.5"
+ragit-feature-extractor = { path = "crates/ragit-feature-extractor" }
 
 [[bin]]
 name = "run_chunk_comparison"
 path = "run_chunk_comparison.rs"
 
+
+
 [[bin]]
-name = "report_path_embeddings"
-path = "report_path_embeddings.rs"
+name = "build_file_tree"
+path = "build_file_tree.rs"
 
 [features]
 default = []

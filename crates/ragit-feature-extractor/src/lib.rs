@@ -2,25 +2,25 @@ use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::io::{BufReader, BufRead};
 use serde::{Deserialize, Serialize};
-use rand::seq::SliceRandom;
+use rand::prelude::IndexedRandom;
 use regex::Regex;
 use itertools::Itertools;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct TermEmbeddings(HashMap<String, Vec<f64>>);
+pub struct TermEmbeddings(HashMap<String, Vec<f64>>);
 
 #[derive(Debug, Serialize, Clone)]
-struct FileReport {
-    file_name: String,
-    path_vector: Vec<f64>,
-    file_name_vector: Vec<f64>,
-    total_vector: Vec<f64>,
-    term_counts: HashMap<String, u32>,
-    pairs: Vec<(String, String)> ,
-    triples: Vec<(String, String, String)> ,
+pub struct FileReport {
+    pub file_name: String,
+    pub path_vector: Vec<f64>,
+    pub file_name_vector: Vec<f64>,
+    pub total_vector: Vec<f64>,
+    pub term_counts: HashMap<String, u32>,
+    pub pairs: Vec<(String, String)> ,
+    pub triples: Vec<(String, String, String)> ,
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub fn get_sampled_reports() -> Result<Vec<FileReport>, Box<dyn std::error::Error>> {
     let term_embeddings_path = "term_embeddings.json";
     let index_file_path = "index.rs.txt";
     let embedding_dimension = 8;
@@ -133,7 +133,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         selected_reports.push(max_report.0.clone());
     }
 
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let sample_size = if reports_with_magnitude.len() > 10 { 8 } else { reports_with_magnitude.len() };
     let random_samples = reports_with_magnitude
         .choose_multiple(&mut rng, sample_size)
@@ -143,66 +143,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     selected_reports.extend(random_samples);
 
-    // Get top 10 global pairs and triples
-    let mut sorted_global_pairs: Vec<((String, String), u32)> = global_pair_counts.into_iter().collect();
-    sorted_global_pairs.sort_by(|a, b| b.1.cmp(&a.1));
-    let top_10_pairs: Vec<(String, String)> = sorted_global_pairs.into_iter().take(10).map(|(p, _)| p).collect();
-
-    let mut sorted_global_triples: Vec<((String, String, String), u32)> = global_triple_counts.into_iter().collect();
-    sorted_global_triples.sort_by(|a, b| b.1.cmp(&a.1));
-    let top_10_triples: Vec<(String, String, String)> = sorted_global_triples.into_iter().take(10).map(|(t, _)| t).collect();
-
-    // Print Global Term Counts
-    println!("\n--- Global Term Counts ---");
-    for (term, count) in &global_term_counts {
-        println!("  {}: {}", term, count);
-    }
-    println!("--------------------------");
-
-    println!("\n--- Top 10 Global Pairs ---");
-    for pair in &top_10_pairs {
-        println!("  {:?}", pair);
-    }
-    println!("---------------------------");
-
-    println!("\n--- Top 10 Global Triples ---");
-    for triple in &top_10_triples {
-        println!("  {:?}", triple);
-    }
-    println!("-----------------------------");
-
-    // Print the reports with fractions and common terms
-    for report in selected_reports {
-        println!("\n--- File Report: {} ---", report.file_name);
-        println!("  Path Vector: {:?}", report.path_vector);
-        println!("  File Name Vector: {:?}", report.file_name_vector);
-        println!("  Total Vector: {:?}", report.total_vector);
-        println!("  Term Counts:");
-        for (term, count) in &report.term_counts {
-            let global_count = global_term_counts.get(term).unwrap_or(&0);
-            let fraction = *count as f64 / *global_count as f64;
-            println!("    {}: {} (Fraction of Global: {:.4})", term, count, fraction);
-        }
-
-        println!("  Pairs in File:");
-        for pair in &report.pairs {
-            println!("    {:?}", pair);
-        }
-
-        println!("  Triples in File:");
-        for triple in &report.triples {
-            println!("    {:?}", triple);
-        }
-
-        // Common terms (GCD interpretation)
-        println!("  Common Terms with Global (Min Count):");
-        for (term, count) in &report.term_counts {
-            if let Some(global_count) = global_term_counts.get(term) {
-                println!("    {}: {}", term, std::cmp::min(*count, *global_count));
-            }
-        }
-        println!("----------------------------------------");
-    }
-
-    Ok(())
+    Ok(selected_reports)
 }

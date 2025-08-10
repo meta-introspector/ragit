@@ -1,0 +1,19 @@
+[package]
+name = "ragit-feature-extractor"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+documentation.workspace = true
+description.workspace = true
+homepage.workspace = true
+categories.workspace = true
+
+[dependencies]
+itertools = "0.14.0"
+rand = "0.9.2"
+regex = "1.11.1"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.142"

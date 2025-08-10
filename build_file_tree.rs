@@ -22,8 +22,8 @@ impl TreeNode {
         }
     }
 
-    fn add_path(&mut self, path: &[&str], file_report: &FileReport) {
-        if path.is_empty() {
+    fn add_path(&mut self, path_parts: &[&str], file_report: &FileReport) {
+        if path_parts.is_empty() {
             // This is the end of the path, add file's term counts here
             for (term, count) in &file_report.term_counts {
                 *self.term_counts.entry(term.clone()).or_insert(0) += count;
@@ -31,11 +31,9 @@ impl TreeNode {
             return;
         }
 
-        let (current, rest) = path.split_at(1);
-        let current_name = current[0];
-
-        let child = self.children.entry(current_name.to_string()).or_insert_with(|| TreeNode::new(current_name));
-        child.add_path(rest, file_report);
+        let (current_part, remaining_parts) = path_parts.split_first().unwrap();
+        let child = self.children.entry(current_part.to_string()).or_insert_with(|| TreeNode::new(current_part));
+        child.add_path(remaining_parts, file_report);
     }
 
     fn aggregate_term_counts(&mut self) -> HashMap<String, u32> {

@@ -106,6 +106,10 @@ This index provides a structured overview of the Ragit project documentation, ca
     *   **Themes**: Gemini CLI, change management, SOP.
     *   **Key Takeaways**: Defines the process for using the Gemini CLI agent within the project's structured change management workflow.
 
+*   **`build_file_tree.md`**
+    *   **Themes**: Codebase analysis, file tree construction, term extraction, term pairs, term triples, feature extraction.
+    *   **Key Takeaways**: Explains the tool for analyzing file and directory names to understand linguistic patterns and support semantic search.
+
 *   **`contribution.md`**
     *   **Themes**: Ways to contribute (file readers, prompt engineering, documentation, bug reports), running tests.
     *   **Key Takeaways**: Guide for developers and users interested in contributing to the project.

@@ -31,3 +31,5 @@ tokio = { version = "1", features = ["full"] }
 sha3 = "0.10"
 
 ragit-fs = { path = "../../layer2_data_link/fs" }
+itertools = "0.14.0"
+ragit-feature-extractor = { version = "0.1.0", path = "../../ragit-feature-extractor" }
