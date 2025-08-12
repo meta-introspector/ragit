@@ -1,0 +1,11 @@
+[package]
+name = "ragit-muse"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-pdl = { path = "../../layer6_presentation/pdl" }
+tera = "1.20"
+ragit-prompt-management = { path = "../../legacy_and_refactoring/ragit-prompt-management" }

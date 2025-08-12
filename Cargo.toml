@@ -7,55 +7,163 @@ description = "git-like rag pipeline"
 repository = "https://github.com/baehyunsol/ragit"
 documentation = "https://docs.rs/ragit"
 
-[[bin]]
-name = "rag"
-path = "src/main.rs"
+[workspace]
+members = [ "crates/concept_indexer", "crates/glossary_search_indexer",
+    "crates/prime-bit-counter", "crates/word_counter", "crates/term_report_generator",
+    "crates/directory_reorganizer", "crates/path_relationship_matrix_generator", "crates/tree_term_reporter", "crates/term_quiz_master", "crates/semantic_term_processor", "tests/huggingface-candle-datasets-test", "refactor_tool", "crates/tmp_memory_test", "crates/rrust_kontekst_macros/ragit-instrumentation-macros",
+    "vendor/solfunmeme-metameme",
+    "crates/layer7_application/ragit-build-index-worker-single-file",
+        "crates/layer7_application/commands/ragit-command-bootstrap",
+    "vendor/amazon-q-developer-cli",
+    "vendor/amazon-q-developer-cli/crates/gemini-auth",     "crates/ragit-compilation-analysis",
+    "crates/layer3_network/ragit-code-analyzer",
+        "vendor/meta-introspector/solfunmeme-dioxus/crates/core_data_lib",
+    "crates/rrust_kontekst_proc_macros",
+    "vendor/ast-grep", "crates/ragit-feature-extractor",     "crates/quiz_server", "crates/ragit-command-quiz", "crates/layer7_application/ragit-commands", "crates/ragit-embedding-quiz",
+    "crates/ragit-social/ragit-social-twitter",
+    "spinoffs/model-builder-quiz/tmp/emojitape_interpreter",
+]
+default-members = ["crates/layer7_application/ragit-build-index-worker-single-file"]
+exclude = [
+    "crates/server",
+    "crates/ragit-agent-action",
+    "crates/ragit-legacy-agent",
+    "crates/ragit-legacy-api-config",
+    "crates/ragit-legacy-chunk",
+    "crates/ragit-legacy-error",
+    "crates/ragit-legacy-log-qa-results",
+    "crates/ragit-legacy-uid",
+    "crates/ragit-qa-system",
+    "crates/ragit-model-query-response",
+    "crates/ragit-command-archive",
+    "crates/ragit-command-audit",
+    "crates/ragit-command-cat-file",
+    "crates/ragit-command-check",
+    "crates/ragit-command-clone",
+    "crates/ragit-command-config",
+    "crates/ragit-command-extract-keywords",
+    "crates/ragit-command-gc",
+    "crates/ragit-command-help",
+    "crates/ragit-command-ii-build",
+    "crates/ragit-command-ii-reset",
+    "crates/ragit-command-ii-status",
+    "crates/ragit-command-ls",
+    "crates/ragit-command-merge",
+    "crates/ragit-command-meta",
+    "crates/ragit-command-model",
+    "crates/ragit-command-muse-summarize",
+    "crates/ragit-command-pdl",
+    "crates/ragit-command-pull",
+    "crates/ragit-command-push",
+    "crates/ragit-command-qa-test",
+    "crates/ragit-command-qa-tune",
+    "crates/ragit-command-remove",
+    "crates/ragit-command-status",
+    "crates/ragit-command-summary",
+    "crates/ragit-command-version",
+    
+    "crates/layer7_application/commands/ragit-command-change-request",
+    "crates/layer4_transport/solfunmeme_clifford",
+    "vendor/sophia_rs",
+]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+authors = ["Your Name <your.email@example.com>"]
+keywords = ["ragit", "ai", "llm", "knowledge-base"]
+license = "MIT"
+repository = "https://github.com/baehyunsol/ragit"
+documentation = "https://docs.rs/ragit"
+description = "git-like rag pipeline"
+homepage = "https://github.com/baehyunsol/ragit"
+categories = ["science"]
+
+[workspace.dependencies]
+# accelerate-src = { version = "0.3.2" }
+# anyhow = "1.0"
+# clap = { version = "4.0", features = ["derive"] }
+# criterion = "0.5"
+# env_logger = "0.10"
+# hyper = { version = "1.0", features = ["full"] }
+# lazy_static = "1.5.0"
+# log = "0.4"
+# mownstr = { path = "./vendor/mownstr" }
+# oxiri = "0.2.11"
+# rand = "0.8"
+# regex = "1.11.1"
+# resiter = "0.5.0"
+# rio_api = "0.1.0"
+# rio_turtle = "0.1.0"
+# serde = { version = "1.0.218", features = ["derive"] }
+# serde_json = "1.0"
+# sophia_api = { path = "./vendor/sophia_rs/api" }
+# sophia_iri = { path = "./vendor/sophia_rs/iri" }
+# sophia_isomorphism = { path = "./vendor/sophia_rs/isomorphism" }
+# sophia_rio = { path = "./vendor/sophia_rs/rio" }
+# sophia_term = { path = "./vendor/sophia_rs/term" }
+# sophia_turtle = { path = "./vendor/sophia_rs/turtle" }
+# test-case = "2.2.2"
+# thiserror = "1.0"
+# tokio = { version = "1.0", features = ["full"] }
+# toml = "0.8.0"
+# tower = "0.4"
+# tower-http = { version = "0.5", features = ["cors", "fs"] }
+# uuid = { version = "1.0", features = ["v4"] }
+axum = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+tokio = { version = "1", features = ["full"] }
 
 [dependencies]
 async-recursion = "1.1.1"
-chrono = "0.4.40"
-csv = { version = "1.3.1", optional = true }
-flate2 = "1.1.0"
-image = "0.25.5"
+chrono = "0.4.41"
 lazy_static = "1.5.0"
-mupdf = { version = "0.5.0", optional = true }
-png = { version = "0.17.16", optional = true }  # `resvg`'s function returns `png::EncodingError`
-ragit-api = { path = "./crates/api", version = "0.4.2" }
-ragit-cli = { path = "./crates/cli", version = "0.4.2" }
-ragit-fs = { path = "./crates/fs", version = "0.4.2", features = ["diff"] }
-ragit-ignore = { path = "./crates/ignore", version = "0.4.2" }
-ragit-korean = { path = "./crates/korean", version = "0.4.2", optional = true }
-ragit-pdl = { path = "./crates/pdl", version = "0.4.2" }
-regex = "1.11.1"
-reqwest = { version = "0.12.12", features = ["multipart"] }
-resvg = { version = "0.45.1", optional = true }
-rust-stemmers = "1.2.0"
-serde = { version = "1.0.218", features = ["derive"] }
-serde_json = { version = "1.0.139", features = ["arbitrary_precision"] }
+linfa = "0.7"
+linfa-reduction = "0.7"
+ndarray = "0.15"
+num-prime = "0.4.0"
+ragit-agent = { path = "crates/legacy_and_refactoring/ragit-agent" }
+ragit-feature-extractor = { path = "crates/ragit-feature-extractor" }
+ragit-index = { path = "crates/layer3_network/ragit-index" }
+ragit-model = { path = "crates/layer7_application/ragit-model" }
+ragit-model-query-response = { path = "crates/layer6_presentation/ragit-model-query-response" }
+ragit-pdl = { path = "crates/layer6_presentation/pdl" }
+ragit-types = { path = "crates/layer1_physical/ragit-types" }
+ragit-utils = { path = "crates/layer3_network/ragit-utils" }
+rand = "0.8.5"
+regex = "1.10.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 sha3 = "0.10.8"
-tera = "1.20.0"
-tokio = { version = "1.43.0", features = ["full"] }
-url = "2.5.4"
+sysinfo = "0.30.13"
+tokio = { version = "1", features = ["full"] }
+
+[[bin]]
+name = "run_chunk_comparison"
+path = "run_chunk_comparison.rs"
+
+
+
+[[bin]]
+name = "build_file_tree"
+path = "build_file_tree.rs"
 
 [features]
-# `csv` is small enough and is purely in Rust.
-default = ["csv"]
-full = ["csv", "pdf", "svg", "korean"]
-
-csv = ["dep:csv"]
-korean = ["dep:ragit-korean"]
-pdf = ["dep:mupdf"]
-svg = ["dep:resvg", "dep:png"]
+default = []
+jemalloc = []
+full = []
 
 # This feature only affects `rag version --build-options`.
 # Please make sure to enable this when you build ragit with "production" profile.
 production = []
+
+
 
 [profile.production]
 inherits = "release"
 codegen-units = 1
 lto = "fat"
 
-# mupdf does not compile without this patch on MacOS
-[patch.crates-io]
-pathfinder_simd = { git = "https://github.com/servo/pathfinder.git" }
+

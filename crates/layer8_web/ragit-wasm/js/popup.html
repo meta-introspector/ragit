@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            width: 300px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stats {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 4px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .shortcut {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>RAGIT</h2>
+        <p>Your Personal Knowledge Base</p>
+    </div>
+    
+    <div class="stats">
+        <div>Pages indexed: <span id="pageCount">0</span></div>
+    </div>
+    
+    <button id="addPage">Add Current Page</button>
+    <button id="query">Search Knowledge Base</button>
+    
+    <div class="shortcut">
+        <strong>Shortcuts:</strong><br>
+        Ctrl+Shift+A: Add page<br>
+        Ctrl+Shift+R: Search
+    </div>
+
+    <script type="module">
+        import init, { RagitWeb } from './pkg/ragit_wasm.js';
+        
+        async function initPopup() {
+            await init();
+            const ragit = new RagitWeb();
+            
+            document.getElementById('pageCount').textContent = ragit.get_chunk_count();
+            
+            document.getElementById('addPage').addEventListener('click', () => {
+                chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                    chrome.scripting.executeScript({
+                        target: {tabId: tabs[0].id},
+                        function: () => window.ragitExtension?.addCurrentPage()
+                    });
+                });
+            });
+            
+            document.getElementById('query').addEventListener('click', () => {
+                chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                    chrome.scripting.executeScript({
+                        target: {tabId: tabs[0].id},
+                        function: () => window.ragitExtension?.showQueryInterface()
+                    });
+                });
+            });
+        }
+        
+        initPopup();
+    </script>
+</body>
+</html>

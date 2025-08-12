@@ -1,0 +1,322 @@
+    /// Generate Parquet files from the augmented terms.
+    pub generate_parquet: bool,
+./crates/term_quiz_master/src/cli.rs
+    // if args.generate_parquet {
+    //     println!("Generating Parquet files...");
+    //     println!("Parquet files generated successfully in {}.", output_dir.display());
+    //     return Ok(()); // Exit after generating parquet
+    if args.generate_parquet {
+        println!("Generating Parquet files...");
+        println!("Parquet files generated successfully in {}.", output_dir.display());
+./crates/term_quiz_master/src/quiz_logic.rs
+use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
+// This struct will be refined after actual schema inspection of the Parquet files.
+    // Add more fields as discovered from Parquet schema
+// --- Parquet Reading and Schema Inspection Logic ---
+/// Reads a Parquet file and prints its schema and a few sample records.
+pub fn inspect_parquet_file(file_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+    let builder = ParquetRecordBatchReaderBuilder::try_new(file)?;
+    println!("--- Parquet File Schema ---");
+    let file_path = base_path.join(parsing_phase_glob.replace("data-*.parquet", "data-00000-of-00023.parquet")); // Replace glob with specific file for now
+    if let Err(e) = inspect_parquet_file(&file_path) {
+        eprintln!("Error inspecting Parquet file: {}", e);
+./crates/ragit-compilation-analysis/src/main.rs
+    use parquet::file::reader::SerializedFileReader;
+    "refs/convert/parquet".to_string(),
+let test_parquet_filename = repo.get("mnist/test/0000.parquet")?;
+let train_parquet_filename = repo.get("mnist/train/0000.parquet")?;
+let test_parquet = SerializedFileReader::new(std::fs::File::open(test_parquet_filename)?)?;
+let train_parquet = SerializedFileReader::new(std::fs::File::open(train_parquet_filename)?)?;
+let _train = train_parquet;
+for row in test_parquet {
+let test_parquet_filename = repo.get("mnist/test/0000.parquet")?;
+let train_parquet_filename = repo.get("mnist/train/0000.parquet")?;
+let test_parquet = SerializedFileReader::new(std::fs::File::open(test_parquet_filename)?)?;
+let train_parquet = SerializedFileReader::new(std::fs::File::open(train_parquet_filename)?)?;
+for row in test_parquet{
+        if let parquet::record::Field::Group(subrow) = field {
+                if let parquet::record::Field::Bytes(value) = field {
+        }else if let parquet::record::Field::Long(label) = field {
+for row in train_parquet{
+        if let parquet::record::Field::Group(subrow) = field {
+                if let parquet::record::Field::Bytes(value) = field {
+        }else if let parquet::record::Field::Long(label) = field {
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-book/src/lib.rs
+use parquet::file::reader::SerializedFileReader;
+    #[error("ParquetError : {0}")]
+    ParquetError(#[from] parquet::errors::ParquetError),
+fn sibling_to_parquet(
+        "refs/convert/parquet".to_string(),
+            if filename.ends_with(".parquet") {
+                let reader_result = sibling_to_parquet(&filename, &repo);
+    use parquet::file::reader::FileReader;
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-datasets/src/hub.rs
+use parquet::file::reader::{FileReader, SerializedFileReader};
+fn load_parquet(parquet: SerializedFileReader<std::fs::File>) -> Result<(Tensor, Tensor)> {
+    let samples = parquet.metadata().file_metadata().num_rows() as usize;
+    for row in parquet.into_iter().flatten() {
+            if let parquet::record::Field::Group(subrow) = field {
+                    if let parquet::record::Field::Bytes(value) = field {
+            } else if let parquet::record::Field::Long(label) = field {
+        "refs/convert/parquet".to_string(),
+    let test_parquet_filename = repo
+        .get("plain_text/test/0000.parquet")
+    let train_parquet_filename = repo
+        .get("plain_text/train/0000.parquet")
+    let test_parquet = SerializedFileReader::new(std::fs::File::open(test_parquet_filename)?)
+        .map_err(|e| Error::Msg(format!("Parquet error: {e}")))?;
+    let train_parquet = SerializedFileReader::new(std::fs::File::open(train_parquet_filename)?)
+        .map_err(|e| Error::Msg(format!("Parquet error: {e}")))?;
+    let (test_images, test_labels) = load_parquet(test_parquet)?;
+    let (train_images, train_labels) = load_parquet(train_parquet)?;
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-datasets/src/vision/cifar.rs
+        "refs/convert/parquet",
+        "fashion_mnist/test/0000.parquet",
+        "fashion_mnist/train/0000.parquet",
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-datasets/src/vision/fashion_mnist.rs
+use parquet::file::reader::{FileReader, SerializedFileReader};
+fn load_parquet(parquet: SerializedFileReader<std::fs::File>) -> Result<(Tensor, Tensor)> {
+    let samples = parquet.metadata().file_metadata().num_rows() as usize;
+    for row in parquet.into_iter().flatten() {
+            if let parquet::record::Field::Group(subrow) = field {
+                    if let parquet::record::Field::Bytes(value) = field {
+            } else if let parquet::record::Field::Long(label) = field {
+    let test_parquet_filename = repo
+    let train_parquet_filename = repo
+    let test_parquet = SerializedFileReader::new(std::fs::File::open(test_parquet_filename)?)
+        .map_err(|e| Error::Msg(format!("Parquet error: {e}")))?;
+    let train_parquet = SerializedFileReader::new(std::fs::File::open(train_parquet_filename)?)
+        .map_err(|e| Error::Msg(format!("Parquet error: {e}")))?;
+    let (test_images, test_labels) = load_parquet(test_parquet)?;
+    let (train_images, train_labels) = load_parquet(train_parquet)?;
+        "refs/convert/parquet",
+        "mnist/test/0000.parquet",
+        "mnist/train/0000.parquet",
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-datasets/src/vision/mnist.rs
+/// # Example usage of `download_smsspam_parquet`
+        String::from("Sample usage of `download_smsspam_parquet`.")
+        use crate::listings::ch06::{download_smsspam_parquet, PARQUET_FILENAME, PARQUET_URL};
+        // download parquet file
+        download_smsspam_parquet(PARQUET_URL)?;
+        // load parquet
+        file_path.push(PARQUET_FILENAME);
+        let df = ParquetReader::new(&mut file).finish()?;
+            create_balanced_dataset, download_smsspam_parquet, PARQUET_FILENAME, PARQUET_URL,
+        // download parquet
+        download_smsspam_parquet(PARQUET_URL)?;
+        // load parquet
+        file_path.push(PARQUET_FILENAME);
+        let df = ParquetReader::new(&mut file).finish().unwrap();
+            create_balanced_dataset, download_smsspam_parquet, random_split, PARQUET_FILENAME,
+            PARQUET_URL,
+        // download parquet
+        download_smsspam_parquet(PARQUET_URL)?;
+        // load parquet
+        file_path.push(PARQUET_FILENAME);
+        let df = ParquetReader::new(&mut file).finish().unwrap();
+        let train_path = PathBuf::from_str("data/train.parquet")?;
+        let validation_path = PathBuf::from_str("data/validation.parquet")?;
+        let test_path = PathBuf::from_str("data/test.parquet")?;
+        addons::write_parquet(&mut train_df, train_path)?;
+        addons::write_parquet(&mut validation_df, validation_path)?;
+        addons::write_parquet(&mut test_df, test_path)?;
+        let train_path = Path::new("data").join("train.parquet");
+                "Missing 'data/train.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(train_path)
+        let val_path = Path::new("data").join("validation.parquet");
+                "Missing 'data/validation.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(val_path)
+        let test_path = Path::new("data").join("test.parquet");
+                "Missing 'data/test.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(test_path)
+        let train_path = Path::new("data").join("train.parquet");
+                "Missing 'data/train.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(train_path)
+        let val_path = Path::new("data").join("validation.parquet");
+                "Missing 'data/validation.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(val_path)
+        let test_path = Path::new("data").join("test.parquet");
+                "Missing 'data/test.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(test_path)
+        let train_path = Path::new("data").join("train.parquet");
+                "Missing 'data/train.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(train_path)
+    pub fn write_parquet<P: AsRef<Path>>(df: &mut DataFrame, fname: P) -> anyhow::Result<()> {
+        ParquetWriter::new(&mut file).finish(df)?;
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/llms-from-scratch-rs/src/examples/ch06.rs
+        let train_path = Path::new("data").join("train.parquet");
+                "Missing 'data/train.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(train_path)
+        let val_path = Path::new("data").join("validation.parquet");
+                "Missing 'data/validation.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(val_path)
+        let test_path = Path::new("data").join("test.parquet");
+                "Missing 'data/test.parquet' file. Please run EG 06.04."
+            .load_data_from_parquet(test_path)
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/llms-from-scratch-rs/src/exercises/ch06.rs
+use crate::examples::ch06::addons::write_parquet;
+        create_balanced_dataset, download_smsspam_parquet, random_split, SpamDataLoader,
+        SpamDataset, SpamDatasetBuilder, PARQUET_FILENAME, PARQUET_URL,
+    // download parquet
+    download_smsspam_parquet(PARQUET_URL)?;
+    // load parquet
+    file_path.push(PARQUET_FILENAME);
+    let df = ParquetReader::new(&mut file).finish().unwrap();
+    let train_path = PathBuf::from_str("data/train.parquet")?;
+    let validation_path = PathBuf::from_str("data/validation.parquet")?;
+    let test_path = PathBuf::from_str("data/test.parquet")?;
+    write_parquet(&mut train_df, train_path)?;
+    write_parquet(&mut validation_df, validation_path)?;
+    write_parquet(&mut test_df, test_path)?;
+    let train_path = Path::new("data").join("train.parquet");
+            "Missing 'data/train.parquet' file. Please run `listings::apdx_e::download_and_prepare_spam_dataset()`"
+        .load_data_from_parquet(train_path)
+    let val_path = Path::new("data").join("validation.parquet");
+            "Missing 'data/validation.parquet' file. Please run `listings::apdx_e::download_and_prepare_spam_dataset()`"
+        .load_data_from_parquet(val_path)
+    let test_path = Path::new("data").join("test.parquet");
+            "Missing 'data/test.parquet' file. Please run `listings::apdx_e::download_and_prepare_spam_dataset()`"
+        .load_data_from_parquet(test_path)
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/llms-from-scratch-rs/src/listings/apdx_e.rs
+pub const PARQUET_URL: &str = "https://huggingface.co/datasets/ucirvine/sms_spam/resolve/main/plain_text/train-00000-of-00001.parquet?download=true";
+pub const PARQUET_FILENAME: &str = "train-00000-of-00001.parquet";
+/// [Listing 6.1 (parquet)] Download spam parquet dataset from HuggingFace
+pub fn download_smsspam_parquet(url: &str) -> anyhow::Result<()> {
+    // download parquet file
+    out_path.push(PARQUET_FILENAME);
+    /// Set data for builder from parquet file.
+    /// // create temp parquet file for demonstration
+    /// ParquetWriter::new(&mut test_file).finish(&mut df).unwrap();
+    /// let parquet_file = test_file.into_temp_path().keep().unwrap();
+    ///     .load_data_from_parquet(parquet_file)
+    pub fn load_data_from_parquet<P: AsRef<Path>>(mut self, parquet_file: P) -> Self {
+        let mut file = std::fs::File::open(parquet_file).unwrap();
+        let df = ParquetReader::new(&mut file).finish().unwrap();
+    pub fn test_parquet_path(
+        ParquetWriter::new(&mut test_file).finish(&mut df).unwrap();
+    pub fn test_spam_dataset_builder_parquet_file(
+        test_parquet_path: PathBuf,
+            .load_data_from_parquet(test_parquet_path)
+./vendor/meta-introspector/solfunmeme-dioxus/vendor/llms-from-scratch-rs/src/listings/ch06.rs
+use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
+    splits: HashMap<String, Vec<String>>, // split_name -> list of parquet files
+                if extension == "parquet" {
+            let file_examples = self.load_parquet_file(file_path)?;
+    /// Load examples from a single Parquet file
+    fn load_parquet_file(&self, file_path: &str) -> Result<Vec<DatasetExample>, ValidationError> {
+                message: format!("Failed to open Parquet file {}: {}", file_path, e),
+        let builder = ParquetRecordBatchReaderBuilder::try_new(file)
+                message: format!("Failed to create Parquet reader for {}: {}", file_path, e),
+                message: format!("Failed to build Parquet reader: {}", e),
+./vendor/meta-introspector/hugging-face-dataset-validator-rust/src/dataset_loader_example.rs
+use parquet::arrow::ArrowWriter;
+use parquet::file::properties::WriterProperties;
+        converter.convert_to_parquet(augmented_terms).await?;
+        // 3. Convert data to Parquet format
+        self.convert_to_parquet(augmented_terms).await?;
+    /// Convert data to Parquet format with proper Hugging Face structure
+    pub async fn convert_to_parquet(&self, augmented_terms: &AugmentedTerms) -> Result<(), ValidationError> {
+        println!("📦 Converting data to Parquet format...");
+        self.convert_split_to_parquet("train", &train_chars, augmented_terms).await?;
+        self.convert_split_to_parquet("validation", &validation_chars, augmented_terms).await?;
+        self.convert_split_to_parquet("test", &test_chars, augmented_terms).await?;
+    /// Convert a specific split to Parquet
+    async fn convert_split_to_parquet(&self, split_name: &str, characters: &[String], augmented_terms: &AugmentedTerms) -> Result<(), ValidationError> {
+            // Write to Parquet file
+                format!("{}/{}-00000-of-00001.parquet", self.output_dir, split_name)
+                format!("{}/{}-{:05}-of-{:05}.parquet", self.output_dir, split_name, batch_num, (all_data.len() + batch_size - 1) / batch_size)
+                message: format!("Failed to create parquet file {}: {}", output_path, e),
+./vendor/meta-introspector/hugging-face-dataset-validator-rust/src/hf_dataset_converter.rs
+mod parquet_validator;
+        Some("validate-parquet") => {
+            println!("Validating Parquet dataset...\n");
+            parquet_validator::validate_parquet_dataset(dataset_path)?;
+            println!("  create-hf-dataset [dir] - Create Hugging Face dataset with Parquet files
+            println!("  validate-parquet [dir] - Validate Hugging Face Parquet dataset");
+./vendor/meta-introspector/hugging-face-dataset-validator-rust/src/main.rs
+use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
+/// Parquet file validator for Hugging Face datasets
+pub struct ParquetValidator {
+pub struct ParquetFileInfo {
+    pub files: Vec<ParquetFileInfo>,
+impl ParquetValidator {
+        // Find all Parquet files
+        let parquet_files = self.find_parquet_files()?;
+        if parquet_files.is_empty() {
+                message: "No Parquet files found in dataset directory".to_string(),
+        println!("📄 Found {} Parquet files", parquet_files.len());
+        for file_path in &parquet_files {
+            let file_info = self.validate_parquet_file(file_path)?;
+        let sample_records = self.get_sample_records(&parquet_files[0])?;
+            total_files: parquet_files.len(),
+    /// Find all Parquet files in the dataset directory
+    fn find_parquet_files(&self) -> Result<Vec<String>, ValidationError> {
+        let mut parquet_files = Vec::new();
+                if extension == "parquet" {
+                        parquet_files.push(path_str.to_string());
+        parquet_files.sort();
+        Ok(parquet_files)
+    /// Validate a single Parquet file
+    fn validate_parquet_file(&self, file_path: &str) -> Result<ParquetFileInfo, ValidationError> {
+                message: format!("Failed to open Parquet file {}: {}", file_path, e),
+        let builder = ParquetRecordBatchReaderBuilder::try_new(file)
+                message: format!("Failed to create Parquet reader for {}: {}", file_path, e),
+        Ok(ParquetFileInfo {
+    /// Get schema from a Parquet file
+                message: format!("Failed to open Parquet file {}: {}", file_path, e),
+        let builder = ParquetRecordBatchReaderBuilder::try_new(file)
+                message: format!("Failed to create Parquet reader for {}: {}", file_path, e),
+    fn group_by_splits(&self, file_infos: &[ParquetFileInfo]) -> HashMap<String, SplitValidationInfo> {
+    fn assess_capabilities(&self, file_infos: &[ParquetFileInfo]) -> Result<ValidationResult, ValidationError> {
+    /// Get sample records from a Parquet file
+                message: format!("Failed to open Parquet file {}: {}", file_path, e),
+        let builder = ParquetRecordBatchReaderBuilder::try_new(file)
+                message: format!("Failed to create Parquet reader for {}: {}", file_path, e),
+                message: format!("Failed to build Parquet reader: {}", e),
+/// CLI function to validate Parquet dataset
+pub fn validate_parquet_dataset(dataset_dir: &str) -> Result<(), ValidationError> {
+    let validator = ParquetValidator::new(dataset_dir)?;
+    fn test_parquet_validator() {
+        let validator = ParquetValidator::new(dataset_dir).unwrap();
+./vendor/meta-introspector/hugging-face-dataset-validator-rust/src/parquet_validator.rs
+    DataAccess, EntityIdentifier, ParquetMetadata, ValidationError, ValidationResult,
+    fn get_parquet_metadata(&self, _dataset: &str, config: &str) -> Result<ParquetMetadata, ValidationError> {
+        // Simulate parquet metadata based on the JSON structure
+        Ok(ParquetMetadata::new(features).with_rows(num_rows))
+./vendor/meta-introspector/hugging-face-dataset-validator-rust/src/solfunmeme_validator.rs
+pub struct ParquetMetadata {
+impl ParquetMetadata {
+    fn get_parquet_metadata(&self, dataset: &str, config: &str) -> Result<ParquetMetadata, ValidationError>;
+    parquet_metadata: HashMap<String, ParquetMetadata>,
+            parquet_metadata: HashMap::new(),
+                self.parquet_metadata.insert(format!("{}:{}", dataset, config), ParquetMetadata::new(features));
+    fn get_parquet_metadata(&self, dataset: &str, config: &str) -> Result<ParquetMetadata, ValidationError> {
+        self.parquet_metadata.get(&key)
+        match self.data_access.get_parquet_metadata(dataset, config) {
+./vendor/meta-introspector/hugging-face-dataset-validator-rust/src/validator.rs
+pub mod parquet_validator;
+        Some("validate-parquet") => {
+            println!("Validating Parquet dataset...\n");
+            parquet_validator::validate_parquet_dataset(dataset_path)?;
+            println!("  create-hf-dataset [dir] - Create Hugging Face dataset with Parquet files");
+            println!("  validate-parquet [dir] - Validate Hugging Face Parquet dataset");
+./vendor/meta-introspector/hugging-face-dataset-validator-rust/src/lib.rs
+            Regex::new(r"dataset|jsonl|records|validation|parquet|hugging.*face").unwrap());
+                    if entry.content.contains("parquet") || entry.content.contains("10MB") {
+                        insights.push(format!("Line {}: Parquet optimization reference", entry.line_number));
+./vendor/amazon-q-developer-cli/crates/log-processor/src/lib.rs
+    pub async fn generate_parquet_dataset(&self, records: &[AnalysisRecord], output_path: &Path) -> Result<()> {
+        // For now, generate JSON dataset (Parquet would require additional dependencies)
+./vendor/amazon-q-developer-cli/crates/solfunmeme-analyzer/src/dataset_generator.rs
+        generator.generate_parquet_dataset(&self.records, output_path).await
+./vendor/amazon-q-developer-cli/crates/solfunmeme-analyzer/src/lib.rs
+    #[error("Parquet error: {0}")]
+    ParquetError(String),
+./vendor/amazon-q-developer-cli/crates/unified-knowledge/src/lib.rs
+            Regex::new(r"dataset|jsonl|records|validation|parquet|hugging.*face").unwrap());
+                    if entry.content.contains("parquet") || entry.content.contains("10MB") {
+                        insights.push(format!("Line {}: Parquet optimization reference", entry.line_number));
+./vendor/amazon-q-developer-cli/src/log_processor.rs
+    // Comment out the generate_parquet block
+    let start_marker = "    if args.generate_parquet {";
+./refactor_tool/src/main.rs

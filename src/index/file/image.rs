@@ -1,9 +1,9 @@
 use super::{AtomicToken, FileReaderImpl};
 use crate::error::Error;
 use crate::index::BuildConfig;
-use crate::uid::Uid;
+use crate::prelude::*;
 use ragit_fs::{extension, read_bytes};
-use ragit_pdl::ImageType;
+use ragit_pdl::{Image, ImageType};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::io::Cursor;
@@ -17,34 +17,6 @@ use resvg::{
 
 pub type Path = String;
 
-#[derive(Clone, PartialEq)]
-pub struct Image {
-    pub uid: Uid,
-    pub image_type: ImageType,
-    pub bytes: Vec<u8>,
-}
-
-impl Image {
-    /// Always use this function. DO NOT instantiate `Image` directly.
-    pub fn new(bytes: Vec<u8>, image_type: ImageType) -> Result<Self, Error> {
-        let normalized_bytes = normalize_image(bytes, image_type)?;
-        let uid = Uid::new_image(&normalized_bytes);
-        Ok(Image {
-            uid,
-            bytes: normalized_bytes,
-            image_type: ImageType::Png,  // `normalize_image` always returns this type
-        })
-    }
-}
-
-impl fmt::Debug for Image {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        fmt.debug_struct("Image")
-            .field("uid", &self.uid)
-            .field("image_type", &self.image_type)
-            .finish()
-    }
-}
 
 fn normalize_image(bytes: Vec<u8>, image_type: ImageType) -> Result<Vec<u8>, Error> {
     let mut dynamic_image = match image_type {

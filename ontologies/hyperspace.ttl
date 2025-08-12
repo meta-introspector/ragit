@@ -1,0 +1,81 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix vibe: <http://solfunmeme.org/vibe#> .
+@prefix em: <http://solfunmeme.org/emoji#> .
+@prefix hs: <http://solfunmeme.org/hyperspace#> .
+
+hs:HyperspaceOntology a owl:Ontology ;
+    rdfs:label "Hyperspace Ontology for Ragit" ;
+    rdfs:comment "Defines concepts and relationships for managing embeddings in a semantic hyperspace." .
+
+hs:Term a rdfs:Class ;
+    rdfs:label "Term" ;
+    rdfs:comment "Represents a linguistic term or concept within the Ragit system." ;
+    em:hasEmojiRepresentation "🏷️" .
+
+hs:Embedding a rdfs:Class ;
+    rdfs:label "Embedding" ;
+    rdfs:comment "Represents a numerical vector in hyperspace associated with a Term." ;
+    em:hasEmojiRepresentation "📊" .
+
+hs:Relationship a rdfs:Class ;
+    rdfs:label "Relationship" ;
+    rdfs:comment "Represents a semantic connection between two Terms." ;
+    em:hasEmojiRepresentation "🔗" .
+
+hs:Instruction a rdfs:Class ;
+    rdfs:label "Instruction" ;
+    rdfs:comment "Represents a directive for modifying the position of Terms in hyperspace." ;
+    em:hasEmojiRepresentation "📝" .
+
+# Properties
+hs:hasEmbedding a rdf:Property ;
+    rdfs:label "has embedding" ;
+    rdfs:domain hs:Term ;
+    rdfs:range hs:Embedding ;
+    rdfs:comment "Links a Term to its Embedding in hyperspace." .
+
+hs:isRelatedTo a rdf:Property ;
+    rdfs:label "is related to" ;
+    rdfs:domain hs:Term ;
+    rdfs:range hs:Term ;
+    rdfs:comment "Indicates a general semantic relationship between two Terms." .
+
+hs:shouldBeCloseTo a rdf:Property ;
+    rdfs:label "should be close to" ;
+    rdfs:subPropertyOf hs:isRelatedTo ;
+    rdfs:domain hs:Term ;
+    rdfs:range hs:Term ;
+    rdfs:comment "An instruction that two Terms should have similar embeddings." ;
+    em:hasEmojiRepresentation "🤝" .
+
+hs:shouldBeFarFrom a rdf:Property ;
+    rdfs:label "should be far from" ;
+    rdfs:subPropertyOf hs:isRelatedTo ;
+    rdfs:domain hs:Term ;
+    rdfs:range hs:Term ;
+    rdfs:comment "An instruction that two Terms should have dissimilar embeddings." ;
+    em:hasEmojiRepresentation "↔️" .
+
+hs:adjustEmbedding a rdf:Property ;
+    rdfs:label "adjust embedding" ;
+    rdfs:domain hs:Instruction ;
+    rdfs:range hs:Term ;
+    rdfs:comment "An instruction to adjust the embedding of a specific Term." .
+
+hs:targetEmbedding a rdf:Property ;
+    rdfs:label "target embedding" ;
+    rdfs:domain hs:Instruction ;
+    rdfs:range hs:Embedding ;
+    rdfs:comment "The target embedding for an adjustment instruction." .
+
+# Disjointness Example
+hs:Code a rdfs:Class ;
+    rdfs:label "Code" .
+
+hs:Data a rdfs:Class ;
+    rdfs:label "Data" .
+
+hs:Code owl:disjointWith hs:Data .

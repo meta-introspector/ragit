@@ -1,0 +1,9 @@
+[package]
+name = "ragit-code-understanding"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+ragit-memory-monitor = { path = "../../layer1_physical/ragit-memory-monitor" }
+tokei = "12.1.2"

@@ -1,0 +1,21 @@
+[package]
+name = "solfunmeme_embedding"
+version = "0.1.0"
+edition = "2024"
+license = "AGPL-3.0"
+
+[dependencies]
+anyhow = "1.0"
+rand = "0.8"
+serde_json = "1.0"
+solfunmeme_clifford = { path = "../../layer4_transport/solfunmeme_clifford" }
+solfunmeme_rdf_utils = { path = "../../layer6_presentation/solfunmeme_rdf_utils" }
+sophia_api = { path = "../../../vendor/sophia_rs/api" }
+# candle-core = { version = "0.5.1" }
+# tokenizers = { version = "0.15.2" }
+
+
+[features]
+default = []
+with-candle = []
+

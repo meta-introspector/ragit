@@ -1,10 +1,11 @@
+use std::path::PathBuf;
 use super::FileTree;
 use crate::Keywords;
 use crate::chunk::{Chunk, RenderedChunk};
 use crate::error::Error;
-use crate::index::Index;
+use ragit_utils::index::index_struct::Index;
 use crate::query::QueryResponse;
-use crate::uid::{Uid, UidQueryConfig};
+use crate::prelude::*;
 use ragit_cli::substr_edit_distance;
 use ragit_pdl::Schema;
 use serde::Serialize;
@@ -97,21 +98,10 @@ impl Action {
     }
 
     pub(crate) async fn run(&self, argument: &str, index: &Index) -> Result<ActionResult, Error> {
-        let mut argument = argument.trim().to_string();
-
-        // argument is a path
-        if let Action::ReadFile | Action::ReadDir = self {
-            // If `normalize` fails, that means `argument` is not a valid path,
-            // and it will throw an error later.
-            argument = ragit_fs::normalize(&argument).unwrap_or(argument);
-
-            if argument.starts_with("/") {
-                argument = argument.get(1..).unwrap().to_string();
-            }
-        }
+        let argument_path = PathBuf::from(ragit_fs::normalize(&argument)?);
 
         let r = match self {
-            Action::ReadFile => match index.processed_files.get(&argument) {
+            Action::ReadFile => match index.processed_files.get(&argument_path) {
                 Some(uid) => {
                     let chunk_uids = index.get_chunks_of_file(*uid)?;
 
@@ -153,10 +143,10 @@ impl Action {
 
                     // TODO: it might take very very long time if the knowledge-base is large...
                     for file in index.processed_files.keys() {
-                        let dist = substr_edit_distance(argument.as_bytes(), file.as_bytes());
+                        let dist = substr_edit_distance(argument.as_bytes(), file.to_str().unwrap().as_bytes());
 
                         if dist < 3 {
-                            similar_files.push((file.to_string(), dist));
+                            similar_files.push((file.display().to_string(), dist));
                         }
                     }
 
@@ -168,27 +158,29 @@ impl Action {
 
                     let similar_files = similar_files.into_iter().map(|(f, _)| f).collect::<Vec<_>>();
                     ActionResult::NoSuchFile {
-                        file: argument.to_string(),
-                        similar_files,
+                        file: argument_path.display().to_string(),
+                        similar_files
                     }
                 },
             },
             Action::ReadDir => {
-                if !argument.ends_with("/") && argument != "" {
-                    argument = format!("{argument}/");
+                let mut argument_path_str = argument.to_string();
+                if !argument_path_str.ends_with("/") && argument_path_str != "" {
+                    argument_path_str = format!("{}/", argument_path_str);
                 }
+                let argument_path = PathBuf::from(argument_path_str);
 
                 let mut file_tree = FileTree::root();
 
                 for file in index.processed_files.keys() {
-                    if file.starts_with(&argument) {
-                        file_tree.insert(file.get(argument.len()..).unwrap());
+                    if file.starts_with(&argument_path) {
+                        file_tree.insert(file.strip_prefix(&argument_path).unwrap().to_str().unwrap());
                     }
                 }
 
                 if file_tree.is_empty() {
                     ActionResult::NoSuchDir {
-                        dir: argument.to_string(),
+                        dir: argument_path.display().to_string(),
 
                         // TODO: I want to suggest directories with a similar name,
                         //       but it's too tricky to find ones.
@@ -206,7 +198,7 @@ impl Action {
                 }
 
                 else {
-                    let query = index.uid_query(&[argument.to_string()], UidQueryConfig::new().chunk_only())?;
+                    let query = uid_query(&index, &[argument.to_string()], crate::uid::query_helpers::UidQueryConfig::new().chunk_only())?;
                     let chunk_uids = query.get_chunk_uids();
 
                     match chunk_uids.len() {
@@ -297,8 +289,8 @@ impl Action {
                 let mut result = None;
 
                 for candidate in candidates.iter() {
-                    if let Some(value) = index.get_meta_by_key(candidate.to_string())? {
-                        result = Some((candidate.to_string(), value));
+                    if let Some(value) = index.get_config_by_key(candidate.to_string())?.as_str() {
+                        result = Some((candidate.to_string(), value.to_string()));
                         break;
                     }
                 }

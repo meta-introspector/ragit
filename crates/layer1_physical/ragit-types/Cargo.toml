@@ -1,0 +1,23 @@
+[package]
+name = "ragit-types"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0.218", features = ["derive"] }
+sha3 = "0.10"
+thiserror = "1.0"
+serde_json = "1.0"
+array-init = "2.0.0"
+
+flate2 = "1.0"
+regex = "1.10.4"
+image = "0.25.1"
+anyhow = "1.0"
+base64 = "0.22.1"
+ragit-file-error = { path = "../ragit-file-error" }
+ragit-core = { path = "../ragit-core" }
+tera = "1.20.0"
+#// do not import ragit-utils
+#//ragit-utils = { path = "../ragit-utils" }
+

@@ -1,0 +1,26 @@
+[package]
+name = "ragit-code-analyzer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+syn = { version = "2.0", features = ["full", "extra-traits"] } # For Rust AST parsing
+quote = "1.0" # Often used with syn, might be useful later
+rayon = "1.10" # For parallel iteration
+walkdir = "2.5" # For efficient directory traversal
+anyhow = "1.0" # For simplified error handling
+solfunmeme_core_logic = { path = "../solfunmeme-core-logic" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.0", features = ["derive"] } # For CLI arguments
+tokio = { version = "1.0", features = ["full"] } # For async main
+arrow = { version = "56.0.0", features = ["prettyprint"] } # For Arrow data structures
+parquet = { version = "56.0.0", features = ["arrow"] } # For Parquet file format
+
+[[bin]]
+name = "vectorize_tree"
+path = "src/bin/vectorize_tree.rs"
+
+[[bin]]
+name = "rust_indexer"
+path = "src/bin/rust_indexer.rs"

@@ -1,0 +1,29 @@
+[package]
+name = "ragit-wasm"
+version = "0.1.0"
+edition = "2021"
+description = "RAGIT WebAssembly bindings for browser extensions"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+  "console",
+  "Document",
+  "Element",
+  "HtmlElement",
+  "Window",
+  "Storage",
+  "Location",
+  "History",
+] }
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.6"
+ragit-core = { path = "../../layer1_physical/ragit-core" }
+ragit-query = { path = "../../layer4_transport/ragit-query" }
+ragit-index = { path = "../../layer3_network/ragit-index" }
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
+

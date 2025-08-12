@@ -1,0 +1,4 @@
+### Bit Size 5: The Small Index (Array Indices, Small Lookups)
+
+*   **Class of Data Structures:** Ideal for **small array indices** or **lookup table keys**. A 5-bit value can address up to 32 elements, making it suitable for compact data structures where direct indexing is efficient.
+*   **Formal Logic:** MetaCoq can prove array bounds safety, ensuring that any index generated within this 5-bit space will always point to a valid memory location. It can also verify the correctness of lookup operations. The `Total Grid Points` (17) are the formally recognized, valid indices or keys. The `Prime Count` (11) reflects the increasing number of fundamental "addressing modes" or distinctions required to uniquely identify these elements.

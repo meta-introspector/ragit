@@ -1,0 +1,9 @@
+[package]
+name = "ragit-glossary-generator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+syn = { version = "2.0", features = ["full"] }
+walkdir = "2.5.0"
+ragit-core = { path = "../../layer1_physical/ragit-core" }

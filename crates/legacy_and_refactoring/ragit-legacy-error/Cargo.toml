@@ -1,0 +1,19 @@
+[package]
+name = "ragit-legacy-error"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-fs = { path = "../../layer2_data_link/fs" }
+ragit-pdl = { path = "../../layer6_presentation/pdl" }
+ragit-uid = { path = "../../layer2_data_link/ragit-uid" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+thiserror = "1.0"
+reqwest = "0.12"
+serde_json = "1.0"
+image = "0.25"
+url = "2.5"
+tera = "1.19"
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }

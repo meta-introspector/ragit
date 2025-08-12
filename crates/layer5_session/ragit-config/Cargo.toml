@@ -1,0 +1,11 @@
+[package]
+name = "ragit-config"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-fs = { path = "../../layer2_data_link/fs" }
+serde_json = "1.0"

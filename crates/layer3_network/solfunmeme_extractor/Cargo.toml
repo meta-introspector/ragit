@@ -1,0 +1,29 @@
+[package]
+name = "solfunmeme_extractor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = { version = "0.6.3" }
+log = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+walkdir = "2.5"
+regex = "1.10"
+gloo-timers = { version = "0.3.0", features = ["futures"] }
+rrust_kontekst_base = { path = "../rrust_kontekst_base" }
+sha2 = "0.10"
+wasm-bindgen = { version = "0.2.92", features = ["serde-serialize"] }
+web-sys = { version = "0.3.69", features = ["Window", "Navigator", "Storage", "Event", "InputEvent", "EventTarget", "HtmlInputElement", "KeyboardEvent", "Document", "Element", "HtmlAnchorElement", "console", "Blob", "Url", "BlobPropertyBag"] }
+js-sys = "0.3.69"
+markdown = "1.0.0"
+dioxus-html = "0.6.3"
+rrust_kontekst = { path = "../rrust_kontekst" }
+# solfunmeme_function_analysis = { path = "../../../vendor/meta-introspector/solfunmeme-dioxus/crates/solfunmeme_function_analysis" }
+solfunmeme_clifford = { path = "../../layer4_transport/solfunmeme_clifford" }
+# solfunmeme_embedding = { path = "../solfunmeme_embedding" }
+# solfunmeme_clifford = { path = "../solfunmeme_clifford" }
+# candle-core = { version = "0.5.1" }
+dioxus-logger = "0.6.2"
+tokio = { version = "1.38", features = ["full"] }
+# Add any other dependencies that src/extractor might have

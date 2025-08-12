@@ -1,0 +1,256 @@
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_mut)]
+
+
+use anyhow::Result;
+use clap::Parser;
+use std::fs;
+use std::path::PathBuf; // For PathBuf::from in bootstrap_command_main
+use std::sync::{Arc, Mutex};
+
+mod bootstrap_commands;
+use ragit_memory_monitor::MemoryMonitor;
+use ragit_bootstrap_logic::build_index_logic::main_build_index::build_index;
+use bootstrap_commands::constants::{AFTER_SETUP_ENV, BEFORE_COPY_PROMPTS, BEFORE_ADD_FILES, BEFORE_BUILD_INDEX, CLEANUP_TEMP_DIR, MEMORY_USAGE_SUMMARY_HEADER};
+use bootstrap_commands::setup_environment::setup_environment;
+use bootstrap_commands::copy_prompts::copy_prompts;
+use bootstrap_commands::add_bootstrap_files::add_bootstrap_files;
+use bootstrap_commands::configure_memory_settings::configure_memory_settings;
+use bootstrap_commands::export_chunks::export_chunks_main;
+use bootstrap_commands::self_improvement::run_self_improvement_loop::run_self_improvement_loop;
+use bootstrap_commands::perform_final_reflective_query::perform_final_reflective_query;
+
+use ragit_index_query::query;
+use ragit_index_types::index_struct::Index;
+use ragit_index_types::load_mode::LoadMode;
+use ragit_utils::project_root::find_root;
+use ragit_types::query_turn::QueryTurn;
+use std::collections::HashMap;
+
+mod cli;
+use cli::{Cli, Commands};
+
+mod args;
+use crate::args::bootstrap_args::BootstrapArgs;
+use crate::args::query_args::QueryArgs;
+use crate::args::top_terms_args::TopTermsArgs;
+
+
+mod search_commands;
+use search_commands::search_command_main;
+
+
+
+
+
+async fn bootstrap_command_main(args: BootstrapArgs) -> Result<(), anyhow::Error> {
+    let mut memory_monitor = MemoryMonitor::new(args.verbose, args.time_threshold_ms, args.memory_threshold_bytes);
+    memory_monitor.verbose("Starting bootstrap process.");
+    memory_monitor.capture_and_log_snapshot("Initial");
+
+    let (actual_root_dir, temp_dir, mut index) = setup_environment(
+        args.max_memory_gb,
+        &mut memory_monitor,
+    ).await?;
+
+    if !args.disable_memory_config {
+        configure_memory_settings(
+            &mut index,
+            args.max_memory_gb,
+            args.max_chunk_size,
+            args.max_summary_len,
+            args.min_summary_len,
+            &mut memory_monitor,
+        ).await?;
+    }
+
+    if !args.disable_prompt_copy {
+        copy_prompts(
+            &actual_root_dir,
+            &temp_dir,
+            args.max_memory_gb,
+            &mut memory_monitor,
+        ).await?;
+    }
+
+    let file_receiver = if !args.disable_file_add {
+        add_bootstrap_files(
+            &actual_root_dir,
+            args.max_memory_gb,
+            Arc::new(Mutex::new(memory_monitor.clone())),
+            args.max_files_to_process,
+            args.target.clone(),
+        ).await?
+    } else {
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        drop(tx);
+        rx
+    };
+
+    if !args.disable_index_build {
+        build_index(
+            &temp_dir,
+            &actual_root_dir,
+            &mut index,
+            args.max_iterations,
+            args.max_memory_gb,
+            &mut memory_monitor,
+            file_receiver,
+        ).await?;
+    }
+
+    if !args.disable_write_markdown {
+        export_chunks_main::write_chunks_to_markdown(
+            args.verbose,
+            &temp_dir,
+            &index,
+            args.max_memory_gb,
+            &mut memory_monitor,
+            args.max_iterations,
+        ).await?;
+    }
+
+    ragit_index_save_to_file::save_index_to_file(&index, temp_dir.join(".ragit").join("index.json"))?;
+
+    if !args.disable_self_improvement {
+        run_self_improvement_loop(
+            args.verbose,
+            &actual_root_dir,
+            &temp_dir,
+            &index,
+            args.max_memory_gb,
+            &mut memory_monitor,
+            args.max_iterations,
+        ).await?;
+    }
+
+    if !args.disable_final_query {
+        perform_final_reflective_query(
+            args.verbose,
+            &index,
+            args.max_memory_gb,
+            &mut memory_monitor,
+        ).await?;
+    }
+
+    let term_frequencies = top_terms_command_main(TopTermsArgs { count: Some(10), kb_path: None }, &mut memory_monitor).await?;
+
+    if !args.disable_cleanup {
+        fs::remove_dir_all(&temp_dir)?;
+    }
+
+    memory_monitor.print_final_report();
+
+    Ok(())
+}
+
+async fn query_command_main(args: QueryArgs, memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
+    memory_monitor.verbose("query_command_main: Starting query command.");
+    let index = if let Some(path) = args.kb_path {
+        Index::load(PathBuf::from(path), LoadMode::OnlyJson)?
+    } else {
+        Index::load(find_root()?, LoadMode::OnlyJson)?
+    };
+
+    let query_str = args.query_string;
+    let multi_turn = args.multi_turn;
+    let json_mode = args.json;
+
+    if multi_turn {
+        let mut turns = vec![];
+
+        loop {
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input)?;
+            let input = input.trim();
+
+            if input == ".exit" {
+                break;
+            }
+            memory_monitor.verbose(&format!("query_command_main: Executing query: {}", input));
+            let response = query(&index, &input, turns.clone(), None, memory_monitor).await?;
+            memory_monitor.verbose("query_command_main: Query executed.");
+            println!("{}", response.get_message());
+            turns.push(QueryTurn {
+                query: input.to_string(),
+                response: ragit_types::query_turn::QueryResponse { response: response.get_message().to_string() },
+            });
+        }
+    } else {
+        memory_monitor.verbose(&format!("query_command_main: Executing query: {}", query_str));
+        let response = query(&index, &query_str, vec![], None, memory_monitor).await?;
+        println!("query_command_main: Query executed.");
+
+        if json_mode {
+            println!("{}", serde_json::to_string_pretty(&response.to_json())?);
+        } else {
+            println!("{}", response.get_message());
+        }
+    }
+
+    Ok(())
+}
+
+async fn top_terms_command_main(args: TopTermsArgs, _memory_monitor: &mut MemoryMonitor) -> Result<(), anyhow::Error> {
+    use std::collections::HashMap;
+
+    let index = if let Some(path) = args.kb_path {
+        Index::load(PathBuf::from(path), LoadMode::OnlyJson)?
+    } else {
+        Index::load(find_root()?, LoadMode::OnlyJson)?
+    };
+
+    let mut term_frequencies: HashMap<String, usize> = HashMap::new();
+
+    for chunk in index.get_chunks() {
+        let content = chunk.data.as_str();
+        for word in content.split_whitespace() {
+            let cleaned_word = word.to_lowercase().trim_matches(|c: char| !c.is_alphanumeric()).to_string();
+            if !cleaned_word.is_empty() {
+                *term_frequencies.entry(cleaned_word).or_insert(0) += 1;
+            }
+        }
+    }
+
+    let mut sorted_terms: Vec<(&String, &usize)> = term_frequencies.iter().collect();
+    sorted_terms.sort_by(|a, b| b.1.cmp(a.1));
+
+    let count = args.count.unwrap_or(10);
+    println!("\nTop {} terms in the index:", count);
+    println!("----------------------------------");
+    for (term, freq) in sorted_terms.iter().take(count) {
+        println!("{}: {}", term, freq);
+    }
+    println!("----------------------------------");
+
+    Ok(())
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let cli = Cli::parse();
+    let mut memory_monitor = MemoryMonitor::new(true, None, None);
+
+    match cli.command {
+        Commands::Bootstrap { verbose, timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup, target } => {
+            let mut memory_monitor = MemoryMonitor::new(verbose, time_threshold_ms, memory_threshold_bytes);
+            bootstrap_command_main(BootstrapArgs {
+		verbose,
+		timeout_seconds, max_iterations, max_memory_gb, max_files_to_process, max_chunk_size, max_summary_len, min_summary_len, time_threshold_ms, memory_threshold_bytes, disable_write_markdown, disable_memory_config, disable_prompt_copy, disable_file_add, disable_index_build, disable_self_improvement, disable_final_query, disable_cleanup, target }).await
+        },
+        Commands::Query { query_string, no_pdl, multi_turn, json, kb_path } => {
+            query_command_main(QueryArgs { query_string, no_pdl, multi_turn, json, kb_path,
+					   //verbose: true
+	    }, &mut memory_monitor).await
+        },
+        Commands::TopTerms { count, kb_path } => {
+            let _ = top_terms_command_main(TopTermsArgs { count, kb_path }, &mut memory_monitor).await?;
+            Ok(())
+        },
+        Commands::Search { args } => {
+            search_command_main(args).await
+        }
+    }
+}

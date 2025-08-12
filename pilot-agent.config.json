@@ -1,0 +1,51 @@
+{
+  "version": "1.2.6",
+  "project": {
+    "name": "ragit",
+    "description": "Project configured with Pilot Agent CLI",
+    "rootDirectory": ".",
+    "outputDirectory": "./output"
+  },
+  "copilot": {
+    "enabled": true,
+    "model": "copilot-codex",
+    "temperature": 0.2,
+    "maxTokens": 1000
+  },
+  "processing": {
+    "filePatterns": [
+      "**/*.js",
+      "**/*.ts",
+      "**/*.jsx",
+      "**/*.tsx",
+      "**/*.py",
+      "**/*.java",
+      "**/*.cs",
+      "**/*.go",
+      "**/*.rs",
+      "**/*.php"
+    ],
+    "excludePatterns": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.git/**",
+      "**/coverage/**"
+    ],
+    "batchSize": 10,
+    "parallel": true
+  },
+  "features": {
+    "autoDocumentation": true,
+    "codeOptimization": true,
+    "testGeneration": false,
+    "errorHandling": true,
+    "securityScanning": false
+  },
+  "output": {
+    "format": "enhanced",
+    "preserveOriginal": true,
+    "generateReport": true,
+    "reportFormat": "json"
+  }
+}

@@ -1,0 +1,1 @@
+This file contains a log of the refactoring efforts for the `candle` submodule, including the application of Coccinelle-like patches and manual fixes. For detailed information, please refer to [Candle Refactoring Log: Coccinelle and Manual Fixes](./refactoring_logs/candle_coccinelle_refactoring.md).

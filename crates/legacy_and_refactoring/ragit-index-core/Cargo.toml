@@ -1,0 +1,39 @@
+[package]
+name = "ragit-index-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+
+ragit-api = { path = "../../layer7_application/api" }
+ragit-fs = { path = "../../layer2_data_link/fs" } # For PathBuf operations in Index struct
+ragit-uid = { path = "../../layer2_data_link/ragit-uid" } # For Uid in Index struct
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" } # For ProcessedDoc in Index methods
+ragit-pdl = { path = "../../layer6_presentation/pdl" } # For Pdl in Index methods
+ragit-readers = { path = "../../layer4_transport/ragit-readers" } # For readers in Index methods
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
+ragit-index-effects = { path = "../ragit-index-effects" }
+ragit-index-save-to-file = { path = "../ragit-index-save-to-file" }
+
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }
+url = "2.4"
+image = "0.24"
+flate2 = "1.0"
+lazy_static = "1.4.0"
+regex = "1.5"
+rust-stemmers = "1.2"
+sha3 = "0.10.8"
+strum = { version = "0.25", features = ["derive"] }
+tera = "1.19"
+thiserror = "1.0"
+anyhow = "1.0"
+
+[dev-dependencies]
+tempfile = "3.3.0"
+ragit-index-core = { path = "." }

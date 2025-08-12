@@ -1,0 +1,12 @@
+[package]
+name = "quiz_server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+daemonize = "0.5.0"
+rand = "0.8.5"
+serde_json = "1.0"

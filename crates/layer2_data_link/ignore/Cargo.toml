@@ -1,0 +1,15 @@
+[package]
+name = "ragit-ignore"
+version = "0.4.2"
+edition = "2024"
+license = "MIT"
+description = "ignore-parser for ragit"
+repository = "https://github.com/baehyunsol/ragit"
+documentation = "https://docs.rs/ragit-ignore"
+
+[dependencies]
+regex = "1.11.1"
+ragit-core = { path = "../../layer1_physical/ragit-core" }
+ragit-core-utils = { path = "../../layer4_transport/ragit-core-utils" }
+ragit-types = { path = "../../layer1_physical/ragit-types", version = "0.1.0" }
+ragit-fs = { path = "../fs" }

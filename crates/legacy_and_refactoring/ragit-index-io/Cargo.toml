@@ -1,0 +1,26 @@
+[package]
+name = "ragit-index-io"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+anyhow = "*"
+lazy_static = "*"
+regex = "*"
+ragit-api = { path = "../../layer7_application/api" }
+ragit-config = { path = "../../layer5_session/ragit-config" }
+
+ragit-fs = { path = "../../layer2_data_link/fs", features = ["diff"] }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
+ragit-pdl = { path = "../../layer6_presentation/pdl" }
+ragit-prompt-management = { path = "../ragit-prompt-management" }
+ragit-tfidf = { path = "../../layer3_network/ragit-tfidf" }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-index-storage = { path = "../ragit-index-storage" }
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tera = "1.19"
+tokio = { version = "1.0", features = ["full"] }

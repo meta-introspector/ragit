@@ -1,0 +1,122 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix num: <http://ragit.org/ontology/numberology#> .
+@prefix ragit: <http://ragit.org/ontology/ragit#> .
+
+num:NumberologyOntology rdf:type owl:Ontology ;
+    rdfs:label "Ragit Project Numerology Ontology" ;
+    owl:versionInfo "0.1" ;
+    rdfs:comment "An ontology defining the conceptual prime numbers used in the Ragit project's modularity and their relation to the Monster Group." .
+
+num:Prime rdf:type owl:Class ;
+    rdfs:label "Prime Number" ;
+    rdfs:comment "A conceptual prime number representing a fundamental essence or property within the Ragit project." .
+
+num:Concept rdf:type owl:Class ;
+    rdfs:label "Conceptual Idea" ;
+    rdfs:comment "A high-level idea or principle associated with a prime number." .
+
+num:RagitComponent rdf:type owl:Class ;
+    rdfs:label "Ragit Project Component" ;
+    rdfs:comment "A module, function, or other identifiable part of the Ragit project." .
+
+num:hasMeaning rdf:type owl:ObjectProperty ;
+    rdfs:label "has meaning" ;
+    rdfs:domain num:Prime ;
+    rdfs:range num:Concept ;
+    rdfs:comment "Links a prime number to its associated conceptual idea." .
+
+num:represents rdf:type owl:ObjectProperty ;
+    rdfs:label "represents" ;
+    rdfs:domain num:Prime ;
+    rdfs:range num:RagitComponent ;
+    rdfs:comment "Links a prime number to a Ragit project component it conceptually represents." .
+
+num:isFactorOfMonsterGroup rdf:type owl:ObjectProperty ;
+    rdfs:label "is factor of Monster Group" ;
+    rdfs:domain num:Prime ;
+    rdfs:range num:MonsterGroup ;
+    rdfs:comment "Indicates that a prime number is a factor in the order of the Monster Group." .
+
+num:MonsterGroup rdf:type owl:Class ;
+    rdfs:label "Monster Group" ;
+    rdfs:comment "The largest sporadic simple group, used as a conceptual goal for the Ragit project's prime factorization." .
+
+# Individual Prime Definitions and their Conceptual Meanings
+
+num:Prime2 rdf:type num:Prime ;
+    rdfs:label "Prime 2" ;
+    num:hasMeaning num:DualityBinaryFundamentalChoices .
+
+num:DualityBinaryFundamentalChoices rdf:type num:Concept ;
+    rdfs:label "Duality, Binary, Fundamental Choices" ;
+    rdfs:comment "Represents the most fundamental choices or divisions within the project, e.g., enabling/disabling a feature, or the two states of a boolean flag." .
+
+num:Prime3 rdf:type num:Prime ;
+    rdfs:label "Prime 3" ;
+    num:hasMeaning num:TrinitySynthesisStructureFoundation .
+
+num:TrinitySynthesisStructureFoundation rdf:type num:Concept ;
+    rdfs:label "Trinity, Synthesis, Structure, Foundation" ;
+    rdfs:comment "Represents the core architectural components or a foundational set of three related elements." .
+
+num:Prime5 rdf:type num:Prime ;
+    rdfs:label "Prime 5" ;
+    num:hasMeaning num:QuintessenceOrganizationCategorizationMapping .
+
+num:QuintessenceOrganizationCategorizationMapping rdf:type num:Concept ;
+    rdfs:label "Quintessence, Organization, Categorization, Mapping" ;
+    rdfs:comment "Represents logical groupings of five related modules or a set of five key operations within a larger system." .
+
+num:Prime7 rdf:type num:Prime ;
+    rdfs:label "Prime 7" ;
+    num:hasMeaning num:CompletionPerfectionOverarchingGoal .
+
+num:CompletionPerfectionOverarchingGoal rdf:type num:Concept ;
+    rdfs:label "Completion, Perfection, Overarching Goal" ;
+    rdfs:comment "Represents a complete functional area or a major architectural layer, striving for an ideal state." .
+
+num:Prime11 rdf:type num:Prime ;
+    rdfs:label "Prime 11" ;
+    num:hasMeaning num:ModularityDecompositionGranularUnits .
+
+num:ModularityDecompositionGranularUnits rdf:type num:Concept ;
+    rdfs:label "Modularity, Decomposition, Granular Units" ;
+    rdfs:comment "Represents highly granular, single-purpose modules or functions that contribute to a larger subsystem." .
+
+num:Prime13 rdf:type num:Prime ;
+    rdfs:label "Prime 13" ;
+    num:hasMeaning num:IntegrationUtilityBridging .
+
+num:IntegrationUtilityBridging rdf:type num:Concept ;
+    rdfs:label "Integration, Utility, Bridging" ;
+    rdfs:comment "Represents utility functions or integration points that bridge different parts of the system." .
+
+num:Prime17 rdf:type num:Prime ;
+    rdfs:label "Prime 17" ;
+    num:hasMeaning num:AbstractionSchemaInterfaceCommandExecution .
+
+num:AbstractionSchemaInterfaceCommandExecution rdf:type num:Concept ;
+    rdfs:label "Abstraction, Schema, Interface, Command Execution" ;
+    rdfs:comment "Represents abstract definitions, schema elements, or top-level command implementations that define the system's structure and external interactions." .
+
+num:Prime19 rdf:type num:Prime ;
+    rdfs:label "Prime 19" ;
+    num:hasMeaning num:PeriodicStructuresCyclesRecurrenceTransformationIterativeRefinement .
+
+num:PeriodicStructuresCyclesRecurrenceTransformationIterativeRefinement rdf:type num:Concept ;
+    rdfs:label "Periodic Structures, Cycles, Recurrence, Transformation, Iterative Refinement" ;
+    rdfs:comment "Represents the overarching development lifecycle or a major iterative process, encompassing continuous refinement and evolution." .
+
+# Monster Group Factors
+
+num:Prime2 num:isFactorOfMonsterGroup num:MonsterGroup .
+num:Prime3 num:isFactorOfMonsterGroup num:MonsterGroup .
+num:Prime5 num:isFactorOfMonsterGroup num:MonsterGroup .
+num:Prime7 num:isFactorOfMonsterGroup num:MonsterGroup .
+num:Prime11 num:isFactorOfMonsterGroup num:MonsterGroup .
+num:Prime13 num:isFactorOfMonsterGroup num:MonsterGroup .
+num:Prime17 num:isFactorOfMonsterGroup num:MonsterGroup .
+num:Prime19 num:isFactorOfMonsterGroup num:MonsterGroup .

@@ -1,0 +1,6 @@
+---
+name: muse_clio
+description: "Muse of History. This prompt focuses on historical context, facts, and timelines."
+---
+Provide a historical summary of the following text. Identify key events, dates, and figures. Present the information in a clear, chronological order.
+"{{text}}"

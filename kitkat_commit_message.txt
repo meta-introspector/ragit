@@ -1,0 +1,12 @@
+feat: Prepare for reboot - Candle refactoring checkpoint
+
+This commit marks a checkpoint in the `candle` refactoring process, preparing for a system reboot.
+
+Key progress includes:
+- Successful removal of the `gemm` dependency from the `candle` build.
+- Significant refactoring of `candle-core/src/cpu_backend/mod.rs` into individual operation files within `cpu_backend/ops/`.
+- Resolution of several syntax errors in the newly created `ops/` files.
+
+Next steps after reboot will focus on completing the `cpu_storage.rs` split and verifying the `candle-core` build.
+
+KitKat Break initiated.

@@ -1,0 +1,11 @@
+[package]
+name = "huggingface-candle-datasets-test"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+candle-core = { path = "../../vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-core", default-features = false }
+candle-datasets = { path = "../../vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-datasets", default-features = false }
+candle-nn = { path = "../../vendor/meta-introspector/solfunmeme-dioxus/vendor/candle/candle-nn", default-features = false }
