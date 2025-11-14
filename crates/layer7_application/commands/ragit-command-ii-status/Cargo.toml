@@ -1,0 +1,16 @@
+[package]
+name = "ragit-command-ii-status"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-utils = { path = "../../../layer3_network/ragit-utils" }
+ragit-api = { path = "../../api" }
+ragit-types = { path = "../../../layer1_physical/ragit-types" }
+ragit-index-io = { path = "../../../legacy_and_refactoring/ragit-index-io" }
+ragit-index-types = { path = "../../../layer3_network/ragit-index-types" }
+anyhow = "1.0"
+async-trait = "0.1"
+clap = { version = "4.0", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }

@@ -1,0 +1,20 @@
+[package]
+name = "ragit-command-pdl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-api = { path = "../../layer7_application/api" }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-index-io = { path = "../ragit-index-io" }
+ragit-pdl = { path = "../../layer6_presentation/pdl" }
+ragit-schema = { path = "../../layer6_presentation/ragit-schema" }
+anyhow = "1.0"
+async-trait = "0.1"
+clap = { version = "4.0", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+tera = "1.20"
+chrono = "0.4"

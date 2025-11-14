@@ -1,6 +1,6 @@
 # Configuration
 
-Ragit is highly configurable. The config files can be found at `.ragit/configs`, but I don't recommend you modifying it manually. If you have modified it manually and have trouble accessing a knowledge-base, try `rag check --recover`.
+Ragit is highly configurable. The configuration management is internally handled by the `ragit-config` crate, which centralizes the logic for reading, writing, and managing settings. The config files can be found at `.ragit/configs`, but I don't recommend you modifying it manually. If you have modified it manually and have trouble accessing a knowledge-base, try `rag check --recover`.
 
 ## Global Configuration
 

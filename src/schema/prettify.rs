@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::uid::Uid;
+use crate::prelude::*;
 use serde_json::Value;
 
 /// Sometimes internal representations are not very readable. For example,

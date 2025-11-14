@@ -1,0 +1,17 @@
+[package]
+name = "ragit-config-commands"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+ragit-api = { path = "../../layer7_application/api" }
+ragit-fs = { path = "../../layer2_data_link/fs" }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
+ragit-index-io = { path = "../ragit-index-io" }
+ragit-index-core = { path = "../ragit-index-core" }
+ragit-index-types = { path = "../../layer3_network/ragit-index-types" }
+serde_json = "1.0"
+chrono = "0.4"
+anyhow = "*"

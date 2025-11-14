@@ -1,0 +1,8 @@
+[package]
+name = "ragit-core-utils"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-fs = { path = "../../layer2_data_link/fs" }
+base64 = "0.22.1"

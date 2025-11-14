@@ -1,27 +1,4 @@
-use super::{Index, erase_lines};
-use crate::chunk;
-use crate::constant::{CHUNK_DIR_NAME, IMAGE_DIR_NAME};
-use crate::error::Error;
-use crate::index::{
-    ChunkBuildInfo,
-    FileReader,
-    IIStatus,
-    LoadMode,
-};
-use crate::uid::Uid;
-use ragit_api::audit::AuditRecord;
-use ragit_fs::{
-    WriteMode,
-    exists,
-    parent,
-    remove_file,
-    try_create_dir,
-    write_bytes,
-};
-use sha3::{Digest, Sha3_256};
-use std::collections::HashMap;
-use std::time::{Duration, Instant};
-use tokio::sync::mpsc;
+use crate::prelude::*;
 
 pub struct BuildResult {
     pub success: usize,
@@ -88,17 +65,17 @@ impl Index {
     ) -> Result<BuildResult, Error> {
         let mut killed_workers = vec![];
         let mut staged_files = self.staged_files.clone();
-        let mut curr_completed_files = vec![];
+        let mut curr_completed_files = Vec::<PathBuf>::new();
         let mut success = 0;
         let mut errors = vec![];
         let mut buffered_chunk_count = 0;
         let mut flush_count = 0;
 
         // HashMap<file, HashMap<index in file, chunk uid>>
-        let mut buffer: HashMap<String, HashMap<usize, Uid>> = HashMap::new();
+        let mut buffer: HashMap<PathBuf, HashMap<usize, Uid>> = HashMap::new();
 
         // HashMap<worker id, file>
-        let mut curr_processing_file: HashMap<usize, String> = HashMap::new();
+        let mut curr_processing_file: HashMap<usize, PathBuf> = HashMap::new();
 
         for (worker_index, worker) in workers.iter_mut().enumerate() {
             if let Some(file) = staged_files.pop() {
@@ -109,7 +86,7 @@ impl Index {
                 // we still need to tell whether something went wrong while building
                 // and this field does that. If it's `Some(_)`, something's wrong and
                 // clean-up has to be done.
-                self.curr_processing_file = Some(String::new());
+                self.curr_processing_file = Some("".into());
 
                 buffer.insert(file.clone(), HashMap::new());
                 curr_processing_file.insert(worker_index, file.clone());
@@ -122,7 +99,7 @@ impl Index {
             }
         }
 
-        self.save_to_file()?;
+        self.save_to_file(self.root_dir.join(INDEX_FILE_NAME).into())?;
         let mut has_to_erase_lines = false;
 
         loop {
@@ -151,7 +128,7 @@ impl Index {
                             match buffer.get_mut(&file) {
                                 Some(chunks) => {
                                     if let Some(prev_uid) = chunks.insert(index, chunk_uid) {
-                                        return Err(Error::Internal(format!("{}th chunk of {file} is created twice: {prev_uid}, {chunk_uid}", index + 1)));
+                                        return Err(Error::Internal(format!("{}th chunk of {} is created twice: {prev_uid}, {chunk_uid}", index + 1, file.display())));
                                     }
                                 },
                                 None => {
@@ -165,25 +142,26 @@ impl Index {
                             match buffer.get(&file) {
                                 Some(chunks) => {
                                     if chunks.len() != chunk_count {
-                                        return Err(Error::Internal(format!("Some chunks in `{file}` are missing: expected {chunk_count} chunks, got only {} chunks.", chunks.len())));
+                                        return Err(Error::Internal(format!("Some chunks in `{}` are missing: expected {chunk_count} chunks, got only {} chunks.", file.display(), chunks.len())));
                                     }
 
                                     for i in 0..chunk_count {
                                         if !chunks.contains_key(&i) {
                                             return Err(Error::Internal(format!(
-                                                "{} chunk of `{file}` is missing.",
+                                                "{} chunk of `{}` is missing.",
                                                 match i {
                                                     0 => String::from("1st"),
                                                     1 => String::from("2nd"),
                                                     2 => String::from("3rd"),
                                                     n => format!("{}th", n + 1),
                                                 },
+                                                file.display()
                                             )));
                                         }
                                     }
                                 },
                                 None if chunk_count != 0 => {
-                                    return Err(Error::Internal(format!("Some chunks in `{file}` are missing: expected {chunk_count} chunks, got no chunks.")));
+                                    return Err(Error::Internal(format!("Some chunks in `{}` are missing: expected {chunk_count} chunks, got no chunks.", file.display())));
                                 },
                                 None => {},
                             }
@@ -204,7 +182,7 @@ impl Index {
                         },
                         Response::Error(e) => {
                             if let Some(file) = curr_processing_file.get(&worker_index) {
-                                errors.push((file.to_string(), format!("{e:?}")));
+                                errors.push((file.display().to_string(), format!("{e:?}")));
 
                                 // clean up garbages of the failed file
                                 let chunk_uids = buffer.get(file).unwrap().iter().map(
@@ -213,12 +191,12 @@ impl Index {
 
                                 for chunk_uid in chunk_uids.iter() {
                                     let chunk_path = Index::get_uid_path(
-                                        &self.root_dir,
+                                        self.root_dir.to_str().unwrap(),
                                         CHUNK_DIR_NAME,
                                         *chunk_uid,
                                         Some("chunk"),
                                     )?;
-                                    remove_file(&chunk_path)?;
+                                    remove_file(chunk_path.to_str().unwrap())?;
                                 }
 
                                 buffered_chunk_count -= chunk_uids.len();
@@ -255,22 +233,20 @@ impl Index {
             // It flushes and commits 20 or more files at once.
             // TODO: this number has to be configurable
             if curr_completed_files.len() >= 20 || killed_workers.len() == workers.len() {
-                self.staged_files = self.staged_files.iter().filter(
+                self.staged_files = self.staged_files.drain(..).filter(
                     |staged_file| !curr_completed_files.contains(staged_file)
-                ).map(
-                    |staged_file| staged_file.to_string()
                 ).collect();
                 let mut ii_buffer = HashMap::new();
 
                 for file in curr_completed_files.iter() {
                     let real_path = Index::get_data_path(
                         &self.root_dir,
-                        file,
+                        &file.to_path_buf(),
                     )?;
 
                     if self.processed_files.contains_key(file) {
-                        self.remove_file(
-                            real_path.clone(),
+                        self.remove(
+                            real_path.clone().into(),
                             false,  // dry run
                             false,  // recursive
                             false,  // auto
@@ -279,14 +255,14 @@ impl Index {
                         )?;
                     }
 
-                    let file_uid = Uid::new_file(&self.root_dir, &real_path)?;
+                    let file_uid = Uid::new_file(&self.root_dir.to_str().unwrap(), real_path.to_str().unwrap())?;
                     let mut chunk_uids = buffer.get(file).unwrap().iter().map(
                         |(index, uid)| (*index, *uid)
                     ).collect::<Vec<_>>();
                     chunk_uids.sort_by_key(|(index, _)| *index);
                     let chunk_uids = chunk_uids.into_iter().map(|(_, chunk_uid)| chunk_uid).collect::<Vec<_>>();
                     self.add_file_index(file_uid, &chunk_uids)?;
-                    self.processed_files.insert(file.to_string(), file_uid);
+                    self.processed_files.insert(file.clone(), file_uid);
 
                     match self.ii_status {
                         IIStatus::Complete => {
@@ -310,7 +286,7 @@ impl Index {
 
                 self.chunk_count += buffered_chunk_count;
                 self.reset_uid(false /* save to file */)?;
-                self.save_to_file()?;
+                self.save_to_file(self.root_dir.join(INDEX_FILE_NAME).into())?;
 
                 buffered_chunk_count = 0;
                 curr_completed_files = vec![];
@@ -336,7 +312,7 @@ impl Index {
         }
 
         self.curr_processing_file = None;
-        self.save_to_file()?;
+        self.save_to_file(self.root_dir.join(INDEX_FILE_NAME).into())?;
         self.calculate_and_save_uid()?;
 
         // 1. If there's an error, the knowledge-base is incomplete. We should not create a summary.
@@ -349,7 +325,7 @@ impl Index {
                 println!("Creating a summary of the knowledge-base...");
             }
 
-            self.summary(None).await?;
+            self.get_summary();
         }
 
         Ok(BuildResult {
@@ -360,8 +336,8 @@ impl Index {
 
     fn render_build_dashboard(
         &self,
-        buffer: &HashMap<String, HashMap<usize, Uid>>,
-        curr_completed_files: &[String],
+        buffer: &HashMap<PathBuf, HashMap<usize, Uid>>,
+        curr_completed_files: &[PathBuf],
         errors: &[(String, String)],
         started_at: Instant,
         flush_count: usize,
@@ -376,7 +352,7 @@ impl Index {
 
         for file in buffer.keys() {
             if !curr_completed_files.contains(file) {
-                curr_processing_files.push(format!("`{file}`"));
+                curr_processing_files.push(format!("{}", file.display()));
             }
         }
 
@@ -412,10 +388,10 @@ impl Index {
         match self.api_config.get_api_usage(&self.root_dir, "create_chunk_from") {
             Ok(api_records) => {
                 for AuditRecord { input_tokens, output_tokens, input_cost, output_cost } in api_records.values() {
-                    input_tokens_s += *input_tokens;
-                    output_tokens_s += *output_tokens;
-                    input_cost_s += *input_cost;
-                    output_cost_s += *output_cost;
+                    input_tokens_s += input_tokens;
+                    output_tokens_s += output_tokens;
+                    input_cost_s += input_cost;
+                    output_cost_s += output_cost;
                 }
 
                 println!(
@@ -439,12 +415,12 @@ async fn build_chunks(
 ) -> Result<(), Error> {
     let real_path = Index::get_data_path(
         &index.root_dir,
-        &file,
+        &path_utils::str_to_pathbuf(&file),
     )?;
     let mut fd = FileReader::new(
         file.clone(),
-        real_path.clone(),
-        &index.root_dir,
+        real_path.to_string_lossy().into_owned(),
+        index.root_dir.to_str().unwrap(),
         index.build_config.clone(),
     )?;
     let build_info = ChunkBuildInfo::new(
@@ -470,7 +446,7 @@ async fn build_chunks(
         previous_summary = Some((new_chunk.clone(), (&new_chunk).into()));
         let new_chunk_uid = new_chunk.uid;
         let new_chunk_path = Index::get_uid_path(
-            &index.root_dir,
+            index.root_dir.to_str().unwrap(),
             CHUNK_DIR_NAME,
             new_chunk_uid,
             Some("chunk"),
@@ -478,19 +454,19 @@ async fn build_chunks(
 
         for (uid, bytes) in fd.images.iter() {
             let image_path = Index::get_uid_path(
-                &index.root_dir,
+                index.root_dir.to_str().unwrap(),
                 IMAGE_DIR_NAME,
                 *uid,
                 Some("png"),
             )?;
-            let parent_path = parent(&image_path)?;
+            let parent_path = parent(image_path.as_path())?;
 
-            if !exists(&parent_path) {
-                try_create_dir(&parent_path)?;
+            if !exists(path_utils::pathbuf_to_str(&parent_path)) {
+                try_create_dir(path_utils::pathbuf_to_str(&parent_path))?;
             }
 
             write_bytes(
-                &image_path,
+                path_utils::pathbuf_to_str(&image_path),
                 &bytes,
                 WriteMode::Atomic,
             )?;
@@ -504,32 +480,32 @@ async fn build_chunks(
             index.build_config.compression_level,
             &index.root_dir,
             true,  // create tfidf
-        )?;
+        )?;;
         tx_to_main.send(Response::ChunkComplete {
-            file: file.clone(),
+            file: PathBuf::from(file.clone()),
             index: index_in_file,
             chunk_uid: new_chunk_uid,
-        }).map_err(|_| Error::MPSCError(String::from("Failed to send response to main")))?;
+        }).map_err(|_| Error::MPSCError(String::from("Failed to send response to main"))).unwrap();
         index_in_file += 1;
     }
 
     tx_to_main.send(Response::FileComplete {
-        file,
+        file: PathBuf::from(file),
         chunk_count: index_in_file,
-    }).map_err(|_| Error::MPSCError(String::from("Failed to send response to main")))?;
+    }).map_err(|_| Error::MPSCError(String::from("Failed to send response to main"))).unwrap();
     Ok(())
 }
 
 #[derive(Debug)]
 enum Request {
-    BuildChunks { file: String },
+    BuildChunks { file: PathBuf },
     Kill,
 }
 
 #[derive(Debug)]
 enum Response {
-    FileComplete { file: String, chunk_count: usize },
-    ChunkComplete { file: String, index: usize, chunk_uid: Uid },
+    FileComplete { file: PathBuf, chunk_count: usize },
+    ChunkComplete { file: PathBuf, index: usize, chunk_uid: Uid },
     Error(Error),
 }
 
@@ -548,11 +524,11 @@ impl Channel {
     }
 }
 
-fn init_workers(n: usize, root_dir: String) -> Vec<Channel> {
+fn init_workers(n: usize, root_dir: PathBuf) -> Vec<Channel> {
     (0..n).map(|_| init_worker(root_dir.clone())).collect()
 }
 
-fn init_worker(root_dir: String) -> Channel {
+fn init_worker(root_dir: PathBuf) -> Channel {
     let (tx_to_main, rx_to_main) = mpsc::unbounded_channel();
     let (tx_from_main, mut rx_from_main) = mpsc::unbounded_channel();
 

@@ -1,0 +1,6 @@
+---
+name: muse_terpsichore
+description: "Muse of Dance and Choral Song. This prompt encourages summaries that focus on movement, structure, and collective voice."
+---
+Summarize the following text as a choral dance. Describe the structure of the piece, the interplay of different voices or parts, and the overall movement of the narrative.
+"{{text}}"

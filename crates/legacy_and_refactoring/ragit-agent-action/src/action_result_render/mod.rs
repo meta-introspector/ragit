@@ -1,0 +1,14 @@
+pub mod render_read_file_short;
+pub mod render_read_file_long;
+pub mod render_no_such_file;
+pub mod render_read_dir;
+pub mod render_no_such_dir;
+pub mod render_read_chunk;
+pub mod render_no_such_chunk;
+pub mod render_read_chunk_ambiguous;
+pub mod render_read_chunk_too_many;
+pub mod render_search;
+pub mod render_get_meta;
+pub mod render_no_such_meta;
+pub mod render_get_summary;
+pub mod render_simple_rag;

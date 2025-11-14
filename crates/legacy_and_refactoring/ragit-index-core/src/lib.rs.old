@@ -1,0 +1,75 @@
+mod prelude;
+pub use ragit_index_types::index_struct::Index;
+use std::path::PathBuf;
+use ragit_types::ApiError;
+use serde_json;
+use ragit_types::add_mode::{AddMode, AddResult};
+use ragit_types::error::Error;
+use ragit_types::ApiError;
+use ragit_types::query::QueryConfig;
+use ragit_types::ii_status::IIStatus;
+use ragit_types::summary::{Summary, SummaryMode};
+use ragit_config::BuildConfig;
+use ragit_utils::version_info::VersionInfo;
+use ragit_api::Model;
+use std::collections::HashMap;
+use chrono::{Local, DateTime, Utc};
+use ragit_api::AuditRecord;
+use serde_json::Value;
+use ragit_types::chunk::chunk_struct::Chunk;
+use ragit_tfidf::TfidfResult;
+use tokio::task::JoinSet;
+use ragit_index_io::get_chunk_by_uid::get_chunk_by_uid;
+use ragit_utils::ragit_path_utils;
+use ragit_utils::constant::INDEX_FILE_NAME;
+use ragit_utils::path_utils;
+use ragit_utils::error::CliError;
+use ragit_types::FileSchema;
+use ragit_types::ImageSchema;
+use ragit_types::ChunkSchema;
+use ragit_types::ProcessedDoc;
+use ragit_types::uid::Uid;
+use ragit_types::add_mode::AddMode;
+use ragit_types::add_mode::AddResult;
+use ragit_types::error::Error;
+
+pub fn load_index_from_path(path: &PathBuf) -> Result<Index, ApiError> {
+    let index_json = std::fs::read_to_string(path)?;
+    let index: Index = serde_json::from_str(&index_json)?;
+    Ok(index)
+}
+
+
+
+pub mod add_files;
+pub mod get_summary;
+pub mod get_ragit_version_info;
+pub mod migrate;
+pub mod summary;
+pub mod get_all_meta;
+pub mod dummy;
+pub mod retrieve_chunks;
+pub mod audit;
+pub mod config_methods;
+pub mod get_all_configs;
+pub mod set_config_by_key;
+pub mod get_path;
+pub mod get_meta_by_key;
+pub mod remove_meta_by_key;
+pub mod remove_all_meta;
+pub mod status;
+pub mod remove_files;
+pub mod list_files;
+pub mod list_chunks;
+pub mod list_images;
+pub mod get_image_schema;
+pub mod get_file_schema;
+pub mod get_chunks_of_file;
+pub mod get_images_of_file;
+pub mod get_tfidf_by_file_uid;
+pub mod get_tfidf_by_chunk_uid;
+pub mod get_chunk_by_uid;
+pub mod get_merged_chunk_of_file;
+pub mod read_ignore_file_command;
+pub mod get_initial_models;
+pub mod load_config_from_home;

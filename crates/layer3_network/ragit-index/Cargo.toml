@@ -1,0 +1,34 @@
+[package]
+name = "ragit-index"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+flate2 = "1.0"
+image = "0.24"
+lazy_static = "1.4.0"
+ragit-api = { path = "../../layer7_application/api" }
+ragit-config = { path = "../../layer5_session/ragit-config" }
+ragit-error = { path = "../../layer1_physical/ragit-error" }
+ragit-fs = { path = "../../layer2_data_link/fs" }
+ragit-index-core = { path = "../../legacy_and_refactoring/ragit-index-core" }
+ragit-model-query-response = { path = "../../layer6_presentation/ragit-model-query-response" }
+ragit-pdl = { path = "../../layer6_presentation/pdl" }
+ragit-readers = { path = "../../layer4_transport/ragit-readers" }
+ragit-tfidf = { path = "../ragit-tfidf" }
+ragit-uid = { path = "../../layer2_data_link/ragit-uid" }
+ragit-utils = { path = "../ragit-utils" }
+regex = "1.5"
+rust-stemmers = "1.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha3 = "0.10.8"
+strum = { version = "0.25", features = ["derive"] }
+tera = "1.19"
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+url = "2.4"

@@ -1,0 +1,6 @@
+---
+name: muse_erato
+description: "Muse of Lyric and Love Poetry. This prompt encourages summaries that focus on emotion, relationships, and lyrical language."
+---
+Summarize the following text through the lens of lyric poetry. Focus on the emotional core, the relationships between entities, and express the summary with a poetic and heartfelt tone.
+"{{text}}"

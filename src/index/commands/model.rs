@@ -12,6 +12,8 @@ use ragit_api::{
 use reqwest::Url;
 use std::collections::HashMap;
 
+
+
 pub struct FetchModelResult {
     pub fetched: usize,
     pub updated: usize,
@@ -51,7 +53,7 @@ impl Index {
         url = url.join("ai-model-list/")?;
         let remote_models = request_models(url, Some(name)).await?;
 
-        let models_at = Index::get_rag_path(
+        let models_at = crate::index::index_struct::Index::get_rag_path(
             &self.root_dir,
             &MODEL_FILE_NAME.to_string(),
         )?;
@@ -96,7 +98,7 @@ impl Index {
 
     /// It returns how many models it fetched.
     pub async fn fetch_all_remote_models(&mut self, existing_only: bool, remote: &str) -> Result<FetchModelResult, Error> {
-        let models_at = Index::get_rag_path(
+        let models_at = crate::index::index_struct::Index::get_rag_path(
             &self.root_dir,
             &MODEL_FILE_NAME.to_string(),
         )?;
@@ -167,7 +169,7 @@ impl Index {
     }
 
     pub fn remove_local_model(&mut self, name: &str) -> Result<(), Error> {
-        let models_at = Index::get_rag_path(
+        let models_at = crate::index::index_struct::Index::get_rag_path(
             &self.root_dir,
             &MODEL_FILE_NAME.to_string(),
         )?;
@@ -191,7 +193,7 @@ impl Index {
     }
 
     pub fn remove_all_local_models(&mut self) -> Result<(), Error> {
-        let models_at = Index::get_rag_path(
+        let models_at = crate::index::index_struct::Index::get_rag_path(
             &self.root_dir,
             &MODEL_FILE_NAME.to_string(),
         )?;

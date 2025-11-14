@@ -1,0 +1,34 @@
+# groq_rate_limits.toml - Groq Free Tier Rate Limits and Quality Expectations
+# Source: Groq API Documentation - Free Tier Plan
+# Last Updated: 2025-07-19
+
+[rate_limits]
+description = "Groq Free Tier Rate Limits and Model Quality Expectations"
+last_updated = "2025-07-19"
+
+[[models]]
+id = "allam-2-7b"
+requests_per_minute = 30
+requests_per_day = 7000
+tokens_per_minute = 6000
+tokens_per_day = 500000
+quality_expectations = { accuracy = 0.7, coherence = 0.8, relevance = 0.75 } # 0.0-1.0 scale
+expected_response_time_ms = 500 # Expected response time in milliseconds
+
+[[models]]
+id = "compound-beta"
+requests_per_minute = 15
+requests_per_day = 200
+tokens_per_minute = 70000
+tokens_per_day = -1
+quality_expectations = { accuracy = 0.85, coherence = 0.9, relevance = 0.9 }
+expected_response_time_ms = 300
+
+[[models]]
+id = "llama-3.3-70b-versatile"
+requests_per_minute = 30
+requests_per_day = 1000
+tokens_per_minute = 12000
+tokens_per_day = 100000
+quality_expectations = { accuracy = 0.9, coherence = 0.95, relevance = 0.92 }
+expected_response_time_ms = 400

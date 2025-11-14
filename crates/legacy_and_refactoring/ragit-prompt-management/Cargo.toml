@@ -1,0 +1,12 @@
+[package]
+name = "ragit-prompt-management"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ragit-types = { path = "../../layer1_physical/ragit-types" }
+
+
+ragit-fs = { path = "../../layer2_data_link/fs" }
+ragit-utils = { path = "../../layer3_network/ragit-utils" }
+anyhow = "1.0"

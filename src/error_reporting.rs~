@@ -1,0 +1,53 @@
+use crate::uid::Uid;
+
+pub fn corrupted_chunk_uid_mismatch(file_display: impl std::fmt::Display, chunk_uid: Uid, chunk_actual_uid: Uid) -> String {
+    format!("Corrupted chunk: '{}'s uid is supposed to be '{}', but is '{}'.", file_display, chunk_uid, chunk_actual_uid)
+}
+
+pub fn chunk_file_not_in_processed_files(processed_file: &str) -> String {
+    format!("There's a chunk of '{}', but self.processed_files does not have its entry.", processed_file)
+}
+
+pub fn file_index_not_in_processed_files(file_uid: &str) -> String {
+    format!("There's a file_index for '{}', but self.processed_files does not have an entry with such hash value.", file_uid)
+}
+
+pub fn chunk_points_to_wrong_file(file_index_display: impl std::fmt::Display, file_name: &str, uid: Uid, file_name_from_chunk: &str) -> String {
+    format!("'{}'s file name is '{}' and it has a chunk '{}'. But the chunk points to '{}'.", file_index_display, file_name, uid, file_name_from_chunk)
+}
+
+pub fn chunk_index_mismatch(file_index_display: impl std::fmt::Display, index1: usize, uid: Uid, index2: usize) -> String {
+    format!("'{}'s {}th chunk uid is '{}', but the chunk's index is {}.", file_index_display, index1, uid, index2)
+}
+
+pub fn chunk_not_found(file_index_display: impl std::fmt::Display, uid: Uid, index_dir_name: &str, chunk_dir_name: &str) -> String {
+    format!("{} has a chunk {}, but there's no such chunk in {}/{}.", file_index_display, uid, index_dir_name, chunk_dir_name)
+}
+
+pub fn file_has_no_index(file_name: &str) -> String {
+    format!("'{}' doesn't have an index.", file_name)
+}
+
+pub fn chunk_count_mismatch(expected_count: usize, actual_count: usize) -> String {
+    format!("self.chunk_count is {}, but the actual number is {}.", expected_count, actual_count)
+}
+
+pub fn invalid_image_uid(image_uid_display: impl std::fmt::Display) -> String {
+    format!("Invalid image UID: {}.", image_uid_display)
+}
+
+pub fn image_description_missing(image_file_display: impl std::fmt::Display, image_description_path_display: impl std::fmt::Display) -> String {
+    format!("{} exists, but {} does not exist.", image_file_display, image_description_path_display)
+}
+
+pub fn image_not_found(image_uid_display: impl std::fmt::Display) -> String {
+    format!("{}.png not found.", image_uid_display)
+}
+
+pub fn config_key_conflict(path_display: impl std::fmt::Display, key: &str) -> String {
+    format!("Key conflict in config file '{}': '{}'.", path_display, key)
+}
+
+pub fn uid_mismatch(uid: Uid, c_uid: Uid) -> String {
+    format!("self.uid is {}, but the calculated uid is {}.", uid, c_uid)
+}

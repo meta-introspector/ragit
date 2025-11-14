@@ -1,11 +1,11 @@
-use super::Index;
-use ragit_fs::{
-    file_name,
-    parent,
-};
+use crate::constant::INDEX_FILE_NAME;
 use crate::error::Error;
-use crate::uid::Uid;
+use crate::index::index_struct::Index;
+use crate::prelude::*;
+use ragit_fs::{file_name, parent};
 use sha3::{Digest, Sha3_256};
+
+
 
 impl Index {
     /// It uses a cached value if exists.
@@ -19,7 +19,7 @@ impl Index {
             None => {
                 let uid = self.calculate_uid(false  /* force */)?;
                 self.uid = Some(uid);
-                self.save_to_file()?;
+                self.save_to_file(self.root_dir.join(INDEX_FILE_NAME.to_string()))?;
                 Ok(uid)
             },
         }
@@ -41,7 +41,7 @@ impl Index {
 
                 for image_path in self.get_all_image_files()?.iter() {
                     let image_uid_prefix = file_name(&parent(image_path)?)?;
-                    let image_uid_suffix = file_name(image_path)?;
+                    let image_uid_suffix = file_name(image_path.to_str().unwrap())?;
                     let uid = format!("{image_uid_prefix}{image_uid_suffix}").parse::<Uid>()?;
                     uids.push(uid);
 
@@ -75,9 +75,10 @@ impl Index {
 
                 // `index.summary.uid` is the uid of the knowledge-base without the summary.
                 // If it matches `result`, the summary is up to date and must be added to the result.
-                if let Some(summary) = &self.summary {
-                    if summary.uid == result {
-                        uids.push(Uid::new_summary(&summary.summary));
+                if let Some(summary_content) = &self.summary {
+                    let summary_uid = Uid::new_summary(summary_content);
+                    if summary_uid == result {
+                        uids.push(summary_uid);
                         result = Uid::new_knowledge_base(&uids);
                     }
                 }
@@ -88,7 +89,7 @@ impl Index {
     }
 
     // When a knowledge-base is edited, its uid has to be invalidated.
-    pub(crate) fn reset_uid(
+    pub fn reset_uid(
         &mut self,
         save_to_file: bool,
     ) -> Result<(), Error> {
@@ -96,7 +97,7 @@ impl Index {
             self.uid = None;
 
             if save_to_file {
-                self.save_to_file()?;
+                self.save_to_file(self.root_dir.join(INDEX_FILE_NAME.to_string()))?;
             }
         }
 

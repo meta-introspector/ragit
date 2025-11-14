@@ -1,0 +1,1323 @@
+warning: unused import: `load_mode::LoadMode`
+ --> crates/ragit-command-bootstrap/src/bootstrap_command.rs:4:46
+  |
+4 | use ragit_index_types::{index_struct::Index, load_mode::LoadMode};
+  |                                              ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `Process`
+  --> crates/ragit-command-bootstrap/src/bootstrap_command.rs:11:28
+   |
+11 | use sysinfo::{System, Pid, Process};
+   |                            ^^^^^^^
+
+warning: `ragit-command-bootstrap` (lib) generated 2 warnings (run `cargo fix --lib -p ragit-command-bootstrap` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.43s
+     Running `target/debug/ragit-commands --verbose bootstrap`
+Verbose mode enabled.
+bootstrap_index_self: Starting
+Memory Usage (Initial): Total: 11356012 KB, Used: 4498500 KB, Process RSS: 10080 KB
+bootstrap_index_self: Created temporary directory: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+bootstrap_index_self: Initialized new index in "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+Memory Usage (After index initialization): Total: 11356012 KB, Used: 4498920 KB, Process RSS: 10080 KB
+bootstrap_index_self: Running rag add
+bootstrap_index_self: Found project root: "/data/data/com.termux/files/home/storage/github/ragit"
+CargoPackageFileSource: Getting files for package 'ragit-command-bootstrap' in project root '/data/data/com.termux/files/home/storage/github/ragit'
+CargoPackageFileSource: 'cargo pkgid' output:
+path+file:///data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap#0.1.0
+
+CargoPackageFileSource: Found files: ["/data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/src/lib.rs", "/data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/tests/bootstrap_test.rs"]
+bootstrap_index_self: Found 2 files to add
+bootstrap_index_self: going to add /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/src/lib.rs
+bootstrap_index_self: original_file_path: "/data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/src/lib.rs"
+bootstrap_index_self: actual_root_dir: "/data/data/com.termux/files/home/storage/github/ragit"
+bootstrap_index_self: relative_path (after strip_prefix): "crates/ragit-command-bootstrap/src/lib.rs"
+bootstrap_index_self: relative_path (adjusted): "crates/ragit-command-bootstrap/src/lib.rs"
+bootstrap_index_self: temp_dir: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+bootstrap_index_self: temp_file_path: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/src/lib.rs"
+bootstrap_index_self: Created parent directory: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/src"
+bootstrap_index_self: Checking if original_file_path exists: true
+bootstrap_index_self: Checking if original_file_path is readable: true
+bootstrap_index_self: Checking if parent_dir is writable: true
+bootstrap_index_self: Copied file "/data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/src/lib.rs" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/src/lib.rs"
+bootstrap_index_self: going to add /data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/tests/bootstrap_test.rs
+bootstrap_index_self: original_file_path: "/data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+bootstrap_index_self: actual_root_dir: "/data/data/com.termux/files/home/storage/github/ragit"
+bootstrap_index_self: relative_path (after strip_prefix): "crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+bootstrap_index_self: relative_path (adjusted): "crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+bootstrap_index_self: temp_dir: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+bootstrap_index_self: temp_file_path: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+bootstrap_index_self: Created parent directory: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/tests"
+bootstrap_index_self: Checking if original_file_path exists: true
+bootstrap_index_self: Checking if original_file_path is readable: true
+bootstrap_index_self: Checking if parent_dir is writable: true
+bootstrap_index_self: Copied file "/data/data/com.termux/files/home/storage/github/ragit/crates/ragit-command-bootstrap/tests/bootstrap_test.rs" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/agent.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/agent.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/answer_query.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/answer_query.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/describe_image.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/describe_image.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/extract_keyword.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/extract_keyword.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/multi_turn.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/multi_turn.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/raw.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/raw.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/rerank_summary.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/rerank_summary.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/summarize.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/summarize.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/summarize_chunks.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/summarize_chunks.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_calliope.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_calliope.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_clio.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_clio.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_erato.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_erato.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_euterpe.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_euterpe.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_melpomene.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_melpomene.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_polyhymnia.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_polyhymnia.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_terpsichore.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_terpsichore.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_thalia.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_thalia.pdl"
+bootstrap_index_self: Copied prompt "/data/data/com.termux/files/home/storage/github/ragit/prompts/muse_urania.pdl" to "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/prompts/muse_urania.pdl"
+bootstrap_index_self: Before add_files_command
+Memory Usage (Before add_files_command): Total: 11356012 KB, Used: 4516252 KB, Process RSS: 10080 KB
+bootstrap_index_self: After add_files_command
+bootstrap_index_self: Added files to index
+Memory Usage (After add_files_command): Total: 11356012 KB, Used: 4516252 KB, Process RSS: 10080 KB
+bootstrap_index_self: Running rag build
+bootstrap_index_self: Before ragit_index_effects::build
+Memory Usage (Before ragit_index_effects::build): Total: 11356012 KB, Used: 4516252 KB, Process RSS: 10080 KB
+build_worker: Starting
+build_worker: Initializing workers
+build_worker: Sending file "crates/ragit-command-bootstrap/tests/bootstrap_test.rs" to worker 0
+build_worker: Sending file "crates/ragit-command-bootstrap/src/lib.rs" to worker 1
+build_worker: No more files to process, killing worker 2
+build_worker: No more files to process, killing worker 3
+build_worker: No more files to process, killing worker 4
+build_worker: No more files to process, killing worker 5
+build_worker: No more files to process, killing worker 6
+build_worker: No more files to process, killing worker 7
+build_worker: Saving index state
+build_worker: Entering main loop
+build_chunks: file received: "crates/ragit-command-bootstrap/src/lib.rs"
+index_get_data_path: root_dir: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+index_get_data_path: file: "crates/ragit-command-bootstrap/src/lib.rs"
+index_get_data_path: full_path: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/src/lib.rs"
+build_chunks: real_path obtained: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/src/lib.rs"
+build_chunks: Calling FileReader::new with:
+  file.to_string_lossy().into_owned(): "crates/ragit-command-bootstrap/src/lib.rs"
+  real_path.to_string_lossy().into_owned(): "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/src/lib.rs"
+  index.root_dir.to_str().unwrap(): "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+build_chunks: file received: "crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+index_get_data_path: root_dir: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+index_get_data_path: file: "crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+index_get_data_path: full_path: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+build_chunks: real_path obtained: "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+build_chunks: Calling FileReader::new with:
+  file.to_string_lossy().into_owned(): "crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+  real_path.to_string_lossy().into_owned(): "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap/crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+  index.root_dir.to_str().unwrap(): "/data/data/com.termux/files/home/storage/github/ragit/tmp_bootstrap"
+build_chunks: FileReader initialized. Can generate chunk: false
+build_chunks: Processing file: "crates/ragit-command-bootstrap/tests/bootstrap_test.rs"
+build_chunks: File size: 0 bytes
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 0: Memory Usage: Total: 11356012 KB, Used: 4519528 KB (Delta: 4519528 KB, Delta Since Beginning: 0 KB, Avg Delta Per Loop: 0 KB)
+currently processing files: crates/ragit-command-bootstrap/tests/bootstrap_test.rs, crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+build_worker: Received FileComplete from worker 0
+build_worker: No more files to process, killing worker 0
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 1: Memory Usage: Total: 11356012 KB, Used: 4531600 KB (Delta: 12072 KB, Delta Since Beginning: 12072 KB, Avg Delta Per Loop: 4531600 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 2: Memory Usage: Total: 11356012 KB, Used: 4531600 KB (Delta: 0 KB, Delta Since Beginning: 12072 KB, Avg Delta Per Loop: 2265800 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 3: Memory Usage: Total: 11356012 KB, Used: 4532104 KB (Delta: 504 KB, Delta Since Beginning: 12576 KB, Avg Delta Per Loop: 1510701 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 4: Memory Usage: Total: 11356012 KB, Used: 4532356 KB (Delta: 252 KB, Delta Since Beginning: 12828 KB, Avg Delta Per Loop: 1133089 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 5: Memory Usage: Total: 11356012 KB, Used: 4532356 KB (Delta: 0 KB, Delta Since Beginning: 12828 KB, Avg Delta Per Loop: 906471 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 6: Memory Usage: Total: 11356012 KB, Used: 4532860 KB (Delta: 504 KB, Delta Since Beginning: 13332 KB, Avg Delta Per Loop: 755476 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 7: Memory Usage: Total: 11356012 KB, Used: 4532840 KB (Delta: -20 KB, Delta Since Beginning: 13312 KB, Avg Delta Per Loop: 647548 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 8: Memory Usage: Total: 11356012 KB, Used: 4532840 KB (Delta: 0 KB, Delta Since Beginning: 13312 KB, Avg Delta Per Loop: 566605 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:00
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 9: Memory Usage: Total: 11356012 KB, Used: 4532840 KB (Delta: 0 KB, Delta Since Beginning: 13312 KB, Avg Delta Per Loop: 503648 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 10: Memory Usage: Total: 11356012 KB, Used: 4531068 KB (Delta: -1772 KB, Delta Since Beginning: 11540 KB, Avg Delta Per Loop: 453106 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 11: Memory Usage: Total: 11356012 KB, Used: 4792760 KB (Delta: 261692 KB, Delta Since Beginning: 273232 KB, Avg Delta Per Loop: 435705 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 12: Memory Usage: Total: 11356012 KB, Used: 4962104 KB (Delta: 169344 KB, Delta Since Beginning: 442576 KB, Avg Delta Per Loop: 413508 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 13: Memory Usage: Total: 11356012 KB, Used: 4962104 KB (Delta: 0 KB, Delta Since Beginning: 442576 KB, Avg Delta Per Loop: 381700 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 14: Memory Usage: Total: 11356012 KB, Used: 4962104 KB (Delta: 0 KB, Delta Since Beginning: 442576 KB, Avg Delta Per Loop: 354436 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 15: Memory Usage: Total: 11356012 KB, Used: 4962104 KB (Delta: 0 KB, Delta Since Beginning: 442576 KB, Avg Delta Per Loop: 330806 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 16: Memory Usage: Total: 11356012 KB, Used: 4962104 KB (Delta: 0 KB, Delta Since Beginning: 442576 KB, Avg Delta Per Loop: 310131 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 17: Memory Usage: Total: 11356012 KB, Used: 4962032 KB (Delta: -72 KB, Delta Since Beginning: 442504 KB, Avg Delta Per Loop: 291884 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:01
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 18: Memory Usage: Total: 11356012 KB, Used: 4962032 KB (Delta: 0 KB, Delta Since Beginning: 442504 KB, Avg Delta Per Loop: 275668 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 19: Memory Usage: Total: 11356012 KB, Used: 4965608 KB (Delta: 3576 KB, Delta Since Beginning: 446080 KB, Avg Delta Per Loop: 261347 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 20: Memory Usage: Total: 11356012 KB, Used: 4965604 KB (Delta: -4 KB, Delta Since Beginning: 446076 KB, Avg Delta Per Loop: 248280 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 21: Memory Usage: Total: 11356012 KB, Used: 4965604 KB (Delta: 0 KB, Delta Since Beginning: 446076 KB, Avg Delta Per Loop: 236457 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 22: Memory Usage: Total: 11356012 KB, Used: 5325964 KB (Delta: 360360 KB, Delta Since Beginning: 806436 KB, Avg Delta Per Loop: 242089 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 23: Memory Usage: Total: 11356012 KB, Used: 5742544 KB (Delta: 416580 KB, Delta Since Beginning: 1223016 KB, Avg Delta Per Loop: 249675 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 24: Memory Usage: Total: 11356012 KB, Used: 6155824 KB (Delta: 413280 KB, Delta Since Beginning: 1636296 KB, Avg Delta Per Loop: 256492 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 25: Memory Usage: Total: 11356012 KB, Used: 5846120 KB (Delta: -309704 KB, Delta Since Beginning: 1326592 KB, Avg Delta Per Loop: 233844 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 26: Memory Usage: Total: 11356012 KB, Used: 5846372 KB (Delta: 252 KB, Delta Since Beginning: 1326844 KB, Avg Delta Per Loop: 224860 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:02
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 27: Memory Usage: Total: 11356012 KB, Used: 5846372 KB (Delta: 0 KB, Delta Since Beginning: 1326844 KB, Avg Delta Per Loop: 216532 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 28: Memory Usage: Total: 11356012 KB, Used: 5846372 KB (Delta: 0 KB, Delta Since Beginning: 1326844 KB, Avg Delta Per Loop: 208799 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 29: Memory Usage: Total: 11356012 KB, Used: 5846372 KB (Delta: 0 KB, Delta Since Beginning: 1326844 KB, Avg Delta Per Loop: 201599 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 30: Memory Usage: Total: 11356012 KB, Used: 5846364 KB (Delta: -8 KB, Delta Since Beginning: 1326836 KB, Avg Delta Per Loop: 194878 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 31: Memory Usage: Total: 11356012 KB, Used: 5846856 KB (Delta: 492 KB, Delta Since Beginning: 1327328 KB, Avg Delta Per Loop: 188608 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 32: Memory Usage: Total: 11356012 KB, Used: 5846856 KB (Delta: 0 KB, Delta Since Beginning: 1327328 KB, Avg Delta Per Loop: 182714 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 33: Memory Usage: Total: 11356012 KB, Used: 5847104 KB (Delta: 248 KB, Delta Since Beginning: 1327576 KB, Avg Delta Per Loop: 177184 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 34: Memory Usage: Total: 11356012 KB, Used: 5847104 KB (Delta: 0 KB, Delta Since Beginning: 1327576 KB, Avg Delta Per Loop: 171973 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 35: Memory Usage: Total: 11356012 KB, Used: 5847608 KB (Delta: 504 KB, Delta Since Beginning: 1328080 KB, Avg Delta Per Loop: 167074 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:03
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 36: Memory Usage: Total: 11356012 KB, Used: 5847608 KB (Delta: 0 KB, Delta Since Beginning: 1328080 KB, Avg Delta Per Loop: 162433 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 37: Memory Usage: Total: 11356012 KB, Used: 5847608 KB (Delta: 0 KB, Delta Since Beginning: 1328080 KB, Avg Delta Per Loop: 158043 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 38: Memory Usage: Total: 11356012 KB, Used: 5878760 KB (Delta: 31152 KB, Delta Since Beginning: 1359232 KB, Avg Delta Per Loop: 154704 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 39: Memory Usage: Total: 11356012 KB, Used: 5934700 KB (Delta: 55940 KB, Delta Since Beginning: 1415172 KB, Avg Delta Per Loop: 152171 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 40: Memory Usage: Total: 11356012 KB, Used: 5989160 KB (Delta: 54460 KB, Delta Since Beginning: 1469632 KB, Avg Delta Per Loop: 149729 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 41: Memory Usage: Total: 11356012 KB, Used: 6048632 KB (Delta: 59472 KB, Delta Since Beginning: 1529104 KB, Avg Delta Per Loop: 147527 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 42: Memory Usage: Total: 11356012 KB, Used: 6107096 KB (Delta: 58464 KB, Delta Since Beginning: 1587568 KB, Avg Delta Per Loop: 145407 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 43: Memory Usage: Total: 11356012 KB, Used: 6167972 KB (Delta: 60876 KB, Delta Since Beginning: 1648444 KB, Avg Delta Per Loop: 143441 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:04
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 44: Memory Usage: Total: 11356012 KB, Used: 6225888 KB (Delta: 57916 KB, Delta Since Beginning: 1706360 KB, Avg Delta Per Loop: 141497 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 45: Memory Usage: Total: 11356012 KB, Used: 6281328 KB (Delta: 55440 KB, Delta Since Beginning: 1761800 KB, Avg Delta Per Loop: 139585 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 46: Memory Usage: Total: 11356012 KB, Used: 6700656 KB (Delta: 419328 KB, Delta Since Beginning: 2181128 KB, Avg Delta Per Loop: 145666 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 47: Memory Usage: Total: 11356012 KB, Used: 7110224 KB (Delta: 409568 KB, Delta Since Beginning: 2590696 KB, Avg Delta Per Loop: 151281 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 48: Memory Usage: Total: 11356012 KB, Used: 7514932 KB (Delta: 404708 KB, Delta Since Beginning: 2995404 KB, Avg Delta Per Loop: 156561 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 49: Memory Usage: Total: 11356012 KB, Used: 7936780 KB (Delta: 421848 KB, Delta Since Beginning: 3417252 KB, Avg Delta Per Loop: 161975 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 50: Memory Usage: Total: 11356012 KB, Used: 8352868 KB (Delta: 416088 KB, Delta Since Beginning: 3833340 KB, Avg Delta Per Loop: 167057 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 51: Memory Usage: Total: 11356012 KB, Used: 8527228 KB (Delta: 174360 KB, Delta Since Beginning: 4007700 KB, Avg Delta Per Loop: 167200 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 52: Memory Usage: Total: 11356012 KB, Used: 8534480 KB (Delta: 7252 KB, Delta Since Beginning: 4014952 KB, Avg Delta Per Loop: 164124 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 53: Memory Usage: Total: 11356012 KB, Used: 7061420 KB (Delta: -1473060 KB, Delta Since Beginning: 2541892 KB, Avg Delta Per Loop: 133234 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:05
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 54: Memory Usage: Total: 11356012 KB, Used: 7061420 KB (Delta: 0 KB, Delta Since Beginning: 2541892 KB, Avg Delta Per Loop: 130767 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 55: Memory Usage: Total: 11356012 KB, Used: 7061924 KB (Delta: 504 KB, Delta Since Beginning: 2542396 KB, Avg Delta Per Loop: 128398 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 56: Memory Usage: Total: 11356012 KB, Used: 7062680 KB (Delta: 756 KB, Delta Since Beginning: 2543152 KB, Avg Delta Per Loop: 126119 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 57: Memory Usage: Total: 11356012 KB, Used: 7062668 KB (Delta: -12 KB, Delta Since Beginning: 2543140 KB, Avg Delta Per Loop: 123906 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 58: Memory Usage: Total: 11356012 KB, Used: 7062668 KB (Delta: 0 KB, Delta Since Beginning: 2543140 KB, Avg Delta Per Loop: 121770 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 59: Memory Usage: Total: 11356012 KB, Used: 7063172 KB (Delta: 504 KB, Delta Since Beginning: 2543644 KB, Avg Delta Per Loop: 119714 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 60: Memory Usage: Total: 11356012 KB, Used: 7063172 KB (Delta: 0 KB, Delta Since Beginning: 2543644 KB, Avg Delta Per Loop: 117719 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 61: Memory Usage: Total: 11356012 KB, Used: 7063172 KB (Delta: 0 KB, Delta Since Beginning: 2543644 KB, Avg Delta Per Loop: 115789 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:06
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 62: Memory Usage: Total: 11356012 KB, Used: 7063408 KB (Delta: 236 KB, Delta Since Beginning: 2543880 KB, Avg Delta Per Loop: 113925 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 63: Memory Usage: Total: 11356012 KB, Used: 7066836 KB (Delta: 3428 KB, Delta Since Beginning: 2547308 KB, Avg Delta Per Loop: 112172 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 64: Memory Usage: Total: 11356012 KB, Used: 7066828 KB (Delta: -8 KB, Delta Since Beginning: 2547300 KB, Avg Delta Per Loop: 110419 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 65: Memory Usage: Total: 11356012 KB, Used: 7066828 KB (Delta: 0 KB, Delta Since Beginning: 2547300 KB, Avg Delta Per Loop: 108720 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 66: Memory Usage: Total: 11356012 KB, Used: 7111076 KB (Delta: 44248 KB, Delta Since Beginning: 2591548 KB, Avg Delta Per Loop: 107743 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 67: Memory Usage: Total: 11356012 KB, Used: 7167272 KB (Delta: 56196 KB, Delta Since Beginning: 2647744 KB, Avg Delta Per Loop: 106974 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 68: Memory Usage: Total: 11356012 KB, Used: 7222208 KB (Delta: 54936 KB, Delta Since Beginning: 2702680 KB, Avg Delta Per Loop: 106208 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 69: Memory Usage: Total: 11356012 KB, Used: 7276136 KB (Delta: 53928 KB, Delta Since Beginning: 2756608 KB, Avg Delta Per Loop: 105451 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 70: Memory Usage: Total: 11356012 KB, Used: 7332080 KB (Delta: 55944 KB, Delta Since Beginning: 2812552 KB, Avg Delta Per Loop: 104744 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:07
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 71: Memory Usage: Total: 11356012 KB, Used: 7390040 KB (Delta: 57960 KB, Delta Since Beginning: 2870512 KB, Avg Delta Per Loop: 104085 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 72: Memory Usage: Total: 11356012 KB, Used: 7444472 KB (Delta: 54432 KB, Delta Since Beginning: 2924944 KB, Avg Delta Per Loop: 103395 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 73: Memory Usage: Total: 11356012 KB, Used: 7504952 KB (Delta: 60480 KB, Delta Since Beginning: 2985424 KB, Avg Delta Per Loop: 102807 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 74: Memory Usage: Total: 11356012 KB, Used: 7561400 KB (Delta: 56448 KB, Delta Since Beginning: 3041872 KB, Avg Delta Per Loop: 102181 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 75: Memory Usage: Total: 11356012 KB, Used: 7617848 KB (Delta: 56448 KB, Delta Since Beginning: 3098320 KB, Avg Delta Per Loop: 101571 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 76: Memory Usage: Total: 11356012 KB, Used: 7673792 KB (Delta: 55944 KB, Delta Since Beginning: 3154264 KB, Avg Delta Per Loop: 100970 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 77: Memory Usage: Total: 11356012 KB, Used: 7732256 KB (Delta: 58464 KB, Delta Since Beginning: 3212728 KB, Avg Delta Per Loop: 100418 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 78: Memory Usage: Total: 11356012 KB, Used: 7790720 KB (Delta: 58464 KB, Delta Since Beginning: 3271192 KB, Avg Delta Per Loop: 99881 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 79: Memory Usage: Total: 11356012 KB, Used: 7852208 KB (Delta: 61488 KB, Delta Since Beginning: 3332680 KB, Avg Delta Per Loop: 99395 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:08
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 80: Memory Usage: Total: 11356012 KB, Used: 7909664 KB (Delta: 57456 KB, Delta Since Beginning: 3390136 KB, Avg Delta Per Loop: 98870 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 81: Memory Usage: Total: 11356012 KB, Used: 7968128 KB (Delta: 58464 KB, Delta Since Beginning: 3448600 KB, Avg Delta Per Loop: 98371 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 82: Memory Usage: Total: 11356012 KB, Used: 8025584 KB (Delta: 57456 KB, Delta Since Beginning: 3506056 KB, Avg Delta Per Loop: 97872 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 83: Memory Usage: Total: 11356012 KB, Used: 8085056 KB (Delta: 59472 KB, Delta Since Beginning: 3565528 KB, Avg Delta Per Loop: 97410 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 84: Memory Usage: Total: 11356012 KB, Used: 8142512 KB (Delta: 57456 KB, Delta Since Beginning: 3622984 KB, Avg Delta Per Loop: 96934 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 85: Memory Usage: Total: 11356012 KB, Used: 8199968 KB (Delta: 57456 KB, Delta Since Beginning: 3680440 KB, Avg Delta Per Loop: 96470 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 86: Memory Usage: Total: 11356012 KB, Used: 8254400 KB (Delta: 54432 KB, Delta Since Beginning: 3734872 KB, Avg Delta Per Loop: 95981 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 87: Memory Usage: Total: 11356012 KB, Used: 8314376 KB (Delta: 59976 KB, Delta Since Beginning: 3794848 KB, Avg Delta Per Loop: 95567 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:09
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 88: Memory Usage: Total: 11356012 KB, Used: 8370824 KB (Delta: 56448 KB, Delta Since Beginning: 3851296 KB, Avg Delta Per Loop: 95123 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 89: Memory Usage: Total: 11356012 KB, Used: 8425760 KB (Delta: 54936 KB, Delta Since Beginning: 3906232 KB, Avg Delta Per Loop: 94671 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 90: Memory Usage: Total: 11356012 KB, Used: 8486744 KB (Delta: 60984 KB, Delta Since Beginning: 3967216 KB, Avg Delta Per Loop: 94297 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 91: Memory Usage: Total: 11356012 KB, Used: 8543996 KB (Delta: 57252 KB, Delta Since Beginning: 4024468 KB, Avg Delta Per Loop: 93890 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 92: Memory Usage: Total: 11356012 KB, Used: 8599716 KB (Delta: 55720 KB, Delta Since Beginning: 4080188 KB, Avg Delta Per Loop: 93475 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 93: Memory Usage: Total: 11356012 KB, Used: 8654900 KB (Delta: 55184 KB, Delta Since Beginning: 4135372 KB, Avg Delta Per Loop: 93063 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 94: Memory Usage: Total: 11356012 KB, Used: 8712920 KB (Delta: 58020 KB, Delta Since Beginning: 4193392 KB, Avg Delta Per Loop: 92690 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 95: Memory Usage: Total: 11356012 KB, Used: 8770880 KB (Delta: 57960 KB, Delta Since Beginning: 4251352 KB, Avg Delta Per Loop: 92325 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 96: Memory Usage: Total: 11356012 KB, Used: 8894668 KB (Delta: 123788 KB, Delta Since Beginning: 4375140 KB, Avg Delta Per Loop: 92652 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:10
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 97: Memory Usage: Total: 11356012 KB, Used: 9301352 KB (Delta: 406684 KB, Delta Since Beginning: 4781824 KB, Avg Delta Per Loop: 95890 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 98: Memory Usage: Total: 11356012 KB, Used: 9450340 KB (Delta: 148988 KB, Delta Since Beginning: 4930812 KB, Avg Delta Per Loop: 96432 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 99: Memory Usage: Total: 11356012 KB, Used: 9675884 KB (Delta: 225544 KB, Delta Since Beginning: 5156356 KB, Avg Delta Per Loop: 97736 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 100: Memory Usage: Total: 11356012 KB, Used: 9955024 KB (Delta: 279140 KB, Delta Since Beginning: 5435496 KB, Avg Delta Per Loop: 99550 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 101: Memory Usage: Total: 11356012 KB, Used: 10215188 KB (Delta: 260164 KB, Delta Since Beginning: 5695660 KB, Avg Delta Per Loop: 101140 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 102: Memory Usage: Total: 11356012 KB, Used: 10504256 KB (Delta: 289068 KB, Delta Since Beginning: 5984728 KB, Avg Delta Per Loop: 102982 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 103: Memory Usage: Total: 11356012 KB, Used: 10753896 KB (Delta: 249640 KB, Delta Since Beginning: 6234368 KB, Avg Delta Per Loop: 104406 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 104: Memory Usage: Total: 11356012 KB, Used: 10813852 KB (Delta: 59956 KB, Delta Since Beginning: 6294324 KB, Avg Delta Per Loop: 103979 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:11
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 105: Memory Usage: Total: 11356012 KB, Used: 10793492 KB (Delta: -20360 KB, Delta Since Beginning: 6273964 KB, Avg Delta Per Loop: 102795 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:12
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 106: Memory Usage: Total: 11356012 KB, Used: 10824676 KB (Delta: 31184 KB, Delta Since Beginning: 6305148 KB, Avg Delta Per Loop: 102119 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:12
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 107: Memory Usage: Total: 11356012 KB, Used: 10745308 KB (Delta: -79368 KB, Delta Since Beginning: 6225780 KB, Avg Delta Per Loop: 100423 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:12
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 108: Memory Usage: Total: 11356012 KB, Used: 10833392 KB (Delta: 88084 KB, Delta Since Beginning: 6313864 KB, Avg Delta Per Loop: 100309 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0
+flush count: 0
+model: default_model
+input tokens: 0 (0.000$), output tokens: 0 (0.000$)
+---
+elapsed time: 00:12
+staged files: 2, processed files: 0
+errors: 0
+committed chunks: 0
+Iteration 109: Memory Usage: Total: 11356012 KB, Used: 10816040 KB (Delta: -17352 KB, Delta Since Beginning: 6296512 KB, Avg Delta Per Loop: 99229 KB)
+currently processing files: crates/ragit-command-bootstrap/src/lib.rs
+buffered files: 2, buffered chunks: 0

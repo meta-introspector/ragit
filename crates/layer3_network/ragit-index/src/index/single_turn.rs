@@ -1,0 +1,13 @@
+use crate::error::Error;
+use crate::index::index_struct::Index;
+
+impl Index {
+    /// A simple version of `query`, in case you're asking only a single question.
+    pub async fn single_turn(
+        &self,
+        q: &str,
+    ) -> Result<String, Error> {
+        let result = crate::index::query_method::query(self, q, vec![], None).await?;
+        Ok(result.response)
+    }
+}

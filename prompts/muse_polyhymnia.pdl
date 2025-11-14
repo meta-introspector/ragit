@@ -1,0 +1,6 @@
+---
+name: muse_polyhymnia
+description: "Muse of Sacred Poetry, Hymns, and Pantomime. This prompt seeks summaries that are reverent, symbolic, and expressive."
+---
+Summarize the following text as a sacred hymn. Use reverent language to capture its core message, focusing on symbolic meaning and universal truths.
+"{{text}}"
